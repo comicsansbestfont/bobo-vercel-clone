@@ -211,7 +211,7 @@ const SimpleChatItem = ({
 
   return (
     <Link
-      href={`#chat-${chat.id}`}
+      href="/"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
@@ -382,7 +382,8 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
               {open ? <Logo /> : <LogoIcon />}
 
               {/* New Chat Button - Right aligned */}
-              <button
+              <Link
+                href="/"
                 className={cn(
                   "flex items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors",
                   !open && "px-2",
@@ -390,7 +391,7 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
               >
                 <IconMessagePlus className="h-4 w-4 flex-shrink-0" />
                 {open && <span className="text-xs">New</span>}
-              </button>
+              </Link>
             </div>
 
             {/* Search Bar */}

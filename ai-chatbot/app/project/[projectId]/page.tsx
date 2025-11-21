@@ -2,7 +2,7 @@
 
 import { ProjectView } from "@/components/project/project-view";
 import { BoboSidebarOptionA } from "@/components/ui/bobo-sidebar-option-a";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 // Mock data - In real app, this would come from database
 const mockProjectData = {
@@ -179,6 +179,7 @@ const mockProjectData = {
 
 export default function ProjectPage() {
   const params = useParams();
+  const router = useRouter();
   const projectId = params.projectId as string;
 
   // Get project data from mock
@@ -208,8 +209,9 @@ export default function ProjectPage() {
   };
 
   const handleSubmit = (message: any) => {
-    console.log("Message submitted:", message);
-    // In real app, this would create a new chat in the project
+    // Navigate to main chat interface with the message
+    // In real app, this would create a new chat in the project and navigate there
+    router.push("/");
   };
 
   return (

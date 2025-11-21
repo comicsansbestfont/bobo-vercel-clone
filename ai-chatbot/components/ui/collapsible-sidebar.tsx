@@ -150,7 +150,7 @@ export function SidebarLayout({
 export const Logo = () => {
   return (
     <Link
-      href="#"
+      href="/"
       className="relative z-20 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
     >
       <div className="h-5 w-6 flex-shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
@@ -167,7 +167,7 @@ export const Logo = () => {
 export const LogoIcon = () => {
   return (
     <Link
-      href="#"
+      href="/"
       className="relative z-20 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
     >
       <div className="h-5 w-6 flex-shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
