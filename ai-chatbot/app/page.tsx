@@ -61,6 +61,7 @@ import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { compressHistory } from '@/lib/memory-manager';
+import { BoboSidebarOptionA } from '@/components/ui/bobo-sidebar-option-a';
 
 const models = [
   {
@@ -201,8 +202,9 @@ const ChatBotDemo = () => {
   }, [contextUsage]);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
-      <div className="flex flex-col h-full">
+    <BoboSidebarOptionA>
+      <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+        <div className="flex flex-col h-full p-6">
         <Conversation className="h-full">
           <ConversationContent>
             {messages.map((message) => (
@@ -392,8 +394,9 @@ const ChatBotDemo = () => {
             <PromptInputSubmit disabled={(!input && !status) || isCompressing} status={isCompressing ? 'submitted' : status} />
           </PromptInputFooter>
         </PromptInput>
+        </div>
       </div>
-    </div>
+    </BoboSidebarOptionA>
   );
 };
 
