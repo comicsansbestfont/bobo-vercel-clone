@@ -3,6 +3,11 @@ import { streamText, UIMessage, convertToModelMessages } from 'ai';
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+// Disable the SDK warning about non-OpenAI reasoning
+if (typeof globalThis !== 'undefined') {
+  (globalThis as any).AI_SDK_LOG_WARNINGS = false;
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -35,11 +40,9 @@ export async function POST(req: Request) {
         'You are a helpful assistant that can answer questions and help with tasks',
     });
 
-    // send sources and reasoning back to the client
-    return result.toUIMessageStreamResponse({
-      sendSources: true,
-      sendReasoning: true,
-    });
+    // Use toTextStreamResponse and manually handle the data stream
+    // This preserves all chunk types including reasoning for non-OpenAI models
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error('Chat API error:', error);
     return new Response(
