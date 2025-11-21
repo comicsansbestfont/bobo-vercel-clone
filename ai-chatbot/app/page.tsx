@@ -37,7 +37,7 @@ import {
   PromptInputTools,
 } from '@/components/ai-elements/prompt-input';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useChat } from '@ai-sdk/react';
 
@@ -57,11 +57,47 @@ import {
 } from '@/components/ai-elements/reasoning';
 
 import { Loader } from '@/components/ai-elements/loader';
+import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
+import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { compressHistory } from '@/lib/memory-manager';
 
 const models = [
   {
     name: 'GPT 4o',
     value: 'openai/gpt-4o',
+  },
+  {
+    name: 'GPT 5 Pro',
+    value: 'openai/gpt-5-pro',
+  },
+  {
+    name: 'GPT 5 Mini',
+    value: 'openai/gpt-5-mini',
+  },
+  {
+    name: 'GPT 5.1 Thinking',
+    value: 'openai/gpt-5.1-thinking',
+  },
+  {
+    name: 'GPT 5.1 Instant',
+    value: 'openai/gpt-5.1-instant',
+  },
+  {
+    name: 'Claude Sonnet 4.5',
+    value: 'anthropic/claude-sonnet-4.5',
+  },
+  {
+    name: 'Claude Opus 4',
+    value: 'anthropic/claude-opus-4',
+  },
+  {
+    name: 'Gemini 3 Pro Preview',
+    value: 'google/gemini-3-pro-preview',
+  },
+  {
+    name: 'Gemini 2.5 Flash',
+    value: 'google/gemini-2.5-flash',
   },
   {
     name: 'Deepseek R1',
@@ -73,19 +109,34 @@ const ChatBotDemo = () => {
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
-  const { messages, sendMessage, status, regenerate, error } = useChat({
-    api: '/api/chat',
+  const [isCompressing, setIsCompressing] = useState(false);
+  const { messages, sendMessage, status, regenerate, error, setMessages } = useChat({
     onError: (error) => {
       console.error('Chat error:', error);
     },
   });
 
-  const handleSubmit = (message: PromptInputMessage) => {
+  const handleSubmit = async (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
     const hasAttachments = Boolean(message.files?.length);
     if (!(hasText || hasAttachments)) {
       return;
     }
+
+    if (contextUsage.usageState === 'critical' && !isCompressing) {
+      try {
+        setIsCompressing(true);
+        const { compressedMessages, wasCompressed } = await compressHistory(messages);
+        if (wasCompressed) {
+          setMessages(compressedMessages);
+        }
+      } catch (compressionError) {
+        console.error('History compression failed', compressionError);
+      } finally {
+        setIsCompressing(false);
+      }
+    }
+
     sendMessage(
       { 
         text: message.text || 'Sent with attachments',
@@ -102,6 +153,52 @@ const ChatBotDemo = () => {
     setInput('');
   };
 
+  // Calculate context usage
+  const contextUsage = getContextUsage(messages, input, model);
+
+  const usageMeta = useMemo(() => {
+    const segments = [
+      {
+        key: 'system',
+        label: 'System',
+        tokens: contextUsage.segments.system,
+        color: 'bg-slate-500/80',
+        dot: 'bg-slate-500',
+      },
+      {
+        key: 'history',
+        label: 'History',
+        tokens: contextUsage.segments.history,
+        color: 'bg-primary',
+        dot: 'bg-primary',
+      },
+      {
+        key: 'draft',
+        label: 'Draft',
+        tokens: contextUsage.segments.draft,
+        color: 'bg-amber-500',
+        dot: 'bg-amber-500',
+      },
+    ];
+
+    const usageTextColor =
+      contextUsage.usageState === 'critical'
+        ? 'text-destructive'
+        : contextUsage.usageState === 'warning'
+        ? 'text-amber-600'
+        : 'text-emerald-600';
+
+    return {
+      segments: segments.map((segment) => ({
+        ...segment,
+        width: Math.min(
+          (segment.tokens / contextUsage.contextLimit) * 100,
+          100
+        ),
+      })),
+      usageTextColor,
+    };
+  }, [contextUsage]);
 
   return (
     <div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
@@ -182,7 +279,7 @@ const ChatBotDemo = () => {
               <Message from="assistant">
                 <MessageContent>
                   <MessageResponse>
-                    Error: {error.message || 'An error occurred'}
+                    {`Error: ${error.message || 'An error occurred'}`}
                   </MessageResponse>
                 </MessageContent>
               </Message>
@@ -190,6 +287,60 @@ const ChatBotDemo = () => {
           </ConversationContent>
           <ConversationScrollButton />
         </Conversation>
+
+        {/* Context Monitor */}
+        <div className="mt-2 space-y-2 rounded-lg border border-border/60 bg-background/60 p-3">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span className="font-medium uppercase tracking-wide">Context</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span
+                  className={cn(
+                    'cursor-help text-sm font-semibold',
+                    usageMeta.usageTextColor
+                  )}
+                >
+                  {`Using ~${formatTokenCount(
+                    contextUsage.tokensUsed
+                  )} / ${formatTokenCount(contextUsage.contextLimit)} tokens`}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                Approximated usage. Older messages are summarized once the bar
+                is full.
+              </TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div className="flex h-full w-full">
+              {usageMeta.segments.map((segment) => (
+                <div
+                  key={segment.key}
+                  className={cn(segment.color, 'h-full')}
+                  style={{ width: `${segment.width}%` }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+            {usageMeta.segments.map((segment) => (
+              <div key={segment.key} className="flex items-center gap-1.5">
+                <span
+                  className={cn('h-2 w-2 rounded-full', segment.dot)}
+                  aria-hidden
+                />
+                <span>
+                  {segment.label} · {formatTokenCount(segment.tokens)} tokens
+                </span>
+              </div>
+            ))}
+          </div>
+          {isCompressing && (
+            <p className="text-[11px] font-medium text-muted-foreground">
+              Compressing history…
+            </p>
+          )}
+        </div>
 
         <PromptInput onSubmit={handleSubmit} className="mt-4" globalDrop multiple>
           <PromptInputHeader>
@@ -238,7 +389,7 @@ const ChatBotDemo = () => {
                 </PromptInputSelectContent>
               </PromptInputSelect>
             </PromptInputTools>
-            <PromptInputSubmit disabled={!input && !status} status={status} />
+            <PromptInputSubmit disabled={(!input && !status) || isCompressing} status={isCompressing ? 'submitted' : status} />
           </PromptInputFooter>
         </PromptInput>
       </div>
