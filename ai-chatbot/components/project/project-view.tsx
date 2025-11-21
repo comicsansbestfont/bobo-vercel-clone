@@ -86,7 +86,7 @@ export function ProjectView({
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Chat Cards or Empty State */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto px-6 py-4 pb-6">
           {chats.length === 0 ? (
             <ProjectEmptyState />
           ) : (
@@ -106,7 +106,7 @@ export function ProjectView({
         </div>
 
         {/* Input Section - Fixed at Bottom */}
-        <div className="border-t border-neutral-200 bg-neutral-50 px-6 py-4 dark:border-neutral-700 dark:bg-neutral-900">
+        <div className="border-t border-neutral-200 bg-white px-6 py-4 dark:border-neutral-700 dark:bg-neutral-900">
           <div className="mx-auto max-w-5xl">
             <PromptInput
               onSubmit={handleSubmit}

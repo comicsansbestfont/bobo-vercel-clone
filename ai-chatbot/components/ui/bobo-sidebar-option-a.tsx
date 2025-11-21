@@ -165,6 +165,12 @@ const mockProjects: Project[] = [
     description: "React Native app",
     chatCount: 6,
   },
+  {
+    id: "proj-empty",
+    name: "New Project",
+    description: "Empty project for testing",
+    chatCount: 0,
+  },
 ];
 
 // Search Bar Component
@@ -398,7 +404,7 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
               {visibleProjects.map((project) => (
                 <InlineProjectItem key={project.id} project={project} />
               ))}
-              {mockProjects.length > 3 && (
+              {mockProjects.length > 4 && (
                 <SeeMoreButton
                   onClick={() => setShowAllProjects(!showAllProjects)}
                   isExpanded={showAllProjects}

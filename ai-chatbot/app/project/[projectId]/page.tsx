@@ -171,6 +171,10 @@ const mockProjectData = {
       },
     ],
   },
+  "proj-empty": {
+    name: "New Project",
+    chats: [],
+  },
 };
 
 export default function ProjectPage() {

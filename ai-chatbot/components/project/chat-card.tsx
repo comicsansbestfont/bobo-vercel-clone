@@ -51,6 +51,7 @@ export function ChatCard({
         "block rounded-lg bg-neutral-100 p-4 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700",
         className,
       )}
+      aria-label={`Open chat: ${title}`}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-1">
@@ -58,12 +59,15 @@ export function ChatCard({
             {title}
           </h3>
           {preview && (
-            <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
+            <p className="line-clamp-2 text-sm text-neutral-700 dark:text-neutral-400">
               {preview}
             </p>
           )}
         </div>
-        <time className="flex-shrink-0 text-xs text-neutral-500 dark:text-neutral-500">
+        <time
+          className="flex-shrink-0 text-xs text-neutral-600 dark:text-neutral-500"
+          dateTime={timestamp.toISOString()}
+        >
           {formattedDate}
         </time>
       </div>
