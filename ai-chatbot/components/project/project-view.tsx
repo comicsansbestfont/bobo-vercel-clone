@@ -75,7 +75,7 @@ export function ProjectView({
   };
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-white dark:bg-neutral-900">
+    <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
       {/* Project Header */}
       <ProjectHeader
         projectId={projectId}
@@ -90,7 +90,7 @@ export function ProjectView({
           {chats.length === 0 ? (
             <ProjectEmptyState />
           ) : (
-            <div className="mx-auto grid max-w-5xl gap-4">
+            <div className="mx-auto grid w-full max-w-[calc(100%-48px)] gap-4">
               {chats.map((chat) => (
                 <ChatCard
                   key={chat.id}
@@ -107,7 +107,7 @@ export function ProjectView({
 
         {/* Input Section - Fixed at Bottom */}
         <div className="border-t border-neutral-200 bg-white px-6 py-4 dark:border-neutral-700 dark:bg-neutral-900">
-          <div className="mx-auto max-w-5xl">
+          <div className="mx-auto w-full">
             <PromptInput
               onSubmit={handleSubmit}
               globalDrop

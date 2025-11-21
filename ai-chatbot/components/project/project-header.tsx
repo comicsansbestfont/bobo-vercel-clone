@@ -51,7 +51,7 @@ export function ProjectHeader({
   return (
     <div className="border-b border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
       {/* Breadcrumb */}
-      <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-3 dark:border-neutral-700">
+      <div className="flex items-center justify-between rounded-t-2xl border-b border-neutral-200 px-6 py-3 dark:border-neutral-700">
         <div className="flex items-center gap-2 text-sm">
           <Link
             href="/"
