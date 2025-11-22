@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "// comment": "Supabase MCP for Bobo AI Chatbot project (xrwbbqvwhwabbnwwxcxm)",
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=xrwbbqvwhwabbnwwxcxm",
+      "headers": {
+        "Authorization": "Bearer sbp_2cee7c51375bfd3dd875d340f094e0f161e1e5dd"
+      }
+    }
+  }
+}
