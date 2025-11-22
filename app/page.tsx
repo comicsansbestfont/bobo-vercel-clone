@@ -69,6 +69,14 @@ import { toast } from 'sonner';
 
 const models = [
   {
+    name: 'GPT 5.1 Thinking',
+    value: 'openai/gpt-5.1-thinking',
+  },
+  {
+    name: 'GPT 5.1 Instant',
+    value: 'openai/gpt-5.1-instant',
+  },
+  {
     name: 'GPT 4o',
     value: 'openai/gpt-4o',
   },
@@ -79,14 +87,6 @@ const models = [
   {
     name: 'GPT 5 Mini',
     value: 'openai/gpt-5-mini',
-  },
-  {
-    name: 'GPT 5.1 Thinking',
-    value: 'openai/gpt-5.1-thinking',
-  },
-  {
-    name: 'GPT 5.1 Instant',
-    value: 'openai/gpt-5.1-instant',
   },
   {
     name: 'Claude Sonnet 4.5',
@@ -155,58 +155,58 @@ const ChatBotDemo = () => {
     },
   });
 
-  // Load chat history when chatId changes
+  // TEMP: disable auto history loading to mirror the minimal Elements example and isolate stream issues
+  // If you need history, remove this guard and reinstate the fetch below.
+  const ENABLE_HISTORY_LOADING = false;
+
   useEffect(() => {
-    if (!chatId) return;
+    if (ENABLE_HISTORY_LOADING) {
+      if (!chatId) return;
+      if (chatId !== chatIdFromUrl) return;
 
-    // Only load if chatId is from URL (not just set from response)
-    if (chatId !== chatIdFromUrl) return;
+      async function loadChatHistory() {
+        setIsLoadingHistory(true);
+        try {
+          const res = await fetch(`/api/chats/${chatId}`);
+          if (!res.ok) {
+            console.error('Failed to load chat');
+            toast.error('Failed to load chat', {
+              description: 'The chat could not be found or loaded.',
+            });
+            setChatId(null);
+            return;
+          }
 
-    async function loadChatHistory() {
-      setIsLoadingHistory(true);
-      try {
-        const res = await fetch(`/api/chats/${chatId}`);
-        if (!res.ok) {
-          console.error('Failed to load chat');
-          toast.error('Failed to load chat', {
-            description: 'The chat could not be found or loaded.',
+          const data = await res.json();
+
+          const uiMessages = data.messages.map((msg: DBMessage) => ({
+            id: msg.id,
+            role: msg.role,
+            parts: msg.content.parts,
+          }));
+
+          setMessages(uiMessages);
+
+          if (data.chat.model) {
+            setModel(data.chat.model);
+          }
+          if (typeof data.chat.web_search_enabled === 'boolean') {
+            setWebSearch(data.chat.web_search_enabled);
+          }
+        } catch (error) {
+          console.error('Failed to load chat history:', error);
+          toast.error('Failed to load chat history', {
+            description: 'An error occurred while loading the chat history.',
           });
-          // Reset chatId if chat not found
           setChatId(null);
-          return;
+        } finally {
+          setIsLoadingHistory(false);
         }
-
-        const data = await res.json();
-
-        // Convert database messages to UIMessage format
-        const uiMessages = data.messages.map((msg: DBMessage) => ({
-          id: msg.id,
-          role: msg.role,
-          parts: msg.content.parts,
-        }));
-
-        setMessages(uiMessages);
-
-        // Update model and webSearch from chat settings
-        if (data.chat.model) {
-          setModel(data.chat.model);
-        }
-        if (typeof data.chat.web_search_enabled === 'boolean') {
-          setWebSearch(data.chat.web_search_enabled);
-        }
-      } catch (error) {
-        console.error('Failed to load chat history:', error);
-        toast.error('Failed to load chat history', {
-          description: 'An error occurred while loading the chat history.',
-        });
-        setChatId(null);
-      } finally {
-        setIsLoadingHistory(false);
       }
-    }
 
-    loadChatHistory();
-  }, [chatIdFromUrl, setMessages]);
+      loadChatHistory();
+    }
+  }, [chatIdFromUrl, setMessages, chatId]);
 
   const handleSubmit = async (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);

@@ -1,4 +1,15 @@
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
+type ChatCompletionChoiceDelta =
+  | string
+  | Array<{ type?: string; text?: string }>
+  | undefined;
+type ChatCompletionChunk = {
+  choices?: Array<{
+    delta?: {
+      content?: ChatCompletionChoiceDelta;
+    };
+  }>;
+};
 import { encode } from 'gpt-tokenizer';
 import {
   createChat,
@@ -73,16 +84,6 @@ export async function POST(req: Request) {
       chatId?: string;
     } = await req.json();
 
-    // Sanitize incoming messages to guard against unexpected roles/shape from the client.
-    const allowedRoles = new Set(['system', 'user', 'assistant']);
-    const sanitizedMessages = (messages || []).filter((m) => {
-      if (!allowedRoles.has(m.role)) {
-        console.warn('Dropping message with unsupported role:', m.role);
-        return false;
-      }
-      return true;
-    });
-
     // Check if API key is configured
     if (!process.env.AI_GATEWAY_API_KEY) {
       return new Response(
@@ -119,9 +120,158 @@ export async function POST(req: Request) {
       activeChatId = newChat.id;
     }
 
+    // Normalize roles to avoid invalid payloads to the gateway
+    const allowedRoles = new Set<UIMessage['role']>(['system', 'user', 'assistant']);
+    const normalizedMessages: UIMessage[] = (messages || []).map((msg, idx) => {
+      if (!allowedRoles.has(msg.role)) {
+        console.warn(
+          '[api/chat] normalizing unsupported role to "user"',
+          { idx, role: msg.role }
+        );
+        return { ...msg, role: 'user' };
+      }
+      return msg;
+    });
+
+    if (model?.startsWith('openai/gpt-5.1')) {
+      console.log('[api/chat] openai gpt-5.1 request messages roles:', normalizedMessages.map((m) => m.role));
+      if (normalizedMessages.length > 0) {
+        console.log('[api/chat] openai gpt-5.1 first message:', normalizedMessages[0]);
+      }
+    }
+
+    const isOpenAIModel = model?.startsWith('openai/');
+    const isGpt51 = model?.startsWith('openai/gpt-5.1');
+    const modelMessages = convertToModelMessages(normalizedMessages);
+
+    if (isGpt51) {
+      console.log('[api/chat] openai gpt-5.1 modelMessages (sdk):', JSON.stringify(modelMessages, null, 2));
+    }
+
+    if (isOpenAIModel) {
+      // Direct gateway call with raw OpenAI-compatible payload to avoid SDK shaping issues.
+      const payload = {
+        model,
+        messages: normalizedMessages.map((msg) => ({
+          role: msg.role,
+          content: (msg.parts || [])
+            .map((p) => ('text' in p && p.text ? p.text : ''))
+            .join(''),
+        })),
+        stream: true,
+      };
+
+      console.log('[api/chat] openai direct payload:', JSON.stringify(payload, null, 2));
+
+      if (!process.env.AI_GATEWAY_API_KEY) {
+        return new Response(
+          JSON.stringify({
+            error: 'AI_GATEWAY_API_KEY is not configured. Please add it to your .env.local file.',
+          }),
+          {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
+
+      const upstream = await fetch('https://ai-gateway.vercel.sh/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.AI_GATEWAY_API_KEY}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!upstream.ok) {
+        const text = await upstream.text();
+        console.error('[api/chat] openai upstream error', upstream.status, text);
+        return new Response(
+          JSON.stringify({ error: 'Upstream error', status: upstream.status, body: text }),
+          {
+            status: upstream.status,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
+
+      const transform = new TransformStream<Uint8Array, Uint8Array>();
+      const writer = transform.writable.getWriter();
+      const encoder = new TextEncoder();
+      const reader = upstream.body?.getReader();
+
+      // Emit UIMessage stream start
+      writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'start' })}\n\n`));
+      writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'start-step' })}\n\n`));
+      writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'text-start', id: '0' })}\n\n`));
+
+      (async () => {
+        try {
+          let buffer = '';
+          while (reader) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += new TextDecoder().decode(value);
+
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              if (!line.startsWith('data:')) continue;
+              const payloadStr = line.replace(/^data:\s*/, '');
+              if (payloadStr === '[DONE]') {
+                // Finish sequence
+                writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'text-end', id: '0' })}\n\n`));
+                writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'finish-step' })}\n\n`));
+                writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'finish', finishReason: 'stop' })}\n\n`));
+                break;
+              }
+              try {
+                const chunk = JSON.parse(payloadStr) as ChatCompletionChunk;
+                const delta = chunk.choices?.[0]?.delta?.content;
+                if (typeof delta === 'string' && delta.length > 0) {
+                  writer.write(
+                    encoder.encode(
+                      `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta })}\n\n`
+                    )
+                  );
+                } else if (Array.isArray(delta)) {
+                  // Handle array content parts
+                  for (const d of delta) {
+                    if (d?.type === 'text' && d.text) {
+                      writer.write(
+                        encoder.encode(
+                          `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta: d.text })}\n\n`
+                        )
+                      );
+                    }
+                  }
+                }
+              } catch (err) {
+                console.error('[api/chat] failed to parse upstream chunk', err);
+              }
+            }
+          }
+        } finally {
+          writer.write(encoder.encode(`data: [DONE]\n\n`));
+          writer.close();
+        }
+      })();
+
+      return new Response(transform.readable, {
+        headers: {
+          'Content-Type': 'text/event-stream; charset=utf-8',
+          'Cache-Control': 'no-cache, no-transform',
+          Connection: 'keep-alive',
+          'X-Chat-Id': activeChatId || '',
+        },
+      });
+    }
+
     const result = streamText({
       model: getModel(webSearch ? 'perplexity/sonar' : model),
-      messages: convertToModelMessages(sanitizedMessages),
+      messages: modelMessages,
       system:
         'You are a helpful assistant that can answer questions and help with tasks',
 
@@ -180,6 +330,23 @@ export async function POST(req: Request) {
       // Return reasoning and sources parts so the UI can render them (aligns with Elements example)
       sendReasoning: true,
       sendSources: true,
+      // Temporary debug: log SSE chunks to identify invalid roles/chunks from providers
+      consumeSseStream: ({ stream }) => {
+        const reader = stream.getReader();
+        (async () => {
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              console.log('[api/chat] stream chunk', value);
+            }
+          } catch (err) {
+            console.error('[api/chat] stream logging error', err);
+          } finally {
+            reader.releaseLock();
+          }
+        })();
+      },
     });
   } catch (error) {
     console.error('Chat API error:', error);
