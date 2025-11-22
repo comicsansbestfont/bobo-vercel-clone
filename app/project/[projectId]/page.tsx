@@ -178,7 +178,7 @@ export default function ProjectPage() {
     title: chat.title,
     preview: chat.title, // Use title as preview since we don't have a preview field yet
     timestamp: new Date(chat.updated_at),
-    projectId: chat.project_id || undefined,
+    projectId: projectId, // All chats on this page belong to this project
   }));
 
   return (

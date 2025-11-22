@@ -371,14 +371,16 @@ Currently compression is triggered synchronously when user submits a message and
 
 | ID | Feature | Description | User Value | Complexity | Votes |
 |----|---------|-------------|------------|------------|-------|
-| NTH-1 | Chat export (Markdown) | Export conversation as .md file | 🟡 MEDIUM | 🟢 LOW (2h) | 0 |
-| NTH-2 | Chat search | Search across all chat messages | 🟡 MEDIUM | 🟡 MEDIUM (4h) | 0 |
-| NTH-3 | Dark mode toggle | Manual dark/light theme switch | 🟢 LOW | 🟢 LOW (1h) | 0 |
-| NTH-4 | Keyboard shortcuts | Vim-style or Cmd+K navigation | 🟡 MEDIUM | 🟡 MEDIUM (3h) | 0 |
-| NTH-5 | Conversation templates | Pre-defined prompts for common tasks | 🟡 MEDIUM | 🟢 LOW (2h) | 0 |
-| NTH-6 | Message editing | Edit previous user messages | 🟡 MEDIUM | 🟡 MEDIUM (3h) | 0 |
-| NTH-7 | Voice input | Speech-to-text for messages | 🟢 LOW | 🔴 HIGH (6h) | 0 |
-| NTH-8 | Image generation | DALL-E integration | 🟢 LOW | 🟡 MEDIUM (4h) | 0 |
+| NTH-1 | Chat export (Markdown) | Export conversation as .md file | 🟡 MEDIUM | 🟢 LOW (2h) | 1 |
+| NTH-2 | Rename chat | Inline edit chat title in sidebar | 🟡 MEDIUM | 🟢 LOW (1h) | 1 |
+| NTH-3 | Delete chat from sidebar | Delete chat with confirmation dialog | 🟡 MEDIUM | 🟢 LOW (1h) | 1 |
+| NTH-4 | Chat search | Search across all chat messages | 🟡 MEDIUM | 🟡 MEDIUM (4h) | 0 |
+| NTH-5 | Dark mode toggle | Manual dark/light theme switch | 🟢 LOW | 🟢 LOW (1h) | 0 |
+| NTH-6 | Keyboard shortcuts | Vim-style or Cmd+K navigation | 🟡 MEDIUM | 🟡 MEDIUM (3h) | 0 |
+| NTH-7 | Conversation templates | Pre-defined prompts for common tasks | 🟡 MEDIUM | 🟢 LOW (2h) | 0 |
+| NTH-8 | Message editing | Edit previous user messages | 🟡 MEDIUM | 🟡 MEDIUM (3h) | 0 |
+| NTH-9 | Voice input | Speech-to-text for messages | 🟢 LOW | 🔴 HIGH (6h) | 0 |
+| NTH-10 | Image generation | DALL-E integration | 🟢 LOW | 🟡 MEDIUM (4h) | 0 |
 
 ---
 
