@@ -1,5 +1,5 @@
 import type { UIMessage } from 'ai';
-import { encode, encodeChat } from 'gpt-tokenizer';
+import { encodeChat } from 'gpt-tokenizer';
 
 // Context window limits for different AI models (in tokens)
 // Based on Vercel AI Gateway specifications
@@ -105,7 +105,8 @@ function buildChatTranscript(
 
 export function countTokensWithFallback(
   messages: UIMessage[],
-  currentInput: string
+  currentInput: string,
+  modelId?: string
 ): number {
   const chatTranscript = buildChatTranscript(messages, currentInput);
 
@@ -114,7 +115,8 @@ export function countTokensWithFallback(
   }
 
   try {
-    return encodeChat(chatTranscript as any).length;
+    // Use gpt-4o as the tokenizer model (works well for most models)
+    return encodeChat(chatTranscript as any, 'gpt-4o').length;
   } catch (err) {
     console.warn('Tokenizer fallback triggered', err);
     const fallbackText = chatTranscript
@@ -156,16 +158,16 @@ export function getContextUsage(
     draft: number;
   };
 } {
-  const tokensUsed = countTokensWithFallback(messages, currentInput);
+  const tokensUsed = countTokensWithFallback(messages, currentInput, modelId);
   const contextLimit = MODEL_CONTEXT_LIMITS[modelId] || 128_000; // Default to 128k
   const percentage = Math.min(100, (tokensUsed / contextLimit) * 100);
 
   const systemTokens = messages
     .filter((message) => message.role === 'system')
-    .reduce((sum, message) => sum + encode(extractTextFromMessage(message)).length, 0);
+    .reduce((sum, message) => sum + heuristicTokenEstimate(extractTextFromMessage(message)), 0);
 
   const draftTokens = currentInput?.trim()
-    ? encode(currentInput.trim()).length
+    ? heuristicTokenEstimate(currentInput.trim())
     : 0;
 
   const historyTokens = Math.max(tokensUsed - systemTokens - draftTokens, 0);

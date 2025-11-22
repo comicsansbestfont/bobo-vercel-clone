@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
   IconMessagePlus,
@@ -23,6 +23,9 @@ import {
   LogoIcon,
   useSidebar,
 } from "./collapsible-sidebar";
+import type { ProjectWithStats, ChatWithProject } from "@/lib/db/types";
+import { CreateProjectModal } from "@/components/project/create-project-modal";
+import { toast } from "sonner";
 
 // Mock data types
 interface Chat {
@@ -198,20 +201,22 @@ const SimpleChatItem = ({
   isActive = false,
   dateMode,
 }: {
-  chat: Chat;
+  chat: ChatWithProject;
   isActive?: boolean;
   dateMode: 'updated' | 'created';
 }) => {
   const { open: sidebarOpen } = useSidebar();
   const [isHovered, setIsHovered] = useState(false);
 
-  const dateToShow = dateMode === 'updated' ? chat.updatedAt : chat.createdAt;
+  const dateToShow = dateMode === 'updated'
+    ? new Date(chat.updated_at)
+    : new Date(chat.created_at);
   const dateLabel = dateMode === 'updated' ? 'Updated' : 'Created';
   const formattedDate = formatRelativeDate(dateToShow);
 
   return (
     <Link
-      href="/"
+      href={`/?chatId=${chat.id}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
@@ -249,7 +254,7 @@ const SimpleChatItem = ({
 };
 
 // Inline Project Item (no expansion)
-const InlineProjectItem = ({ project }: { project: Project }) => {
+const InlineProjectItem = ({ project }: { project: ProjectWithStats }) => {
   const { open: sidebarOpen } = useSidebar();
 
   return (
@@ -300,11 +305,14 @@ const SeeMoreButton = ({
 };
 
 // New Project Button
-const NewProjectButton = () => {
+const NewProjectButton = ({ onClick }: { onClick: () => void }) => {
   const { open: sidebarOpen } = useSidebar();
 
   return (
-    <button className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800">
+    <button
+      onClick={onClick}
+      className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+    >
       <IconFolderPlus className="h-4 w-4 flex-shrink-0 text-neutral-600 dark:text-neutral-400" />
       <motion.span
         animate={{
@@ -363,13 +371,60 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
   const [open, setOpen] = useState(true);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [dateMode, setDateMode] = useState<'updated' | 'created'>('updated');
+  const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
+
+  // Real data states
+  const [projects, setProjects] = useState<ProjectWithStats[]>([]);
+  const [chats, setChats] = useState<ChatWithProject[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch projects and chats from API
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [projectsRes, chatsRes] = await Promise.all([
+        fetch('/api/projects'),
+        fetch('/api/chats'),
+      ]);
+
+      if (!projectsRes.ok || !chatsRes.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const projectsData = await projectsRes.json();
+      const chatsData = await chatsRes.json();
+
+      setProjects(projectsData.projects || []);
+      setChats(chatsData.chats || []);
+    } catch (err) {
+      console.error('Failed to fetch sidebar data:', err);
+      const errorMessage = 'Failed to load sidebar data';
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        description: 'Unable to load projects and chats. Please try refreshing the page.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const visibleProjects = showAllProjects
-    ? mockProjects
-    : mockProjects.slice(0, 3);
+    ? projects
+    : projects.slice(0, 3);
 
   const toggleDateMode = () => {
     setDateMode(prev => prev === 'updated' ? 'created' : 'updated');
+  };
+
+  const handleProjectCreated = () => {
+    // Refresh projects list after creating a new project
+    fetchData();
   };
 
   return (
@@ -398,33 +453,65 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             <SearchBar />
 
             {/* New Project Button */}
-            <NewProjectButton />
+            <NewProjectButton onClick={() => setIsCreateProjectModalOpen(true)} />
+
+            {/* Loading State */}
+            {loading && (
+              <div className="mt-4 space-y-2">
+                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
+                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
+                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded text-sm">
+                {error}
+              </div>
+            )}
 
             {/* Projects - Inline (no section header) */}
-            <div className="mt-1 space-y-0.5">
-              {visibleProjects.map((project) => (
-                <InlineProjectItem key={project.id} project={project} />
-              ))}
-              {mockProjects.length > 4 && (
-                <SeeMoreButton
-                  onClick={() => setShowAllProjects(!showAllProjects)}
-                  isExpanded={showAllProjects}
-                />
-              )}
-            </div>
+            {!loading && !error && (
+              <div className="mt-1 space-y-0.5">
+                {visibleProjects.map((project) => (
+                  <InlineProjectItem key={project.id} project={project} />
+                ))}
+                {projects.length > 4 && (
+                  <SeeMoreButton
+                    onClick={() => setShowAllProjects(!showAllProjects)}
+                    isExpanded={showAllProjects}
+                  />
+                )}
+                {projects.length === 0 && (
+                  <div className="py-4 text-center text-sm text-neutral-500">
+                    No projects yet. Create one to get started!
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Subtle Divider */}
-            <SubtleDivider />
+            {!loading && !error && <SubtleDivider />}
 
             {/* Date Mode Toggle */}
-            <DateModeToggle dateMode={dateMode} onToggle={toggleDateMode} />
+            {!loading && !error && chats.length > 0 && (
+              <DateModeToggle dateMode={dateMode} onToggle={toggleDateMode} />
+            )}
 
             {/* Chats - Flat List (no section header, no icons) */}
-            <div className="space-y-0.5">
-              {mockChats.map((chat) => (
-                <SimpleChatItem key={chat.id} chat={chat} dateMode={dateMode} />
-              ))}
-            </div>
+            {!loading && !error && (
+              <div className="space-y-0.5">
+                {chats.map((chat) => (
+                  <SimpleChatItem key={chat.id} chat={chat} dateMode={dateMode} />
+                ))}
+                {chats.length === 0 && (
+                  <div className="py-4 text-center text-sm text-neutral-500">
+                    No chats yet. Start a conversation!
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Bottom Section */}
@@ -451,6 +538,13 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
         </SidebarBody>
       </Sidebar>
       {children}
+
+      {/* Create Project Modal */}
+      <CreateProjectModal
+        open={isCreateProjectModalOpen}
+        onOpenChange={setIsCreateProjectModalOpen}
+        onProjectCreated={handleProjectCreated}
+      />
     </div>
   );
 }

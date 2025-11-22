@@ -37,9 +37,11 @@ import {
   PromptInputTools,
 } from '@/components/ai-elements/prompt-input';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 import { useChat } from '@ai-sdk/react';
+import type { Message as DBMessage } from '@/lib/db/types';
 
 import { CopyIcon, GlobeIcon, RefreshCcwIcon } from 'lucide-react';
 
@@ -62,6 +64,7 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { compressHistory } from '@/lib/memory-manager';
 import { BoboSidebarOptionA } from '@/components/ui/bobo-sidebar-option-a';
+import { toast } from 'sonner';
 
 const models = [
   {
@@ -107,15 +110,95 @@ const models = [
 ];
 
 const ChatBotDemo = () => {
+  const searchParams = useSearchParams();
+  const chatIdFromUrl = searchParams?.get('chatId');
+
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [chatId, setChatId] = useState<string | null>(chatIdFromUrl);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
   const { messages, sendMessage, status, regenerate, error, setMessages } = useChat({
+    api: '/api/chat',
     onError: (error) => {
       console.error('Chat error:', error);
+      toast.error('Chat error', {
+        description: error.message || 'An error occurred while processing your message.',
+      });
+    },
+    onResponse: (response) => {
+      // Extract chat ID from header if creating new chat
+      const responseChatId = response.headers.get('X-Chat-Id');
+      if (responseChatId && !chatId) {
+        setChatId(responseChatId);
+        // Update URL without reload
+        if (typeof window !== 'undefined') {
+          const url = new URL(window.location.href);
+          url.searchParams.set('chatId', responseChatId);
+          window.history.pushState({}, '', url.toString());
+        }
+      }
+    },
+    onFinish: (message) => {
+      // Message finished streaming and is now in the messages array
+      console.log('Message finished:', message);
     },
   });
+
+  // Load chat history when chatId changes
+  useEffect(() => {
+    if (!chatId) return;
+
+    // Only load if chatId is from URL (not just set from response)
+    if (chatId !== chatIdFromUrl) return;
+
+    async function loadChatHistory() {
+      setIsLoadingHistory(true);
+      try {
+        const res = await fetch(`/api/chats/${chatId}`);
+        if (!res.ok) {
+          console.error('Failed to load chat');
+          toast.error('Failed to load chat', {
+            description: 'The chat could not be found or loaded.',
+          });
+          // Reset chatId if chat not found
+          setChatId(null);
+          return;
+        }
+
+        const data = await res.json();
+
+        // Convert database messages to UIMessage format
+        const uiMessages = data.messages.map((msg: DBMessage) => ({
+          id: msg.id,
+          role: msg.role,
+          parts: msg.content.parts,
+        }));
+
+        setMessages(uiMessages);
+
+        // Update model and webSearch from chat settings
+        if (data.chat.model) {
+          setModel(data.chat.model);
+        }
+        if (typeof data.chat.web_search_enabled === 'boolean') {
+          setWebSearch(data.chat.web_search_enabled);
+        }
+      } catch (error) {
+        console.error('Failed to load chat history:', error);
+        toast.error('Failed to load chat history', {
+          description: 'An error occurred while loading the chat history.',
+        });
+        setChatId(null);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    }
+
+    loadChatHistory();
+  }, [chatIdFromUrl, setMessages]);
 
   const handleSubmit = async (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
@@ -139,14 +222,15 @@ const ChatBotDemo = () => {
     }
 
     sendMessage(
-      { 
+      {
         text: message.text || 'Sent with attachments',
-        files: message.files 
+        files: message.files
       },
       {
         body: {
           model: model,
           webSearch: webSearch,
+          chatId: chatId,
         },
       },
     );
@@ -239,7 +323,7 @@ const ChatBotDemo = () => {
                               {part.text}
                             </MessageResponse>
                           </MessageContent>
-                          {message.role === 'assistant' && i === messages.length - 1 && (
+                          {message.role === 'assistant' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id && (
                             <MessageActions>
                               <MessageAction
                                 onClick={() => regenerate()}
