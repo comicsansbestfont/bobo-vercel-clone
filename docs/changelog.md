@@ -1,5 +1,13 @@
 # Changelog
 
+> **DEPRECATED:** This changelog is no longer actively maintained.
+>
+> **For current version history and detailed progress, see [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)**
+>
+> PROGRESS_TRACKER provides comprehensive session logs, milestone completion dates, and feature tracking. The content below is preserved for historical reference only.
+
+---
+
 All notable changes to the Bobo Vercel Clone AI Chatbot project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

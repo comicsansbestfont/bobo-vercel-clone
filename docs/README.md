@@ -127,9 +127,15 @@ ai-chatbot/
 │   └── utils.ts                   # Utility functions
 ├── docs/
 │   ├── README.md                  # This file
-│   ├── changelog.md               # Version history
-│   ├── product-backlog.md         # Future enhancements
-│   └── agents.md                  # AI agent guidelines
+│   ├── INDEX.md                   # Documentation hub
+│   ├── PROGRESS_TRACKER.md        # Development progress & version history
+│   ├── PRODUCT_BACKLOG.md         # Sprint planning & future tasks
+│   ├── PROJECT_BRIEF.md           # Product vision & specifications
+│   ├── agents.md                  # AI agent guidelines
+│   ├── audits/                    # Audit documents
+│   ├── bugs/                      # Bug reports
+│   ├── testing/                   # Testing documentation
+│   └── archive/                   # Historical documentation
 └── .env.local                     # Environment variables (AI_GATEWAY_API_KEY)
 ```
 

@@ -72,8 +72,7 @@ Get your Vercel AI Gateway key: https://vercel.com/ai/api-keys
 
 - **[docs/INDEX.md](docs/INDEX.md)** - Documentation hub (start here!)
 - **[docs/README.md](docs/README.md)** - Full technical documentation
-- **[docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md)** - Development progress
-- **[docs/changelog.md](docs/changelog.md)** - Version history
+- **[docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md)** - Development progress & version history
 - **[docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md)** - Testing guide
 
 ### Quick Links
@@ -158,7 +157,7 @@ See [docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md) for
 
 1. Review [docs/PRODUCT_BACKLOG.md](docs/PRODUCT_BACKLOG.md) for available tasks
 2. Check [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) for current work
-3. Update [docs/changelog.md](docs/changelog.md) with your changes
+3. Update [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) with your changes
 4. Follow the code style and testing guidelines
 
 ---
@@ -173,7 +172,7 @@ See [docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md) for
 
 - **Documentation**: [docs/INDEX.md](docs/INDEX.md)
 - **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Changelog**: [docs/changelog.md](docs/changelog.md)
+- **Version History**: [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md)
 
 ---
 

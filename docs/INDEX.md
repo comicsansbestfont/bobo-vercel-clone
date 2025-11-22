@@ -12,8 +12,8 @@ New to the project? Start here:
 
 1. **[README.md](README.md)** - Comprehensive project overview, architecture, and setup
 2. **[CLAUDE.md](../CLAUDE.md)** - Instructions for Claude Code AI assistant
-3. **[TESTING_QUICKSTART.md](TESTING_QUICKSTART.md)** - Get testing environment up and running
-4. **[changelog.md](changelog.md)** - See what's new and what's changed
+3. **[TESTING_QUICKSTART.md](testing/TESTING_QUICKSTART.md)** - Get testing environment up and running
+4. **[PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)** - See what's new and development progress
 
 ---
 
@@ -47,11 +47,11 @@ New to the project? Start here:
   - Bug backlog
 
 ### Version History
-- **[changelog.md](changelog.md)** - Version history and release notes
-  - All notable changes
-  - Features added
+- **[PROGRESS_TRACKER.md](PROGRESS_TRACKER.md)** - Development progress and version history
+  - Milestone completion status
+  - Session logs with dates
+  - Features implemented
   - Bugs fixed
-  - Breaking changes
 
 ---
 
@@ -154,11 +154,6 @@ Historical documentation preserved for reference:
 
 ### When to Update Documentation
 
-#### changelog.md
-- After every feature/bug fix
-- Before every commit
-- During code reviews
-
 #### PROGRESS_TRACKER.md
 - After completing a session
 - When milestones change status
@@ -175,9 +170,8 @@ Historical documentation preserved for reference:
 Root README.md          → High-level overview for GitHub
 docs/README.md          → Comprehensive technical documentation
 docs/INDEX.md           → This file - navigation hub
-docs/changelog.md       → Version history
-docs/PROGRESS_TRACKER   → Project management
-docs/PRODUCT_BACKLOG    → Sprint planning
+docs/PROGRESS_TRACKER   → Project management & version history
+docs/PRODUCT_BACKLOG    → Sprint planning & task breakdown
 ```
 
 ---
@@ -195,7 +189,7 @@ docs/PRODUCT_BACKLOG    → Sprint planning
 
 ### Getting Help
 1. Check the [README.md](README.md) for common questions
-2. Review the [changelog.md](changelog.md) for recent changes
+2. Review the [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) for recent changes
 3. Search [archive/](archive/) for historical context
 
 ### Contributing
@@ -212,7 +206,7 @@ docs/PRODUCT_BACKLOG    → Sprint planning
 |--------------|----------|
 | Understand the project | [README.md](README.md) |
 | Set up development environment | [README.md](README.md#setup-instructions) |
-| See what's changed | [changelog.md](changelog.md) |
+| See what's changed | [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) |
 | Check project status | [PROGRESS_TRACKER.md](PROGRESS_TRACKER.md) |
 | Find a task to work on | [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md) |
 | Run tests | [testing/TESTING_QUICKSTART.md](testing/TESTING_QUICKSTART.md) |

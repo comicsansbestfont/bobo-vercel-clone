@@ -141,28 +141,24 @@ message.content // ✗ Wrong
 
 ## Mandatory Practices
 
-### 1. Changelog Updates ⚠️ CRITICAL
+### 1. Progress Tracker Updates
 
-**Every commit MUST update `docs/changelog.md`.**
+**After completing significant work, update `docs/PROGRESS_TRACKER.md`.**
 
-#### Before Committing:
-1. Open `docs/changelog.md`
-2. Add your changes under `## [Unreleased]`
-3. Use appropriate category: Added/Changed/Fixed/Removed/Security
-4. Write clear, concise descriptions
-5. Commit both code changes AND changelog together
+#### After a Session:
+1. Open `docs/PROGRESS_TRACKER.md`
+2. Add session highlights to the current milestone section
+3. Update completion percentages and task statuses
+4. Document major features added or bugs fixed
+5. Include session date and key accomplishments
 
-#### Example:
+#### Example Session Entry:
 ```markdown
-## [Unreleased]
-
-### Added
-- New GPT-5.5 model support in model selector
-- Real-time usage cost estimation feature
-
-### Fixed
-- Context monitor not updating when switching models
-- Memory compression failing on empty message arrays
+**Session 5 (January 24, 2025):**
+- ✅ Implemented semantic search with pgvector
+- ✅ Added RAG context injection to chat API
+- ✅ Created source citation component
+- 🐛 Fixed: Vector search returning duplicates
 ```
 
 ### 2. README and Backlog Updates
@@ -215,10 +211,10 @@ Before marking tasks complete:
 
 ### When Working on This Project
 
-1. **Always check the changelog** before starting work to understand recent changes
+1. **Check the PROGRESS_TRACKER** before starting work to understand recent changes
 2. **Read the product backlog** to avoid implementing deferred features
 3. **Consult this file** for architecture decisions and patterns
-4. **Update all three docs** (README, changelog, agents.md) when making significant changes
+4. **Update relevant docs** (README, PROGRESS_TRACKER, agents.md) when making significant changes
 5. **Test with multiple models** (OpenAI, Claude, Gemini) to ensure cross-compatibility
 
 ### Code Style Preferences
@@ -233,12 +229,10 @@ Before marking tasks complete:
 ### Git Workflow
 
 1. Make changes
-2. Update `docs/changelog.md` (REQUIRED)
-3. Update `docs/agents.md` if architecture/patterns changed (REQUIRED)
-4. Run `npm run build` and `npm run lint`
-5. Fix any errors
-6. Commit with descriptive message
-7. Reference changelog entry in commit message
+2. Run `npm run build` and `npm run lint`
+3. Fix any errors
+4. Commit with descriptive message
+5. After session: Update `docs/PROGRESS_TRACKER.md` with accomplishments
 
 ### Example Commit Message
 ```
@@ -248,11 +242,9 @@ feat: Add GPT-5.5 model support
 - Updated context limits for new model
 - Tested reasoning display functionality
 
-Updated:
-- docs/changelog.md (added model to feature list)
-- docs/agents.md (updated model list in Quick Reference)
-
-See changelog for full details.
+Files modified:
+- app/page.tsx (model selector)
+- lib/context-tracker.ts (context limits)
 ```
 
 ## Context Compression Strategy
@@ -434,8 +426,8 @@ try {
 - Chat API: `app/api/chat/route.ts`
 - Context logic: `lib/context-tracker.ts`
 - Compression logic: `lib/memory-manager.ts`
-- Changelog: `docs/changelog.md`
-- Backlog: `docs/product-backlog.md`
+- Progress: `docs/PROGRESS_TRACKER.md`
+- Backlog: `docs/PRODUCT_BACKLOG.md`
 
 ### Common Commands
 ```bash
@@ -452,74 +444,68 @@ npm install <pkg>    # Add dependency
 - `<Reasoning>`: Collapsible thinking display
 - `<Progress>`: Context usage bar
 
-## Changelog Requirement ⚠️
+## Progress Tracking
 
-### MANDATORY: Update Changelog with Every Commit
+### Session-Level Documentation
 
-This is a **required practice** for this project. Every code change must have a corresponding changelog entry.
+This project tracks progress at the **session level** rather than commit level.
 
-#### Workflow:
-1. Make code changes
-2. **Before committing**, open `docs/changelog.md`
-3. Add entry under `## [Unreleased]` in appropriate category:
-   - `### Added` - New features
-   - `### Changed` - Modifications to existing features
-   - `### Fixed` - Bug fixes
-   - `### Removed` - Removed features
-   - `### Security` - Security improvements
-4. Write clear, user-facing description
-5. Commit both code AND changelog together
+#### After Completing Work:
+1. Make code changes and commit as needed
+2. **After your session**, open `docs/PROGRESS_TRACKER.md`
+3. Add session entry with:
+   - Date
+   - Features added
+   - Bugs fixed
+   - Tasks completed
+   - Milestone progress updates
 
-#### Example Entry:
+#### Example Session Entry:
 ```markdown
-## [Unreleased]
-
-### Added
-- Context monitor with real-time token tracking
-- Auto-compression at 90% token usage
-- Reasoning display for Claude and Gemini models
-
-### Fixed
-- TypeScript errors in AI Elements confirmation component
-- Memory manager array type mismatch
+**Session 5 (January 24, 2025):**
+- ✅ Implemented semantic search with pgvector (M2-RAG-1, M2-RAG-2)
+- ✅ Added RAG context injection to chat API
+- ✅ Created source citation component
+- 🐛 Fixed: Vector search returning duplicate chunks
+- Progress: M2 now 56% complete (10/18 tasks)
 ```
 
-#### Why This Matters:
-- Maintains clear project history
-- Helps onboard new developers/AI agents
-- Provides rollback reference
-- Documents breaking changes
-- Tracks feature evolution
+#### Why This Approach:
+- Solo developer workflow (not team collaboration)
+- Focus on milestones and sessions, not individual commits
+- Single source of truth for progress
+- Cleaner than commit-by-commit changelog
+- Better for tracking velocity and completion
 
-**If a commit doesn't update the changelog, it should be rejected during code review.**
+**Update PROGRESS_TRACKER after each work session, not after every commit.**
 
 ## Version History Management
 
-### When to Bump Versions
+### Milestone-Based Versioning
 
-#### Patch (0.0.X)
-- Bug fixes
-- Performance improvements
-- Documentation updates
-- No breaking changes
+This project uses milestone-based versioning tracked in PROGRESS_TRACKER:
 
-#### Minor (0.X.0)
-- New features
-- New models added
-- Backward-compatible changes
-- Dependency updates
+#### V1.0 - Persistence Foundation
+- Database integration
+- Project CRUD
+- Chat persistence
+- Full data persistence (no mocks)
 
-#### Major (X.0.0)
-- Breaking API changes
-- Major architecture refactoring
-- Incompatible state changes
-- Migration required
+#### V1.1 - Bug Fixes & Polish
+- Critical bug fixes
+- UX improvements
+- Documentation cleanup
+
+#### M2 - Project Intelligence (In Progress)
+- Custom instructions
+- File upload & storage
+- RAG pipeline with semantic search
 
 ### Release Process
-1. Update version in `package.json`
-2. Move `[Unreleased]` section to `[X.Y.Z] - YYYY-MM-DD`
-3. Create new `[Unreleased]` section
-4. Tag release in git: `git tag v0.1.0`
+1. Complete all milestone tasks
+2. Update `docs/PROGRESS_TRACKER.md` with completion status
+3. Update version in `package.json` if shipping
+4. Tag release: `git tag v1.0.0`
 5. Push with tags: `git push --tags`
 
 ## Debugging Guide
@@ -550,14 +536,14 @@ useEffect(() => {
 
 ### When Making Changes
 1. ✅ Read this file (`agents.md`) first for architecture context
-2. ✅ Check changelog for recent changes and patterns
-3. ✅ Consult product backlog for deferred features (don't duplicate work)
+2. ✅ Check `PROGRESS_TRACKER.md` for recent changes and patterns
+3. ✅ Consult `PRODUCT_BACKLOG.md` for deferred features (don't duplicate work)
 4. ✅ Make your code changes
 5. ✅ Test with multiple models (GPT-4o, Claude, Gemini minimum)
-6. ✅ **Update `docs/changelog.md`** - Add entry under [Unreleased]
-7. ✅ **Update `docs/agents.md`** - Modify relevant sections if needed
-8. ✅ Update `docs/README.md` if user-facing changes
-9. ✅ Commit code + all documentation together
+6. ✅ Commit code changes
+7. ✅ **After session: Update `docs/PROGRESS_TRACKER.md`** with accomplishments
+8. ✅ **Update `docs/agents.md`** if architecture/patterns changed
+9. ✅ Update `docs/README.md` if user-facing changes
 
 ### When Debugging
 1. ✅ Check browser console for client errors
@@ -603,8 +589,8 @@ useEffect(() => {
 ### For AI Agents
 - Primary reference: This file (`agents.md`)
 - Technical details: `docs/README.md`
-- Feature roadmap: `docs/product-backlog.md`
-- History: `docs/changelog.md`
+- Feature roadmap: `docs/PRODUCT_BACKLOG.md`
+- History: `docs/PROGRESS_TRACKER.md`
 
 ### For Developers
 - Issues: Track in project management tool

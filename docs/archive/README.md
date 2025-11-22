@@ -79,14 +79,14 @@ archive/
 
 V1 completion announcement celebrating the same-day completion of Milestone 1 (Persistence Foundation). This was a major milestone that delivered full database persistence, project management, and comprehensive testing.
 
-**Why Archived:** Announcement served its purpose. The accomplishments are documented in PROGRESS_TRACKER.md and changelog.md.
+**Why Archived:** Announcement served its purpose. The accomplishments are documented in PROGRESS_TRACKER.md.
 
 ### CHANGELOG_V1_ROOT.md
 **Date:** November 22, 2025
 
-Original changelog from root directory that focused on V1.0.0 release format. The active changelog is now `docs/changelog.md` which follows the Keep a Changelog format and includes all updates.
+Original changelog from root directory that focused on V1.0.0 release format. Version history is now tracked in `PROGRESS_TRACKER.md` with session logs and milestone completion dates.
 
-**Why Archived:** Replaced by consolidated changelog in docs/changelog.md. Preserved for reference.
+**Why Archived:** Replaced by PROGRESS_TRACKER.md for version tracking. Preserved for reference.
 
 ---
 
@@ -113,12 +113,12 @@ Original changelog from root directory that focused on V1.0.0 release format. Th
 For current documentation, see the parent `docs/` folder:
 
 - `README.md` - Comprehensive project overview
-- `changelog.md` - Active changelog (all versions)
-- `PROGRESS_TRACKER.md` - Current development progress
+- `PROGRESS_TRACKER.md` - Current development progress & version history
+- `PRODUCT_BACKLOG.md` - Sprint planning and task breakdown
 - `PROJECT_BRIEF.md` - Original project brief
-- `SCHEMA_AUDIT.md` - Database schema documentation
-- `TESTING_QUICKSTART.md` - Current testing guide
-- `BUG_REPORT_MESSAGE_RENDERING.md` - Current critical bug fix
+- `audits/SCHEMA_AUDIT.md` - Database schema documentation
+- `testing/TESTING_QUICKSTART.md` - Current testing guide
+- `bugs/BUG_REPORT_MESSAGE_RENDERING.md` - Current bug reports
 
 ---
 
