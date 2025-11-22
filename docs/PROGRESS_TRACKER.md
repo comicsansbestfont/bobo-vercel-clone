@@ -1,8 +1,8 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** November 22, 2025 - End of Day
-**Current Phase:** Milestone 1 - Persistence Foundation (✅ QA COMPLETE - PRODUCTION READY)
-**Overall Completion:** 100% (V1 Complete) | Ready for M2
+**Last Updated:** January 23, 2025 - Documentation Cleanup
+**Current Phase:** M2 - Project Intelligence (Phase 1 & 2 Complete)
+**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 39% (7/18 tasks)
 
 ---
 
@@ -10,12 +10,15 @@
 
 ```
 [████████████████████████████████████] 100% V1 Complete (QA Passed)
+[████████████████████████████████████] 100% V1.1 Complete (Bug Fixes)
+[██████████████░░░░░░░░░░░░░░░░░░░░░░] 39%  M2 In Progress
 
-✅ Milestone 0 (MVP Core)     - 100% - SHIPPED
-✅ Milestone 1 (Persistence)  - 100% - QA PASSED ✅
-🚀 Milestone 2 (RAG)          - 0%   - NEXT UP
-📝 Milestone 3 (Memory)       - 0%   - PLANNED
-📝 Milestone 4 (Production)   - 0%   - PLANNED
+✅ Milestone 0 (MVP Core)        - 100% - SHIPPED
+✅ Milestone 1 (Persistence)     - 100% - SHIPPED
+✅ V1.1 (Bug Fixes & Polish)     - 100% - SHIPPED
+🚧 Milestone 2 (RAG)             - 39%  - IN PROGRESS (Phase 1 & 2 done)
+📝 Milestone 3 (Memory)          - 0%   - PLANNED
+📝 Milestone 4 (Production)      - 0%   - PLANNED
 ```
 
 ---
@@ -188,7 +191,7 @@ Replace all mock data with real database. Users can create projects, save chats,
 | Create comprehensive testing plan | ✅ | 100% | docs/V1_TESTING_PLAN.md |
 | Automated backend API tests | ✅ | 100% | tests/api/run-all-tests.sh (18 tests) |
 | Data seeding script | ✅ | 100% | tests/seed-data.ts |
-| Quick start guide | ✅ | 100% | TESTING_QUICKSTART.md |
+| Quick start guide | ✅ | 100% | testing/TESTING_QUICKSTART.md |
 | End-to-end test: Create project | ✅ | 100% | Tested via Chrome DevTools |
 | End-to-end test: Create chat | ✅ | 100% | Tested via Chrome DevTools |
 | End-to-end test: Add chat to project | ✅ | 100% | API tests passed |
@@ -230,73 +233,102 @@ Replace all mock data with real database. Users can create projects, save chats,
 
 ---
 
-## 📝 MILESTONE 2: Project Intelligence (PLANNED)
+## ✅ V1.1: Post-Release Improvements & Bug Fixes
 
-**Status:** 📝 Not Started
-**Completion:** 0%
-**Target Start:** Dec 13, 2025 (after M1)
-**Target End:** Jan 3, 2026 (3 weeks)
+**Status:** ✅ Complete
+**Date:** January 23, 2025
+**Focus:** UI enhancements and critical bug fixes
+
+### Features Added
+
+| Feature | Status | Files Modified | Notes |
+|---------|--------|----------------|-------|
+| Project pages with chat list table | ✅ | app/project/[projectId]/page.tsx | Dynamic project routing with conditional rendering |
+| Sortable data table for chats | ✅ | @kibo-ui/table components | Chat Title, Model, Last Updated columns |
+| Clickable table rows for navigation | ✅ | components/kibo-ui/table/index.tsx | Enhanced TableCell with onClick support |
+| Project header with editable name | ✅ | components/project/project-header.tsx | Inline editing functionality |
+| Empty state for projects | ✅ | components/project/empty-state.tsx | When no chats exist |
+
+### Critical Bugs Fixed
+
+| Bug | Status | Impact | Files Fixed | Notes |
+|-----|--------|--------|-------------|-------|
+| Message text rendered as individual words | ✅ | Critical | app/api/chat/route.ts (lines 261-316) | Fixed streaming delta concatenation |
+
+**Bug Details:**
+- **Root Cause:** Each streaming delta created separate message part
+- **Impact:** OpenAI model responses rendered with each word on separate line (100% of users affected)
+- **Solution:** Modified streaming handler to concatenate deltas into single text part
+- **Status:** Fixed for new messages (existing messages with split parts remain affected)
+- **Documentation:** Full bug report in `docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md`
+
+### Files Modified
+
+- ✅ `app/project/[projectId]/page.tsx` - Added chat list table with conditional rendering
+- ✅ `components/kibo-ui/table/index.tsx` - Enhanced TableCell to accept HTML attributes
+- ✅ `app/api/chat/route.ts` - Fixed message part concatenation for OpenAI streaming
+- ✅ `docs/changelog.md` - Updated with all changes
+- ✅ `docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md` - Comprehensive bug documentation
+
+### Testing Performed
+
+- ✅ Project page displays chat list correctly
+- ✅ Table navigation works with clickable rows
+- ✅ New messages render as continuous paragraphs
+- ✅ Database verification: messages now have 1 part instead of 40-50 parts
+- ✅ UI rendering verified: proper paragraph formatting
+
+### Recommendations for Future
+
+- [ ] Consider database migration to fix existing messages with split parts
+- [ ] Add integration tests for message part concatenation
+- [ ] Add visual regression tests for chat rendering
+- [ ] Monitor error logs for related issues
+
+---
+
+## 📝 MILESTONE 2: Project Intelligence (IN PROGRESS)
+
+**Status:** 🚧 In Progress
+**Completion:** 39% (7/18 tasks complete)
+**Started:** January 2025
+**Target End:** TBD (estimated 2-3 weeks remaining)
 
 ### Goal
 
 Projects have custom instructions and searchable knowledge bases. AI retrieves relevant context from uploaded files.
 
-### 2.1 Project Context Schema
+### Progress Summary
 
-| Task | Status | Progress | Notes |
-|------|--------|----------|-------|
-| Add system_instructions column | ⏳ | 0% | Migration file |
-| Create project_files table | ⏳ | 0% | Store uploaded files |
-| Create embeddings table | ⏳ | 0% | Vector storage |
-| Enable pgvector extension | ⏳ | 0% | In Supabase |
-| Create vector indexes | ⏳ | 0% | For fast similarity search |
+**Phases:**
+- ✅ Phase 1: Custom Instructions (100% - **Complete**)
+  - ✅ Custom instructions column in database
+  - ✅ Project settings page UI
+  - ✅ Instructions injected into chat system prompt
+- ✅ Phase 2: File Upload & Storage (100% - **Complete**)
+  - ✅ project_files table created
+  - ✅ File upload API endpoint
+  - ✅ File validation (.md, max 10MB)
+  - ✅ File management UI
+- ⏳ Phase 3: RAG Pipeline (0% - **Not started**)
+- ⏳ Phase 4: Source Citations (0% - **Not started**)
 
-### 2.2 File Upload
+**Total Tasks:** 18 tasks (7 complete, 11 remaining)
+**Estimated Remaining Effort:** 2-3 weeks
 
-| Task | Status | Progress | Files |
-|------|--------|----------|-------|
-| POST /api/projects/[id]/files | ⏳ | 0% | Upload endpoint |
-| File validation (.md only) | ⏳ | 0% | Max 10MB per file |
-| Store file in database | ⏳ | 0% | Content as TEXT |
-| Background processing queue | ⏳ | 0% | Vercel Queue or simple |
-| File management UI | ⏳ | 0% | List, delete, preview |
+📋 **For detailed task breakdown, estimates, and priorities:** See [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md#-milestone-2-project-intelligence-q1-2026)
 
-### 2.3 RAG Pipeline
+### Completed This Milestone
 
-| Task | Status | Progress | Files |
-|------|--------|----------|-------|
-| Create chunking logic | ⏳ | 0% | lib/rag/chunking.ts |
-| Implement semantic chunking | ⏳ | 0% | Respect markdown structure |
-| Generate embeddings | ⏳ | 0% | lib/rag/embeddings.ts |
-| Store embeddings in pgvector | ⏳ | 0% | With metadata |
-| Create similarity search | ⏳ | 0% | lib/rag/search.ts |
-| Test retrieval accuracy | ⏳ | 0% | Benchmark queries |
+**Phase 1 Complete** (January 2025):
+- Implemented custom_instructions column in projects table
+- Built project settings page with instructions editor
+- Integrated instructions into chat API system prompt
 
-### 2.4 Context Injection
-
-| Task | Status | Progress | Files |
-|------|--------|----------|-------|
-| Detect if chat has project | ⏳ | 0% | In /api/chat |
-| Retrieve system instructions | ⏳ | 0% | From project |
-| Perform semantic search | ⏳ | 0% | On user query |
-| Build enhanced system prompt | ⏳ | 0% | With context chunks |
-| Track context tokens | ⏳ | 0% | Account in usage bar |
-| Return source metadata | ⏳ | 0% | For citations |
-
-### 2.5 Frontend Features
-
-| Task | Status | Progress | Files |
-|------|--------|----------|-------|
-| Project settings page | ⏳ | 0% | /project/[id]/settings |
-| System instructions editor | ⏳ | 0% | Textarea with preview |
-| File upload dropzone | ⏳ | 0% | Drag-and-drop |
-| File list with delete | ⏳ | 0% | Table view |
-| File preview modal | ⏳ | 0% | Show content |
-| Source citation display | ⏳ | 0% | In chat messages |
-| Processing indicators | ⏳ | 0% | Upload progress |
-
-### Planned Tasks: 32
-### Estimated Time: 3 weeks
+**Phase 2 Complete** (January 2025):
+- Created project_files table for file storage
+- Built file upload API endpoint with validation
+- Implemented file management UI (upload, delete, preview)
 
 ---
 
@@ -304,74 +336,31 @@ Projects have custom instructions and searchable knowledge bases. AI retrieves r
 
 **Status:** 📝 Not Started
 **Completion:** 0%
-**Target Start:** Jan 3, 2026 (after M2)
-**Target End:** Jan 24, 2026 (3 weeks)
+**Target Start:** TBD (after M2)
+**Target End:** TBD (estimated 3 weeks)
 
 ### Goal
 
 AI remembers user preferences and facts across all projects using Supermemory.ai.
 
-### 3.1 Supermemory Setup
+### Progress Summary
 
-| Task | Status | Progress | Notes |
-|------|--------|----------|-------|
-| Sign up for Supermemory | ⏳ | 0% | Get API key |
-| Install SDK or use REST | ⏳ | 0% | lib/memory/supermemory.ts |
-| Create memory utilities | ⏳ | 0% | Add, search, delete |
-| Test memory operations | ⏳ | 0% | Integration tests |
+**Phases:**
+- ⏳ Phase 1: Supermemory Integration (0% - Not started)
+- ⏳ Phase 2: Memory Extraction (0% - Not started)
+- ⏳ Phase 3: Memory Retrieval (0% - Not started)
+- ⏳ Phase 4: Memory Management UI (0% - Not started)
+- ⏳ Phase 5: Cross-Project Context (0% - Not started)
+- ⏳ Phase 6: Knowledge Graph (0% - Stretch goal)
 
-### 3.2 Memory Extraction
+**Total Tasks:** 25 tasks across 6 phases
+**Estimated Effort:** 3 weeks full-time
 
-| Task | Status | Progress | Notes |
-|------|--------|----------|-------|
-| Create extraction prompt | ⏳ | 0% | Structured output |
-| Implement background job | ⏳ | 0% | Every N messages |
-| Extract user facts | ⏳ | 0% | Name, role, preferences |
-| Extract technical facts | ⏳ | 0% | APIs, frameworks |
-| Extract decisions | ⏳ | 0% | Architecture choices |
-| Store in Supermemory | ⏳ | 0% | With tags |
+📋 **For detailed task breakdown, estimates, and priorities:** See [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md#-milestone-3-global-memory-q1-2026)
 
-### 3.3 Memory Retrieval
+### Completed This Milestone
 
-| Task | Status | Progress | Notes |
-|------|--------|----------|-------|
-| Search before each response | ⏳ | 0% | In /api/chat |
-| Filter by relevance | ⏳ | 0% | Top 10 memories |
-| Inject into system prompt | ⏳ | 0% | Format nicely |
-| Track which memories used | ⏳ | 0% | For UI display |
-
-### 3.4 Memory UI
-
-| Task | Status | Progress | Files |
-|------|--------|----------|-------|
-| Memory management page | ⏳ | 0% | /memory |
-| List all memories | ⏳ | 0% | Table view |
-| Search memories | ⏳ | 0% | By keyword |
-| Edit memory | ⏳ | 0% | Modal editor |
-| Delete memory | ⏳ | 0% | Confirmation dialog |
-| Memory indicators in chat | ⏳ | 0% | Show when used |
-| Settings for auto-memory | ⏳ | 0% | Toggle, frequency |
-
-### 3.5 Cross-Project Context
-
-| Task | Status | Progress | Notes |
-|------|--------|----------|-------|
-| Add context sharing settings | ⏳ | 0% | Per project |
-| Link projects for context | ⏳ | 0% | Multi-select |
-| Merge context from linked projects | ⏳ | 0% | In /api/chat |
-| Show which projects contributed | ⏳ | 0% | In UI |
-
-### 3.6 Knowledge Graph (Stretch)
-
-| Task | Status | Progress | Files |
-|------|--------|----------|-------|
-| Visualize memory graph | ⏳ | 0% | React Flow |
-| Show connections | ⏳ | 0% | Projects ↔ Memories |
-| Interactive exploration | ⏳ | 0% | Click to navigate |
-| Export as JSON | ⏳ | 0% | Backup feature |
-
-### Planned Tasks: 25
-### Estimated Time: 3 weeks
+_No sessions started yet. Will be updated when M3 begins._
 
 ---
 
@@ -379,35 +368,29 @@ AI remembers user preferences and facts across all projects using Supermemory.ai
 
 **Status:** 📝 Backlog
 **Completion:** 0%
-**Target:** Q2 2026
+**Target:** TBD (Q2 2026 or later)
 
 ### Goals
 
-- Multi-user authentication
-- Team workspaces
-- Performance optimization
-- Deployment pipeline
-- Monitoring and analytics
+Production-ready features for multi-user deployment including authentication, team workspaces, performance optimization, deployment pipeline, and monitoring.
 
-### Planned Features
+### Progress Summary
 
-- [ ] Authentication (OAuth, email/password)
-- [ ] User management and profiles
-- [ ] Team workspaces
-- [ ] Project sharing and permissions
-- [ ] Usage analytics dashboard
-- [ ] Cost tracking per user
-- [ ] Advanced RAG (PDFs, code repos)
-- [ ] Caching layer (Redis)
-- [ ] CDN for assets
-- [ ] Error tracking (Sentry)
-- [ ] Performance monitoring
-- [ ] CI/CD pipeline
-- [ ] Automated backups
-- [ ] Rate limiting
-- [ ] API versioning
+**Phases:**
+- ⏳ Phase 1: Authentication & Multi-User (0% - Not started)
+- ⏳ Phase 2: Team Workspaces (0% - Not started)
+- ⏳ Phase 3: Analytics & Monitoring (0% - Not started)
+- ⏳ Phase 4: Advanced Features (0% - Not started)
+- ⏳ Phase 5: DevOps & Infrastructure (0% - Not started)
 
-### Estimated Time: Ongoing (4+ weeks)
+**Total Tasks:** 25 tasks across 5 phases
+**Estimated Effort:** 4+ weeks (ongoing)
+
+📋 **For detailed task breakdown, estimates, and priorities:** See [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md#-milestone-4-production--scale-q2-2026)
+
+### Completed This Milestone
+
+_No sessions started yet. Will be updated when M4 begins._
 
 ---
 
@@ -455,17 +438,36 @@ AI remembers user preferences and facts across all projects using Supermemory.ai
   - All tests passing
 - ✅ Updated progress documentation (0.5 hours)
 
-**Total This Week:** 28 hours
+**Session 4 (V1.1 Improvements - Jan 23, 2025):**
+- ✅ Implemented project pages with chat list table (1.5 hours)
+  - Conditional rendering based on chatId URL parameter
+  - @kibo-ui/table integration with sortable columns
+  - Chat Title, Model, Last Updated columns
+  - formatRelativeDate utility function
+- ✅ Enhanced TableCell component (0.5 hours)
+  - Added HTML attributes support (onClick, etc.)
+  - Type-safe props spreading
+- ✅ Fixed critical message rendering bug (1 hour)
+  - Root cause analysis: streaming deltas creating multiple parts
+  - Solution: concatenate deltas into single text part
+  - Applied fix to string deltas, text arrays, and reasoning
+  - Database verification: 1 part instead of 49
+- ✅ Created comprehensive bug report (1 hour)
+  - docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md (370 lines)
+  - Root cause analysis, solution, testing, recommendations
+- ✅ Updated documentation (0.5 hours)
+  - Updated docs/changelog.md
+  - Updated docs/PROGRESS_TRACKER.md
 
-### Planned Next Session
+**Total for V1.1:** 4.5 hours
+**Total This Week:** 32.5 hours (including V1.1)
 
-- ⏳ Update sidebar to fetch real data (2-3 hours)
-- ⏳ Create project creation modal (1 hour)
-- ⏳ Add error boundaries and loading states (1 hour)
-- ⏳ End-to-end testing (1 hour)
-- ⏳ Final polish and bug fixes (1 hour)
+### Completed Sessions Summary
 
-**Target:** 6-8 hours to complete Milestone 1
+- ✅ Session 1: Planning & Design (18 hours)
+- ✅ Session 2: Database & Project API (5.5 hours)
+- ✅ Session 3: Chat API & Persistence (4.5 hours)
+- ✅ Session 4: V1.1 Bug Fixes & Improvements (4.5 hours)
 
 ### Current Blockers
 
@@ -475,13 +477,14 @@ AI remembers user preferences and facts across all projects using Supermemory.ai
 
 ## 🎯 Key Dates
 
-| Milestone | Start Date | Target Date | Status |
-|-----------|-----------|-------------|--------|
+| Milestone | Start Date | Completed Date | Status |
+|-----------|-----------|----------------|--------|
 | M0: Core Chat | Before Nov 1 | Nov 22, 2025 | ✅ Complete |
-| M1: Persistence | Nov 22, 2025 | Dec 6, 2025 | 🚧 55% (ahead of schedule) |
-| M2: RAG | Dec 6, 2025 | Dec 27, 2025 | 📝 Planned |
-| M3: Memory | Dec 27, 2025 | Jan 17, 2026 | 📝 Planned |
-| M4: Production | Jan 17, 2026 | Feb 14, 2026 | 📝 Backlog |
+| M1: Persistence | Nov 22, 2025 | Nov 22, 2025 | ✅ Complete (QA Passed) |
+| V1.1: Bug Fixes | Jan 23, 2025 | Jan 23, 2025 | ✅ Complete |
+| M2: RAG | TBD | TBD | 📝 Planned |
+| M3: Memory | TBD | TBD | 📝 Planned |
+| M4: Production | TBD | TBD | 📝 Backlog |
 
 ---
 
@@ -496,9 +499,12 @@ AI remembers user preferences and facts across all projects using Supermemory.ai
 
 ### Technical Debt
 
-- 🟡 **Medium:** No database persistence
+- 🟡 **Medium:** Existing messages with split parts (pre-Jan 23 bug fix)
+  - Impact: Old chat messages still display incorrectly
+  - Solution: Database migration script available in bug report
 - 🟢 **Low:** Some components could be more modular
-- 🟢 **Low:** Missing unit tests
+- 🟢 **Low:** Missing unit tests for message part concatenation
+- 🟢 **Low:** Missing visual regression tests for chat rendering
 
 ### Performance
 
@@ -570,6 +576,33 @@ AI remembers user preferences and facts across all projects using Supermemory.ai
 - ✅ Chat settings restored (model, webSearch)
 - ✅ Chat-project associations working
 - ✅ URL updates with chatId for sharing
+
+### Session 4 Highlights (Jan 23, 2025)
+
+**Major Accomplishments:**
+1. ✅ **Project Pages Enhanced** - Chat list table with sortable columns
+2. ✅ **Critical Bug Fixed** - Message rendering issue affecting 100% of OpenAI users
+3. ✅ **Comprehensive Documentation** - 370-line bug report with full analysis
+4. ✅ **Component Enhancement** - TableCell now supports HTML attributes
+
+**Technical Wins:**
+- Identified and fixed streaming delta concatenation bug in app/api/chat/route.ts
+- Root cause analysis: Each delta creating separate message part (49 parts instead of 1)
+- Solution: Concatenate deltas into single text part during streaming
+- Enhanced @kibo-ui/table TableCell component with type-safe HTML attributes
+- Implemented conditional rendering for project pages (chat list vs chat interface)
+- Created comprehensive bug report with migration script for historical data
+
+**What Was Fixed:**
+- ✅ New messages now render as continuous paragraphs (not split by word)
+- ✅ Database verification: 1 part per message instead of 40-50 parts
+- ✅ Table rows are now clickable for navigation
+- ✅ Project pages show sortable chat list when no chat selected
+- ✅ Full documentation of bug and fix in docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md
+
+**Known Limitations:**
+- ⚠️ Existing messages (pre-Jan 23) still have split parts
+- 💡 Migration script available in bug report if needed for historical data
 
 ---
 

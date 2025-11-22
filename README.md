@@ -1,36 +1,180 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bobo AI Chatbot
 
-## Getting Started
+An advanced AI-powered chatbot built with Next.js, featuring multi-model support, intelligent context management, project-based organization, and RAG capabilities.
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-blue)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green)](https://supabase.com/)
+
+---
+
+## ✨ Features
+
+- **10+ AI Models**: OpenAI (GPT-4o, GPT-5), Anthropic (Claude), Google (Gemini), Deepseek
+- **Project Organization**: Organize chats into projects with custom instructions
+- **RAG Support**: Upload markdown files, retrieve context via semantic search
+- **Real-time Context Tracking**: Visual progress bar with token counting
+- **Automatic Memory Compression**: Smart context management when approaching limits
+- **Streaming Responses**: Real-time streaming with reasoning visualization
+- **Web Search**: Integrated Perplexity Sonar for web-enhanced responses
+- **Full Persistence**: PostgreSQL database with Supabase
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Supabase account (free tier works)
+- AI Gateway API key from Vercel
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd bobo-vercel-clone
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your API keys
+
+# Run database migrations
+# See docs/audits/SCHEMA_AUDIT.md for setup
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Required
+AI_GATEWAY_API_KEY=your_vercel_ai_gateway_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## Learn More
+Get your Vercel AI Gateway key: https://vercel.com/ai/api-keys
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📚 Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**For comprehensive documentation, see the [docs/](docs/) folder:**
 
-## Deploy on Vercel
+- **[docs/INDEX.md](docs/INDEX.md)** - Documentation hub (start here!)
+- **[docs/README.md](docs/README.md)** - Full technical documentation
+- **[docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md)** - Development progress
+- **[docs/changelog.md](docs/changelog.md)** - Version history
+- **[docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md)** - Testing guide
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Quick Links
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Topic | Documentation |
+|-------|---------------|
+| 🏗️ Architecture | [docs/README.md](docs/README.md#architecture) |
+| 🗄️ Database Schema | [docs/audits/SCHEMA_AUDIT.md](docs/audits/SCHEMA_AUDIT.md) |
+| 🧪 Testing | [docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md) |
+| 📝 Backlog | [docs/PRODUCT_BACKLOG.md](docs/PRODUCT_BACKLOG.md) |
+| 🐛 Bug Reports | [docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md](docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md) |
+| 🤖 Claude Code | [CLAUDE.md](CLAUDE.md) |
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **UI**: React 19, Tailwind CSS v4, shadcn/ui
+- **AI**: Vercel AI SDK, AI Elements
+- **Database**: Supabase (PostgreSQL)
+- **Deployment**: Vercel (recommended)
+
+---
+
+## 📊 Project Status
+
+**Current Version:** V1.1 (Production Ready)
+
+- ✅ **V1.0**: Core chat with persistence (100%)
+- ✅ **V1.1**: Bug fixes & project pages (100%)
+- 🚧 **M2**: Project Intelligence - RAG (39% complete)
+  - ✅ Custom instructions
+  - ✅ File upload
+  - ⏳ Semantic search (pending)
+- 📝 **M3**: Global Memory (Planned)
+- 📝 **M4**: Production & Scale (Planned)
+
+See [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) for detailed status.
+
+---
+
+## 🧪 Development
+
+```bash
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Start production server
+npm start
+
+# Run linter
+npm run lint
+
+# Run tests
+npm test
+```
+
+See [docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md) for testing instructions.
+
+---
+
+## 📖 Learn More
+
+### Next.js Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
+
+### AI SDK Resources
+
+- [Vercel AI SDK](https://sdk.vercel.ai/docs)
+- [AI Elements](https://ai-sdk.dev/elements)
+- [Supabase Docs](https://supabase.com/docs)
+
+---
+
+## 🤝 Contributing
+
+1. Review [docs/PRODUCT_BACKLOG.md](docs/PRODUCT_BACKLOG.md) for available tasks
+2. Check [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) for current work
+3. Update [docs/changelog.md](docs/changelog.md) with your changes
+4. Follow the code style and testing guidelines
+
+---
+
+## 📝 License
+
+[Add your license here]
+
+---
+
+## 💬 Support
+
+- **Documentation**: [docs/INDEX.md](docs/INDEX.md)
+- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
+- **Changelog**: [docs/changelog.md](docs/changelog.md)
+
+---
+
+**Built with ❤️ using Next.js, Vercel AI SDK, and Supabase**
