@@ -121,29 +121,62 @@ export type Database = {
         Row: User;
         Insert: UserInsert;
         Update: UserUpdate;
+        Relationships: [];
       };
       projects: {
         Row: Project;
         Insert: ProjectInsert;
         Update: ProjectUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'projects_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       chats: {
         Row: Chat;
         Insert: ChatInsert;
         Update: ChatUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'chats_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'chats_project_id_fkey';
+            columns: ['project_id'];
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
+          }
+        ];
       };
       messages: {
         Row: Message;
         Insert: MessageInsert;
         Update: MessageUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'messages_chat_id_fkey';
+            columns: ['chat_id'];
+            referencedRelation: 'chats';
+            referencedColumns: ['id'];
+          }
+        ];
       };
     };
     Views: {
       chats_with_projects: {
         Row: ChatWithProject;
+        Relationships: [];
       };
       projects_with_stats: {
         Row: ProjectWithStats;
+        Relationships: [];
       };
     };
     Functions: {};

@@ -73,6 +73,16 @@ export async function POST(req: Request) {
       chatId?: string;
     } = await req.json();
 
+    // Sanitize incoming messages to guard against unexpected roles/shape from the client.
+    const allowedRoles = new Set(['system', 'user', 'assistant']);
+    const sanitizedMessages = (messages || []).filter((m) => {
+      if (!allowedRoles.has(m.role)) {
+        console.warn('Dropping message with unsupported role:', m.role);
+        return false;
+      }
+      return true;
+    });
+
     // Check if API key is configured
     if (!process.env.AI_GATEWAY_API_KEY) {
       return new Response(
@@ -111,7 +121,7 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: getModel(webSearch ? 'perplexity/sonar' : model),
-      messages: convertToModelMessages(messages),
+      messages: convertToModelMessages(sanitizedMessages),
       system:
         'You are a helpful assistant that can answer questions and help with tasks',
 
@@ -167,6 +177,9 @@ export async function POST(req: Request) {
         // Return chatId so frontend knows which chat was created/used
         'X-Chat-Id': activeChatId,
       },
+      // Return reasoning and sources parts so the UI can render them (aligns with Elements example)
+      sendReasoning: true,
+      sendSources: true,
     });
   } catch (error) {
     console.error('Chat API error:', error);
@@ -181,4 +194,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

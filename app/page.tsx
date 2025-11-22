@@ -37,7 +37,7 @@ import {
   PromptInputTools,
 } from '@/components/ai-elements/prompt-input';
 
-import { useMemo, useState, useEffect } from 'react';
+import { Suspense, useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { useChat } from '@ai-sdk/react';
@@ -491,4 +491,10 @@ const ChatBotDemo = () => {
   );
 };
 
-export default ChatBotDemo;
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading chat...</div>}>
+      <ChatBotDemo />
+    </Suspense>
+  );
+}
