@@ -7,6 +7,7 @@ import {
   type MessagePart,
   type MessageContent,
 } from '@/lib/db';
+import { getModel } from '@/lib/ai/models';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -109,7 +110,7 @@ export async function POST(req: Request) {
     }
 
     const result = streamText({
-      model: webSearch ? 'perplexity/sonar' : model,
+      model: getModel(webSearch ? 'perplexity/sonar' : model),
       messages: convertToModelMessages(messages),
       system:
         'You are a helpful assistant that can answer questions and help with tasks',
@@ -159,9 +160,9 @@ export async function POST(req: Request) {
       },
     });
 
-    // Use toTextStreamResponse and manually handle the data stream
-    // This preserves all chunk types including reasoning for non-OpenAI models
-    return result.toTextStreamResponse({
+    // Return UIMessage stream response for proper useChat compatibility
+    // This formats the response in the structure expected by the AI SDK's useChat hook
+    return result.toUIMessageStreamResponse({
       headers: {
         // Return chatId so frontend knows which chat was created/used
         'X-Chat-Id': activeChatId,

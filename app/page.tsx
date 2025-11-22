@@ -41,6 +41,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import type { Message as DBMessage } from '@/lib/db/types';
 
 import { CopyIcon, GlobeIcon, RefreshCcwIcon } from 'lucide-react';
@@ -121,25 +122,32 @@ const ChatBotDemo = () => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const { messages, sendMessage, status, regenerate, error, setMessages } = useChat({
-    api: '/api/chat',
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+      // Custom fetch to intercept response headers
+      fetch: async (input, init) => {
+        const response = await fetch(input, init);
+
+        // Extract chat ID from header if creating new chat
+        const responseChatId = response.headers.get('X-Chat-Id');
+        if (responseChatId && !chatId) {
+          setChatId(responseChatId);
+          // Update URL without reload
+          if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('chatId', responseChatId);
+            window.history.pushState({}, '', url.toString());
+          }
+        }
+
+        return response;
+      },
+    }),
     onError: (error) => {
       console.error('Chat error:', error);
       toast.error('Chat error', {
         description: error.message || 'An error occurred while processing your message.',
       });
-    },
-    onResponse: (response) => {
-      // Extract chat ID from header if creating new chat
-      const responseChatId = response.headers.get('X-Chat-Id');
-      if (responseChatId && !chatId) {
-        setChatId(responseChatId);
-        // Update URL without reload
-        if (typeof window !== 'undefined') {
-          const url = new URL(window.location.href);
-          url.searchParams.set('chatId', responseChatId);
-          window.history.pushState({}, '', url.toString());
-        }
-      }
     },
     onFinish: (message) => {
       // Message finished streaming and is now in the messages array
@@ -221,11 +229,10 @@ const ChatBotDemo = () => {
       }
     }
 
+    // Send the message - AI SDK expects { text: string } as first parameter
+    // The body in options contains custom data sent to the backend
     sendMessage(
-      {
-        text: message.text || 'Sent with attachments',
-        files: message.files
-      },
+      { text: message.text || 'Sent with attachments' },
       {
         body: {
           model: model,

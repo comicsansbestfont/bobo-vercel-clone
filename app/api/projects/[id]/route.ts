@@ -15,7 +15,7 @@ import {
 } from '@/lib/db';
 
 type RouteContext = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 /**
