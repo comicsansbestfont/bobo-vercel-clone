@@ -200,6 +200,13 @@ export async function POST(req: Request) {
       const writer = transform.writable.getWriter();
       const encoder = new TextEncoder();
       const reader = upstream.body?.getReader();
+      const streamingDone = (() => {
+        let resolve: () => void = () => {};
+        const promise = new Promise<void>((r) => (resolve = r));
+        return { promise, resolve };
+      })();
+      let assistantParts: MessagePart[] = [];
+      let reasoningStarted = false;
 
       // Emit UIMessage stream start
       writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'start' })}\n\n`));
@@ -231,6 +238,7 @@ export async function POST(req: Request) {
                 const chunk = JSON.parse(payloadStr) as ChatCompletionChunk;
                 const delta = chunk.choices?.[0]?.delta?.content;
                 if (typeof delta === 'string' && delta.length > 0) {
+                  assistantParts.push({ type: 'text', text: delta });
                   writer.write(
                     encoder.encode(
                       `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta })}\n\n`
@@ -240,9 +248,25 @@ export async function POST(req: Request) {
                   // Handle array content parts
                   for (const d of delta) {
                     if (d?.type === 'text' && d.text) {
+                      assistantParts.push({ type: 'text', text: d.text });
                       writer.write(
                         encoder.encode(
                           `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta: d.text })}\n\n`
+                        )
+                      );
+                    } else if (d?.type === 'reasoning' && d.text) {
+                      assistantParts.push({ type: 'reasoning', text: d.text });
+                      if (!reasoningStarted) {
+                        reasoningStarted = true;
+                        writer.write(
+                          encoder.encode(
+                            `data: ${JSON.stringify({ type: 'reasoning-start', id: 'r0' })}\n\n`
+                          )
+                        );
+                      }
+                      writer.write(
+                        encoder.encode(
+                          `data: ${JSON.stringify({ type: 'reasoning-delta', id: 'r0', delta: d.text })}\n\n`
                         )
                       );
                     }
@@ -254,10 +278,54 @@ export async function POST(req: Request) {
             }
           }
         } finally {
+          if (reasoningStarted) {
+            writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'reasoning-end', id: 'r0' })}\n\n`));
+          }
           writer.write(encoder.encode(`data: [DONE]\n\n`));
           writer.close();
+          streamingDone.resolve();
         }
       })();
+
+      // Persist after streaming completes (fire and forget)
+      streamingDone.promise
+        .then(async () => {
+          try {
+            // Save last user message from this request
+            const lastUser = [...normalizedMessages].reverse().find((m) => m.role === 'user');
+            if (lastUser) {
+              const userParts = (lastUser.parts || []) as MessagePart[];
+              await createMessage({
+                chat_id: activeChatId!,
+                role: 'user',
+                content: { parts: userParts },
+                token_count: getTokenCount(userParts),
+              });
+              const firstTextPart = userParts.find((p) => p.type === 'text');
+              if (firstTextPart?.text) {
+                await updateChatTitleFromMessage(activeChatId!, firstTextPart.text);
+              }
+            }
+
+            // Save assistant message
+            if (assistantParts.length > 0) {
+              await createMessage({
+                chat_id: activeChatId!,
+                role: 'assistant',
+                content: { parts: assistantParts },
+                token_count: getTokenCount(assistantParts),
+              });
+            }
+
+            // Update chat last_message_at
+            await updateChat(activeChatId!, {
+              last_message_at: new Date().toISOString(),
+            });
+          } catch (err) {
+            console.error('[api/chat] failed to persist openai messages', err);
+          }
+        })
+        .catch((err) => console.error('[api/chat] persist promise error', err));
 
       return new Response(transform.readable, {
         headers: {

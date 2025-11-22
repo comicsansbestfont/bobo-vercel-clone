@@ -155,57 +155,51 @@ const ChatBotDemo = () => {
     },
   });
 
-  // TEMP: disable auto history loading to mirror the minimal Elements example and isolate stream issues
-  // If you need history, remove this guard and reinstate the fetch below.
-  const ENABLE_HISTORY_LOADING = false;
-
   useEffect(() => {
-    if (ENABLE_HISTORY_LOADING) {
-      if (!chatId) return;
-      if (chatId !== chatIdFromUrl) return;
+    if (!chatId) return;
+    if (chatId !== chatIdFromUrl) return;
 
-      async function loadChatHistory() {
-        setIsLoadingHistory(true);
-        try {
-          const res = await fetch(`/api/chats/${chatId}`);
-          if (!res.ok) {
-            console.error('Failed to load chat');
-            toast.error('Failed to load chat', {
-              description: 'The chat could not be found or loaded.',
-            });
-            setChatId(null);
-            return;
-          }
-
-          const data = await res.json();
-
-          const uiMessages = data.messages.map((msg: DBMessage) => ({
-            id: msg.id,
-            role: msg.role,
-            parts: msg.content.parts,
-          }));
-
-          setMessages(uiMessages);
-
-          if (data.chat.model) {
-            setModel(data.chat.model);
-          }
-          if (typeof data.chat.web_search_enabled === 'boolean') {
-            setWebSearch(data.chat.web_search_enabled);
-          }
-        } catch (error) {
-          console.error('Failed to load chat history:', error);
-          toast.error('Failed to load chat history', {
-            description: 'An error occurred while loading the chat history.',
+    async function loadChatHistory() {
+      setIsLoadingHistory(true);
+      try {
+        const res = await fetch(`/api/chats/${chatId}`);
+        if (!res.ok) {
+          console.error('Failed to load chat');
+          toast.error('Failed to load chat', {
+            description: 'The chat could not be found or loaded.',
           });
           setChatId(null);
-        } finally {
-          setIsLoadingHistory(false);
+          return;
         }
-      }
 
-      loadChatHistory();
+        const data = await res.json();
+
+        const uiMessages = data.messages.map((msg: DBMessage) => ({
+          id: msg.id,
+          role: msg.role,
+          parts: msg.content.parts,
+        }));
+
+        setMessages(uiMessages);
+
+        if (data.chat.model) {
+          setModel(data.chat.model);
+        }
+        if (typeof data.chat.web_search_enabled === 'boolean') {
+          setWebSearch(data.chat.web_search_enabled);
+        }
+      } catch (error) {
+        console.error('Failed to load chat history:', error);
+        toast.error('Failed to load chat history', {
+          description: 'An error occurred while loading the chat history.',
+        });
+        setChatId(null);
+      } finally {
+        setIsLoadingHistory(false);
+      }
     }
+
+    loadChatHistory();
   }, [chatIdFromUrl, setMessages, chatId]);
 
   const handleSubmit = async (message: PromptInputMessage) => {

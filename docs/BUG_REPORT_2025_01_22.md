@@ -620,3 +620,33 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGc******************* (valid JWT format)
 ---
 
 **END OF BUG REPORT**
+
+---
+
+## 2025-01-23 FINAL STATUS — STREAMING UNBLOCKED (OPENAI VIA DIRECT GATEWAY)
+
+### Summary
+- Build now passes. Non-OpenAI providers (Anthropic/Gemini/Perplexity) work via AI SDK `streamText`.
+- OpenAI models (GPT-5.1, GPT-4o) now work by bypassing the AI SDK and calling the AI Gateway directly with an OpenAI-compatible `/chat/completions` payload.
+- Chat history loading is re-enabled; OpenAI messages are persisted to Supabase after streaming. Reasoning parts are supported in the OpenAI path; tool-call parsing is not yet implemented.
+
+### Key changes implemented
+- `lib/ai/models.ts`: accepts provider/model IDs without a provider guard.
+- `app/api/chat/route.ts`:
+  - For `openai/...` models: direct fetch to `https://ai-gateway.vercel.sh/v1/chat/completions` (stream=true), emit UI text + reasoning events, persist user/assistant messages, and update chat metadata.
+  - For other providers: continue AI SDK `streamText` + `toUIMessageStreamResponse`.
+  - Normalizes roles to system/user/assistant before sending.
+- `app/page.tsx`: chat history loading restored on page load.
+
+### Current behavior
+- Working: OpenAI (GPT-5.1 Thinking/Instant, GPT-4o), Anthropic (Claude), Gemini, Perplexity. Streaming succeeds; history persists after refresh.
+- Limitations: The custom OpenAI stream currently handles text and reasoning parts; tool/source parts from OpenAI are not yet surfaced. Logging is still verbose.
+
+### Tradeoffs
+- Two code paths: custom direct call for OpenAI; AI SDK path for others. This was required because the SDK+gateway combo returned 400s on GPT-5.1. If a future AI SDK release fixes this, we can remove the custom path and unify later.
+
+### Suggested next actions
+1) Reduce noisy `[api/chat] ...` logging once stable.
+2) (Optional) Add tool/source parsing to the OpenAI stream if needed.
+3) (Optional) Test the latest `ai`, `@ai-sdk/openai`, and `@ai-sdk/react`; if OpenAI works via the SDK, consider removing the custom OpenAI path to simplify.
+4) Keep an eye on Supabase persistence for OpenAI chats to confirm rows are created as expected.
