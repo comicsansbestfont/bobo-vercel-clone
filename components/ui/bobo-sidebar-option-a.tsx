@@ -26,89 +26,60 @@ import {
 import type { ProjectWithStats, ChatWithProject } from "@/lib/db/types";
 import { CreateProjectModal } from "@/components/project/create-project-modal";
 import { toast } from "sonner";
+import { Skeleton } from "./skeleton";
 
-// Mock data types
-interface Chat {
-  id: string;
-  title: string;
-  lastMessage?: string;
-  updatedAt: Date;
-  createdAt: Date;
-}
+// Skeleton loading components
+const ProjectSkeleton = () => {
+  const { open: sidebarOpen } = useSidebar();
 
-interface Project {
-  id: string;
-  name: string;
-  description?: string;
-  chatCount?: number;
-}
+  return (
+    <div className="flex items-center gap-2 px-3 py-2">
+      <Skeleton className="h-4 w-4 flex-shrink-0" />
+      <motion.div
+        animate={{
+          display: sidebarOpen ? "block" : "none",
+          opacity: sidebarOpen ? 1 : 0,
+        }}
+        className="flex-1"
+      >
+        <Skeleton className="h-4 w-full" />
+      </motion.div>
+    </div>
+  );
+};
 
-// Mock data
-const mockChats: Chat[] = [
-  {
-    id: "1",
-    title: "React Best Practices",
-    lastMessage: "How do I optimize re-renders?",
-    updatedAt: new Date("2025-01-20"),
-    createdAt: new Date("2025-01-15"),
-  },
-  {
-    id: "2",
-    title: "TypeScript Tips",
-    lastMessage: "Explain generics",
-    updatedAt: new Date("2025-01-19"),
-    createdAt: new Date("2025-01-10"),
-  },
-  {
-    id: "3",
-    title: "API Design Discussion",
-    lastMessage: "REST vs GraphQL",
-    updatedAt: new Date("2025-01-18"),
-    createdAt: new Date("2025-01-05"),
-  },
-  {
-    id: "4",
-    title: "Building Auth Flow",
-    updatedAt: new Date("2025-01-17"),
-    createdAt: new Date("2024-12-28"),
-  },
-  {
-    id: "5",
-    title: "Database Schema Help",
-    updatedAt: new Date("2025-01-16"),
-    createdAt: new Date("2024-12-20"),
-  },
-  {
-    id: "6",
-    title: "Context API vs Redux",
-    updatedAt: new Date("2025-01-15"),
-    createdAt: new Date("2024-12-15"),
-  },
-  {
-    id: "7",
-    title: "Async/Await Patterns",
-    updatedAt: new Date("2025-01-14"),
-    createdAt: new Date("2024-12-10"),
-  },
-  {
-    id: "8",
-    title: "Error Handling Strategies",
-    updatedAt: new Date("2025-01-13"),
-    createdAt: new Date("2024-12-05"),
-  },
-  {
-    id: "9",
-    title: "Testing with Jest",
-    updatedAt: new Date("2025-01-12"),
-    createdAt: new Date("2024-11-30"),
-  },
-  {
-    id: "10",
-    title: "Docker Setup Guide",
-    updatedAt: new Date("2025-01-11"),
-    createdAt: new Date("2024-11-25"),
-  },
-];
+const ChatSkeleton = () => {
+  const { open: sidebarOpen } = useSidebar();
+
+  return (
+    <div className="px-3 py-2">
+      <motion.div
+        animate={{
+          display: sidebarOpen ? "block" : "none",
+          opacity: sidebarOpen ? 1 : 0,
+        }}
+      >
+        <Skeleton className="h-4 w-full" />
+      </motion.div>
+    </div>
+  );
+};
+
+const SidebarLoadingState = () => {
+  return (
+    <div className="mt-4 space-y-2">
+      <ProjectSkeleton />
+      <ProjectSkeleton />
+      <ProjectSkeleton />
+      <div className="my-3 h-px bg-neutral-200/50 dark:bg-neutral-700/50" />
+      <ChatSkeleton />
+      <ChatSkeleton />
+      <ChatSkeleton />
+      <ChatSkeleton />
+      <ChatSkeleton />
+    </div>
+  );
+};
 
 // Date formatting utility
 function formatRelativeDate(date: Date): string {
@@ -136,45 +107,6 @@ function formatAbsoluteDate(date: Date): string {
     year: date.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
   });
 }
-
-const mockProjects: Project[] = [
-  {
-    id: "proj-1",
-    name: "E-Commerce Redesign",
-    description: "Frontend architecture project",
-    chatCount: 5,
-  },
-  {
-    id: "proj-2",
-    name: "ML Research",
-    description: "Machine learning experiments",
-    chatCount: 3,
-  },
-  {
-    id: "proj-3",
-    name: "Portfolio Redesign",
-    description: "Personal website rebuild",
-    chatCount: 2,
-  },
-  {
-    id: "proj-4",
-    name: "API Documentation",
-    description: "REST API docs",
-    chatCount: 4,
-  },
-  {
-    id: "proj-5",
-    name: "Mobile App Prototype",
-    description: "React Native app",
-    chatCount: 6,
-  },
-  {
-    id: "proj-empty",
-    name: "New Project",
-    description: "Empty project for testing",
-    chatCount: 0,
-  },
-];
 
 // Search Bar Component
 const SearchBar = () => {
@@ -445,7 +377,6 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
                 )}
               >
                 <IconMessagePlus className="h-4 w-4 flex-shrink-0" />
-                {open && <span className="text-xs">New</span>}
               </Link>
             </div>
 
@@ -456,13 +387,7 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             <NewProjectButton onClick={() => setIsCreateProjectModalOpen(true)} />
 
             {/* Loading State */}
-            {loading && (
-              <div className="mt-4 space-y-2">
-                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
-                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
-                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded animate-pulse" />
-              </div>
-            )}
+            {loading && <SidebarLoadingState />}
 
             {/* Error State */}
             {error && (
@@ -548,6 +473,3 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
     </div>
   );
 }
-
-export { mockChats, mockProjects };
-export type { Chat, Project };

@@ -44,7 +44,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import type { Message as DBMessage } from '@/lib/db/types';
 
-import { CopyIcon, GlobeIcon, RefreshCcwIcon } from 'lucide-react';
+import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon } from 'lucide-react';
 
 import {
   Source,
@@ -63,6 +63,7 @@ import { Loader } from '@/components/ai-elements/loader';
 import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { compressHistory } from '@/lib/memory-manager';
 import { BoboSidebarOptionA } from '@/components/ui/bobo-sidebar-option-a';
 import { toast } from 'sonner';
@@ -120,6 +121,7 @@ const ChatBotDemo = () => {
   const [isCompressing, setIsCompressing] = useState(false);
   const [chatId, setChatId] = useState<string | null>(chatIdFromUrl);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [isContextCollapsed, setIsContextCollapsed] = useState(true);
 
   const { messages, sendMessage, status, regenerate, error, setMessages } = useChat({
     transport: new DefaultChatTransport({
@@ -375,60 +377,6 @@ const ChatBotDemo = () => {
           <ConversationScrollButton />
         </Conversation>
 
-        {/* Context Monitor */}
-        <div className="mt-2 space-y-2 rounded-lg border border-border/60 bg-background/60 p-3">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span className="font-medium uppercase tracking-wide">Context</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span
-                  className={cn(
-                    'cursor-help text-sm font-semibold',
-                    usageMeta.usageTextColor
-                  )}
-                >
-                  {`Using ~${formatTokenCount(
-                    contextUsage.tokensUsed
-                  )} / ${formatTokenCount(contextUsage.contextLimit)} tokens`}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                Approximated usage. Older messages are summarized once the bar
-                is full.
-              </TooltipContent>
-            </Tooltip>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-            <div className="flex h-full w-full">
-              {usageMeta.segments.map((segment) => (
-                <div
-                  key={segment.key}
-                  className={cn(segment.color, 'h-full')}
-                  style={{ width: `${segment.width}%` }}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-            {usageMeta.segments.map((segment) => (
-              <div key={segment.key} className="flex items-center gap-1.5">
-                <span
-                  className={cn('h-2 w-2 rounded-full', segment.dot)}
-                  aria-hidden
-                />
-                <span>
-                  {segment.label} · {formatTokenCount(segment.tokens)} tokens
-                </span>
-              </div>
-            ))}
-          </div>
-          {isCompressing && (
-            <p className="text-[11px] font-medium text-muted-foreground">
-              Compressing history…
-            </p>
-          )}
-        </div>
-
         <PromptInput onSubmit={handleSubmit} className="mt-4" globalDrop multiple>
           <PromptInputHeader>
             <PromptInputAttachments>
@@ -475,6 +423,67 @@ const ChatBotDemo = () => {
                   ))}
                 </PromptInputSelectContent>
               </PromptInputSelect>
+
+              {/* Context Monitor - Right-aligned */}
+              <div className="ml-auto">
+                <Collapsible
+                  open={!isContextCollapsed}
+                  onOpenChange={(open) => setIsContextCollapsed(!open)}
+                >
+                  <CollapsibleTrigger asChild>
+                    <button className="group">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
+                          Context
+                        </span>
+                        <span className={cn('text-[10px] font-medium tabular-nums', usageMeta.usageTextColor)}>
+                          {formatTokenCount(contextUsage.tokensUsed)}/{formatTokenCount(contextUsage.contextLimit)}
+                        </span>
+                        <ChevronDownIcon
+                          className={cn(
+                            'h-2.5 w-2.5 transition-all opacity-0 group-hover:opacity-60',
+                            isContextCollapsed && 'rotate-180'
+                          )}
+                        />
+                      </div>
+                    </button>
+                  </CollapsibleTrigger>
+
+                  <CollapsibleContent>
+                    <div className="absolute right-0 mt-2 p-2 rounded-lg border border-border bg-background shadow-lg z-10">
+                      <div className="mb-1.5 h-0.5 w-48 overflow-hidden rounded-full bg-muted/40">
+                        <div className="flex h-full w-full">
+                          {usageMeta.segments.map((segment) => (
+                            <div
+                              key={segment.key}
+                              className={cn(segment.color, 'h-full transition-all')}
+                              style={{ width: `${segment.width}%` }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-muted-foreground/50">
+                        {usageMeta.segments.map((segment) => (
+                          <div key={segment.key} className="flex items-center gap-1">
+                            <span
+                              className={cn('h-1 w-1 rounded-full', segment.dot)}
+                              aria-hidden
+                            />
+                            <span>
+                              {segment.label} {formatTokenCount(segment.tokens)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      {isCompressing && (
+                        <p className="mt-1 text-[9px] text-muted-foreground/50">
+                          Compressing…
+                        </p>
+                      )}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
             </PromptInputTools>
             <PromptInputSubmit disabled={(!input && !status) || isCompressing} status={isCompressing ? 'submitted' : status} />
           </PromptInputFooter>
