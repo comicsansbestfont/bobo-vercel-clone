@@ -29,6 +29,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-compression API endpoint (`/api/memory/compress`)
 - Product backlog documentation
 - Comprehensive project documentation
+- **Project pages with chat list table** (2025-01-23)
+  - Dynamic project routing at `/project/[projectId]`
+  - Conditional rendering: chat list when no chatId, full chat interface when chatId present
+  - Sortable data table using @kibo-ui/table component
+  - Table columns: Chat Title, Model, Last Updated
+  - Clickable table rows for chat navigation
+  - Project header with editable name
+  - Empty state for projects with no chats
+  - Settings & Files link in project header
 
 ### Changed
 - Migrated from direct OpenAI provider to Vercel AI Gateway
@@ -36,6 +45,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced context tracker with segmented token analysis
 - Improved UI with tooltip explanations
 - Fixed TypeScript errors in AI Elements confirmation component
+- **Enhanced TableCell component** (2025-01-23)
+  - Added support for HTML attributes including onClick
+  - Enables clickable table cells without wrapper elements
+  - File: `components/kibo-ui/table/index.tsx`
 
 ### Fixed
 - npm cache permission issues during initial setup
@@ -44,6 +57,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Context monitor string template errors
 - Memory manager array spreading TypeScript issues
 - API route streaming to preserve reasoning for all models
+- **Critical: Message text split into individual words** (2025-01-23)
+  - Root cause: Each streaming delta created separate message part
+  - Impact: OpenAI model responses rendered with each word on separate line
+  - Solution: Modified streaming handler to concatenate deltas into single text part
+  - Files modified: `app/api/chat/route.ts` (lines 261-316)
+  - Note: Fix applies to new messages only; existing messages remain affected
 
 ### Security
 - Environment variable validation for AI_GATEWAY_API_KEY

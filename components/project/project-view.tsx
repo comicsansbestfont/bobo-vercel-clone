@@ -70,7 +70,12 @@ export function ProjectView({
       return;
     }
 
-    onSubmit?.(message);
+    // Pass model and webSearch along with the message
+    onSubmit?.({
+      ...message,
+      model,
+      webSearch,
+    });
     setInput("");
   };
 

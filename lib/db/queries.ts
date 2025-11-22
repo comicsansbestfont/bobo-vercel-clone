@@ -17,6 +17,9 @@ import type {
   Message,
   MessageInsert,
   MessageUpdate,
+  File,
+  FileInsert,
+  FileUpdate,
   ChatWithProject,
   ProjectWithStats,
 } from './types';
@@ -536,6 +539,112 @@ export async function deleteAllMessages(chatId: string): Promise<boolean> {
 
   if (error) {
     console.error('Error deleting all messages:', error);
+    return false;
+  }
+
+  return true;
+}
+
+// ============================================================================
+// FILE QUERIES (M2 Phase 1)
+// ============================================================================
+
+/**
+ * Get all files for a project
+ */
+export async function getFilesByProject(projectId: string): Promise<File[]> {
+  const { data, error } = await supabase
+    .from('files')
+    .select('*')
+    .eq('project_id', projectId)
+    .eq('user_id', DEFAULT_USER_ID)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching files:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
+ * Get a single file by ID
+ */
+export async function getFile(id: string): Promise<File | null> {
+  const { data, error } = await supabase
+    .from('files')
+    .select('*')
+    .eq('id', id)
+    .eq('user_id', DEFAULT_USER_ID)
+    .single();
+
+  if (error) {
+    console.error('Error fetching file:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Create a new file
+ */
+export async function createFile(
+  file: Omit<FileInsert, 'user_id'>
+): Promise<File | null> {
+  const { data, error } = await supabase
+    .from('files')
+    .insert({
+      ...file,
+      user_id: DEFAULT_USER_ID,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating file:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Update a file
+ */
+export async function updateFile(
+  id: string,
+  updates: FileUpdate
+): Promise<File | null> {
+  const { data, error } = await supabase
+    .from('files')
+    .update(updates)
+    .eq('id', id)
+    .eq('user_id', DEFAULT_USER_ID)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating file:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Delete a file
+ */
+export async function deleteFile(id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('files')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', DEFAULT_USER_ID);
+
+  if (error) {
+    console.error('Error deleting file:', error);
     return false;
   }
 

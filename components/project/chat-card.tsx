@@ -46,7 +46,7 @@ export function ChatCard({
 
   return (
     <Link
-      href={`/project/${projectId}/chat/${id}`}
+      href={`/project/${projectId}?chatId=${id}`}
       className={cn(
         "block rounded-lg bg-neutral-100 p-4 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700",
         className,

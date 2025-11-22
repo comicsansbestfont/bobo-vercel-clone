@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 import {
   IconMessagePlus,
   IconFolder,
@@ -300,6 +301,7 @@ const DateModeToggle = ({
 
 // Main Bobo Sidebar Option A Component
 export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [open, setOpen] = useState(true);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [dateMode, setDateMode] = useState<'updated' | 'created'>('updated');
@@ -354,9 +356,9 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
     setDateMode(prev => prev === 'updated' ? 'created' : 'updated');
   };
 
-  const handleProjectCreated = () => {
-    // Refresh projects list after creating a new project
-    fetchData();
+  const handleProjectCreated = (projectId: string) => {
+    // Navigate to the newly created project
+    router.push(`/project/${projectId}`);
   };
 
   return (

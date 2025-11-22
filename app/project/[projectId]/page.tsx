@@ -1,17 +1,40 @@
 "use client";
 
-import { ProjectView } from "@/components/project/project-view";
+import { ChatInterface } from "@/components/chat/chat-interface";
 import { BoboSidebarOptionA } from "@/components/ui/bobo-sidebar-option-a";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import type { Project, ChatWithProject } from "@/lib/db/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { projectLogger } from "@/lib/logger";
+import { ProjectHeader } from "@/components/project/project-header";
+import { ProjectEmptyState } from "@/components/project/empty-state";
+import {
+  TableProvider,
+  TableHeader,
+  TableHeaderGroup,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableColumnHeader,
+  type ColumnDef,
+} from "@/components/kibo-ui/table";
+
+type ChatTableRow = {
+  id: string;
+  title: string;
+  updated_at: Date;
+  model: string;
+};
 
 export default function ProjectPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const projectId = params.projectId as string;
+  const chatId = searchParams?.get("chatId");
 
   const [project, setProject] = useState<Project | null>(null);
   const [chats, setChats] = useState<ChatWithProject[]>([]);
@@ -66,25 +89,32 @@ export default function ProjectPage() {
   if (loading) {
     return (
       <BoboSidebarOptionA>
-        <div className="flex h-screen flex-col bg-white dark:bg-neutral-900">
-          {/* Header Skeleton */}
+        <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
           <div className="border-b border-neutral-200 p-6 dark:border-neutral-700">
             <Skeleton className="h-8 w-64" />
             <Skeleton className="mt-2 h-4 w-96" />
           </div>
+          <div className="flex flex-1 items-center justify-center p-6">
+            <p className="text-sm text-muted-foreground">Loading project...</p>
+          </div>
+        </div>
+      </BoboSidebarOptionA>
+    );
+  }
 
-          {/* Content Skeleton */}
-          <div className="flex-1 overflow-auto p-6">
-            <div className="space-y-4">
-              {/* Chat Item Skeletons */}
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-700">
-                  <Skeleton className="h-5 w-48" />
-                  <Skeleton className="mt-2 h-4 w-full" />
-                  <Skeleton className="mt-1 h-4 w-3/4" />
-                  <Skeleton className="mt-3 h-3 w-24" />
-                </div>
-              ))}
+  // Handle project not found or errors
+  if (error === "not_found" || !project) {
+    return (
+      <BoboSidebarOptionA>
+        <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+          <div className="flex h-full items-center justify-center p-6">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+                Project not found
+              </h1>
+              <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+                The project you're looking for doesn't exist.
+              </p>
             </div>
           </div>
         </div>
@@ -92,46 +122,17 @@ export default function ProjectPage() {
     );
   }
 
-  // Handle project not found
-  if (error === "not_found" || !project) {
-    return (
-      <BoboSidebarOptionA>
-        <div className="flex h-screen items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-              Project not found
-            </h1>
-            <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-              The project you're looking for doesn't exist.
-            </p>
-            <button
-              onClick={() => router.push("/")}
-              className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Go back home
-            </button>
-          </div>
-        </div>
-      </BoboSidebarOptionA>
-    );
-  }
-
-  // Handle other errors
   if (error) {
     return (
       <BoboSidebarOptionA>
-        <div className="flex h-screen items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
-              Error loading project
-            </h1>
-            <p className="mt-2 text-neutral-600 dark:text-neutral-400">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Try again
-            </button>
+        <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+          <div className="flex h-full items-center justify-center p-6">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
+                Error loading project
+              </h1>
+              <p className="mt-2 text-neutral-600 dark:text-neutral-400">{error}</p>
+            </div>
           </div>
         </div>
       </BoboSidebarOptionA>
@@ -166,30 +167,140 @@ export default function ProjectPage() {
     }
   };
 
-  const handleSubmit = (message: any) => {
-    // Navigate to main chat interface with the message
-    // In real app, this would create a new chat in the project and navigate there
-    router.push("/");
+  // Show chat interface if chatId is present in URL
+  if (chatId) {
+    return (
+      <BoboSidebarOptionA>
+        <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+          {/* Project Header */}
+          <ProjectHeader
+            projectId={projectId}
+            projectName={project.name}
+            onNameChange={handleNameChange}
+          />
+
+          {/* Chat Interface */}
+          <ChatInterface projectId={projectId} />
+        </div>
+      </BoboSidebarOptionA>
+    );
+  }
+
+  // Show chat list when no chat is selected
+  const formatRelativeDate = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffMins < 60) {
+      return `${diffMins}m ago`;
+    } else if (diffHours < 24) {
+      return `${diffHours}h ago`;
+    } else if (diffDays < 7) {
+      return `${diffDays}d ago`;
+    } else {
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+    }
   };
 
-  // Convert chats to format expected by ProjectView
-  const formattedChats = chats.map((chat) => ({
+  const columns: ColumnDef<ChatTableRow>[] = [
+    {
+      accessorKey: "title",
+      header: ({ column }) => (
+        <TableColumnHeader column={column} title="Chat Title" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className="font-medium">{row.getValue("title")}</div>
+        );
+      },
+    },
+    {
+      accessorKey: "model",
+      header: ({ column }) => (
+        <TableColumnHeader column={column} title="Model" />
+      ),
+      cell: ({ row }) => {
+        const model = row.getValue("model") as string;
+        const modelName = model.split("/")[1] || model;
+        return <div className="text-sm text-muted-foreground">{modelName}</div>;
+      },
+    },
+    {
+      accessorKey: "updated_at",
+      header: ({ column }) => (
+        <TableColumnHeader column={column} title="Last Updated" />
+      ),
+      cell: ({ row }) => {
+        const date = row.getValue("updated_at") as Date;
+        return (
+          <div className="text-sm text-muted-foreground">
+            {formatRelativeDate(date)}
+          </div>
+        );
+      },
+    },
+  ];
+
+  const tableData: ChatTableRow[] = chats.map((chat) => ({
     id: chat.id,
     title: chat.title,
-    preview: chat.title, // Use title as preview since we don't have a preview field yet
-    timestamp: new Date(chat.updated_at),
-    projectId: projectId, // All chats on this page belong to this project
+    updated_at: new Date(chat.updated_at),
+    model: chat.model,
   }));
 
   return (
     <BoboSidebarOptionA>
-      <ProjectView
-        projectId={projectId}
-        projectName={project.name}
-        chats={formattedChats}
-        onNameChange={handleNameChange}
-        onSubmit={handleSubmit}
-      />
+      <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+        {/* Project Header */}
+        <ProjectHeader
+          projectId={projectId}
+          projectName={project.name}
+          onNameChange={handleNameChange}
+        />
+
+        {/* Chat List Table */}
+        <div className="flex-1 overflow-y-auto px-6 py-4">
+          {chats.length === 0 ? (
+            <ProjectEmptyState />
+          ) : (
+            <div className="cursor-pointer">
+              <TableProvider columns={columns} data={tableData}>
+                <TableHeader>
+                  {({ headerGroup }) => (
+                    <TableHeaderGroup headerGroup={headerGroup}>
+                      {({ header }) => <TableHead header={header} />}
+                    </TableHeaderGroup>
+                  )}
+                </TableHeader>
+                <TableBody>
+                  {({ row }) => (
+                    <TableRow
+                      row={row}
+                      className="hover:bg-muted/50 transition-colors"
+                    >
+                      {({ cell }) => (
+                        <TableCell
+                          cell={cell}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            router.push(`/project/${projectId}?chatId=${row.original.id}`)
+                          }
+                        />
+                      )}
+                    </TableRow>
+                  )}
+                </TableBody>
+              </TableProvider>
+            </div>
+          )}
+        </div>
+      </div>
     </BoboSidebarOptionA>
   );
 }

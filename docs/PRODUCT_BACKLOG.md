@@ -178,34 +178,39 @@ Currently compression is triggered synchronously when user submits a message and
 **Target Start:** After V1 ships
 **Target End:** 3 weeks after start
 
-### 2.1 Custom Instructions
+### 2.1 Custom Instructions (Phase 1 - Complete ✅)
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-1 | Add `system_instructions` column to projects | 🔴 HIGH | 1h | ⏳ |
-| M2-2 | Project settings page UI | 🔴 HIGH | 2h | ⏳ |
-| M2-3 | Inject instructions into chat system prompt | 🔴 HIGH | 1h | ⏳ |
+| M2-1 | Add `custom_instructions` column to projects | 🔴 HIGH | 1h | ✅ Done |
+| M2-2 | Project settings page UI | 🔴 HIGH | 2h | ✅ Done |
+| M2-3 | Inject instructions into chat system prompt | 🔴 HIGH | 1h | ✅ Done |
 
 ### 2.2 File Upload & Storage
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-4 | Create `project_files` table | 🔴 HIGH | 1h | ⏳ |
-| M2-5 | POST `/api/projects/[id]/files` endpoint | 🔴 HIGH | 2h | ⏳ |
-| M2-6 | File validation (.md, max 10MB) | 🔴 HIGH | 1h | ⏳ |
-| M2-7 | File management UI (upload, delete, preview) | 🔴 HIGH | 3h | ⏳ |
-| M2-8 | Background processing queue | 🟡 MEDIUM | 2h | ⏳ |
+| M2-4 | Create `project_files` table | 🔴 HIGH | 1h | ✅ |
+| M2-5 | POST `/api/projects/[id]/files` endpoint | 🔴 HIGH | 2h | ✅ |
+| M2-6 | File validation (.md, max 10MB) | 🔴 HIGH | 1h | ✅ |
+| M2-7 | File management UI (upload, delete, preview) | 🔴 HIGH | 3h | ✅ |
+| M2-8 | Asynchronous file processing (Phase 2 - RAG) | 🟡 MEDIUM | 2h | 📝 Deferred |
+| M2-8a | Implement background job queue for file processing | 🟡 MEDIUM | 3h | 📝 Deferred |
+| M2-8b | Add processing status tracking for files | 🟡 MEDIUM | 1h | 📝 Deferred |
 
-### 2.3 RAG Pipeline
+### 2.3 RAG Pipeline (Phase 2 - Deferred)
+
+**Note:** Phase 1 complete (custom instructions + file storage). Phase 2 will implement RAG retrieval.
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-9 | Create `embeddings` table with pgvector | 🔴 HIGH | 2h | ⏳ |
-| M2-10 | Implement chunking logic (semantic) | 🔴 HIGH | 3h | ⏳ |
-| M2-11 | Generate embeddings (OpenAI API) | 🔴 HIGH | 2h | ⏳ |
-| M2-12 | Store embeddings in pgvector | 🔴 HIGH | 2h | ⏳ |
-| M2-13 | Implement similarity search | 🔴 HIGH | 3h | ⏳ |
-| M2-14 | Inject retrieved chunks into chat | 🔴 HIGH | 2h | ⏳ |
+| M2-9 | Create `embeddings` table with pgvector | 🔴 HIGH | 2h | 📝 Phase 2 |
+| M2-10 | Implement chunking logic (fixed-size with overlap) | 🔴 HIGH | 3h | 📝 Phase 2 |
+| M2-10a | LangChain integration for advanced chunking | 🟡 MEDIUM | 2h | 📝 Future |
+| M2-11 | Generate embeddings (OpenAI API) | 🔴 HIGH | 2h | 📝 Phase 2 |
+| M2-12 | Store embeddings in pgvector | 🔴 HIGH | 2h | 📝 Phase 2 |
+| M2-13 | Implement similarity search | 🔴 HIGH | 3h | 📝 Phase 2 |
+| M2-14 | Inject retrieved chunks into chat | 🔴 HIGH | 2h | 📝 Phase 2 |
 
 ### 2.4 Source Citations
 

@@ -81,6 +81,7 @@ export async function POST(req: NextRequest) {
     const projectData: Omit<ProjectInsert, 'user_id'> = {
       name: body.name.trim(),
       description: body.description?.trim() || null,
+      custom_instructions: null,
     };
 
     const project = await createProject(projectData);

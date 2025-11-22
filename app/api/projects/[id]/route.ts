@@ -64,7 +64,7 @@ export async function GET(
  * PATCH /api/projects/[id]
  * Updates a project
  *
- * Body: { name?: string, description?: string }
+ * Body: { name?: string, description?: string, custom_instructions?: string }
  */
 export async function PATCH(
   req: NextRequest,
@@ -75,11 +75,11 @@ export async function PATCH(
     const body = await req.json();
 
     // Validate at least one field is provided
-    if (!body.name && body.description === undefined) {
+    if (!body.name && body.description === undefined && body.custom_instructions === undefined) {
       return new Response(
         JSON.stringify({
           error: 'Validation error',
-          message: 'At least one field (name or description) must be provided',
+          message: 'At least one field (name, description, or custom_instructions) must be provided',
         }),
         {
           status: 400,
@@ -124,6 +124,9 @@ export async function PATCH(
     }
     if (body.description !== undefined) {
       updates.description = body.description ? body.description.trim() : null;
+    }
+    if (body.custom_instructions !== undefined) {
+      updates.custom_instructions = body.custom_instructions ? body.custom_instructions.trim() : null;
     }
 
     // Update project

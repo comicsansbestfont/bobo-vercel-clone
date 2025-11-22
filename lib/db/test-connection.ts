@@ -44,6 +44,7 @@ async function testConnection() {
   const testProject = await createProject({
     name: 'Test Project',
     description: 'Created by database test script',
+    custom_instructions: null,
   });
   if (testProject) {
     console.log('✅ Project created:', {

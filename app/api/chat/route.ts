@@ -15,6 +15,8 @@ import {
   createChat,
   createMessage,
   updateChat,
+  getChat,
+  getProject,
   type MessagePart,
   type MessageContent,
 } from '@/lib/db';
@@ -77,11 +79,13 @@ export async function POST(req: Request) {
       model,
       webSearch,
       chatId: providedChatId,
+      projectId,
     }: {
       messages: UIMessage[];
       model: string;
       webSearch: boolean;
       chatId?: string;
+      projectId?: string;
     } = await req.json();
 
     // Check if API key is configured
@@ -104,7 +108,7 @@ export async function POST(req: Request) {
         title: 'New Chat',
         model: model,
         web_search_enabled: webSearch,
-        project_id: null,
+        project_id: projectId || null,
       });
 
       if (!newChat) {
@@ -118,6 +122,16 @@ export async function POST(req: Request) {
       }
 
       activeChatId = newChat.id;
+    }
+
+    // Fetch custom instructions from project if chat belongs to one
+    let customInstructions = '';
+    const chat = await getChat(activeChatId);
+    if (chat && chat.project_id) {
+      const project = await getProject(chat.project_id);
+      if (project && project.custom_instructions) {
+        customInstructions = project.custom_instructions;
+      }
     }
 
     // Normalize roles to avoid invalid payloads to the gateway
@@ -150,14 +164,24 @@ export async function POST(req: Request) {
 
     if (isOpenAIModel) {
       // Direct gateway call with raw OpenAI-compatible payload to avoid SDK shaping issues.
+      const messagesForPayload = normalizedMessages.map((msg) => ({
+        role: msg.role,
+        content: (msg.parts || [])
+          .map((p) => ('text' in p && p.text ? p.text : ''))
+          .join(''),
+      }));
+
+      // Prepend custom instructions as system message if they exist
+      if (customInstructions) {
+        messagesForPayload.unshift({
+          role: 'system',
+          content: customInstructions,
+        });
+      }
+
       const payload = {
         model,
-        messages: normalizedMessages.map((msg) => ({
-          role: msg.role,
-          content: (msg.parts || [])
-            .map((p) => ('text' in p && p.text ? p.text : ''))
-            .join(''),
-        })),
+        messages: messagesForPayload,
         stream: true,
       };
 
@@ -238,7 +262,13 @@ export async function POST(req: Request) {
                 const chunk = JSON.parse(payloadStr) as ChatCompletionChunk;
                 const delta = chunk.choices?.[0]?.delta?.content;
                 if (typeof delta === 'string' && delta.length > 0) {
-                  assistantParts.push({ type: 'text', text: delta });
+                  // Concatenate text deltas into a single part instead of creating multiple parts
+                  const lastPart = assistantParts[assistantParts.length - 1];
+                  if (lastPart && lastPart.type === 'text') {
+                    lastPart.text += delta;
+                  } else {
+                    assistantParts.push({ type: 'text', text: delta });
+                  }
                   writer.write(
                     encoder.encode(
                       `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta })}\n\n`
@@ -248,14 +278,26 @@ export async function POST(req: Request) {
                   // Handle array content parts
                   for (const d of delta) {
                     if (d?.type === 'text' && d.text) {
-                      assistantParts.push({ type: 'text', text: d.text });
+                      // Concatenate text deltas into a single part
+                      const lastPart = assistantParts[assistantParts.length - 1];
+                      if (lastPart && lastPart.type === 'text') {
+                        lastPart.text += d.text;
+                      } else {
+                        assistantParts.push({ type: 'text', text: d.text });
+                      }
                       writer.write(
                         encoder.encode(
                           `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta: d.text })}\n\n`
                         )
                       );
                     } else if (d?.type === 'reasoning' && d.text) {
-                      assistantParts.push({ type: 'reasoning', text: d.text });
+                      // Concatenate reasoning deltas into a single part
+                      const lastPart = assistantParts[assistantParts.length - 1];
+                      if (lastPart && lastPart.type === 'reasoning') {
+                        lastPart.text += d.text;
+                      } else {
+                        assistantParts.push({ type: 'reasoning', text: d.text });
+                      }
                       if (!reasoningStarted) {
                         reasoningStarted = true;
                         writer.write(
@@ -340,8 +382,9 @@ export async function POST(req: Request) {
     const result = streamText({
       model: getModel(webSearch ? 'perplexity/sonar' : model),
       messages: modelMessages,
-      system:
-        'You are a helpful assistant that can answer questions and help with tasks',
+      system: customInstructions
+        ? `${customInstructions}\n\nYou are a helpful assistant that can answer questions and help with tasks`
+        : 'You are a helpful assistant that can answer questions and help with tasks',
 
       // Save messages after streaming completes
       onFinish: async ({ text, usage }) => {

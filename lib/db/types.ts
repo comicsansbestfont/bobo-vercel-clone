@@ -35,6 +35,7 @@ export type Project = {
   user_id: string;
   name: string;
   description: string | null;
+  custom_instructions: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -61,6 +62,17 @@ export type Message = {
   sequence_number: number;
 };
 
+export type File = {
+  id: string;
+  project_id: string;
+  user_id: string;
+  filename: string;
+  file_type: 'markdown';
+  file_size: number;
+  content_text: string;
+  created_at: string;
+};
+
 /**
  * Insert types (for creating new rows)
  * Omits auto-generated fields like id, timestamps
@@ -84,6 +96,10 @@ export type MessageInsert = Omit<Message, 'id' | 'created_at'> & {
   id?: string;
 };
 
+export type FileInsert = Omit<File, 'id' | 'created_at'> & {
+  id?: string;
+};
+
 /**
  * Update types (for updating existing rows)
  * All fields optional except what's required for the update
@@ -95,6 +111,10 @@ export type ChatUpdate = Partial<
 >;
 export type MessageUpdate = Partial<
   Omit<Message, 'id' | 'chat_id' | 'created_at'>
+>;
+
+export type FileUpdate = Partial<
+  Omit<File, 'id' | 'project_id' | 'user_id' | 'created_at'>
 >;
 
 /**
@@ -164,6 +184,25 @@ export type Database = {
             foreignKeyName: 'messages_chat_id_fkey';
             columns: ['chat_id'];
             referencedRelation: 'chats';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      files: {
+        Row: File;
+        Insert: FileInsert;
+        Update: FileUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'files_project_id_fkey';
+            columns: ['project_id'];
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'files_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
             referencedColumns: ['id'];
           }
         ];

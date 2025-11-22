@@ -17,7 +17,7 @@ import { toast } from 'sonner';
 interface CreateProjectModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onProjectCreated?: () => void;
+  onProjectCreated?: (projectId: string) => void;
 }
 
 export function CreateProjectModal({
@@ -70,8 +70,8 @@ export function CreateProjectModal({
         description: `${data.project.name} has been created.`,
       });
 
-      // Notify parent to refresh projects list
-      onProjectCreated?.();
+      // Navigate to the newly created project
+      onProjectCreated?.(data.project.id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create project';
       setError(errorMessage);

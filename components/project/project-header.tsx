@@ -10,6 +10,7 @@ import {
   IconFileDownload,
   IconDots,
   IconFolder,
+  IconSettings,
 } from "@tabler/icons-react";
 
 interface ProjectHeaderProps {
@@ -67,6 +68,14 @@ export function ProjectHeader({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          <Link
+            href={`/project/${projectId}/settings`}
+            className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
+            title="Project Settings"
+            aria-label="Project settings"
+          >
+            <IconSettings className="h-4 w-4" />
+          </Link>
           <button
             className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
             title="Share"
@@ -132,14 +141,14 @@ export function ProjectHeader({
           </h1>
         )}
 
-        <button
-          className="mt-2 text-sm text-neutral-600 opacity-50 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
-          title="Coming soon"
-          aria-label="Add files (coming soon)"
-          disabled
+        <Link
+          href={`/project/${projectId}/settings`}
+          className="mt-2 text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+          title="Manage custom instructions and knowledge base files"
+          aria-label="Project settings"
         >
-          Add files
-        </button>
+          Settings & Files
+        </Link>
       </div>
     </div>
   );
