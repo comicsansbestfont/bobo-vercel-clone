@@ -3,190 +3,97 @@
 import { ProjectView } from "@/components/project/project-view";
 import { BoboSidebarOptionA } from "@/components/ui/bobo-sidebar-option-a";
 import { useParams, useRouter } from "next/navigation";
-
-// Mock data - In real app, this would come from database
-const mockProjectData = {
-  "proj-1": {
-    name: "E-Commerce Redesign",
-    chats: [
-      {
-        id: "1",
-        title: "Product Page Layout",
-        preview: "Let's discuss the new product page layout with image gallery and quick view features...",
-        timestamp: new Date("2025-01-20T14:30:00"),
-        projectId: "proj-1",
-      },
-      {
-        id: "2",
-        title: "Shopping Cart UX",
-        preview: "Working on the shopping cart user experience improvements and checkout flow...",
-        timestamp: new Date("2025-01-19T10:15:00"),
-        projectId: "proj-1",
-      },
-      {
-        id: "3",
-        title: "Mobile Navigation",
-        preview: "Designing the mobile navigation menu and sidebar for better user engagement...",
-        timestamp: new Date("2025-01-18T16:45:00"),
-        projectId: "proj-1",
-      },
-      {
-        id: "4",
-        title: "Search Functionality",
-        preview: "Implementing advanced search with filters, facets, and autocomplete suggestions...",
-        timestamp: new Date("2025-01-17T11:20:00"),
-        projectId: "proj-1",
-      },
-      {
-        id: "5",
-        title: "Payment Integration",
-        preview: "Setting up Stripe payment integration with support for multiple currencies...",
-        timestamp: new Date("2025-01-16T09:00:00"),
-        projectId: "proj-1",
-      },
-    ],
-  },
-  "proj-2": {
-    name: "ML Research",
-    chats: [
-      {
-        id: "6",
-        title: "Model Architecture",
-        preview: "Exploring different neural network architectures for our classification task...",
-        timestamp: new Date("2025-01-20T15:00:00"),
-        projectId: "proj-2",
-      },
-      {
-        id: "7",
-        title: "Dataset Preparation",
-        preview: "Cleaning and preprocessing the dataset, handling missing values and outliers...",
-        timestamp: new Date("2025-01-19T13:30:00"),
-        projectId: "proj-2",
-      },
-      {
-        id: "8",
-        title: "Hyperparameter Tuning",
-        preview: "Running experiments to find optimal hyperparameters for best model performance...",
-        timestamp: new Date("2025-01-18T10:00:00"),
-        projectId: "proj-2",
-      },
-    ],
-  },
-  "proj-3": {
-    name: "Portfolio Redesign",
-    chats: [
-      {
-        id: "9",
-        title: "Hero Section Design",
-        preview: "Creating an engaging hero section with animated elements and clear call-to-action...",
-        timestamp: new Date("2025-01-20T12:00:00"),
-        projectId: "proj-3",
-      },
-      {
-        id: "10",
-        title: "Project Showcase",
-        preview: "Designing the project gallery with hover effects and detailed case studies...",
-        timestamp: new Date("2025-01-19T14:00:00"),
-        projectId: "proj-3",
-      },
-    ],
-  },
-  "proj-4": {
-    name: "API Documentation",
-    chats: [
-      {
-        id: "11",
-        title: "Authentication Endpoints",
-        preview: "Documenting OAuth2 flow and JWT token management for API authentication...",
-        timestamp: new Date("2025-01-20T11:00:00"),
-        projectId: "proj-4",
-      },
-      {
-        id: "12",
-        title: "Rate Limiting",
-        preview: "Explaining rate limiting policies and best practices for API consumers...",
-        timestamp: new Date("2025-01-19T15:30:00"),
-        projectId: "proj-4",
-      },
-      {
-        id: "13",
-        title: "Error Handling",
-        preview: "Creating comprehensive error code documentation with examples...",
-        timestamp: new Date("2025-01-18T09:30:00"),
-        projectId: "proj-4",
-      },
-      {
-        id: "14",
-        title: "Webhook Setup",
-        preview: "Writing webhook configuration guide with payload examples and security...",
-        timestamp: new Date("2025-01-17T14:00:00"),
-        projectId: "proj-4",
-      },
-    ],
-  },
-  "proj-5": {
-    name: "Mobile App Prototype",
-    chats: [
-      {
-        id: "15",
-        title: "Onboarding Flow",
-        preview: "Designing user onboarding experience with tutorial slides and permissions...",
-        timestamp: new Date("2025-01-20T10:00:00"),
-        projectId: "proj-5",
-      },
-      {
-        id: "16",
-        title: "Navigation Patterns",
-        preview: "Implementing tab bar navigation with deep linking support...",
-        timestamp: new Date("2025-01-19T12:00:00"),
-        projectId: "proj-5",
-      },
-      {
-        id: "17",
-        title: "Push Notifications",
-        preview: "Setting up push notification system with Firebase Cloud Messaging...",
-        timestamp: new Date("2025-01-18T15:00:00"),
-        projectId: "proj-5",
-      },
-      {
-        id: "18",
-        title: "Offline Support",
-        preview: "Adding offline functionality with local storage and sync mechanisms...",
-        timestamp: new Date("2025-01-17T10:30:00"),
-        projectId: "proj-5",
-      },
-      {
-        id: "19",
-        title: "Dark Mode",
-        preview: "Implementing system-aware dark mode with smooth transitions...",
-        timestamp: new Date("2025-01-16T13:00:00"),
-        projectId: "proj-5",
-      },
-      {
-        id: "20",
-        title: "Performance Optimization",
-        preview: "Optimizing app performance with lazy loading and code splitting...",
-        timestamp: new Date("2025-01-15T11:00:00"),
-        projectId: "proj-5",
-      },
-    ],
-  },
-  "proj-empty": {
-    name: "New Project",
-    chats: [],
-  },
-};
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import type { Project, ChatWithProject } from "@/lib/db/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProjectPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
 
-  // Get project data from mock
-  const projectData = mockProjectData[projectId as keyof typeof mockProjectData];
+  const [project, setProject] = useState<Project | null>(null);
+  const [chats, setChats] = useState<ChatWithProject[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch project and chats data
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const [projectRes, chatsRes] = await Promise.all([
+          fetch(`/api/projects/${projectId}`),
+          fetch(`/api/projects/${projectId}/chats`),
+        ]);
+
+        if (!projectRes.ok) {
+          if (projectRes.status === 404) {
+            setError("not_found");
+            return;
+          }
+          throw new Error("Failed to fetch project");
+        }
+
+        if (!chatsRes.ok) {
+          throw new Error("Failed to fetch chats");
+        }
+
+        const projectData = await projectRes.json();
+        const chatsData = await chatsRes.json();
+
+        setProject(projectData.project);
+        setChats(chatsData.chats || []);
+      } catch (err) {
+        console.error("Failed to fetch project data:", err);
+        const errorMessage = err instanceof Error ? err.message : "Failed to load project";
+        setError(errorMessage);
+        toast.error("Failed to load project", {
+          description: errorMessage,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [projectId]);
+
+  // Handle loading state
+  if (loading) {
+    return (
+      <BoboSidebarOptionA>
+        <div className="flex h-screen flex-col bg-white dark:bg-neutral-900">
+          {/* Header Skeleton */}
+          <div className="border-b border-neutral-200 p-6 dark:border-neutral-700">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="mt-2 h-4 w-96" />
+          </div>
+
+          {/* Content Skeleton */}
+          <div className="flex-1 overflow-auto p-6">
+            <div className="space-y-4">
+              {/* Chat Item Skeletons */}
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-700">
+                  <Skeleton className="h-5 w-48" />
+                  <Skeleton className="mt-2 h-4 w-full" />
+                  <Skeleton className="mt-1 h-4 w-3/4" />
+                  <Skeleton className="mt-3 h-3 w-24" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </BoboSidebarOptionA>
+    );
+  }
 
   // Handle project not found
-  if (!projectData) {
+  if (error === "not_found" || !project) {
     return (
       <BoboSidebarOptionA>
         <div className="flex h-screen items-center justify-center">
@@ -197,15 +104,66 @@ export default function ProjectPage() {
             <p className="mt-2 text-neutral-600 dark:text-neutral-400">
               The project you're looking for doesn't exist.
             </p>
+            <button
+              onClick={() => router.push("/")}
+              className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Go back home
+            </button>
           </div>
         </div>
       </BoboSidebarOptionA>
     );
   }
 
-  const handleNameChange = (newName: string) => {
-    console.log(`Project name changed to: ${newName}`);
-    // In real app, this would update the database
+  // Handle other errors
+  if (error) {
+    return (
+      <BoboSidebarOptionA>
+        <div className="flex h-screen items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
+              Error loading project
+            </h1>
+            <p className="mt-2 text-neutral-600 dark:text-neutral-400">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Try again
+            </button>
+          </div>
+        </div>
+      </BoboSidebarOptionA>
+    );
+  }
+
+  const handleNameChange = async (newName: string) => {
+    try {
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: newName }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update project name");
+      }
+
+      const data = await response.json();
+      setProject(data.project);
+
+      toast.success("Project updated", {
+        description: "Project name has been updated successfully.",
+      });
+    } catch (err) {
+      console.error("Failed to update project name:", err);
+      toast.error("Failed to update project", {
+        description: "Unable to update project name. Please try again.",
+      });
+    }
   };
 
   const handleSubmit = (message: any) => {
@@ -214,12 +172,21 @@ export default function ProjectPage() {
     router.push("/");
   };
 
+  // Convert chats to format expected by ProjectView
+  const formattedChats = chats.map((chat) => ({
+    id: chat.id,
+    title: chat.title,
+    preview: chat.title, // Use title as preview since we don't have a preview field yet
+    timestamp: new Date(chat.updated_at),
+    projectId: chat.project_id || undefined,
+  }));
+
   return (
     <BoboSidebarOptionA>
       <ProjectView
         projectId={projectId}
-        projectName={projectData.name}
-        chats={projectData.chats}
+        projectName={project.name}
+        chats={formattedChats}
         onNameChange={handleNameChange}
         onSubmit={handleSubmit}
       />
