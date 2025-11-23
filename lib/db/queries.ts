@@ -22,6 +22,7 @@ import type {
   FileUpdate,
   ChatWithProject,
   ProjectWithStats,
+  SearchResult,
 } from './types';
 
 // ============================================================================
@@ -649,4 +650,36 @@ export async function deleteFile(id: string): Promise<boolean> {
   }
 
   return true;
+}
+// ============================================================================
+// SEARCH QUERIES (M2 Phase 2)
+// ============================================================================
+
+/**
+ * Hybrid search for global context
+ */
+export async function hybridSearch(
+  queryEmbedding: number[],
+  threshold: number,
+  limit: number,
+  activeProjectId: string
+): Promise<SearchResult[]> {
+  const { data, error } = await supabase.rpc('hybrid_search', {
+    p_query_embedding: queryEmbedding,
+    p_match_threshold: threshold,
+    p_match_count: limit,
+    p_active_project_id: activeProjectId,
+  });
+
+  if (error) {
+    console.error('Error performing hybrid search:', error);
+    return [];
+  }
+
+  return (data || []).map((row: any) => ({
+    id: row.result_id,
+    content: row.result_content,
+    similarity: row.result_similarity,
+    source_type: row.result_source_type
+  }));
 }

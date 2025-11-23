@@ -123,14 +123,16 @@ $$;
 
 ### Phase 1: Caching (The Project Loop)
 *   **Action:** Update `app/api/chat/route.ts`
+*   **Philosophy:** "Project as a Lens." We treat the active project's files as the "Working Memory" for the AI.
 *   **Logic:**
     *   Fetch all `project_files` for current `projectId`.
     *   Calculate total tokens.
-    *   If model supports caching (Anthropic) AND size < limit:
-        *   Inject full text into system prompt.
-        *   Enable caching headers.
-    *   Else:
-        *   Inject as much as possible (standard context).
+    *   **If model supports caching (Anthropic, Gemini):**
+        *   Use provider-specific caching API (headers for Anthropic, cached content for Gemini).
+        *   "Pin" the full project context.
+    *   **Else (OpenAI, etc.):**
+        *   Inject full project context into System Prompt (up to context limit).
+        *   This ensures the "Double-Loop" experience is consistent across all models, even if underlying mechanics differ.
 
 ### Phase 2: Embeddings (The Global Loop)
 *   **Action:** Create embedding pipeline.

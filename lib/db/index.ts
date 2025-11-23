@@ -27,6 +27,7 @@ export type {
   ProjectWithStats,
   MessageContent,
   MessagePart,
+  SearchResult,
   Database,
 } from './types';
 
@@ -66,4 +67,6 @@ export {
   createFile,
   updateFile,
   deleteFile,
+  // Search
+  hybridSearch,
 } from './queries';

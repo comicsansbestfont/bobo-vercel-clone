@@ -60,6 +60,7 @@ export type Message = {
   token_count: number;
   created_at: string;
   sequence_number: number;
+  embedding?: string | number[]; // Vector embedding
 };
 
 export type File = {
@@ -71,6 +72,7 @@ export type File = {
   file_size: number;
   content_text: string;
   created_at: string;
+  embedding?: string | number[]; // Vector embedding
 };
 
 /**
@@ -128,6 +130,13 @@ export type ChatWithProject = Chat & {
 export type ProjectWithStats = Project & {
   chat_count: number;
   last_activity_at: string | null;
+};
+
+export type SearchResult = {
+  id: string;
+  content: string;
+  similarity: number;
+  source_type: 'project' | 'global';
 };
 
 /**
@@ -218,7 +227,22 @@ export type Database = {
         Relationships: [];
       };
     };
-    Functions: {};
+    Functions: {
+      hybrid_search: {
+        Args: {
+          p_query_embedding: number[];
+          p_match_threshold: number;
+          p_match_count: number;
+          p_active_project_id: string;
+        };
+        Returns: {
+          result_id: string;
+          result_content: string;
+          result_similarity: number;
+          result_source_type: 'project' | 'global';
+        }[];
+      };
+    };
     Enums: {};
   };
 };

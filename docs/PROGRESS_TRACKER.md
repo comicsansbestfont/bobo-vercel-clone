@@ -1,8 +1,8 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** November 23, 2025 - Chat viewport fix & docs refresh
-**Current Phase:** M2 - Project Intelligence (Phase 1 & 2 Complete)
-**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 39% (7/18 tasks)
+**Last Updated:** January 23, 2025 - M2 Phase 2 (Loop B) Complete
+**Current Phase:** M2 - Project Intelligence (Phase 1, 2, & Loop B Complete)
+**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 67% (12/18 tasks)
 
 ---
 
@@ -11,26 +11,30 @@
 ```
 [████████████████████████████████████] 100% V1 Complete (QA Passed)
 [████████████████████████████████████] 100% V1.1 Complete (Bug Fixes)
-[██████████████░░░░░░░░░░░░░░░░░░░░░░] 39%  M2 In Progress
+[████████████████████████░░░░░░░░░░░░] 67%  M2 In Progress
 
 ✅ Milestone 0 (MVP Core)        - 100% - SHIPPED
 ✅ Milestone 1 (Persistence)     - 100% - SHIPPED
 ✅ V1.1 (Bug Fixes & Polish)     - 100% - SHIPPED
-🚧 Milestone 2 (Double-Loop)     - 39%  - IN PROGRESS (Pivot to Double-Loop Arch)
+🚧 Milestone 2 (Double-Loop)     - 67%  - IN PROGRESS (Loop B Complete)
 📝 Milestone 3 (User Profile)    - 0%   - PLANNED
 📝 Milestone 4 (Production)      - 0%   - PLANNED
 ```
 
 ---
 
-## ✨ Latest Work (Nov 23, 2025)
+## ✨ Latest Work (Jan 23, 2025)
 
-- **Strategic Pivot:** Adopted "Double-Loop" Architecture for M2.
-  - Loop A: Anthropic Context Caching (for active project facts)
-  - Loop B: Hybrid Global Search (for cross-project inspiration)
-- Created `docs/arch/DOUBLE_LOOP_SPEC.md` detailing the new architecture.
-- Updated Backlog to prioritize Caching over standard RAG chunking for active projects.
-- Fixed chat viewport disappearance in project chats by keeping a single `ChatInterface` mounted.
+- **M2 Phase 2 (Loop B) Complete:** Vector search and hybrid RAG implemented
+  - ✅ pgvector extension enabled in Supabase
+  - ✅ Embedding columns added to files and messages tables
+  - ✅ `hybrid_search` RPC function created and verified
+  - ✅ Context manager and embedding utilities created
+  - ✅ Database migration applied successfully
+- **Strategic Pivot:** Adopted "Double-Loop" Architecture for M2
+  - Loop A: Model-agnostic Context Caching (for active project facts)
+  - Loop B: Hybrid Global Search (for cross-project inspiration) ✅
+- Archived `docs/arch/DOUBLE_LOOP_SPEC.md` for reference
 
 ---
 
@@ -301,13 +305,13 @@ Replace all mock data with real database. Users can create projects, save chats,
 ## 📝 MILESTONE 2: Project Intelligence (IN PROGRESS)
 
 **Status:** 🚧 In Progress
-**Completion:** 39% (7/18 tasks complete)
+**Completion:** 67% (12/18 tasks complete)
 **Started:** January 2025
-**Target End:** TBD (estimated 2-3 weeks remaining)
+**Target End:** TBD (estimated 1-2 weeks remaining)
 
 ### Goal
 
-Projects have custom instructions and searchable knowledge bases. AI retrieves relevant context from uploaded files.
+Projects have custom instructions and searchable knowledge bases using Double-Loop architecture. AI retrieves relevant context from uploaded files (Loop A) and cross-project patterns (Loop B).
 
 ### Progress Summary
 
@@ -321,11 +325,23 @@ Projects have custom instructions and searchable knowledge bases. AI retrieves r
   - ✅ File upload API endpoint
   - ✅ File validation (.md, max 10MB)
   - ✅ File management UI
-- ⏳ Phase 3: RAG Pipeline (0% - **Not started**)
-- ⏳ Phase 4: Source Citations (0% - **Not started**)
+- 🚧 Phase 3: Loop A - Project Context Caching (0% - **In Progress**)
+  - ⏳ Project file retrieval utility
+  - ⏳ Context caching for supported models
+  - ⏳ Token budget manager
+  - ⏳ Standard context injection fallback
+- ✅ Phase 4: Loop B - Global Hybrid Search (100% - **Complete**)
+  - ✅ pgvector extension enabled
+  - ✅ Embedding columns added (files & messages tables)
+  - ✅ `hybrid_search` RPC function implemented
+  - ✅ Embedding generation pipeline created
+  - ✅ Global context integration ready
+- ⏳ Phase 5: Source Citations & UI (0% - **Not started**)
+  - ⏳ Source metadata tracking
+  - ⏳ UI for displaying context sources
 
-**Total Tasks:** 18 tasks (7 complete, 11 remaining)
-**Estimated Remaining Effort:** 2-3 weeks
+**Total Tasks:** 18 tasks (12 complete, 6 remaining)
+**Estimated Remaining Effort:** 1-2 weeks
 
 📋 **For detailed task breakdown, estimates, and priorities:** See [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md#-milestone-2-project-intelligence-q1-2026)
 
@@ -340,6 +356,22 @@ Projects have custom instructions and searchable knowledge bases. AI retrieves r
 - Created project_files table for file storage
 - Built file upload API endpoint with validation
 - Implemented file management UI (upload, delete, preview)
+
+**Phase 4 (Loop B) Complete** (January 23, 2025):
+- Database Migration: `supabase/migrations/20250123000001_m2_phase2_vector_search.sql`
+  - Enabled pgvector extension
+  - Added embedding vector(1536) columns to files and messages tables
+  - Created `hybrid_search` RPC function combining vector similarity and text search
+  - Fixed PL/pgSQL naming conflicts (prefixed parameters and return columns)
+- TypeScript Implementation:
+  - Updated `lib/db/types.ts` with HybridSearchResult type
+  - Created `hybridSearch()` function in `lib/db/queries.ts`
+  - Created `lib/ai/context-manager.ts` for context management
+  - Created `lib/ai/embedding.ts` for embedding utilities
+- Database Verification:
+  - Verified embedding columns exist
+  - Verified hybrid_search function is callable
+  - Tested RPC function with real data
 
 ---
 

@@ -19,8 +19,12 @@ import {
   getProject,
   type MessagePart,
   type MessageContent,
+  type SearchResult,
 } from '@/lib/db';
 import { getModel } from '@/lib/ai/models';
+import { getProjectContext, prepareSystemPrompt } from '@/lib/ai/context-manager';
+import { hybridSearch } from '@/lib/db';
+import { generateEmbedding, embedAndSaveMessage } from '@/lib/ai/embedding';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -34,6 +38,7 @@ if (typeof globalThis !== 'undefined') {
  * Helper function to count tokens for message parts
  */
 function getTokenCount(parts: MessagePart[]): number {
+  if (!parts || !Array.isArray(parts)) return 0;
   const text = parts
     .map((part) => {
       if (part.type === 'text' && part.text) return part.text;
@@ -87,6 +92,7 @@ export async function POST(req: Request) {
       chatId?: string;
       projectId?: string;
     } = await req.json();
+    console.log('[DEBUG] Chat Request:', { model, chatId: providedChatId, projectId, msgCount: messages?.length });
 
     // Check if API key is configured
     if (!process.env.AI_GATEWAY_API_KEY) {
@@ -126,12 +132,85 @@ export async function POST(req: Request) {
 
     // Fetch custom instructions from project if chat belongs to one
     let customInstructions = '';
+    let activeProjectId = projectId;
+
     const chat = await getChat(activeChatId);
     if (chat && chat.project_id) {
+      activeProjectId = chat.project_id;
       const project = await getProject(chat.project_id);
       if (project && project.custom_instructions) {
         customInstructions = project.custom_instructions;
       }
+    }
+
+    // Prepare System Prompt with Context Caching (Loop A)
+    let systemPrompt = customInstructions
+      ? `${customInstructions}\n\nYou are a helpful assistant that can answer questions and help with tasks`
+      : 'You are a helpful assistant that can answer questions and help with tasks';
+
+    if (activeProjectId) {
+      try {
+        const projectContext = await getProjectContext(activeProjectId);
+        const prepared = prepareSystemPrompt(systemPrompt, projectContext, model);
+        systemPrompt = prepared.system;
+      } catch (err) {
+        console.error('[api/chat] failed to load project context', err);
+      }
+    }
+
+    // Hybrid Search (Loop B)
+    // Search for relevant global context from other projects
+    let globalContext = '';
+    try {
+      const lastUserMessage = messages[messages.length - 1];
+      console.log('[DEBUG] Last User Message:', lastUserMessage);
+
+      let userText = '';
+      if (lastUserMessage) {
+        if (typeof (lastUserMessage as any).content === 'string') {
+          userText = (lastUserMessage as any).content;
+        } else if (Array.isArray(lastUserMessage.parts)) {
+          userText = lastUserMessage.parts
+            .filter(p => p.type === 'text')
+            .map(p => p.text)
+            .join(' ');
+        }
+      }
+
+      if (userText) {
+        const queryEmbedding = await generateEmbedding(userText);
+        const searchResults = await hybridSearch(
+          queryEmbedding,
+          0.82, // High threshold for "Wisdom"
+          5,    // Top 5 results
+          activeProjectId || '00000000-0000-0000-0000-000000000000' // Empty UUID if no project
+        );
+
+        if (searchResults.length > 0) {
+          const globalSnippets = searchResults
+            .filter((r: SearchResult) => r.source_type === 'global')
+            .map((r: SearchResult) => `- ${r.content}`)
+            .join('\n');
+
+          if (globalSnippets) {
+            globalContext = `
+### RELEVANT MEMORY & ASSOCIATIONS (Inspiration)
+The following information is from your PAST WORK in other projects.
+<global_context>
+${globalSnippets}
+</global_context>
+INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
+- If the user asks for a strategy, look here for what worked before.
+- If the user is writing content, look here for connecting ideas.
+- WARNING: Do NOT use names, specific IDs, or confidential data points from this section unless explicitly asked to cross-reference.
+`;
+            // Append to system prompt
+            systemPrompt += `\n\n${globalContext}`;
+          }
+        }
+      }
+    } catch (err) {
+      console.error('[api/chat] hybrid search failed', err);
     }
 
     // Normalize roles to avoid invalid payloads to the gateway
@@ -154,20 +233,25 @@ export async function POST(req: Request) {
 
     if (isOpenAIModel) {
       // Direct gateway call with raw OpenAI-compatible payload to avoid SDK shaping issues.
-      const messagesForPayload = normalizedMessages.map((msg) => ({
-        role: msg.role,
-        content: (msg.parts || [])
-          .map((p) => ('text' in p && p.text ? p.text : ''))
-          .join(''),
-      }));
+      const messagesForPayload = normalizedMessages.map((msg) => {
+        console.log('[DEBUG] Mapping msg:', msg);
+        const content = typeof (msg as any).content === 'string'
+          ? (msg as any).content
+          : (msg.parts || [])
+            .map((p) => ('text' in p && p.text ? p.text : ''))
+            .join('');
 
-      // Prepend custom instructions as system message if they exist
-      if (customInstructions) {
-        messagesForPayload.unshift({
-          role: 'system',
-          content: customInstructions,
-        });
-      }
+        return {
+          role: msg.role,
+          content,
+        };
+      });
+
+      // Prepend system message
+      messagesForPayload.unshift({
+        role: 'system',
+        content: systemPrompt,
+      });
 
       const payload = {
         model,
@@ -213,7 +297,7 @@ export async function POST(req: Request) {
       const encoder = new TextEncoder();
       const reader = upstream.body?.getReader();
       const streamingDone = (() => {
-        let resolve: () => void = () => {};
+        let resolve: () => void = () => { };
         const promise = new Promise<void>((r) => (resolve = r));
         return { promise, resolve };
       })();
@@ -325,12 +409,20 @@ export async function POST(req: Request) {
             const lastUser = [...normalizedMessages].reverse().find((m) => m.role === 'user');
             if (lastUser) {
               const userParts = (lastUser.parts || []) as MessagePart[];
-              await createMessage({
+              const userMsg = await createMessage({
                 chat_id: activeChatId!,
                 role: 'user',
                 content: { parts: userParts },
                 token_count: getTokenCount(userParts),
               });
+
+              // Generate embedding for user message (background)
+              if (userMsg) {
+                const userText = userParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
+                if (userText) {
+                  embedAndSaveMessage(userMsg.id, userText).catch(console.error);
+                }
+              }
               const firstTextPart = userParts.find((p) => p.type === 'text');
               if (firstTextPart?.text) {
                 await updateChatTitleFromMessage(activeChatId!, firstTextPart.text);
@@ -339,12 +431,20 @@ export async function POST(req: Request) {
 
             // Save assistant message
             if (assistantParts.length > 0) {
-              await createMessage({
+              const assistantMsg = await createMessage({
                 chat_id: activeChatId!,
                 role: 'assistant',
                 content: { parts: assistantParts },
                 token_count: getTokenCount(assistantParts),
               });
+
+              // Generate embedding for assistant message (background)
+              if (assistantMsg) {
+                const assistantText = assistantParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
+                if (assistantText) {
+                  embedAndSaveMessage(assistantMsg.id, assistantText).catch(console.error);
+                }
+              }
             }
 
             // Update chat last_message_at
@@ -370,9 +470,7 @@ export async function POST(req: Request) {
     const result = streamText({
       model: getModel(webSearch ? 'perplexity/sonar' : model),
       messages: modelMessages,
-      system: customInstructions
-        ? `${customInstructions}\n\nYou are a helpful assistant that can answer questions and help with tasks`
-        : 'You are a helpful assistant that can answer questions and help with tasks',
+      system: systemPrompt,
 
       // Save messages after streaming completes
       onFinish: async ({ text, usage }) => {
@@ -384,12 +482,20 @@ export async function POST(req: Request) {
           if (lastUserMessage && lastUserMessage.role === 'user') {
             const userMessageParts = (lastUserMessage.parts || []) as MessagePart[];
 
-            await createMessage({
+            const userMsg = await createMessage({
               chat_id: activeChatId!,
               role: 'user',
               content: { parts: userMessageParts },
               token_count: getTokenCount(userMessageParts),
             });
+
+            // Generate embedding for user message (background)
+            if (userMsg) {
+              const userText = userMessageParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
+              if (userText) {
+                embedAndSaveMessage(userMsg.id, userText).catch(console.error);
+              }
+            }
 
             // Update chat title from first user message if still "New Chat"
             const firstTextPart = userMessageParts.find(p => p.type === 'text');
@@ -401,12 +507,17 @@ export async function POST(req: Request) {
           // Save assistant response
           const assistantParts: MessagePart[] = [{ type: 'text', text: text }];
 
-          await createMessage({
+          const assistantMsg = await createMessage({
             chat_id: activeChatId!,
             role: 'assistant',
             content: { parts: assistantParts },
             token_count: usage?.totalTokens || getTokenCount(assistantParts),
           });
+
+          // Generate embedding for assistant message (background)
+          if (assistantMsg) {
+            embedAndSaveMessage(assistantMsg.id, text).catch(console.error);
+          }
 
           // Update chat's last_message_at
           await updateChat(activeChatId!, {

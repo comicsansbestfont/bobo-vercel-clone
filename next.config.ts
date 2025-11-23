@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ['@mermaid-js/parser'],
+  experimental: {
+    optimizePackageImports: ['streamdown'],
+  },
 };
 
 export default nextConfig;

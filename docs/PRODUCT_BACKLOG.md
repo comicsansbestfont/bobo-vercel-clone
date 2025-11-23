@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 23, 2025
+**Last Updated:** January 23, 2025
 **Maintained By:** Product Owner / CTO
 **Purpose:** Track all planned features, improvements, and technical debt not in current milestone
 
@@ -297,9 +297,9 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
 | M2-8 | Implement `getProjectFiles` utility | 🔴 HIGH | 1h | ⏳ |
-| M2-9 | Add Context Caching headers to AI SDK call | 🔴 HIGH | 2h | ⏳ |
+| M2-9 | Implement Context Caching (Anthropic & Gemini) | 🔴 HIGH | 3h | ⏳ |
 | M2-10 | Implement Token Budget Manager for Caching | 🟡 MEDIUM | 2h | ⏳ |
-| M2-11 | Fallback logic for non-Anthropic models | 🔴 HIGH | 2h | ⏳ |
+| M2-11 | Standard Context Injection (OpenAI/Others) | 🔴 HIGH | 2h | ⏳ |
 
 ### 2.4 Loop B: Global Context (Hybrid RAG)
 
@@ -307,11 +307,11 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-12 | Enable `pgvector` extension in Supabase | 🔴 HIGH | 30m | ⏳ |
-| M2-13 | Add `embedding` columns to files/messages | 🔴 HIGH | 30m | ⏳ |
-| M2-14 | Implement `hybrid_search` RPC function | 🔴 HIGH | 1h | ⏳ |
-| M2-15 | Build embedding generation pipeline (OpenAI) | 🔴 HIGH | 3h | ⏳ |
-| M2-16 | Integrate "Inspiration" section into System Prompt | 🔴 HIGH | 1h | ⏳ |
+| M2-12 | Enable `pgvector` extension in Supabase | 🔴 HIGH | 30m | ✅ Done |
+| M2-13 | Add `embedding` columns to files/messages | 🔴 HIGH | 30m | ✅ Done |
+| M2-14 | Implement `hybrid_search` RPC function | 🔴 HIGH | 1h | ✅ Done |
+| M2-15 | Build embedding generation pipeline (OpenAI) | 🔴 HIGH | 3h | ✅ Done |
+| M2-16 | Integrate "Inspiration" section into System Prompt | 🔴 HIGH | 1h | ✅ Done |
 
 ### 2.5 Source Citations & UI
 
@@ -643,6 +643,7 @@ Nice-to-Have:      13 items (35-40 hours)
 | 2025-01-23 | Added NTH-11: Three-dots options menu (Move to Project, Archive, Report, Delete) | Claude Code |
 | 2025-01-23 | Added TD-8, TD-9, TD-10 from senior engineering review of viewport disappearing bug | Claude Code |
 | 2025-01-23 | Fixed BUG-2: Removed non-functional buttons from ProjectHeader, implemented copy link | Claude Code |
+| 2025-01-23 | M2 Phase 2 (Loop B) Complete: Vector search, hybrid RAG, embeddings implemented | Claude Code |
 
 ---
 

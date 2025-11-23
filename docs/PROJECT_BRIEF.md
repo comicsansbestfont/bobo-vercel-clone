@@ -1,8 +1,8 @@
 # Bobo AI Chatbot - Comprehensive Project Brief
 
-**Version:** 2.0
-**Last Updated:** November 22, 2025
-**Status:** Milestone 1 - In Development
+**Version:** 2.1
+**Last Updated:** January 23, 2025
+**Status:** Milestone 2 - In Progress (67% Complete)
 
 ---
 
@@ -122,24 +122,25 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 
 ### Milestone 2: Project Intelligence (Q1 2025)
 
-**Goal:** Projects have custom instructions and searchable knowledge bases.
+**Goal:** Projects have custom instructions and contextual knowledge using Double-Loop architecture.
 
 **Timeline:** 2-3 weeks after M1
-**Status:** 📝 Planned
+**Status:** 🚧 In Progress (67% Complete)
 
 **Deliverables:**
-- Custom system instructions per project
-- File upload API (markdown files)
-- Chunking and embedding generation
-- Vector search with pgvector
-- Context injection in chat responses
-- Source citation display
+- ✅ Custom system instructions per project
+- ✅ File upload API (markdown files)
+- ✅ Vector search with pgvector (Loop B)
+- ✅ Embedding generation and hybrid search
+- ⏳ Context caching for active projects (Loop A)
+- ⏳ Source citation display
 
 **Success Criteria:**
-- User uploads .md file → auto-chunked and embedded
-- User asks question → AI retrieves relevant chunks
-- AI response includes sources from knowledge base
-- Context tracking accounts for injected knowledge
+- ✅ User uploads .md file → embedded with vector search
+- ✅ User asks question in project → AI uses project files (Loop A)
+- ✅ User asks cross-project question → AI finds relevant patterns (Loop B)
+- ⏳ AI response includes sources from knowledge base
+- ⏳ Context tracking accounts for injected knowledge
 
 ### Milestone 3: Global Memory (Q1 2025)
 
@@ -200,6 +201,7 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 
 ### Architecture Diagram
 
+#### System Architecture
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                         Frontend                             │
@@ -235,8 +237,79 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 │  - Claude        │ │  - projects     │ │ - Facts          │
 │  - Gemini        │ │  - chats        │ │ - Decisions      │
 │  - Deepseek      │ │  - messages     │ │ - Knowledge      │
-│  - Perplexity    │ │  - embeddings   │ │   graph          │
+│  - Perplexity    │ │  - files        │ │   graph          │
+│                  │ │  - embeddings   │ │                  │
 └──────────────────┘ └─────────────────┘ └──────────────────┘
+```
+
+#### Double-Loop Architecture (M2)
+```
+┌────────────────────────────────────────────────────────────────┐
+│                  DOUBLE-LOOP ARCHITECTURE                       │
+│          Model-Agnostic Context Management System               │
+└────────────────────────────────────────────────────────────────┘
+
+                         User Query
+                             │
+                             ▼
+                    ┌────────────────┐
+                    │  Chat API      │
+                    │  /api/chat     │
+                    └────┬───────┬───┘
+                         │       │
+        ┌────────────────┘       └────────────────┐
+        │                                         │
+        ▼                                         ▼
+┌──────────────────────┐            ┌──────────────────────────┐
+│  LOOP A: PROJECT     │            │  LOOP B: GLOBAL          │
+│  CONTEXT CACHING     │            │  HYBRID SEARCH           │
+│  (High Fidelity)     │            │  (Associative Wisdom)    │
+└──────────────────────┘            └──────────────────────────┘
+        │                                         │
+        │ 1. Get project files                   │ 1. Generate embedding
+        │ 2. Get custom instructions             │ 2. Vector similarity
+        │ 3. Check token budget                  │ 3. Text search (tsvector)
+        │                                         │ 4. Reciprocal Rank Fusion
+        ▼                                         ▼
+┌──────────────────────┐            ┌──────────────────────────┐
+│  Model Supports      │            │  Supabase pgvector       │
+│  Caching?            │            │  hybrid_search RPC       │
+│  (Gemini, Claude)    │            │                          │
+└───┬──────────┬───────┘            │  - Search files table    │
+    │ Yes      │ No                 │  - Search messages table │
+    ▼          ▼                    │  - Cosine similarity     │
+┌────────┐  ┌─────────┐            │  - Weight: 0.7 vector    │
+│Prompt  │  │ Full    │            │            0.3 text      │
+│Caching │  │Context  │            └──────────┬───────────────┘
+└────┬───┘  └────┬────┘                       │
+     │           │                            │
+     └─────┬─────┘                            │ Top 5 results
+           │                                  │ (excluding current
+           │                                  │  project)
+           ▼                                  ▼
+      ┌────────────────────────────────────────────────┐
+      │      SYSTEM PROMPT CONSTRUCTION                │
+      │                                                 │
+      │  1. ACTIVE PROJECT CONTEXT (Authoritative)     │
+      │     - Full files from Loop A                   │
+      │     - Custom instructions                      │
+      │     - "Ground truth" for current work          │
+      │                                                 │
+      │  2. RELEVANT MEMORY (Inspiration)              │
+      │     - Snippets from Loop B (other projects)    │
+      │     - "Wisdom" for pattern matching            │
+      │     - Cross-project learnings                  │
+      └─────────────────┬──────────────────────────────┘
+                        │
+                        ▼
+                   ┌─────────┐
+                   │   LLM   │
+                   │  (Any   │
+                   │  Model) │
+                   └────┬────┘
+                        │
+                        ▼
+                 Streaming Response
 ```
 
 ### Data Flow
@@ -244,20 +317,41 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 **Chat Message Flow:**
 1. User types message → PromptInput component
 2. `handleSubmit` → calls `sendMessage` from useChat
-3. POST to `/api/chat` with messages, model, settings
+3. POST to `/api/chat` with messages, model, settings, projectId
 4. API checks context usage → compress if critical
-5. API injects project context (M2) and memories (M3)
-6. API calls AI model via AI Gateway
-7. Streaming response → parsed by AI SDK → rendered
-8. Messages saved to database in real-time
+5. API executes Double-Loop context gathering (M2):
+   - **Loop A:** Project files + custom instructions (high fidelity)
+   - **Loop B:** Hybrid search across all projects (associative wisdom)
+6. API injects memories from Supermemory (M3)
+7. API calls AI model via AI Gateway with enriched context
+8. Streaming response → parsed by AI SDK → rendered
+9. Messages saved to database with embeddings
 
-**Project Context Flow (M2):**
+**Loop A: Project Context Caching (M2):**
 1. User uploads file → POST `/api/projects/[id]/files`
-2. File chunked → embeddings generated → stored in pgvector
+2. File stored in database → embedding generated → stored in pgvector
 3. User sends message in project chat
-4. API performs semantic search on project knowledge
-5. Top 3-5 chunks retrieved and injected into system prompt
-6. AI response uses context from files
+4. API retrieves ALL project files and custom instructions
+5. If model supports caching (Gemini, Claude):
+   - Marks project context for prompt caching
+   - Subsequent requests reuse cached context
+6. If model doesn't support caching:
+   - Injects full project context into system prompt
+   - Token budget checked to ensure it fits
+7. AI response has high-fidelity access to project knowledge
+
+**Loop B: Global Hybrid Search (M2):**
+1. User sends message (in any project or standalone chat)
+2. API generates embedding for user query
+3. API calls `hybrid_search` RPC function in Supabase:
+   - Vector similarity search (cosine distance)
+   - Text search using tsvector
+   - Reciprocal Rank Fusion to merge results
+   - Weighted combination: 70% vector + 30% text
+4. Top 5 results retrieved from files and messages tables
+5. Results filtered to exclude current project (avoid duplication)
+6. Relevant snippets injected as "inspiration" context
+7. AI response can reference patterns from other projects
 
 **Memory Flow (M3):**
 1. Every N messages → extract facts (background job)
@@ -343,12 +437,18 @@ messages
 - UI: Project view page, sidebar organization
 - Chats can be standalone or in projects
 
-**Implementation (M2):**
+**Implementation (M2 - Double-Loop):**
 - File upload: `/api/projects/[id]/files`
-- Chunking: 500-1000 token chunks with overlap
 - Embeddings: OpenAI text-embedding-3-small (1536d)
-- Storage: Supabase pgvector
-- Retrieval: Cosine similarity, top 5 chunks
+- Storage: Supabase pgvector (vector(1536) columns)
+- Loop A: Full file context injection (no chunking for active project)
+  - Model-specific caching for Gemini and Claude
+  - Standard context injection for other models
+- Loop B: Hybrid search combining:
+  - Vector similarity (cosine distance)
+  - Full-text search (tsvector)
+  - Reciprocal Rank Fusion algorithm
+  - Weighted: 70% vector + 30% text
 
 **UX:**
 - Create project from sidebar

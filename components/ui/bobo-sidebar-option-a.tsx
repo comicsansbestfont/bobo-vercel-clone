@@ -28,6 +28,7 @@ import type { ProjectWithStats, ChatWithProject } from "@/lib/db/types";
 import { CreateProjectModal } from "@/components/project/create-project-modal";
 import { toast } from "sonner";
 import { Skeleton } from "./skeleton";
+import { ThemeSwitcherConnected } from "@/components/theme-switcher-connected";
 
 // Skeleton loading components
 const ProjectSkeleton = () => {
@@ -443,6 +444,9 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
 
           {/* Bottom Section */}
           <div className="border-t border-neutral-200 pt-4 dark:border-neutral-700">
+            <div className="mb-4 flex justify-start px-2">
+              <ThemeSwitcherConnected />
+            </div>
             <SidebarLink
               link={{
                 label: "Settings",

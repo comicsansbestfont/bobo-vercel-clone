@@ -12,6 +12,7 @@ import {
   getProject,
   type FileInsert,
 } from '@/lib/db';
+import { embedAndSaveFile } from '@/lib/ai/embedding';
 
 type RouteContext = {
   params: Promise<{ id: string }>;
@@ -187,6 +188,11 @@ export async function POST(
         }
       );
     }
+
+    // Generate embedding in background (fire and forget)
+    embedAndSaveFile(file.id, content).catch(err =>
+      console.error('[api/files] background embedding failed', err)
+    );
 
     return Response.json({ file }, { status: 201 });
   } catch (error) {
