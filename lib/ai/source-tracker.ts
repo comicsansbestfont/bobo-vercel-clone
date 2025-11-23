@@ -105,65 +105,103 @@ export function trackGlobalSources(
 
 /**
  * Insert inline citation markers [1], [2] into the response text
- * Strategy: Insert citations after sentences that reference the source
+ * Strategy: Insert citations after complete sentences that reference the source
+ *
+ * Fixed algorithm that prevents mid-word/mid-number insertions
  */
 export function insertInlineCitations(
   responseText: string,
   citations: Citation[]
 ): CitationResult {
-  let modifiedText = responseText;
-  const citationMap = new Map<number, Citation>();
+  // Track insertions to adjust positions correctly
+  const insertions: Array<{ position: number; text: string; citationIndex: number }> = [];
 
-  citations.forEach(citation => {
-    citationMap.set(citation.index, citation);
-  });
-
-  // Find insertion points for each citation
-  // Strategy 1: Insert after mentions of source title/filename
+  // Strategy 1: Find sentences mentioning each source and mark for insertion
   for (const citation of citations) {
-    if (citation.sourceTitle) {
-      const titleWithoutExt = citation.sourceTitle.replace(/\.md$/i, '');
-      const titleRegex = new RegExp(
-        `(\\b${escapeRegex(titleWithoutExt)}\\b[^.!?]*[.!?])`,
-        'gi'
-      );
+    if (!citation.sourceTitle) continue;
 
-      modifiedText = modifiedText.replace(titleRegex, (match, sentence) => {
-        // Record position
-        citation.positions.push(modifiedText.indexOf(match));
-        return `${sentence}[${citation.index}]`;
+    const titleWithoutExt = citation.sourceTitle.replace(/\.md$/i, '');
+    const escapedTitle = escapeRegex(titleWithoutExt);
+
+    // Match sentences containing the source title
+    // Sentence ends with: . ! ? : (markdown-aware)
+    const sentenceRegex = new RegExp(
+      `([^.!?:]*\\b${escapedTitle}\\b[^.!?:]*[.!?:])`,
+      'gi'
+    );
+
+    const matches = responseText.matchAll(sentenceRegex);
+    let foundMatch = false;
+
+    for (const match of matches) {
+      if (!match.index) continue;
+
+      // Find the position right after the sentence-ending punctuation
+      const sentenceEnd = match.index + match[0].length;
+
+      // Ensure we're not in the middle of a word
+      // Check next character isn't alphanumeric
+      const nextChar = responseText[sentenceEnd];
+      if (nextChar && /[a-zA-Z0-9]/.test(nextChar)) {
+        continue; // Skip if next char is alphanumeric (we're mid-word)
+      }
+
+      insertions.push({
+        position: sentenceEnd,
+        text: ` [${citation.index}]`,
+        citationIndex: citation.index,
       });
+
+      foundMatch = true;
+      break; // Only insert once per source
+    }
+
+    if (foundMatch) {
+      citation.positions.push(insertions[insertions.length - 1].position);
     }
   }
 
-  // Strategy 2: If no citations inserted yet, use content-based heuristics
-  // Look for sentences that likely came from the source
+  // Strategy 2: For sources not yet cited, check content similarity
   for (const citation of citations) {
     if (citation.positions.length === 0 && citation.type === 'global-source') {
-      // For global sources with high similarity, insert at relevant paragraphs
+      // For high similarity global sources, insert at end of first paragraph
       if (citation.similarity && citation.similarity > 0.85) {
-        // Simple heuristic: Insert at end of first paragraph
-        const firstParaEnd = modifiedText.indexOf('\n\n');
+        const firstParaEnd = responseText.indexOf('\n\n');
         if (firstParaEnd > 0) {
-          const insertPos = firstParaEnd;
-          modifiedText =
-            modifiedText.substring(0, insertPos) +
-            `[${citation.index}]` +
-            modifiedText.substring(insertPos);
-          citation.positions.push(insertPos);
+          insertions.push({
+            position: firstParaEnd,
+            text: ` [${citation.index}]`,
+            citationIndex: citation.index,
+          });
+          citation.positions.push(firstParaEnd);
         }
       }
     }
   }
 
-  // Strategy 3: Fallback - insert citations at the end of response if not yet placed
+  // Strategy 3: Fallback - append uncited sources at end
   const notYetCited = citations.filter(c => c.positions.length === 0);
   if (notYetCited.length > 0) {
-    const citationNumbers = notYetCited.map(c => `[${c.index}]`).join('');
-    modifiedText = modifiedText.trim() + citationNumbers;
-    notYetCited.forEach(c => {
-      c.positions.push(modifiedText.length - citationNumbers.length);
+    const endPosition = responseText.length;
+    notYetCited.forEach(citation => {
+      insertions.push({
+        position: endPosition,
+        text: ` [${citation.index}]`,
+        citationIndex: citation.index,
+      });
+      citation.positions.push(endPosition);
     });
+  }
+
+  // Apply all insertions in reverse order (to preserve positions)
+  insertions.sort((a, b) => b.position - a.position);
+
+  let modifiedText = responseText;
+  for (const insertion of insertions) {
+    modifiedText =
+      modifiedText.substring(0, insertion.position) +
+      insertion.text +
+      modifiedText.substring(insertion.position);
   }
 
   return {

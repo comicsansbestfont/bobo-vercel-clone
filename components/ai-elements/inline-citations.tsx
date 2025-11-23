@@ -25,8 +25,15 @@ export function CitationMarker({ number, onClick }: CitationMarkerProps) {
     <sup
       className="inline-flex items-center justify-center w-4 h-4 ml-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
       role="button"
-      aria-label={`Citation ${number}`}
+      tabIndex={0}
+      aria-label={`Citation ${number}, click to view source`}
     >
       [{number}]
     </sup>
@@ -136,7 +143,10 @@ function CitationItem({ source, projectId, isGlobal }: CitationItemProps) {
     : null;
 
   const content = (
-    <div className="flex items-start gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group">
+    <div
+      className="flex items-start gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors group"
+      data-citation={citationNumber}
+    >
       <span className="flex-shrink-0 text-xs font-medium text-blue-600 dark:text-blue-400 mt-0.5">
         [{citationNumber}]
       </span>
@@ -163,11 +173,11 @@ function CitationItem({ source, projectId, isGlobal }: CitationItemProps) {
 
   if (href) {
     return (
-      <Link href={href} className="block">
+      <Link href={href} className="block" data-citation={citationNumber}>
         {content}
       </Link>
     );
   }
 
-  return content;
+  return <div data-citation={citationNumber}>{content}</div>;
 }

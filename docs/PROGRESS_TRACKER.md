@@ -23,7 +23,14 @@
 
 ---
 
-## ✨ Latest Work (Jan 23, 2025)
+## ✨ Latest Work (Nov 23, 2025)
+
+- **M2 CITATIONS BUG FIXES (100%):** All critical bugs resolved, citations fully functional
+  - ✅ **Bug #1 FIXED**: Citations now visible in UI (rehype-raw integration)
+  - ✅ **Bug #2 FIXED**: Citations placed after complete sentences (improved algorithm)
+  - ✅ Automated testing with Chrome DevTools (all tests passed)
+  - ✅ Accessibility enhancements (keyboard navigation, ARIA labels)
+  - ✅ Documentation: Test report and bug resolution notes
 
 - **M2 COMPLETE (100%):** Double-Loop Architecture with Perplexity-style Citations
   - ✅ Loop A: Project Context Caching (high-fidelity file access)
@@ -32,11 +39,13 @@
   - ✅ Smart source tracking (detects actually-used files)
   - ✅ Clickable sources with file viewer page
   - ✅ Expandable citations list (Project Files + Global Inspiration)
+
 - **Technical Implementation:**
   - Backend: Source tracker with text parsing and citation insertion
-  - Frontend: CitationMarker and CitationsList components
+  - Frontend: CitationMarker and CitationsList components (with rehype-raw)
   - Database: Vector search with RRF algorithm
   - UI: Perplexity-inspired collapsible source lists
+  - Testing: Automated browser testing with Chrome DevTools
 
 ---
 

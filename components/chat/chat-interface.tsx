@@ -39,6 +39,7 @@ import {
 
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import rehypeRaw from 'rehype-raw';
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
@@ -114,46 +115,6 @@ const models = [
     value: 'deepseek/deepseek-r1',
   },
 ];
-
-/**
- * Parse citation markers [1], [2] in text and replace with CitationMarker components
- */
-function parseCitationMarkers(text: string): React.ReactNode {
-  const citationRegex = /\[(\d+)\]/g;
-  const parts: React.ReactNode[] = [];
-  let lastIndex = 0;
-  let match;
-
-  while ((match = citationRegex.exec(text)) !== null) {
-    // Add text before the citation
-    if (match.index > lastIndex) {
-      parts.push(text.substring(lastIndex, match.index));
-    }
-
-    // Add the citation marker
-    const citationNumber = parseInt(match[1], 10);
-    parts.push(
-      <CitationMarker
-        key={`cite-${match.index}`}
-        number={citationNumber}
-        onClick={() => {
-          // Scroll to citation in list (optional enhancement)
-          const citationElement = document.querySelector(`[data-citation="${citationNumber}"]`);
-          citationElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }}
-      />
-    );
-
-    lastIndex = match.index + match[0].length;
-  }
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push(text.substring(lastIndex));
-  }
-
-  return parts.length > 0 ? parts : text;
-}
 
 interface ChatInterfaceProps {
   projectId?: string;
@@ -506,20 +467,51 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
                 const partType = part.type as string;
 
                 if (partType === 'text') {
-                  // Parse citation markers in text
-                  const textWithCitations = parseCitationMarkers((part as { text?: string }).text || '');
-                  const isStringContent = typeof textWithCitations === 'string';
+                  const plainText = (part as { text?: string }).text || '';
+
+                  // Extract source parts from this message for citation markers
+                  const sourceParts = (message.parts as unknown as MessagePart[]).filter(
+                    (p) => p.type === 'project-source' || p.type === 'global-source'
+                  );
+
+                  // Wrap [1], [2] markers in <sup> tags for styling
+                  const textWithSupTags = plainText.replace(/\[(\d+)\]/g, '<sup class="citation-marker">[$1]</sup>');
+
+                  // Custom component mapping to replace <sup> with CitationMarker
+                  const citationComponents = {
+                    sup: ({ children, className }: { children?: React.ReactNode; className?: string }) => {
+                      if (className === 'citation-marker') {
+                        const text = children?.toString() || '';
+                        const match = text.match(/^\[(\d+)\]$/);
+
+                        if (match) {
+                          const citationNumber = parseInt(match[1], 10);
+                          return (
+                            <CitationMarker
+                              key={`cite-${citationNumber}`}
+                              number={citationNumber}
+                              onClick={() => {
+                                const citationElement = document.querySelector(`[data-citation="${citationNumber}"]`);
+                                citationElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                              }}
+                            />
+                          );
+                        }
+                      }
+
+                      return <sup className={className}>{children}</sup>;
+                    },
+                  };
 
                   return (
                     <Message key={`${message.id}-${i}`} from={message.role}>
                       <MessageContent>
-                        {isStringContent ? (
-                          <MessageResponse>{textWithCitations}</MessageResponse>
-                        ) : (
-                          <div className="size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                            {textWithCitations}
-                          </div>
-                        )}
+                        <MessageResponse
+                          rehypePlugins={[rehypeRaw as any]}
+                          components={citationComponents}
+                        >
+                          {textWithSupTags}
+                        </MessageResponse>
                       </MessageContent>
                       {message.role === 'assistant' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id && (
                         <MessageActions>
