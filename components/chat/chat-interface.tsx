@@ -42,7 +42,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import type { Message as DBMessage } from '@/lib/db/types';
+import type { Message as DBMessage, MessagePart } from '@/lib/db/types';
 
 import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon } from 'lucide-react';
 
@@ -503,64 +503,76 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
                 </Sources>
               )}
               {message.parts.map((part, i) => {
-                switch (part.type) {
-                  case 'text':
-                    // Parse citation markers in text
-                    const textWithCitations = parseCitationMarkers(part.text || '');
+                const partType = part.type as string;
 
-                    return (
-                      <Message key={`${message.id}-${i}`} from={message.role}>
-                        <MessageContent>
-                          <MessageResponse>
+                if (partType === 'text') {
+                  // Parse citation markers in text
+                  const textWithCitations = parseCitationMarkers((part as { text?: string }).text || '');
+                  const isStringContent = typeof textWithCitations === 'string';
+
+                  return (
+                    <Message key={`${message.id}-${i}`} from={message.role}>
+                      <MessageContent>
+                        {isStringContent ? (
+                          <MessageResponse>{textWithCitations}</MessageResponse>
+                        ) : (
+                          <div className="size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
                             {textWithCitations}
-                          </MessageResponse>
-                        </MessageContent>
-                        {message.role === 'assistant' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id && (
-                          <MessageActions>
-                            <MessageAction
-                              onClick={() => regenerate()}
-                              label="Retry"
-                            >
-                              <RefreshCcwIcon className="size-3" />
-                            </MessageAction>
-                            <MessageAction
-                              onClick={() =>
-                                navigator.clipboard.writeText(part.text)
-                              }
-                              label="Copy"
-                            >
-                              <CopyIcon className="size-3" />
-                            </MessageAction>
-                          </MessageActions>
+                          </div>
                         )}
-                      </Message>
-                    );
-                  case 'reasoning':
-                    return (
-                      <Reasoning
-                        key={`${message.id}-${i}`}
-                        className="w-full"
-                        isStreaming={status === 'streaming' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id}
-                      >
-                        <ReasoningTrigger />
-                        <ReasoningContent>{part.text}</ReasoningContent>
-                      </Reasoning>
-                    );
-                  // Don't render source parts directly (they'll be in CitationsList)
-                  case 'project-source':
-                  case 'global-source':
-                    return null;
-                  default:
-                    return null;
+                      </MessageContent>
+                      {message.role === 'assistant' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id && (
+                        <MessageActions>
+                          <MessageAction
+                            onClick={() => regenerate()}
+                            label="Retry"
+                          >
+                            <RefreshCcwIcon className="size-3" />
+                          </MessageAction>
+                          <MessageAction
+                            onClick={() =>
+                              navigator.clipboard.writeText((part as { text?: string }).text || '')
+                            }
+                            label="Copy"
+                          >
+                            <CopyIcon className="size-3" />
+                          </MessageAction>
+                        </MessageActions>
+                      )}
+                    </Message>
+                  );
                 }
+
+                if (partType === 'reasoning') {
+                  const reasoningText = (part as { text?: string }).text ?? '';
+                  return (
+                    <Reasoning
+                      key={`${message.id}-${i}`}
+                      className="w-full"
+                      isStreaming={status === 'streaming' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id}
+                    >
+                      <ReasoningTrigger />
+                      <ReasoningContent>{reasoningText}</ReasoningContent>
+                    </Reasoning>
+                  );
+                }
+
+                // Don't render source parts directly (they'll be in CitationsList)
+                if (partType === 'project-source' || partType === 'global-source') {
+                  return null;
+                }
+
+                return null;
               })}
 
               {/* Render citations list at bottom for assistant messages */}
               {message.role === 'assistant' && (
                 <CitationsList
-                  sources={message.parts.filter(
-                    (p) => p.type === 'project-source' || p.type === 'global-source'
-                  )}
+                  sources={
+                    (message.parts as unknown as MessagePart[]).filter(
+                      (p) => p.type === 'project-source' || p.type === 'global-source'
+                    )
+                  }
                   projectId={projectId}
                 />
               )}

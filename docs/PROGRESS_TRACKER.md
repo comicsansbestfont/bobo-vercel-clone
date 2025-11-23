@@ -1,8 +1,8 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** January 23, 2025 - M2 Phase 2 (Loop B) Complete
-**Current Phase:** M2 - Project Intelligence (Phase 1, 2, & Loop B Complete)
-**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 67% (12/18 tasks)
+**Last Updated:** January 23, 2025 - M2 Complete (100%)
+**Current Phase:** M2 - Project Intelligence ✅ COMPLETE
+**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ 100% (18/18 tasks)
 
 ---
 
@@ -11,12 +11,12 @@
 ```
 [████████████████████████████████████] 100% V1 Complete (QA Passed)
 [████████████████████████████████████] 100% V1.1 Complete (Bug Fixes)
-[████████████████████████░░░░░░░░░░░░] 67%  M2 In Progress
+[████████████████████████████████████] 100% M2 Complete (Double-Loop + Citations)
 
 ✅ Milestone 0 (MVP Core)        - 100% - SHIPPED
 ✅ Milestone 1 (Persistence)     - 100% - SHIPPED
 ✅ V1.1 (Bug Fixes & Polish)     - 100% - SHIPPED
-🚧 Milestone 2 (Double-Loop)     - 67%  - IN PROGRESS (Loop B Complete)
+✅ Milestone 2 (Double-Loop)     - 100% - SHIPPED
 📝 Milestone 3 (User Profile)    - 0%   - PLANNED
 📝 Milestone 4 (Production)      - 0%   - PLANNED
 ```
@@ -25,16 +25,18 @@
 
 ## ✨ Latest Work (Jan 23, 2025)
 
-- **M2 Phase 2 (Loop B) Complete:** Vector search and hybrid RAG implemented
-  - ✅ pgvector extension enabled in Supabase
-  - ✅ Embedding columns added to files and messages tables
-  - ✅ `hybrid_search` RPC function created and verified
-  - ✅ Context manager and embedding utilities created
-  - ✅ Database migration applied successfully
-- **Strategic Pivot:** Adopted "Double-Loop" Architecture for M2
-  - Loop A: Model-agnostic Context Caching (for active project facts)
-  - Loop B: Hybrid Global Search (for cross-project inspiration) ✅
-- Archived `docs/arch/DOUBLE_LOOP_SPEC.md` for reference
+- **M2 COMPLETE (100%):** Double-Loop Architecture with Perplexity-style Citations
+  - ✅ Loop A: Project Context Caching (high-fidelity file access)
+  - ✅ Loop B: Global Hybrid Search (cross-project pattern matching)
+  - ✅ Inline citations [1], [2] inserted into AI responses
+  - ✅ Smart source tracking (detects actually-used files)
+  - ✅ Clickable sources with file viewer page
+  - ✅ Expandable citations list (Project Files + Global Inspiration)
+- **Technical Implementation:**
+  - Backend: Source tracker with text parsing and citation insertion
+  - Frontend: CitationMarker and CitationsList components
+  - Database: Vector search with RRF algorithm
+  - UI: Perplexity-inspired collapsible source lists
 
 ---
 
@@ -302,12 +304,12 @@ Replace all mock data with real database. Users can create projects, save chats,
 
 ---
 
-## 📝 MILESTONE 2: Project Intelligence (IN PROGRESS)
+## 📝 MILESTONE 2: Project Intelligence (COMPLETE)
 
-**Status:** 🚧 In Progress
-**Completion:** 67% (12/18 tasks complete)
+**Status:** ✅ Complete
+**Completion:** 100% (18/18 tasks complete)
 **Started:** January 2025
-**Target End:** TBD (estimated 1-2 weeks remaining)
+**Completed:** January 23, 2025
 
 ### Goal
 
@@ -325,23 +327,25 @@ Projects have custom instructions and searchable knowledge bases using Double-Lo
   - ✅ File upload API endpoint
   - ✅ File validation (.md, max 10MB)
   - ✅ File management UI
-- 🚧 Phase 3: Loop A - Project Context Caching (0% - **In Progress**)
-  - ⏳ Project file retrieval utility
-  - ⏳ Context caching for supported models
-  - ⏳ Token budget manager
-  - ⏳ Standard context injection fallback
+- ✅ Phase 3: Loop A - Project Context Caching (100% - **Complete**)
+  - ✅ Project file retrieval utility (`getProjectContext`)
+  - ✅ Context caching for supported models (Anthropic, Gemini)
+  - ✅ Token budget manager (rough estimation)
+  - ✅ Standard context injection fallback
 - ✅ Phase 4: Loop B - Global Hybrid Search (100% - **Complete**)
   - ✅ pgvector extension enabled
   - ✅ Embedding columns added (files & messages tables)
   - ✅ `hybrid_search` RPC function implemented
   - ✅ Embedding generation pipeline created
   - ✅ Global context integration ready
-- ⏳ Phase 5: Source Citations & UI (0% - **Not started**)
-  - ⏳ Source metadata tracking
-  - ⏳ UI for displaying context sources
+- ✅ Phase 5: Source Citations & UI (100% - **Complete**)
+  - ✅ Source metadata tracking with smart detection
+  - ✅ Inline citation markers [1], [2] in responses
+  - ✅ Perplexity-style expandable source lists
+  - ✅ Clickable sources with file viewer pages
 
-**Total Tasks:** 18 tasks (12 complete, 6 remaining)
-**Estimated Remaining Effort:** 1-2 weeks
+**Total Tasks:** 18 tasks (18 complete, 0 remaining)
+**Total Effort:** 3 weeks
 
 📋 **For detailed task breakdown, estimates, and priorities:** See [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md#-milestone-2-project-intelligence-q1-2026)
 
@@ -356,6 +360,14 @@ Projects have custom instructions and searchable knowledge bases using Double-Lo
 - Created project_files table for file storage
 - Built file upload API endpoint with validation
 - Implemented file management UI (upload, delete, preview)
+
+**Phase 3 (Loop A) Complete** (January 23, 2025):
+- Context Manager: `lib/ai/context-manager.ts`
+  - `getProjectContext()` - Fetches all project files
+  - `prepareSystemPrompt()` - Model-specific caching logic
+  - Anthropic prompt caching support
+  - Gemini native caching support
+  - Fallback for other models
 
 **Phase 4 (Loop B) Complete** (January 23, 2025):
 - Database Migration: `supabase/migrations/20250123000001_m2_phase2_vector_search.sql`
@@ -372,6 +384,21 @@ Projects have custom instructions and searchable knowledge bases using Double-Lo
   - Verified embedding columns exist
   - Verified hybrid_search function is callable
   - Tested RPC function with real data
+
+**Phase 5 (Source Citations) Complete** (January 23, 2025):
+- Source Tracking: `lib/ai/source-tracker.ts`
+  - `trackProjectSources()` - Smart file usage detection
+  - `trackGlobalSources()` - Maps hybrid search results
+  - `insertInlineCitations()` - Perplexity-style [1], [2] markers
+  - Content similarity analysis for accurate attribution
+- Frontend UI: `components/ai-elements/inline-citations.tsx`
+  - `CitationMarker` - Superscript [1] with hover tooltip
+  - `CitationsList` - Expandable source list at message bottom
+  - Separate sections for "Project Files" vs "Global Inspiration"
+- Integration:
+  - Chat API modified to insert citations in both OpenAI and non-OpenAI paths
+  - Message rendering parses citation markers
+  - File viewer page created at `/projects/[id]/files/[fileId]`
 
 ---
 
