@@ -186,6 +186,12 @@ export default function ProjectPage() {
     );
   }
 
+  // Create first chat function
+  const handleCreateFirstChat = () => {
+    // Navigate to the project page which will trigger a new chat creation
+    router.push(`/project/${projectId}?createChat=true`);
+  };
+
   // Show chat list when no chat is selected
   const formatRelativeDate = (date: Date): string => {
     const now = new Date();
@@ -264,41 +270,48 @@ export default function ProjectPage() {
           onNameChange={handleNameChange}
         />
 
-        {/* Chat List Table */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
-          {chats.length === 0 ? (
-            <ProjectEmptyState />
-          ) : (
-            <div className="cursor-pointer">
-              <TableProvider columns={columns} data={tableData}>
-                <TableHeader>
-                  {({ headerGroup }) => (
-                    <TableHeaderGroup headerGroup={headerGroup}>
-                      {({ header }) => <TableHead header={header} />}
-                    </TableHeaderGroup>
-                  )}
-                </TableHeader>
-                <TableBody>
-                  {({ row }) => (
-                    <TableRow
-                      row={row}
-                      className="hover:bg-muted/50 transition-colors"
-                    >
-                      {({ cell }) => (
-                        <TableCell
-                          cell={cell}
-                          className="cursor-pointer"
-                          onClick={() =>
-                            router.push(`/project/${projectId}?chatId=${row.original.id}`)
-                          }
-                        />
-                      )}
-                    </TableRow>
-                  )}
-                </TableBody>
-              </TableProvider>
-            </div>
-          )}
+        {/* Chat List Table or Empty State with Chat Interface */}
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-6 py-4">
+            {chats.length === 0 ? (
+              <ProjectEmptyState />
+            ) : (
+              <div className="cursor-pointer">
+                <TableProvider columns={columns} data={tableData}>
+                  <TableHeader>
+                    {({ headerGroup }) => (
+                      <TableHeaderGroup headerGroup={headerGroup}>
+                        {({ header }) => <TableHead header={header} />}
+                      </TableHeaderGroup>
+                    )}
+                  </TableHeader>
+                  <TableBody>
+                    {({ row }) => (
+                      <TableRow
+                        row={row}
+                        className="hover:bg-muted/50 transition-colors"
+                      >
+                        {({ cell }) => (
+                          <TableCell
+                            cell={cell}
+                            className="cursor-pointer"
+                            onClick={() =>
+                              router.push(`/project/${projectId}?chatId=${row.original.id}`)
+                            }
+                          />
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </TableProvider>
+              </div>
+            )}
+          </div>
+
+          {/* Chat Interface at bottom - always visible */}
+          <div className="border-t border-neutral-200 dark:border-neutral-700">
+            <ChatInterface projectId={projectId} className="h-auto p-4" />
+          </div>
         </div>
       </div>
     </BoboSidebarOptionA>
