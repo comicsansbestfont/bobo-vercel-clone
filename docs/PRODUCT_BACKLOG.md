@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 22, 2025 - 11:59 PM
+**Last Updated:** January 23, 2025
 **Maintained By:** Product Owner / CTO
 **Purpose:** Track all planned features, improvements, and technical debt not in current milestone
 
@@ -56,6 +56,9 @@ Critical Path (V1) → High Priority (M2) → Medium Priority (M3) → Low Prior
 | TD-5 | Bundle size analysis and optimization | Performance | 🟢 LOW | 2h | Not blocking V1 launch |
 | TD-6 | Precise tokenization with WASM tiktoken | Performance | 🟡 MEDIUM | 3h | Current heuristic fallback sufficient for V1 |
 | TD-7 | Background/async compression | Performance | 🟡 MEDIUM | 2-3h | Manual trigger works, not urgent |
+| TD-8 | Chat history state synchronization (viewport bug) | Code Quality | 🟡 HIGH | 3-4h | Workaround implemented, proper fix needed |
+| TD-9 | Proper Next.js router usage for chat ID updates | Code Quality | 🟡 MEDIUM | 1h | Uses window.history instead of Next.js router |
+| TD-10 | Add E2E tests for chat creation flow | Testing | 🟡 HIGH | 6-8h | Prevent regressions like TD-8 |
 
 ### TD-1: Verbose Logging Cleanup
 
@@ -169,6 +172,199 @@ Currently compression is triggered synchronously when user submits a message and
 **Assigned To:** Post-V1 UX polish
 **Milestone:** V2 - Performance & Polish
 **Related:** Context management, memory compression
+
+---
+
+### TD-8: Chat History State Synchronization (Viewport Disappearing Bug)
+
+**Description:**
+The current chat creation flow has a race condition that causes the viewport to disappear after sending the first message in a new chat. **This affects both main chats and project chats** since they use the same `ChatInterface` component. This happens because:
+
+1. User sends first message (no chatId yet)
+2. Backend creates chat and returns chatId in header
+3. Frontend sets chatId in state → triggers history loading effect
+4. Effect calls `setMessages([])` which **wipes streaming response from UI**
+5. Backend hasn't finished persisting messages yet (done in `onFinish` callback)
+6. User sees viewport disappear mid-response
+
+**Current Workaround (Tactical Patch - Implemented):**
+- Added `justCreatedChatRef` to skip history loading for newly created chats
+- Works but uses refs inappropriately (not React-idiomatic)
+- Refs don't participate in React's data flow, hard to debug
+- Ref gets set/cleared inside effects (fragile if component remounts)
+
+**Why This Is Technical Debt:**
+- Band-aid solution that doesn't address root cause
+- Uses `window.history.replaceState` instead of Next.js router (see TD-9)
+- State synchronization timing issue remains
+- Multiple sources of truth for messages (streaming UI vs database)
+
+**Recommended Solutions:**
+
+**Option 1: Message Count Guard (Quick Win - Next Sprint)**
+```typescript
+// Don't reload if we already have messages (they're from streaming)
+if (messages.length > 0) return;
+```
+- More declarative than ref-based guard
+- Still a workaround but cleaner
+- Estimated: 30 minutes
+
+**Option 2: Intelligent Message Merging (Proper Fix - M2)**
+```typescript
+setMessages(prev => {
+  // Don't overwrite existing messages, merge intelligently
+  const existingIds = new Set(prev.map(m => m.id));
+  const newMessages = uiMessages.filter(m => !existingIds.has(m.id));
+  return [...prev, ...newMessages];
+});
+```
+- Handles race conditions properly
+- More robust, works in all scenarios
+- Estimated: 2-3 hours (includes testing)
+
+**Option 3: Separate "New Chat" State (Alternative)**
+- Add `isNewChat` boolean state instead of ref
+- More React-idiomatic than ref approach
+- Estimated: 1 hour
+
+**Action Items (Recommended Path):**
+1. **Next Sprint:** Replace ref guard with message count guard (Option 1)
+2. **M2:** Implement intelligent message merging (Option 2)
+3. **M2:** Add E2E test for "send first message in new chat" flow
+4. **M2:** Add timestamps to messages to detect if DB is "behind" UI state
+
+**Estimated Effort:** 3-4 hours total
+**Assigned To:** Post-V1 bug fix sprint
+**Milestone:** V2 - Code Quality & Stability
+**Related:** TD-9 (router usage), chat creation flow, state management
+**Filed:** 2025-01-23 (from senior engineering review)
+
+---
+
+### TD-9: Proper Next.js Router Usage for Chat ID Updates
+
+**Description:**
+Currently using `window.history.replaceState()` to update URL with chatId when creating new chats:
+
+```typescript
+if (typeof window !== 'undefined') {
+  const url = new URL(window.location.href);
+  url.searchParams.set('chatId', responseChatId);
+  window.history.replaceState({}, '', url.toString());
+}
+```
+
+**Problems:**
+1. **Router out of sync** - `useSearchParams()` won't update reactively
+2. **Next.js state desync** - Router cache doesn't know about URL change
+3. **Hydration risks** - Could cause mismatches on remount/navigation
+4. **Navigation interceptors broken** - Custom middleware won't fire
+5. **App Router best practices violation** - Bypasses Next.js router entirely
+
+**Impact:**
+- Medium severity (works but fragile)
+- Could break in future Next.js versions
+- Makes debugging harder (router state doesn't match URL)
+- Prevents proper use of Next.js navigation features
+
+**Correct Implementation:**
+```typescript
+import { useRouter } from 'next/navigation';
+
+const router = useRouter();
+
+// In fetch callback:
+if (responseChatId && !chatId) {
+  setChatId(responseChatId);
+  router.replace(`?chatId=${responseChatId}`, { scroll: false });
+}
+```
+
+**Benefits:**
+- Keeps Next.js router in sync
+- `searchParams` updates reactively
+- Proper integration with App Router
+- Future-proof against Next.js changes
+- Enables navigation interceptors/middleware
+
+**Dependencies:**
+- Requires fixing TD-8 first (otherwise router update might trigger re-render)
+- Need to verify `scroll: false` prevents scroll jump
+
+**Action Items:**
+1. Replace `window.history.replaceState` with `router.replace()`
+2. Test that `searchParams` updates correctly
+3. Verify no re-render/flashing issues
+4. Check browser back/forward still works
+
+**Estimated Effort:** 1 hour
+**Assigned To:** Post-V1 cleanup sprint
+**Milestone:** V2 - Code Quality & Stability
+**Related:** TD-8 (state synchronization), Next.js App Router migration
+**Filed:** 2025-01-23 (from senior engineering review)
+
+---
+
+### TD-10: Add E2E Tests for Chat Creation Flow
+
+**Description:**
+The viewport disappearing bug (TD-8) went undetected because we lack automated tests for the critical "create first chat" user flow. We need comprehensive E2E tests to prevent regressions.
+
+**Critical Flows to Test:**
+
+1. **New Chat Creation (Main Page)**
+   - User sends first message from home page
+   - Chat is created in backend
+   - URL updates with chatId
+   - Message streams correctly
+   - **Viewport doesn't disappear during streaming** ← TD-8 regression test
+   - Message persists after refresh
+
+2. **Project Chat Creation**
+   - User creates project
+   - User sends first message in project view
+   - Chat is created and associates with project
+   - **Viewport doesn't disappear during streaming** ← TD-8 regression test
+   - Chat appears in project's chat list
+   - Project appears in sidebar
+
+3. **Chat Persistence & History Loading**
+   - User creates chat with multiple messages
+   - User refreshes page
+   - All messages load correctly
+   - Scroll position maintained
+
+4. **Stop Button During Streaming**
+   - User sends message
+   - User clicks stop button mid-stream
+   - Streaming stops immediately
+   - Partial response is saved
+
+**Testing Framework Options:**
+- Playwright (recommended - already have test recording from user)
+- Cypress
+- Puppeteer
+
+**Implementation Plan:**
+1. Set up Playwright in project
+2. Convert user's Lighthouse recording to Playwright test
+3. Add assertions for viewport visibility
+4. Add database state checks
+5. Run in CI/CD pipeline
+
+**Success Criteria:**
+- All critical flows pass
+- Tests run in <2 minutes
+- Run on every PR
+- Catch TD-8 type bugs before they ship
+
+**Estimated Effort:** 6-8 hours
+**Assigned To:** Post-V1 QA sprint
+**Milestone:** V2 - Testing & Quality
+**Related:** TD-8 (viewport bug), TD-3 (unit tests)
+**Priority:** 🟡 HIGH (prevents regressions)
+**Filed:** 2025-01-23 (from senior engineering review)
 
 ---
 
@@ -366,7 +562,54 @@ Currently compression is triggered synchronously when user submits a message and
 | ID | Bug | Severity | Impact | Workaround | Status |
 |----|-----|----------|--------|------------|--------|
 | BUG-1 | Tokenizer fallback warnings in console | 🟢 LOW | Dev only, expected behavior | N/A - working as designed | 📝 Not a bug |
-| BUG-2 | _(No known bugs currently)_ | - | - | - | - |
+| BUG-2 | Non-functional buttons in ProjectHeader | 🟡 MEDIUM | False affordances, bad UX | Implement or remove | ✅ Fixed |
+
+---
+
+### BUG-2: Non-Functional Buttons in ProjectHeader
+
+**Description:**
+The `ProjectHeader` component (`components/project/project-header.tsx`) displays 5 action buttons, but only 1 is functional:
+- ✅ Settings button - works (links to project settings)
+- ❌ Share button - no onClick handler
+- ❌ Copy link button - no onClick handler
+- ❌ Export button - no onClick handler
+- ❌ More options button - no onClick handler
+
+**Impact:**
+- **False affordances** - buttons look clickable but do nothing
+- **User frustration** - users click and nothing happens
+- **Accessibility violation** (WCAG 2.1) - screen readers announce clickable buttons that don't work
+- **Dead code** - taking up DOM/visual space with no benefit
+
+**Root Cause:**
+Buttons were added as UI placeholders but never implemented. Common anti-pattern in prototyping that made it to production.
+
+**Solution Implemented:**
+1. ✅ Removed dead buttons (Share, Export, More options)
+2. ✅ Kept Settings button (functional)
+3. ✅ Implemented Copy Link button with toast notification
+
+**Code Changes:**
+- Removed 3 non-functional buttons
+- Added `navigator.clipboard.writeText()` to Copy button
+- Added `toast.success()` feedback
+- Cleaned up imports (removed unused icons)
+
+**Testing:**
+- [x] Copy button copies project URL to clipboard
+- [x] Toast notification appears on copy
+- [x] Settings button still works
+- [x] No console errors
+- [x] Keyboard navigation works
+- [x] Screen reader announces correctly
+
+**Estimated Effort:** 10 minutes
+**Assigned To:** Immediate fix (completed)
+**Milestone:** V1 Polish
+**Priority:** 🟡 MEDIUM (UX improvement)
+**Status:** ✅ Fixed (2025-01-23)
+**Related:** UX polish, accessibility compliance
 
 ---
 
@@ -386,6 +629,75 @@ Currently compression is triggered synchronously when user submits a message and
 | NTH-8 | Message editing | Edit previous user messages | 🟡 MEDIUM | 🟡 MEDIUM (3h) | 0 |
 | NTH-9 | Voice input | Speech-to-text for messages | 🟢 LOW | 🔴 HIGH (6h) | 0 |
 | NTH-10 | Image generation | DALL-E integration | 🟢 LOW | 🟡 MEDIUM (4h) | 0 |
+| NTH-11 | Three-dots options menu | Chat actions menu with Move to Project, Archive, Report, Delete (ChatGPT-style) | 🟡 MEDIUM | 🟡 MEDIUM (4-5h) | 1 |
+| NTH-12 | Project sharing | Share project via link with permissions (view/edit) | 🟡 MEDIUM | 🔴 HIGH (8h) | 0 |
+| NTH-13 | Project export | Export project data (chats, files, settings) as JSON/ZIP | 🟡 MEDIUM | 🟡 MEDIUM (3h) | 0 |
+
+### NTH-11: Three-Dots Options Menu
+
+**Description:**
+Implement a ChatGPT-style three-dots menu in the chat interface that provides quick access to chat management actions. The menu should be accessible from the chat header and include the following options:
+
+**Features:**
+1. **Move to Project** - Submenu to select destination project
+   - Display list of available projects
+   - Update chat's project association via API
+   - Show success toast notification
+
+2. **Archive** - Archive the current conversation
+   - Hide chat from main view but keep accessible
+   - Add `archived` boolean field to chats table
+   - Filter archived chats in sidebar (with toggle to show)
+
+3. **Report** - Report issues or inappropriate content
+   - Open modal with report form
+   - Categories: Bug, Inappropriate Content, Feedback
+   - Submit to API endpoint or email notification
+
+4. **Delete** - Permanently delete the conversation
+   - Show confirmation dialog (styled in red like ChatGPT)
+   - Cascade delete messages
+   - Redirect to home after deletion
+   - Success toast notification
+
+**UI/UX Requirements:**
+- Menu triggered by three-dots icon (⋮) in chat header
+- Dropdown menu using shadcn/ui DropdownMenu component
+- "Delete" option styled in red/destructive color
+- "Move to Project" has arrow indicator (→) for submenu
+- Icons for each menu item
+- Keyboard navigation support
+- Click outside to close
+
+**Technical Implementation:**
+1. Create `ChatOptionsMenu` component in `components/chat/`
+2. Add to chat interface header (app/page.tsx or dedicated chat header component)
+3. Database migration: add `archived` column to `chats` table
+4. API endpoints:
+   - PATCH `/api/chats/[id]` - update archived status (already exists, extend)
+   - POST `/api/reports` - new endpoint for report submissions
+5. Integrate with existing DELETE `/api/chats/[id]` endpoint
+6. Use existing PATCH `/api/chats/[id]/project` for move functionality
+
+**Dependencies:**
+- shadcn/ui DropdownMenu, AlertDialog components
+- Existing chat API endpoints (mostly already built)
+- Icon library (Lucide React)
+
+**Estimated Effort:** 4-5 hours
+- Component creation: 1.5h
+- Archive functionality (DB + API): 1h
+- Report modal and endpoint: 1.5h
+- Testing and polish: 1h
+
+**Priority Justification:**
+- Improves chat management UX
+- Common pattern in modern chat interfaces
+- Low technical risk (mostly UI work)
+- Enhances existing features rather than adding new complexity
+
+**Design Reference:**
+See ChatGPT's three-dots menu for visual reference (provided in feature request)
 
 ---
 
@@ -395,8 +707,8 @@ Currently compression is triggered synchronously when user submits a message and
 
 ```
 🔴 CRITICAL:  6 items (V1 must-haves)
-🟡 HIGH:      47 items (M2/M3 core features + deferred improvements)
-🟠 MEDIUM:    8 items (Nice-to-haves)
+🟡 HIGH:      50 items (M2/M3 core features + deferred improvements)
+🟠 MEDIUM:    10 items (Nice-to-haves)
 🟢 LOW:       15 items (Future improvements)
 ```
 
@@ -404,17 +716,17 @@ Currently compression is triggered synchronously when user submits a message and
 
 ```
 V1 (Critical):     6 items  (6-8 hours)
-Deferred (TD):     7 items  (13-15 hours)
+Deferred (TD):     10 items (23-28 hours)
 M2 (Intelligence): 18 items (3 weeks)
 M3 (Memory):       22 items (3 weeks)
 M4 (Production):   25 items (4+ weeks)
 Research:          6 items  (12 hours)
-Nice-to-Have:      8 items  (20+ hours)
+Nice-to-Have:      13 items (35-40 hours)
 ```
 
 ### Total Backlog Size
 
-**Total Items:** 92
+**Total Items:** 100
 **Total Estimated Effort:** ~11-13 weeks (full-time)
 
 ---
@@ -455,6 +767,9 @@ Nice-to-Have:      8 items  (20+ hours)
 | 2025-11-22 | Documented V1 critical path (6 remaining tasks) | Claude Code |
 | 2025-11-22 | Merged old product-backlog.md context management items (TD-6, TD-7) | Claude Code |
 | 2025-11-22 | Consolidated to single PRODUCT_BACKLOG.md (archived old version) | Claude Code |
+| 2025-01-23 | Added NTH-11: Three-dots options menu (Move to Project, Archive, Report, Delete) | Claude Code |
+| 2025-01-23 | Added TD-8, TD-9, TD-10 from senior engineering review of viewport disappearing bug | Claude Code |
+| 2025-01-23 | Fixed BUG-2: Removed non-functional buttons from ProjectHeader, implemented copy link | Claude Code |
 
 ---
 
@@ -491,4 +806,4 @@ Nice-to-Have:      8 items  (20+ hours)
 
 **Document Maintained By:** Product Owner / CTO
 **Next Grooming Session:** After V1 ships
-**Last Updated:** November 22, 2025
+**Last Updated:** January 23, 2025
