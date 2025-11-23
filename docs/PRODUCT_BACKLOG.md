@@ -317,10 +317,10 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-17 | Return source metadata in responses | 🔴 HIGH | 2h | ⏳ |
-| M2-18 | Display "Used Project Files" vs "Global Inspiration" | 🔴 HIGH | 2h | ⏳ |
+| M2-17 | Return source metadata in responses | 🔴 HIGH | 2h | ✅ Done |
+| M2-18 | Display "Used Project Files" vs "Global Inspiration" | 🔴 HIGH | 2h | ✅ Done |
 
-**Total M2 Tasks:** 18
+**Total M2 Tasks:** 18 (100% Complete)
 **Estimated Effort:** 2-3 weeks
 
 ---
@@ -644,6 +644,7 @@ Nice-to-Have:      13 items (35-40 hours)
 | 2025-01-23 | Added TD-8, TD-9, TD-10 from senior engineering review of viewport disappearing bug | Claude Code |
 | 2025-01-23 | Fixed BUG-2: Removed non-functional buttons from ProjectHeader, implemented copy link | Claude Code |
 | 2025-01-23 | M2 Phase 2 (Loop B) Complete: Vector search, hybrid RAG, embeddings implemented | Claude Code |
+| 2025-01-23 | M2 Complete (100%): Inline citations with Perplexity-style source attribution | Claude Code |
 
 ---
 
