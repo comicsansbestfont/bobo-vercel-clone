@@ -254,20 +254,26 @@ export default function ProjectPage() {
                     </TableHeader>
                     <TableBody>
                       {({ row }) => (
-                        <TableRow
-                          row={row}
-                          className="hover:bg-muted/50 transition-colors"
-                        >
-                          {({ cell }) => (
-                            <TableCell
-                              cell={cell}
-                              className="cursor-pointer"
-                              onClick={() =>
-                                router.push(`/project/${projectId}?chatId=${row.original.id}`)
-                              }
-                            />
-                          )}
-                        </TableRow>
+                        (() => {
+                          const chat = row.original as ChatTableRow;
+
+                          return (
+                            <TableRow
+                              row={row}
+                              className="hover:bg-muted/50 transition-colors"
+                            >
+                              {({ cell }) => (
+                                <TableCell
+                                  cell={cell}
+                                  className="cursor-pointer"
+                                  onClick={() =>
+                                    router.push(`/project/${projectId}?chatId=${chat.id}`)
+                                  }
+                                />
+                              )}
+                            </TableRow>
+                          );
+                        })()
                       )}
                     </TableBody>
                   </TableProvider>

@@ -297,7 +297,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
       alreadySubmitted: autoSubmittedMessageRef.current === initialMessage,
     });
 
-    chatLogger.info(`🔍 Status check: status="${status}" (will proceed if not "in_progress")`);
+    chatLogger.info(`🔍 Status check: status="${status}" (will proceed if status is "ready")`);
 
     // Check if we've already auto-submitted this exact message
     if (initialMessage && autoSubmittedMessageRef.current === initialMessage) {
@@ -305,7 +305,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
       return;
     }
 
-    if (initialMessage && chatId && !isLoadingHistory && messages.length === 0 && status !== 'in_progress') {
+    if (initialMessage && chatId && !isLoadingHistory && messages.length === 0 && status === 'ready') {
       chatLogger.success('✅ All conditions met - auto-submitting message');
 
       const decodedMessage = decodeURIComponent(initialMessage);
@@ -318,22 +318,19 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
       justSubmittedRef.current = true;
       chatLogger.info('🚀 Auto-submit - blocking history loads until persistence completes');
 
-      // Submit the message
+      // Submit the message (AI SDK expects a single message + request body)
       chatLogger.info('📤 Calling sendMessage...');
-      sendMessage({
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            role: 'user',
-            parts: [{ type: 'text', text: decodedMessage }],
+      sendMessage(
+        { text: decodedMessage },
+        {
+          body: {
+            model,
+            webSearch,
+            chatId,
+            projectId,
           },
-        ],
-        experimental_metadata: {
-          chatId,
-          model,
-          webSearch,
         },
-      });
+      );
 
       // Clear the message parameter from URL
       const params = new URLSearchParams(window.location.search);

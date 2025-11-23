@@ -41,7 +41,9 @@ interface ProjectViewProps {
   projectName: string;
   chats: Chat[];
   onNameChange?: (newName: string) => void;
-  onSubmit?: (message: PromptInputMessage) => void;
+  onSubmit?: (
+    message: PromptInputMessage & { model: string; webSearch: boolean },
+  ) => void;
 }
 
 const models = [
@@ -71,11 +73,8 @@ export function ProjectView({
     }
 
     // Pass model and webSearch along with the message
-    onSubmit?.({
-      ...message,
-      model,
-      webSearch,
-    });
+    const submission = { ...message, model, webSearch };
+    onSubmit?.(submission);
     setInput("");
   };
 
