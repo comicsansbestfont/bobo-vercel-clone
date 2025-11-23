@@ -330,6 +330,7 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 **Status:** 📝 Planned
 **Target Start:** After M2 ships
 **Focus:** "Bio" Memory using Supermemory.ai. Extracting user facts and preferences (The "User Profile" layer), distinct from the "Global Context" loop handled in M2.
+**Architecture Note:** See `docs/context-memory-vision.md` for how personal Bio, About-You docs, and global memory fit into the Knowledge/Context/Cognitive layers.
 
 ### 3.1 Supermemory Integration
 
@@ -434,6 +435,7 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 **Status:** 📝 Backlog  
 **Target:** After M4 stabilizes (post-production rollout)  
 **Focus:** Turn Bobo into a true “Memory Palace” with project living docs, hierarchical summaries, and a lightweight knowledge graph.
+**Architecture Note:** See `docs/context-memory-vision.md` for the conceptual design of the Cognitive Layer (Project Brains, hierarchical summaries, fact graph, executive briefs).
 
 ### 5.1 Living Documentation & Hierarchical Summaries
 

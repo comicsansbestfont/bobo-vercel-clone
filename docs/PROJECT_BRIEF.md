@@ -80,6 +80,8 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 
 ## 4. Product Vision & Roadmap
 
+> For the detailed architecture of Bobo’s Knowledge, Context, and Cognitive layers (including projects vs chats vs global memory and About‑You docs), see `docs/context-memory-vision.md`.
+
 ### 4.0 Usage-First Roadmap & Dogfooding Guidelines
 
 To avoid “building forever without shipping to myself”, Bobo follows a usage-first cadence:

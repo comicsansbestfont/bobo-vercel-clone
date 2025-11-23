@@ -626,6 +626,7 @@ _No sessions started yet. Will be updated when M4 begins._
 - ✅ Created `docs/product-roadmap.md` with a high-level Gantt-style roadmap and phase summaries (M0–M5).
 - ✅ Updated `docs/PROJECT_BRIEF.md` to add usage-first/dogfooding guidelines and align status/versions with current milestones.
 - 🎯 Focus for upcoming work: design and implement M3 “User Profile & Bio” including personal context seed (“About You” doc) and global memory governance before starting multi-user/scale (M4).
+- ✅ Authored `docs/context-memory-vision.md` to define the Knowledge, Context, and Cognitive layers, including personal Bio, About-You docs, global memory, and the future cognitive/graph layer.
 
 ### Session 2 Highlights (Nov 22 PM)
 
