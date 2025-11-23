@@ -1,8 +1,8 @@
 # Bobo AI Chatbot - Comprehensive Project Brief
 
-**Version:** 2.1
-**Last Updated:** January 23, 2025
-**Status:** Milestone 2 - COMPLETE (100%)
+**Version:** 2.2
+**Last Updated:** November 23, 2025
+**Status:** Milestones 1–2 COMPLETE (100%), preparing for M3–M5
 
 ---
 
@@ -79,6 +79,18 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 ---
 
 ## 4. Product Vision & Roadmap
+
+### 4.0 Usage-First Roadmap & Dogfooding Guidelines
+
+To avoid “building forever without shipping to myself”, Bobo follows a usage-first cadence:
+
+- After each milestone ships (V1, V1.1, M2, etc.), pause net-new features for 1–2 weeks and use Bobo as the primary assistant for real work (coding, planning, docs).  
+- During these periods, only fix bugs, address paper-cuts, and refine backlog priorities based on actual friction you encounter.  
+- Start **M3 (User Profile & Bio)** only after you repeatedly feel the pain of re-explaining who you are, how you like to work, or your long-term preferences.  
+- Start **M4 (Production & Scale)** only once the single-user experience is strong enough that you genuinely want to invite other people into Bobo.  
+- Start **M5 (Cognitive Layer & Living Docs)** after you have months of real data and feel the need for higher-level reviews (weekly briefs, project “brains”, cross-project decision views).
+
+This keeps the roadmap grounded in lived experience: every phase exists to solve pains you actually feel while using Bobo day-to-day.
 
 ### Current State (Milestone 0.5)
 

@@ -618,6 +618,15 @@ _No sessions started yet. Will be updated when M4 begins._
 - Supabase RLS is powerful for future multi-user
 - Consider React Query for API state management
 
+---
+
+## 📝 Session Log – November 23, 2025 (Planning & Roadmap)
+
+- ✅ Updated `docs/PRODUCT_BACKLOG.md` to reflect completed V1/M2, added M3 memory governance tasks, and introduced M5 “Cognitive Layer & Living Documentation”.
+- ✅ Created `docs/product-roadmap.md` with a high-level Gantt-style roadmap and phase summaries (M0–M5).
+- ✅ Updated `docs/PROJECT_BRIEF.md` to add usage-first/dogfooding guidelines and align status/versions with current milestones.
+- 🎯 Focus for upcoming work: design and implement M3 “User Profile & Bio” including personal context seed (“About You” doc) and global memory governance before starting multi-user/scale (M4).
+
 ### Session 2 Highlights (Nov 22 PM)
 
 **Major Accomplishments:**

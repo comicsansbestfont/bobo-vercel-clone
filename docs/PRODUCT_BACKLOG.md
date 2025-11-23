@@ -356,8 +356,16 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 | M3-9 | Implement injection rules & conflict handling | 🔴 HIGH | 3h | ⏳ |
 | M3-10 | Add memory debugger (what was injected?) | 🟡 MEDIUM | 3h | ⏳ |
 
-**Total M3 Tasks:** 7
-**Estimated Effort:** 1 week
+### 3.4 Personal Context Seed (“About You” Doc)
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M3-11 | Personal context profile schema (bio, background, key facts) | 🔴 HIGH | 2h | ⏳ |
+| M3-12 | “About You” settings UI + optional context file upload | 🔴 HIGH | 3h | ⏳ |
+| M3-13 | Inject personal context into system prompt and memory pipeline | 🔴 HIGH | 3h | ⏳ |
+
+**Total M3 Tasks:** 13
+**Estimated Effort:** 2 weeks
 
 ---
 
