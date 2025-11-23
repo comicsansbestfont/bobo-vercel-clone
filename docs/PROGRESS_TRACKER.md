@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** January 23, 2025 - Documentation Cleanup
+**Last Updated:** November 23, 2025 - Chat viewport fix & docs refresh
 **Current Phase:** M2 - Project Intelligence (Phase 1 & 2 Complete)
 **Overall Completion:** V1 ✅ | V1.1 ✅ | M2 39% (7/18 tasks)
 
@@ -20,6 +20,14 @@
 📝 Milestone 3 (Memory)          - 0%   - PLANNED
 📝 Milestone 4 (Production)      - 0%   - PLANNED
 ```
+
+---
+
+## ✨ Latest Work (Nov 23, 2025)
+
+- Fixed chat viewport disappearance in project chats by keeping a single `ChatInterface` mounted and guarding history loads during streaming/persistence.
+- Switched chatId URL updates to `router.replace` and added safe chatId syncing.
+- Project page now hides header/list and shows full-height chat when a chat is active.
 
 ---
 

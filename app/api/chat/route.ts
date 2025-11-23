@@ -138,29 +138,19 @@ export async function POST(req: Request) {
     const allowedRoles = new Set<UIMessage['role']>(['system', 'user', 'assistant']);
     const normalizedMessages: UIMessage[] = (messages || []).map((msg, idx) => {
       if (!allowedRoles.has(msg.role)) {
-        console.warn(
-          '[api/chat] normalizing unsupported role to "user"',
-          { idx, role: msg.role }
-        );
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(
+            '[api/chat] normalizing unsupported role to "user"',
+            { idx, role: msg.role }
+          );
+        }
         return { ...msg, role: 'user' };
       }
       return msg;
     });
 
-    if (model?.startsWith('openai/gpt-5.1')) {
-      console.log('[api/chat] openai gpt-5.1 request messages roles:', normalizedMessages.map((m) => m.role));
-      if (normalizedMessages.length > 0) {
-        console.log('[api/chat] openai gpt-5.1 first message:', normalizedMessages[0]);
-      }
-    }
-
     const isOpenAIModel = model?.startsWith('openai/');
-    const isGpt51 = model?.startsWith('openai/gpt-5.1');
     const modelMessages = convertToModelMessages(normalizedMessages);
-
-    if (isGpt51) {
-      console.log('[api/chat] openai gpt-5.1 modelMessages (sdk):', JSON.stringify(modelMessages, null, 2));
-    }
 
     if (isOpenAIModel) {
       // Direct gateway call with raw OpenAI-compatible payload to avoid SDK shaping issues.
@@ -184,8 +174,6 @@ export async function POST(req: Request) {
         messages: messagesForPayload,
         stream: true,
       };
-
-      console.log('[api/chat] openai direct payload:', JSON.stringify(payload, null, 2));
 
       if (!process.env.AI_GATEWAY_API_KEY) {
         return new Response(
@@ -441,23 +429,6 @@ export async function POST(req: Request) {
       // Return reasoning and sources parts so the UI can render them (aligns with Elements example)
       sendReasoning: true,
       sendSources: true,
-      // Temporary debug: log SSE chunks to identify invalid roles/chunks from providers
-      consumeSseStream: ({ stream }) => {
-        const reader = stream.getReader();
-        (async () => {
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              console.log('[api/chat] stream chunk', value);
-            }
-          } catch (err) {
-            console.error('[api/chat] stream logging error', err);
-          } finally {
-            reader.releaseLock();
-          }
-        })();
-      },
     });
   } catch (error) {
     console.error('Chat API error:', error);

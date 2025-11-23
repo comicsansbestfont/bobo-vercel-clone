@@ -38,7 +38,7 @@ import {
 } from '@/components/ai-elements/prompt-input';
 
 import { useMemo, useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
@@ -117,6 +117,7 @@ interface ChatInterfaceProps {
 
 export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const chatIdFromUrl = searchParams?.get('chatId');
 
   const [input, setInput] = useState('');
@@ -130,8 +131,9 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   // Track which message we've auto-submitted to prevent duplicates
   const autoSubmittedMessageRef = useRef<string | null>(null);
 
-  // Track if we just created this chat to avoid loading empty history
-  const justCreatedChatRef = useRef<boolean>(false);
+  // Track if we just submitted a message to prevent history loading before DB persistence
+  const justSubmittedRef = useRef(false);
+  const persistenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { messages, sendMessage, status, regenerate, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({
@@ -143,19 +145,17 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         // Extract chat ID from header if creating new chat
         const responseChatId = response.headers.get('X-Chat-Id');
         if (responseChatId && !chatId) {
-          // Mark that we just created this chat to avoid loading history immediately
-          justCreatedChatRef.current = true;
+          // Mark that we're creating a new chat to prevent history loading
+          justSubmittedRef.current = true;
+          chatLogger.info('🆕 New chat created - blocking history loads until persistence completes');
 
           // Update state first
           setChatId(responseChatId);
 
-          // Update URL without causing re-render by using replaceState instead of pushState
-          // This prevents Next.js from detecting a navigation and re-rendering
-          if (typeof window !== 'undefined') {
-            const url = new URL(window.location.href);
-            url.searchParams.set('chatId', responseChatId);
-            window.history.replaceState({}, '', url.toString());
-          }
+          // Update URL with Next.js router (keeps router in sync)
+          const params = new URLSearchParams(window.location.search);
+          params.set('chatId', responseChatId);
+          router.replace(`?${params.toString()}`, { scroll: false });
         }
 
         return response;
@@ -170,17 +170,65 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
     onFinish: (message) => {
       // Message finished streaming and is now in the messages array
       console.log('Message finished:', message);
+
+      // Clear the previous timeout if it exists
+      if (persistenceTimeoutRef.current) {
+        clearTimeout(persistenceTimeoutRef.current);
+      }
+
+      // Wait 1.5 seconds for database persistence to complete before allowing history loads
+      persistenceTimeoutRef.current = setTimeout(() => {
+        chatLogger.info('✅ Database persistence window complete - allowing history loads');
+        justSubmittedRef.current = false;
+      }, 1500);
     },
   });
+
+  // Keep local chatId in sync with URL when navigating between chats
+  useEffect(() => {
+    if (!chatIdFromUrl || chatIdFromUrl === chatId) {
+      return;
+    }
+
+    // Only sync when we're not in the middle of sending/streaming a message
+    if (status === 'submitted' || status === 'streaming' || justSubmittedRef.current) {
+      return;
+    }
+
+    chatLogger.info('🔁 Syncing chatId from URL', { chatIdFromUrl });
+
+    setChatId(chatIdFromUrl);
+    setMessages([]);
+  }, [chatIdFromUrl, chatId, status, setMessages]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (persistenceTimeoutRef.current) {
+        clearTimeout(persistenceTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!chatId) return;
     if (chatId !== chatIdFromUrl) return;
 
-    // Don't load history if we just created this chat - messages are already in state
-    if (justCreatedChatRef.current) {
-      chatLogger.info('⏭️  Skipping history load for newly created chat');
-      justCreatedChatRef.current = false;
+    // Don't load history if we already have messages (they're from streaming)
+    if (messages.length > 0) {
+      chatLogger.info('⏭️  Skipping history load - messages already present');
+      return;
+    }
+
+    // Don't load history if a message is currently being sent/streamed
+    if (status === 'submitted' || status === 'streaming') {
+      chatLogger.info('⏭️  Skipping history load - message in progress');
+      return;
+    }
+
+    // Don't load history if we just submitted a message (waiting for DB persistence)
+    if (justSubmittedRef.current) {
+      chatLogger.info('⏭️  Skipping history load - waiting for database persistence');
       return;
     }
 
@@ -231,7 +279,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
     }
 
     loadChatHistory();
-  }, [chatIdFromUrl, setMessages, chatId]);
+  }, [chatIdFromUrl, setMessages, chatId, messages.length, status]);
 
   // Auto-submit initial message from URL parameter
   useEffect(() => {
@@ -266,6 +314,10 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
       // Mark this message as submitted
       autoSubmittedMessageRef.current = initialMessage;
 
+      // Mark that we just submitted a message to prevent race conditions with history loading
+      justSubmittedRef.current = true;
+      chatLogger.info('🚀 Auto-submit - blocking history loads until persistence completes');
+
       // Submit the message
       chatLogger.info('📤 Calling sendMessage...');
       sendMessage({
@@ -284,16 +336,14 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
       });
 
       // Clear the message parameter from URL
-      if (typeof window !== 'undefined') {
-        const url = new URL(window.location.href);
-        url.searchParams.delete('message');
-        window.history.replaceState({}, '', url.toString());
-        chatLogger.info('🧹 Cleared message parameter from URL');
-      }
+      const params = new URLSearchParams(window.location.search);
+      params.delete('message');
+      router.replace(`?${params.toString()}`, { scroll: false });
+      chatLogger.info('🧹 Cleared message parameter from URL');
     } else {
       chatLogger.warn('⏸️  Auto-submit skipped - conditions not met');
     }
-  }, [searchParams, chatId, isLoadingHistory, messages.length, status, sendMessage, model, webSearch]);
+  }, [searchParams, chatId, isLoadingHistory, messages.length, status, sendMessage, model, webSearch, router]);
 
   const handleSubmit = async (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
@@ -315,6 +365,10 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         setIsCompressing(false);
       }
     }
+
+    // Mark that we just submitted a message to prevent race conditions with history loading
+    justSubmittedRef.current = true;
+    chatLogger.info('🚀 Message submitted - blocking history loads until persistence completes');
 
     // Send the message - AI SDK expects { text: string } as first parameter
     // The body in options contains custom data sent to the backend

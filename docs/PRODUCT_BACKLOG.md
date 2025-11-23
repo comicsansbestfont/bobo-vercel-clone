@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** January 23, 2025
+**Last Updated:** November 23, 2025
 **Maintained By:** Product Owner / CTO
 **Purpose:** Track all planned features, improvements, and technical debt not in current milestone
 
@@ -56,8 +56,8 @@ Critical Path (V1) → High Priority (M2) → Medium Priority (M3) → Low Prior
 | TD-5 | Bundle size analysis and optimization | Performance | 🟢 LOW | 2h | Not blocking V1 launch |
 | TD-6 | Precise tokenization with WASM tiktoken | Performance | 🟡 MEDIUM | 3h | Current heuristic fallback sufficient for V1 |
 | TD-7 | Background/async compression | Performance | 🟡 MEDIUM | 2-3h | Manual trigger works, not urgent |
-| TD-8 | Chat history state synchronization (viewport bug) | Code Quality | 🟡 HIGH | 3-4h | Workaround implemented, proper fix needed |
-| TD-9 | Proper Next.js router usage for chat ID updates | Code Quality | 🟡 MEDIUM | 1h | Uses window.history instead of Next.js router |
+| TD-8 | Chat history state synchronization (viewport bug) | Code Quality | 🟢 DONE | 3-4h | Fixed: single ChatInterface mount + guarded history loads |
+| TD-9 | Proper Next.js router usage for chat ID updates | Code Quality | 🟢 DONE | 1h | Uses Next.js router replace for chatId sync |
 | TD-10 | Add E2E tests for chat creation flow | Testing | 🟡 HIGH | 6-8h | Prevent regressions like TD-8 |
 
 ### TD-1: Verbose Logging Cleanup
@@ -177,132 +177,30 @@ Currently compression is triggered synchronously when user submits a message and
 
 ### TD-8: Chat History State Synchronization (Viewport Disappearing Bug)
 
-**Description:**
-The current chat creation flow has a race condition that causes the viewport to disappear after sending the first message in a new chat. **This affects both main chats and project chats** since they use the same `ChatInterface` component. This happens because:
+**Status:** ✅ Resolved (Nov 23, 2025)
 
-1. User sends first message (no chatId yet)
-2. Backend creates chat and returns chatId in header
-3. Frontend sets chatId in state → triggers history loading effect
-4. Effect calls `setMessages([])` which **wipes streaming response from UI**
-5. Backend hasn't finished persisting messages yet (done in `onFinish` callback)
-6. User sees viewport disappear mid-response
+**What changed:**
+- Keep a single `ChatInterface` mounted in project view and hide the project header/list when a `chatId` is active (prevents remount wipe).
+- Guard history loading with streaming/persistence flags (`status`, `justSubmittedRef`, `messages.length`) and a 1.5s DB persistence window.
+- Sync `chatId` via Next.js router and local state without reloading mid-stream.
 
-**Current Workaround (Tactical Patch - Implemented):**
-- Added `justCreatedChatRef` to skip history loading for newly created chats
-- Works but uses refs inappropriately (not React-idiomatic)
-- Refs don't participate in React's data flow, hard to debug
-- Ref gets set/cleared inside effects (fragile if component remounts)
+**Remaining follow-ups (still recommended):**
+1. Implement intelligent history merging instead of overwrite when loading persisted messages.
+2. Add E2E test for “send first message in new chat” (project + main) to prevent regressions.
 
-**Why This Is Technical Debt:**
-- Band-aid solution that doesn't address root cause
-- Uses `window.history.replaceState` instead of Next.js router (see TD-9)
-- State synchronization timing issue remains
-- Multiple sources of truth for messages (streaming UI vs database)
-
-**Recommended Solutions:**
-
-**Option 1: Message Count Guard (Quick Win - Next Sprint)**
-```typescript
-// Don't reload if we already have messages (they're from streaming)
-if (messages.length > 0) return;
-```
-- More declarative than ref-based guard
-- Still a workaround but cleaner
-- Estimated: 30 minutes
-
-**Option 2: Intelligent Message Merging (Proper Fix - M2)**
-```typescript
-setMessages(prev => {
-  // Don't overwrite existing messages, merge intelligently
-  const existingIds = new Set(prev.map(m => m.id));
-  const newMessages = uiMessages.filter(m => !existingIds.has(m.id));
-  return [...prev, ...newMessages];
-});
-```
-- Handles race conditions properly
-- More robust, works in all scenarios
-- Estimated: 2-3 hours (includes testing)
-
-**Option 3: Separate "New Chat" State (Alternative)**
-- Add `isNewChat` boolean state instead of ref
-- More React-idiomatic than ref approach
-- Estimated: 1 hour
-
-**Action Items (Recommended Path):**
-1. **Next Sprint:** Replace ref guard with message count guard (Option 1)
-2. **M2:** Implement intelligent message merging (Option 2)
-3. **M2:** Add E2E test for "send first message in new chat" flow
-4. **M2:** Add timestamps to messages to detect if DB is "behind" UI state
-
-**Estimated Effort:** 3-4 hours total
-**Assigned To:** Post-V1 bug fix sprint
-**Milestone:** V2 - Code Quality & Stability
-**Related:** TD-9 (router usage), chat creation flow, state management
-**Filed:** 2025-01-23 (from senior engineering review)
+**Related:** TD-10 (tests)
 
 ---
 
 ### TD-9: Proper Next.js Router Usage for Chat ID Updates
 
-**Description:**
-Currently using `window.history.replaceState()` to update URL with chatId when creating new chats:
+**Status:** ✅ Resolved (Nov 23, 2025)
 
-```typescript
-if (typeof window !== 'undefined') {
-  const url = new URL(window.location.href);
-  url.searchParams.set('chatId', responseChatId);
-  window.history.replaceState({}, '', url.toString());
-}
-```
+**What changed:**
+- Replaced `window.history.replaceState` with `router.replace` for `chatId` updates in `ChatInterface`, keeping `useSearchParams` in sync.
+- Added guarded `chatId` syncing effect so URL navigation does not reload mid-stream.
 
-**Problems:**
-1. **Router out of sync** - `useSearchParams()` won't update reactively
-2. **Next.js state desync** - Router cache doesn't know about URL change
-3. **Hydration risks** - Could cause mismatches on remount/navigation
-4. **Navigation interceptors broken** - Custom middleware won't fire
-5. **App Router best practices violation** - Bypasses Next.js router entirely
-
-**Impact:**
-- Medium severity (works but fragile)
-- Could break in future Next.js versions
-- Makes debugging harder (router state doesn't match URL)
-- Prevents proper use of Next.js navigation features
-
-**Correct Implementation:**
-```typescript
-import { useRouter } from 'next/navigation';
-
-const router = useRouter();
-
-// In fetch callback:
-if (responseChatId && !chatId) {
-  setChatId(responseChatId);
-  router.replace(`?chatId=${responseChatId}`, { scroll: false });
-}
-```
-
-**Benefits:**
-- Keeps Next.js router in sync
-- `searchParams` updates reactively
-- Proper integration with App Router
-- Future-proof against Next.js changes
-- Enables navigation interceptors/middleware
-
-**Dependencies:**
-- Requires fixing TD-8 first (otherwise router update might trigger re-render)
-- Need to verify `scroll: false` prevents scroll jump
-
-**Action Items:**
-1. Replace `window.history.replaceState` with `router.replace()`
-2. Test that `searchParams` updates correctly
-3. Verify no re-render/flashing issues
-4. Check browser back/forward still works
-
-**Estimated Effort:** 1 hour
-**Assigned To:** Post-V1 cleanup sprint
-**Milestone:** V2 - Code Quality & Stability
-**Related:** TD-8 (state synchronization), Next.js App Router migration
-**Filed:** 2025-01-23 (from senior engineering review)
+**Residual risk:** Minimal; monitor navigation/back-forward behavior during E2E (TD-10).
 
 ---
 

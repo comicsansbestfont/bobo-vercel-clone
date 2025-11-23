@@ -1,6 +1,6 @@
 # Documentation Index
 
-**Last Updated:** January 23, 2025
+**Last Updated:** November 23, 2025
 
 Welcome to the Bobo AI Chatbot documentation. This index provides quick navigation to all project documentation.
 
