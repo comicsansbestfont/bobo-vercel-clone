@@ -1,4 +1,5 @@
 import { generateText } from 'ai';
+import { chatLogger } from '@/lib/logger';
 
 const SUMMARIZER_MODEL = 'openai/gpt-4o-mini';
 
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
 
     return Response.json({ summary: text.trim() });
   } catch (error) {
-    console.error('compression summary error', error);
+    chatLogger.error('Compression summary error:', error);
     return new Response(
       JSON.stringify({ error: 'Unable to compress conversation history.' }),
       { status: 500 }

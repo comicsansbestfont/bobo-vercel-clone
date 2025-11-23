@@ -17,9 +17,13 @@ import {
   updateChat,
   getChat,
   getProject,
+  getMessages,
+  deleteMessage,
+  supabase,
   type MessagePart,
   type MessageContent,
   type SearchResult,
+  type Message,
 } from '@/lib/db';
 import { getModel } from '@/lib/ai/models';
 import { getProjectContext, prepareSystemPrompt, type ProjectContext } from '@/lib/ai/context-manager';
@@ -33,6 +37,7 @@ import {
   citationsToMessageParts,
   type Citation,
 } from '@/lib/ai/source-tracker';
+import { compressHistory, RECENT_MESSAGE_COUNT } from '@/lib/memory-manager';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -143,6 +148,66 @@ async function getProjectNamesForSearchResults(
   }
 
   return projectNamesMap;
+}
+
+/**
+ * Background compression helper
+ * Compresses conversation history if it exceeds the threshold
+ * Runs asynchronously to avoid blocking the response
+ */
+async function compressConversationIfNeeded(chatId: string): Promise<void> {
+  const COMPRESSION_THRESHOLD = 20; // Compress when more than 20 messages
+
+  try {
+    // Get all messages for this chat
+    const allMessages = await getMessages(chatId);
+
+    if (allMessages.length <= COMPRESSION_THRESHOLD) {
+      return; // No compression needed yet
+    }
+
+    chatLogger.debug(`Compressing conversation for chat ${chatId} (${allMessages.length} messages)`);
+
+    // Convert DB messages to UIMessage format
+    const uiMessages = allMessages.map((msg: Message) => ({
+      id: msg.id,
+      role: msg.role as UIMessage['role'],
+      parts: (msg.content as MessageContent)?.parts || [],
+    })) as UIMessage[];
+
+    // Call compression function
+    const result = await compressHistory(uiMessages);
+
+    if (!result.wasCompressed) {
+      chatLogger.debug('Compression skipped - not enough messages to compress');
+      return;
+    }
+
+    // Delete old messages (keep recent RECENT_MESSAGE_COUNT)
+    const messagesToDelete = allMessages.slice(0, allMessages.length - RECENT_MESSAGE_COUNT);
+
+    for (const msg of messagesToDelete) {
+      await deleteMessage(msg.id);
+    }
+
+    // Insert summary message at the beginning
+    const summaryMessage = result.compressedMessages.find(m => m.id.startsWith('summary-'));
+    if (summaryMessage) {
+      const summaryParts = summaryMessage.parts as MessagePart[];
+      await createMessage({
+        chat_id: chatId,
+        role: 'system',
+        content: { parts: summaryParts },
+        token_count: getTokenCount(summaryParts),
+        sequence_number: 0, // Insert at beginning
+      });
+    }
+
+    chatLogger.info(`Compressed ${messagesToDelete.length} messages for chat ${chatId}`);
+  } catch (error) {
+    chatLogger.error('Background compression failed:', error);
+    // Don't throw - this is a background operation
+  }
 }
 
 export async function POST(req: Request) {
@@ -566,6 +631,11 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             await updateChat(activeChatId!, {
               last_message_at: new Date().toISOString(),
             });
+
+            // Background compression (fire-and-forget)
+            compressConversationIfNeeded(activeChatId!).catch((err) =>
+              chatLogger.error('Background compression error:', err)
+            );
           } catch (err) {
             chatLogger.error('Failed to persist OpenAI messages:', err);
           }
@@ -671,6 +741,11 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
           await updateChat(activeChatId!, {
             last_message_at: new Date().toISOString(),
           });
+
+          // Background compression (fire-and-forget)
+          compressConversationIfNeeded(activeChatId!).catch((err) =>
+            chatLogger.error('Background compression error:', err)
+          );
         } catch (error) {
           chatLogger.error('Failed to save messages:', error);
           // Don't fail the request - streaming already succeeded

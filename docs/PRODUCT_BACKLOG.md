@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** January 23, 2025
+**Last Updated:** November 23, 2025
 **Maintained By:** Product Owner / CTO
 **Purpose:** Track all planned features, improvements, and technical debt not in current milestone
 
@@ -18,18 +18,18 @@ Critical Path (V1) → High Priority (M2) → Medium Priority (M3) → Low Prior
 
 **Goal:** Replace all mock data, ship working persistence layer
 **Target:** Complete within 6-8 hours
-**Status:** 🚧 In Progress (85% complete)
+**Status:** ✅ Complete (see PROGRESS_TRACKER.md)
 
 ### Frontend Integration Tasks
 
 | ID | Task | Priority | Estimate | Status | Assignee | Notes |
 |----|------|----------|----------|--------|----------|-------|
-| V1-1 | Replace mock data in sidebar | 🔴 CRITICAL | 2-3h | ⏳ | TBD | Fetch projects/chats from API |
-| V1-2 | Replace mock data in project page | 🔴 CRITICAL | 1h | ⏳ | TBD | Use `/api/projects/[id]` |
-| V1-3 | Create project creation modal | 🔴 CRITICAL | 1h | ⏳ | TBD | POST to `/api/projects` |
-| V1-4 | Add loading states (skeletons) | 🟡 HIGH | 1h | ⏳ | TBD | Better UX during fetch |
-| V1-5 | Add error boundary | 🟡 HIGH | 30m | ⏳ | TBD | Graceful error handling |
-| V1-6 | End-to-end testing | 🟠 MEDIUM | 1h | ⏳ | TBD | Manual testing flow |
+| V1-1 | Replace mock data in sidebar | 🔴 CRITICAL | 2-3h | ✅ Done | TBD | Fetch projects/chats from API |
+| V1-2 | Replace mock data in project page | 🔴 CRITICAL | 1h | ✅ Done | TBD | Use `/api/projects/[id]` |
+| V1-3 | Create project creation modal | 🔴 CRITICAL | 1h | ✅ Done | TBD | POST to `/api/projects` |
+| V1-4 | Add loading states (skeletons) | 🟡 HIGH | 1h | ✅ Done | TBD | Better UX during fetch |
+| V1-5 | Add error boundary | 🟡 HIGH | 30m | ✅ Done | TBD | Graceful error handling |
+| V1-6 | End-to-end testing | 🟠 MEDIUM | 1h | ✅ Done | TBD | Manual testing flow |
 
 **V1 Definition of Done:**
 - ✅ User creates project → persists after refresh
@@ -55,10 +55,10 @@ Critical Path (V1) → High Priority (M2) → Medium Priority (M3) → Low Prior
 | TD-4 | Performance optimization (query caching) | Performance | 🟢 LOW | 2-3h | Premature optimization, no scale issues yet |
 | TD-5 | Bundle size analysis and optimization | Performance | 🟢 LOW | 2h | Not blocking V1 launch |
 | TD-6 | Precise tokenization with WASM tiktoken | Performance | 🟡 MEDIUM | 3h | Current heuristic fallback sufficient for V1 |
-| TD-7 | Background/async compression | Performance | 🟡 MEDIUM | 2-3h | Manual trigger works, not urgent |
+| TD-7 | Background/async compression | Performance | 🟡 MEDIUM | 2-3h | ✅ DONE (v1.2.0) |
 | TD-8 | Chat history state synchronization (viewport bug) | Code Quality | 🟢 DONE | 3-4h | Fixed: single ChatInterface mount + guarded history loads |
 | TD-9 | Proper Next.js router usage for chat ID updates | Code Quality | 🟢 DONE | 1h | Uses Next.js router replace for chatId sync |
-| TD-10 | Add E2E tests for chat creation flow | Testing | 🟡 HIGH | 6-8h | Prevent regressions like TD-8 |
+| TD-10 | Add E2E tests for chat creation flow | Testing | 🟡 HIGH | 6-8h | ✅ DONE (v1.2.0) |
 
 ### TD-1: Verbose Logging Cleanup
 
@@ -268,7 +268,7 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 
 ## 📝 MILESTONE 2: Project Intelligence (Double-Loop Architecture)
 
-**Status:** 🚧 In Progress
+**Status:** ✅ Complete
 **Target Start:** Jan 2025
 **Target End:** Feb 2025
 **Strategy:** Implement "Double-Loop" architecture: Context Caching for active project (Loop A) + Hybrid RAG for global context (Loop B).
@@ -348,6 +348,14 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 | M3-6 | Edit/Delete specific user facts | 🟡 MEDIUM | 2h | ⏳ |
 | M3-7 | Settings (toggle auto-memory) | 🟡 MEDIUM | 1h | ⏳ |
 
+### 3.3 Global Memory Governance & Debugging
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M3-8 | Define memory schema & categories | 🔴 HIGH | 2h | ⏳ |
+| M3-9 | Implement injection rules & conflict handling | 🔴 HIGH | 3h | ⏳ |
+| M3-10 | Add memory debugger (what was injected?) | 🟡 MEDIUM | 3h | ⏳ |
+
 **Total M3 Tasks:** 7
 **Estimated Effort:** 1 week
 
@@ -410,6 +418,32 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 
 **Total M4 Tasks:** 25
 **Estimated Effort:** Ongoing (4+ weeks)
+
+---
+
+## 🧭 MILESTONE 5: Cognitive Layer & Living Documentation (Q3 2026+)
+
+**Status:** 📝 Backlog  
+**Target:** After M4 stabilizes (post-production rollout)  
+**Focus:** Turn Bobo into a true “Memory Palace” with project living docs, hierarchical summaries, and a lightweight knowledge graph.
+
+### 5.1 Living Documentation & Hierarchical Summaries
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M5-1 | Per-project living doc entity (status, decisions, risks) | 🟡 MEDIUM | 4h | ⏳ |
+| M5-2 | Background updater from chats/files (session → daily → weekly) | 🟡 MEDIUM | 6h | ⏳ |
+| M5-3 | “Project Brain” overview tab in UI | 🟡 MEDIUM | 4h | ⏳ |
+| M5-4 | Weekly review view with drill-down to summaries/logs | 🟡 MEDIUM | 4h | ⏳ |
+
+### 5.2 Knowledge Graph & Executive View
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M5-5 | Fact extraction job (subject/predicate/object) from chats | 🟡 MEDIUM | 6h | ⏳ |
+| M5-6 | Fact browser per project (decisions, architecture, constraints) | 🟡 MEDIUM | 4h | ⏳ |
+| M5-7 | Cross-project graph queries (e.g. “Supabase decisions”) | 🟡 MEDIUM | 4h | ⏳ |
+| M5-8 | Weekly executive brief using summaries + facts | 🟡 MEDIUM | 4h | ⏳ |
 
 ---
 
@@ -593,6 +627,7 @@ Deferred (TD):     10 items (23-28 hours)
 M2 (Intelligence): 18 items (3 weeks)
 M3 (Memory):       22 items (3 weeks)
 M4 (Production):   25 items (4+ weeks)
+M5 (Cognitive):    TBD      (not yet sized)
 Research:          6 items  (12 hours)
 Nice-to-Have:      13 items (35-40 hours)
 ```
@@ -645,6 +680,8 @@ Nice-to-Have:      13 items (35-40 hours)
 | 2025-01-23 | Fixed BUG-2: Removed non-functional buttons from ProjectHeader, implemented copy link | Claude Code |
 | 2025-01-23 | M2 Phase 2 (Loop B) Complete: Vector search, hybrid RAG, embeddings implemented | Claude Code |
 | 2025-01-23 | M2 Complete (100%): Inline citations with Perplexity-style source attribution | Claude Code |
+| 2025-01-23 | v1.2.0 Polish Sprint Complete: E2E tests, background compression, CI/CD, improved UX | Claude Code |
+| 2025-11-23 | Aligned V1/M2 status, added M3 governance tasks and M5 Cognitive Layer (living docs, summaries, knowledge graph) | GPT-5.1 Code |
 
 ---
 
@@ -681,4 +718,4 @@ Nice-to-Have:      13 items (35-40 hours)
 
 **Document Maintained By:** Product Owner / CTO
 **Next Grooming Session:** After V1 ships
-**Last Updated:** January 23, 2025
+**Last Updated:** November 23, 2025
