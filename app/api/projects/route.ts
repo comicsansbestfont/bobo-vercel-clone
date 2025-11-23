@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
       return new Response(
         JSON.stringify({
           error: 'Database error',
-          message: 'Failed to create project',
+          message: 'Unable to create project. Please try again or contact support if the problem persists.',
         }),
         {
           status: 500,
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
     return new Response(
       JSON.stringify({
         error: 'Failed to create project',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
       }),
       {
         status: 500,

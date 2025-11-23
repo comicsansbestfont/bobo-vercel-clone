@@ -58,7 +58,7 @@ export async function GET(
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch chat',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
       }),
       {
         status: 500,
@@ -196,7 +196,7 @@ export async function PATCH(
     return new Response(
       JSON.stringify({
         error: 'Failed to update chat',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
       }),
       {
         status: 500,
@@ -255,7 +255,7 @@ export async function DELETE(
     return new Response(
       JSON.stringify({
         error: 'Failed to delete chat',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
       }),
       {
         status: 500,

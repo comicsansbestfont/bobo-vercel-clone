@@ -51,6 +51,36 @@ Required environment variables in `.env.local`:
 - Preserves system prompts and inserts summary as a system message
 - Handles UIMessage format with support for text, reasoning, sources, and tool results
 
+**M2: Double-Loop RAG Architecture** (`lib/ai/`)
+The application uses a sophisticated "Double-Loop" context retrieval system for project-based knowledge:
+
+**Loop A: Project Context Caching** (`lib/ai/context-manager.ts`)
+- Retrieves ALL files from the active project (high-fidelity, no chunking)
+- Implements model-specific caching strategies:
+  - Anthropic: Prompt caching with cache breakpoints
+  - Gemini: Native context caching API
+  - Others: Standard system prompt injection
+- Token budget management to ensure context fits within model limits
+- Custom instructions per project injected into system prompt
+
+**Loop B: Global Hybrid Search** (`lib/ai/embedding.ts`, `lib/db/queries.ts`)
+- Semantic search across ALL projects for cross-project patterns
+- Hybrid search combining:
+  - Vector similarity (cosine distance via pgvector)
+  - Full-text search (PostgreSQL tsvector)
+  - Reciprocal Rank Fusion algorithm for result merging
+  - Weighted: 70% vector + 30% text
+- Top 5 results from files and messages tables
+- Excludes current project to avoid duplication
+
+**Source Tracking & Citations** (`lib/ai/source-tracker.ts`)
+- Smart file usage detection through content similarity analysis
+- Inserts Perplexity-style inline citations [1], [2] after complete sentences
+- Tracks two source types:
+  - "Project Files" (Loop A) - authoritative context from active project
+  - "Global Inspiration" (Loop B) - patterns from other projects
+- Citation metadata includes file names, project names, relevance scores
+
 ### Frontend Architecture
 
 **Main Page** (`app/page.tsx`)
@@ -68,6 +98,10 @@ Reusable chat UI primitives:
 - `prompt-input.tsx` - Multi-file attachment input with model/tool selection
 - `reasoning.tsx` - Collapsible reasoning display for thinking models
 - `sources.tsx` - Web search source citations
+- `inline-citations.tsx` - M2 citation components:
+  - `CitationMarker` - Superscript [1] with hover tooltips
+  - `CitationsList` - Expandable source list at message bottom
+  - Separate sections for "Project Files" vs "Global Inspiration"
 - `code-block.tsx` - Syntax-highlighted code with Shiki
 - `loader.tsx` - Streaming message indicator
 - Other specialized components: artifact, canvas, chain-of-thought, checkpoint, etc.
@@ -127,9 +161,11 @@ Context limits stored in `MODEL_CONTEXT_LIMITS` map in `lib/context-tracker.ts`
 - **Framework**: Next.js 16 (App Router)
 - **React**: v19.2.0
 - **AI SDK**: Vercel AI SDK (@ai-sdk/react, @ai-sdk/openai)
+- **Database**: Supabase (PostgreSQL with pgvector extension)
+- **Vector Search**: pgvector for semantic similarity, tsvector for full-text
 - **UI**: Radix UI primitives + shadcn/ui + Tailwind CSS v4
 - **Animation**: Motion (Framer Motion)
 - **Code Highlighting**: Shiki
-- **Markdown**: streamdown
+- **Markdown**: streamdown (with rehype-raw for HTML in citations)
 - **Token Counting**: gpt-tokenizer
 - **Validation**: Zod v4

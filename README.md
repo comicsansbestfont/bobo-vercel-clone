@@ -104,11 +104,12 @@ Get your Vercel AI Gateway key: https://vercel.com/ai/api-keys
 
 - ✅ **V1.0**: Core chat with persistence (100%)
 - ✅ **V1.1**: Bug fixes & project pages (100%)
-- 🚧 **M2**: Project Intelligence - RAG (39% complete)
+- ✅ **M2**: Project Intelligence - Double-Loop RAG (100%)
   - ✅ Custom instructions
-  - ✅ File upload
-  - ⏳ Semantic search (pending)
-- 📝 **M3**: Global Memory (Planned)
+  - ✅ File upload & vector search
+  - ✅ Hybrid semantic search (Loop A + Loop B)
+  - ✅ Inline citations with source tracking
+- 📝 **M3**: User Profile & Bio (Planned)
 - 📝 **M4**: Production & Scale (Planned)
 
 See [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) for detailed status.

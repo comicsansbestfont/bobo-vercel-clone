@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       return new Response(
         JSON.stringify({
           error: 'Database error',
-          message: 'Failed to create chat',
+          message: 'Unable to create chat session. Please try again.',
         }),
         {
           status: 500,
@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
     return new Response(
       JSON.stringify({
         error: 'Failed to create chat',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.',
       }),
       {
         status: 500,

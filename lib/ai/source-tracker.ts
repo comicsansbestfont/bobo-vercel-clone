@@ -8,6 +8,7 @@
 
 import type { MessagePart, SearchResult } from '@/lib/db/types';
 import type { ProjectContext } from './context-manager';
+import { supabase } from '@/lib/db';
 
 /**
  * Citation data structure for tracking inline references
@@ -71,22 +72,41 @@ export function trackProjectSources(
 }
 
 /**
+ * Detect whether a search result ID belongs to files or messages table
+ */
+async function detectSourceType(id: string): Promise<'global-file' | 'global-message'> {
+  // Check if ID exists in files table
+  const { data: fileData, error: fileError } = await supabase
+    .from('files')
+    .select('id')
+    .eq('id', id)
+    .single();
+
+  if (!fileError && fileData) {
+    return 'global-file';
+  }
+
+  // If not in files, must be from messages table
+  return 'global-message';
+}
+
+/**
  * Track global sources from hybrid search results
  */
-export function trackGlobalSources(
+export async function trackGlobalSources(
   searchResults: SearchResult[],
   projectNames: Map<string, string>, // projectId -> projectName mapping
   startingIndex: number = 1
-): Citation[] {
+): Promise<Citation[]> {
   const citations: Citation[] = [];
 
   // Only include global sources (not current project)
   const globalResults = searchResults.filter(r => r.source_type === 'global');
 
-  globalResults.forEach((result, i) => {
-    // Determine source type from ID pattern or other metadata
-    // For now, assume files. Can be enhanced later.
-    const sourceType = 'global-file'; // TODO: Detect if it's a message
+  // Detect source type for each result (file vs message)
+  for (let i = 0; i < globalResults.length; i++) {
+    const result = globalResults[i];
+    const sourceType = await detectSourceType(result.id);
 
     citations.push({
       index: startingIndex + i,
@@ -94,11 +114,11 @@ export function trackGlobalSources(
       sourceId: result.id,
       sourceType,
       sourceTitle: result.content.substring(0, 60) + (result.content.length > 60 ? '...' : ''),
-      projectName: projectNames.get(result.id.split('-')[0]), // Simplified - should query DB
+      projectName: projectNames.get(result.id),
       similarity: result.similarity,
       positions: [], // Will be filled by insertInlineCitations
     });
-  });
+  }
 
   return citations;
 }

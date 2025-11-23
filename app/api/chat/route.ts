@@ -25,6 +25,7 @@ import { getModel } from '@/lib/ai/models';
 import { getProjectContext, prepareSystemPrompt, type ProjectContext } from '@/lib/ai/context-manager';
 import { hybridSearch } from '@/lib/db';
 import { generateEmbedding, embedAndSaveMessage } from '@/lib/ai/embedding';
+import { chatLogger } from '@/lib/logger';
 import {
   trackProjectSources,
   trackGlobalSources,
@@ -84,6 +85,66 @@ async function updateChatTitleFromMessage(
   }
 }
 
+/**
+ * Helper function to query project names for search results
+ */
+async function getProjectNamesForSearchResults(
+  searchResults: SearchResult[]
+): Promise<Map<string, string>> {
+  const projectNamesMap = new Map<string, string>();
+
+  if (searchResults.length === 0) return projectNamesMap;
+
+  // Extract unique file and message IDs
+  const fileIds: string[] = [];
+  const messageIds: string[] = [];
+
+  // First pass: check which table each ID belongs to
+  for (const result of searchResults) {
+    const { data: fileData } = await supabase
+      .from('files')
+      .select('id')
+      .eq('id', result.id)
+      .single();
+
+    if (fileData) {
+      fileIds.push(result.id);
+    } else {
+      messageIds.push(result.id);
+    }
+  }
+
+  // Get project IDs from files
+  if (fileIds.length > 0) {
+    const { data: files } = await supabase
+      .from('files')
+      .select('id, project_id, projects(name)')
+      .in('id', fileIds);
+
+    files?.forEach((file: any) => {
+      if (file.projects?.name) {
+        projectNamesMap.set(file.id, file.projects.name);
+      }
+    });
+  }
+
+  // Get project IDs from messages via chats
+  if (messageIds.length > 0) {
+    const { data: messages } = await supabase
+      .from('messages')
+      .select('id, chats(project_id, projects(name))')
+      .in('id', messageIds);
+
+    messages?.forEach((message: any) => {
+      if (message.chats?.projects?.name) {
+        projectNamesMap.set(message.id, message.chats.projects.name);
+      }
+    });
+  }
+
+  return projectNamesMap;
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -99,7 +160,7 @@ export async function POST(req: Request) {
       chatId?: string;
       projectId?: string;
     } = await req.json();
-    console.log('[DEBUG] Chat Request:', { model, chatId: providedChatId, projectId, msgCount: messages?.length });
+    chatLogger.debug('Chat Request:', { model, chatId: providedChatId, projectId, msgCount: messages?.length });
 
     // Check if API key is configured
     if (!process.env.AI_GATEWAY_API_KEY) {
@@ -126,7 +187,7 @@ export async function POST(req: Request) {
 
       if (!newChat) {
         return new Response(
-          JSON.stringify({ error: 'Failed to create chat' }),
+          JSON.stringify({ error: 'Unable to create chat session. Please refresh and try again.' }),
           {
             status: 500,
             headers: { 'Content-Type': 'application/json' },
@@ -169,7 +230,7 @@ export async function POST(req: Request) {
         const project = await getProject(activeProjectId);
         projectName = project?.name || 'Current Project';
       } catch (err) {
-        console.error('[api/chat] failed to load project context', err);
+        chatLogger.error('Failed to load project context:', err);
       }
     }
 
@@ -179,7 +240,7 @@ export async function POST(req: Request) {
     let searchResults: SearchResult[] = [];
     try {
       const lastUserMessage = messages[messages.length - 1];
-      console.log('[DEBUG] Last User Message:', lastUserMessage);
+      chatLogger.debug('Last User Message:', lastUserMessage);
 
       let userText = '';
       if (lastUserMessage) {
@@ -226,19 +287,14 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
         }
       }
     } catch (err) {
-      console.error('[api/chat] hybrid search failed', err);
+      chatLogger.error('Hybrid search failed:', err);
     }
 
     // Normalize roles to avoid invalid payloads to the gateway
     const allowedRoles = new Set<UIMessage['role']>(['system', 'user', 'assistant']);
     const normalizedMessages: UIMessage[] = (messages || []).map((msg, idx) => {
       if (!allowedRoles.has(msg.role)) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn(
-            '[api/chat] normalizing unsupported role to "user"',
-            { idx, role: msg.role }
-          );
-        }
+        chatLogger.warn('Normalizing unsupported role to "user":', { idx, role: msg.role });
         return { ...msg, role: 'user' };
       }
       return msg;
@@ -250,7 +306,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
     if (isOpenAIModel) {
       // Direct gateway call with raw OpenAI-compatible payload to avoid SDK shaping issues.
       const messagesForPayload = normalizedMessages.map((msg) => {
-        console.log('[DEBUG] Mapping msg:', msg);
+        chatLogger.debug('Mapping message:', msg);
         const content = typeof (msg as any).content === 'string'
           ? (msg as any).content
           : (msg.parts || [])
@@ -298,7 +354,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 
       if (!upstream.ok) {
         const text = await upstream.text();
-        console.error('[api/chat] openai upstream error', upstream.status, text);
+        chatLogger.error('OpenAI upstream error:', { status: upstream.status, body: text });
         return new Response(
           JSON.stringify({ error: 'Upstream error', status: upstream.status, body: text }),
           {
@@ -403,7 +459,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
                   }
                 }
               } catch (err) {
-                console.error('[api/chat] failed to parse upstream chunk', err);
+                chatLogger.error('Failed to parse upstream chunk:', err);
               }
             }
           }
@@ -436,7 +492,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
               if (userMsg) {
                 const userText = userParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
                 if (userText) {
-                  embedAndSaveMessage(userMsg.id, userText).catch(console.error);
+                  embedAndSaveMessage(userMsg.id, userText).catch((err) => chatLogger.error('Failed to embed user message:', err));
                 }
               }
               const firstTextPart = userParts.find((p) => p.type === 'text');
@@ -465,8 +521,8 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 
               // Track global sources (Loop B)
               if (searchResults.length > 0) {
-                const projectNamesMap = new Map<string, string>(); // TODO: Query project names from DB
-                const globalCitations = trackGlobalSources(
+                const projectNamesMap = await getProjectNamesForSearchResults(searchResults);
+                const globalCitations = await trackGlobalSources(
                   searchResults,
                   projectNamesMap,
                   allCitations.length + 1
@@ -501,7 +557,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
               if (assistantMsg) {
                 const finalAssistantText = assistantParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
                 if (finalAssistantText) {
-                  embedAndSaveMessage(assistantMsg.id, finalAssistantText).catch(console.error);
+                  embedAndSaveMessage(assistantMsg.id, finalAssistantText).catch((err) => chatLogger.error('Failed to embed assistant message:', err));
                 }
               }
             }
@@ -511,10 +567,10 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
               last_message_at: new Date().toISOString(),
             });
           } catch (err) {
-            console.error('[api/chat] failed to persist openai messages', err);
+            chatLogger.error('Failed to persist OpenAI messages:', err);
           }
         })
-        .catch((err) => console.error('[api/chat] persist promise error', err));
+        .catch((err) => chatLogger.error('Persist promise error:', err));
 
       return new Response(transform.readable, {
         headers: {
@@ -552,7 +608,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             if (userMsg) {
               const userText = userMessageParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
               if (userText) {
-                embedAndSaveMessage(userMsg.id, userText).catch(console.error);
+                embedAndSaveMessage(userMsg.id, userText).catch((err) => chatLogger.error('Failed to embed user message:', err));
               }
             }
 
@@ -575,8 +631,8 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 
           // Track global sources (Loop B)
           if (searchResults.length > 0) {
-            const projectNamesMap = new Map<string, string>(); // TODO: Query project names from DB
-            const globalCitations = trackGlobalSources(
+            const projectNamesMap = await getProjectNamesForSearchResults(searchResults);
+            const globalCitations = await trackGlobalSources(
               searchResults,
               projectNamesMap,
               allCitations.length + 1 // Start numbering after project citations
@@ -608,7 +664,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 
           // Generate embedding for assistant message (background)
           if (assistantMsg) {
-            embedAndSaveMessage(assistantMsg.id, text).catch(console.error);
+            embedAndSaveMessage(assistantMsg.id, text).catch((err) => chatLogger.error('Failed to embed assistant message:', err));
           }
 
           // Update chat's last_message_at
@@ -616,7 +672,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             last_message_at: new Date().toISOString(),
           });
         } catch (error) {
-          console.error('Failed to save messages:', error);
+          chatLogger.error('Failed to save messages:', error);
           // Don't fail the request - streaming already succeeded
         }
       },
@@ -634,7 +690,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
       sendSources: true,
     });
   } catch (error) {
-    console.error('Chat API error:', error);
+    chatLogger.error('Chat API error:', error);
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : 'An error occurred'

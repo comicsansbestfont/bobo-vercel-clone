@@ -180,7 +180,7 @@ export async function POST(
       return new Response(
         JSON.stringify({
           error: 'Failed to create file',
-          message: 'Could not save file to database',
+          message: 'Could not save file to database. Please ensure the file content is valid and try again.',
         }),
         {
           status: 500,
@@ -200,7 +200,7 @@ export async function POST(
     return new Response(
       JSON.stringify({
         error: 'Failed to upload file',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred while uploading. Please try again.',
       }),
       {
         status: 500,

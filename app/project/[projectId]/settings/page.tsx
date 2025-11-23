@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Upload, Trash2, File as FileIcon } from 'lucide-react';
+import { FileUploadEmptyState } from '@/components/project/file-upload-empty-state';
 
 export default function ProjectSettingsPage() {
   const params = useParams();
@@ -352,9 +353,7 @@ export default function ProjectSettingsPage() {
               )}
 
               {files.length === 0 && (
-                <p className="mt-4 text-center text-sm text-neutral-500">
-                  No files uploaded yet. Upload your first file above.
-                </p>
+                <FileUploadEmptyState />
               )}
             </section>
           </div>
