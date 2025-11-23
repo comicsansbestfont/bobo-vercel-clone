@@ -16,8 +16,8 @@
 ✅ Milestone 0 (MVP Core)        - 100% - SHIPPED
 ✅ Milestone 1 (Persistence)     - 100% - SHIPPED
 ✅ V1.1 (Bug Fixes & Polish)     - 100% - SHIPPED
-🚧 Milestone 2 (RAG)             - 39%  - IN PROGRESS (Phase 1 & 2 done)
-📝 Milestone 3 (Memory)          - 0%   - PLANNED
+🚧 Milestone 2 (Double-Loop)     - 39%  - IN PROGRESS (Pivot to Double-Loop Arch)
+📝 Milestone 3 (User Profile)    - 0%   - PLANNED
 📝 Milestone 4 (Production)      - 0%   - PLANNED
 ```
 
@@ -25,9 +25,12 @@
 
 ## ✨ Latest Work (Nov 23, 2025)
 
-- Fixed chat viewport disappearance in project chats by keeping a single `ChatInterface` mounted and guarding history loads during streaming/persistence.
-- Switched chatId URL updates to `router.replace` and added safe chatId syncing.
-- Project page now hides header/list and shows full-height chat when a chat is active.
+- **Strategic Pivot:** Adopted "Double-Loop" Architecture for M2.
+  - Loop A: Anthropic Context Caching (for active project facts)
+  - Loop B: Hybrid Global Search (for cross-project inspiration)
+- Created `docs/arch/DOUBLE_LOOP_SPEC.md` detailing the new architecture.
+- Updated Backlog to prioritize Caching over standard RAG chunking for active projects.
+- Fixed chat viewport disappearance in project chats by keeping a single `ChatInterface` mounted.
 
 ---
 

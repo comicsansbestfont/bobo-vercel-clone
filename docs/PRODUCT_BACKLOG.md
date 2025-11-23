@@ -266,11 +266,12 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 
 ---
 
-## 📝 MILESTONE 2: Project Intelligence (Q1 2026)
+## 📝 MILESTONE 2: Project Intelligence (Double-Loop Architecture)
 
-**Status:** 📝 Planned
-**Target Start:** After V1 ships
-**Target End:** 3 weeks after start
+**Status:** 🚧 In Progress
+**Target Start:** Jan 2025
+**Target End:** Feb 2025
+**Strategy:** Implement "Double-Loop" architecture: Context Caching for active project (Loop A) + Hybrid RAG for global context (Loop B).
 
 ### 2.1 Custom Instructions (Phase 1 - Complete ✅)
 
@@ -280,51 +281,55 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 | M2-2 | Project settings page UI | 🔴 HIGH | 2h | ✅ Done |
 | M2-3 | Inject instructions into chat system prompt | 🔴 HIGH | 1h | ✅ Done |
 
-### 2.2 File Upload & Storage
+### 2.2 File Upload & Storage (Phase 2 - Complete ✅)
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-4 | Create `project_files` table | 🔴 HIGH | 1h | ✅ |
-| M2-5 | POST `/api/projects/[id]/files` endpoint | 🔴 HIGH | 2h | ✅ |
-| M2-6 | File validation (.md, max 10MB) | 🔴 HIGH | 1h | ✅ |
-| M2-7 | File management UI (upload, delete, preview) | 🔴 HIGH | 3h | ✅ |
-| M2-8 | Asynchronous file processing (Phase 2 - RAG) | 🟡 MEDIUM | 2h | 📝 Deferred |
-| M2-8a | Implement background job queue for file processing | 🟡 MEDIUM | 3h | 📝 Deferred |
-| M2-8b | Add processing status tracking for files | 🟡 MEDIUM | 1h | 📝 Deferred |
+| M2-4 | Create `project_files` table | 🔴 HIGH | 1h | ✅ Done |
+| M2-5 | POST `/api/projects/[id]/files` endpoint | 🔴 HIGH | 2h | ✅ Done |
+| M2-6 | File validation (.md, max 10MB) | 🔴 HIGH | 1h | ✅ Done |
+| M2-7 | File management UI (upload, delete, preview) | 🔴 HIGH | 3h | ✅ Done |
 
-### 2.3 RAG Pipeline (Phase 2 - Deferred)
+### 2.3 Loop A: Project Context (Context Caching)
 
-**Note:** Phase 1 complete (custom instructions + file storage). Phase 2 will implement RAG retrieval.
+**Goal:** Use Anthropic's Prompt Caching to pin full project context into memory, avoiding RAG fragmentation for active work.
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-9 | Create `embeddings` table with pgvector | 🔴 HIGH | 2h | 📝 Phase 2 |
-| M2-10 | Implement chunking logic (fixed-size with overlap) | 🔴 HIGH | 3h | 📝 Phase 2 |
-| M2-10a | LangChain integration for advanced chunking | 🟡 MEDIUM | 2h | 📝 Future |
-| M2-11 | Generate embeddings (OpenAI API) | 🔴 HIGH | 2h | 📝 Phase 2 |
-| M2-12 | Store embeddings in pgvector | 🔴 HIGH | 2h | 📝 Phase 2 |
-| M2-13 | Implement similarity search | 🔴 HIGH | 3h | 📝 Phase 2 |
-| M2-14 | Inject retrieved chunks into chat | 🔴 HIGH | 2h | 📝 Phase 2 |
+| M2-8 | Implement `getProjectFiles` utility | 🔴 HIGH | 1h | ⏳ |
+| M2-9 | Add Context Caching headers to AI SDK call | 🔴 HIGH | 2h | ⏳ |
+| M2-10 | Implement Token Budget Manager for Caching | 🟡 MEDIUM | 2h | ⏳ |
+| M2-11 | Fallback logic for non-Anthropic models | 🔴 HIGH | 2h | ⏳ |
 
-### 2.4 Source Citations
+### 2.4 Loop B: Global Context (Hybrid RAG)
+
+**Goal:** Weighted search across ALL projects to find patterns and inspiration.
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M2-15 | Return source metadata in responses | 🔴 HIGH | 2h | ⏳ |
-| M2-16 | Display source citations in UI | 🔴 HIGH | 2h | ⏳ |
-| M2-17 | Source preview modal | 🟡 MEDIUM | 2h | ⏳ |
-| M2-18 | Track context tokens for RAG | 🔴 HIGH | 1h | ⏳ |
+| M2-12 | Enable `pgvector` extension in Supabase | 🔴 HIGH | 30m | ⏳ |
+| M2-13 | Add `embedding` columns to files/messages | 🔴 HIGH | 30m | ⏳ |
+| M2-14 | Implement `hybrid_search` RPC function | 🔴 HIGH | 1h | ⏳ |
+| M2-15 | Build embedding generation pipeline (OpenAI) | 🔴 HIGH | 3h | ⏳ |
+| M2-16 | Integrate "Inspiration" section into System Prompt | 🔴 HIGH | 1h | ⏳ |
+
+### 2.5 Source Citations & UI
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M2-17 | Return source metadata in responses | 🔴 HIGH | 2h | ⏳ |
+| M2-18 | Display "Used Project Files" vs "Global Inspiration" | 🔴 HIGH | 2h | ⏳ |
 
 **Total M2 Tasks:** 18
-**Estimated Effort:** 3 weeks
+**Estimated Effort:** 2-3 weeks
 
 ---
 
-## 🧠 MILESTONE 3: Global Memory (Q1 2026)
+## 🧠 MILESTONE 3: User Profile & Bio (Q1 2026)
 
 **Status:** 📝 Planned
 **Target Start:** After M2 ships
-**Target End:** 3 weeks after start
+**Focus:** "Bio" Memory using Supermemory.ai. Extracting user facts and preferences (The "User Profile" layer), distinct from the "Global Context" loop handled in M2.
 
 ### 3.1 Supermemory Integration
 
@@ -332,49 +337,19 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 |----|---------|----------|----------|--------|
 | M3-1 | Sign up for Supermemory.ai | 🔴 HIGH | 30m | ⏳ |
 | M3-2 | Install SDK / create REST client | 🔴 HIGH | 1h | ⏳ |
-| M3-3 | Test memory CRUD operations | 🔴 HIGH | 1h | ⏳ |
+| M3-3 | Implement "Bio" Extraction (Background Job) | 🔴 HIGH | 2h | ⏳ |
+| M3-4 | Inject User Profile into System Prompt | 🔴 HIGH | 1h | ⏳ |
 
-### 3.2 Memory Extraction
-
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M3-4 | Design extraction prompt (structured) | 🔴 HIGH | 2h | ⏳ |
-| M3-5 | Background job (every N messages) | 🔴 HIGH | 2h | ⏳ |
-| M3-6 | Extract user profile facts | 🔴 HIGH | 2h | ⏳ |
-| M3-7 | Extract technical facts | 🔴 HIGH | 2h | ⏳ |
-| M3-8 | Extract decisions & constraints | 🔴 HIGH | 2h | ⏳ |
-| M3-9 | Store in Supermemory with tags | 🔴 HIGH | 1h | ⏳ |
-
-### 3.3 Memory Retrieval
+### 3.2 Memory Management UI
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M3-10 | Search memories before each response | 🔴 HIGH | 2h | ⏳ |
-| M3-11 | Filter by relevance score | 🔴 HIGH | 1h | ⏳ |
-| M3-12 | Inject into system prompt | 🔴 HIGH | 1h | ⏳ |
-| M3-13 | Track which memories used | 🟡 MEDIUM | 1h | ⏳ |
+| M3-5 | Memory management page (`/memory`) | 🔴 HIGH | 3h | ⏳ |
+| M3-6 | Edit/Delete specific user facts | 🟡 MEDIUM | 2h | ⏳ |
+| M3-7 | Settings (toggle auto-memory) | 🟡 MEDIUM | 1h | ⏳ |
 
-### 3.4 Memory Management UI
-
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M3-14 | Memory management page (`/memory`) | 🔴 HIGH | 3h | ⏳ |
-| M3-15 | List/search all memories | 🔴 HIGH | 2h | ⏳ |
-| M3-16 | Edit memory modal | 🟡 MEDIUM | 2h | ⏳ |
-| M3-17 | Delete memory with confirmation | 🟡 MEDIUM | 1h | ⏳ |
-| M3-18 | Memory indicators in chat | 🟡 MEDIUM | 2h | ⏳ |
-| M3-19 | Settings (toggle auto-memory) | 🟡 MEDIUM | 1h | ⏳ |
-
-### 3.5 Cross-Project Context (Stretch)
-
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M3-20 | Link projects for shared context | 🟢 LOW | 2h | ⏳ |
-| M3-21 | Merge context from linked projects | 🟢 LOW | 2h | ⏳ |
-| M3-22 | Knowledge graph visualization | 🟢 LOW | 5h | ⏳ |
-
-**Total M3 Tasks:** 22
-**Estimated Effort:** 3 weeks
+**Total M3 Tasks:** 7
+**Estimated Effort:** 1 week
 
 ---
 
