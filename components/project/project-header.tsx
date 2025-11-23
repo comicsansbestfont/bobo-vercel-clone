@@ -5,13 +5,11 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   IconChevronRight,
-  IconShare,
   IconCopy,
-  IconFileDownload,
-  IconDots,
   IconFolder,
   IconSettings,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 
 interface ProjectHeaderProps {
   projectName: string;
@@ -49,6 +47,13 @@ export function ProjectHeader({
     }
   };
 
+  const handleCopyLink = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard');
+    }
+  };
+
   return (
     <div className="border-b border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
       {/* Breadcrumb */}
@@ -77,32 +82,12 @@ export function ProjectHeader({
             <IconSettings className="h-4 w-4" />
           </Link>
           <button
-            className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
-            title="Share"
-            aria-label="Share project"
-          >
-            <IconShare className="h-4 w-4" />
-          </button>
-          <button
+            onClick={handleCopyLink}
             className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
             title="Copy link"
             aria-label="Copy project link"
           >
             <IconCopy className="h-4 w-4" />
-          </button>
-          <button
-            className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
-            title="Export"
-            aria-label="Export project"
-          >
-            <IconFileDownload className="h-4 w-4" />
-          </button>
-          <button
-            className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-700"
-            title="More options"
-            aria-label="More options"
-          >
-            <IconDots className="h-4 w-4" />
           </button>
         </div>
       </div>

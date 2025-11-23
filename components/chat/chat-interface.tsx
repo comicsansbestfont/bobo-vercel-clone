@@ -130,7 +130,10 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   // Track which message we've auto-submitted to prevent duplicates
   const autoSubmittedMessageRef = useRef<string | null>(null);
 
-  const { messages, sendMessage, status, regenerate, error, setMessages } = useChat({
+  // Track if we just created this chat to avoid loading empty history
+  const justCreatedChatRef = useRef<boolean>(false);
+
+  const { messages, sendMessage, status, regenerate, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
       // Custom fetch to intercept response headers
@@ -140,12 +143,18 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         // Extract chat ID from header if creating new chat
         const responseChatId = response.headers.get('X-Chat-Id');
         if (responseChatId && !chatId) {
+          // Mark that we just created this chat to avoid loading history immediately
+          justCreatedChatRef.current = true;
+
+          // Update state first
           setChatId(responseChatId);
-          // Update URL without reload
+
+          // Update URL without causing re-render by using replaceState instead of pushState
+          // This prevents Next.js from detecting a navigation and re-rendering
           if (typeof window !== 'undefined') {
             const url = new URL(window.location.href);
             url.searchParams.set('chatId', responseChatId);
-            window.history.pushState({}, '', url.toString());
+            window.history.replaceState({}, '', url.toString());
           }
         }
 
@@ -167,6 +176,13 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   useEffect(() => {
     if (!chatId) return;
     if (chatId !== chatIdFromUrl) return;
+
+    // Don't load history if we just created this chat - messages are already in state
+    if (justCreatedChatRef.current) {
+      chatLogger.info('⏭️  Skipping history load for newly created chat');
+      justCreatedChatRef.current = false;
+      return;
+    }
 
     async function loadChatHistory() {
       chatLogger.info('📚 Loading chat history for chatId:', chatId);
@@ -559,7 +575,16 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
               </Collapsible>
             </div>
           </PromptInputTools>
-          <PromptInputSubmit disabled={(!input && !status) || isCompressing} status={isCompressing ? 'submitted' : status} />
+          <PromptInputSubmit
+            disabled={(!input && !status) || isCompressing}
+            status={isCompressing ? 'submitted' : status}
+            onClick={(e) => {
+              if (status === 'streaming') {
+                e.preventDefault();
+                stop();
+              }
+            }}
+          />
         </PromptInputFooter>
       </PromptInput>
     </div>
