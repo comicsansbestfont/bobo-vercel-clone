@@ -22,9 +22,16 @@ import {
   type SearchResult,
 } from '@/lib/db';
 import { getModel } from '@/lib/ai/models';
-import { getProjectContext, prepareSystemPrompt } from '@/lib/ai/context-manager';
+import { getProjectContext, prepareSystemPrompt, type ProjectContext } from '@/lib/ai/context-manager';
 import { hybridSearch } from '@/lib/db';
 import { generateEmbedding, embedAndSaveMessage } from '@/lib/ai/embedding';
+import {
+  trackProjectSources,
+  trackGlobalSources,
+  insertInlineCitations,
+  citationsToMessageParts,
+  type Citation,
+} from '@/lib/ai/source-tracker';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -148,11 +155,19 @@ export async function POST(req: Request) {
       ? `${customInstructions}\n\nYou are a helpful assistant that can answer questions and help with tasks`
       : 'You are a helpful assistant that can answer questions and help with tasks';
 
+    // Store context for source tracking later
+    let projectContext: ProjectContext | null = null;
+    let projectName = '';
+
     if (activeProjectId) {
       try {
-        const projectContext = await getProjectContext(activeProjectId);
+        projectContext = await getProjectContext(activeProjectId);
         const prepared = prepareSystemPrompt(systemPrompt, projectContext, model);
         systemPrompt = prepared.system;
+
+        // Get project name for citations
+        const project = await getProject(activeProjectId);
+        projectName = project?.name || 'Current Project';
       } catch (err) {
         console.error('[api/chat] failed to load project context', err);
       }
@@ -161,6 +176,7 @@ export async function POST(req: Request) {
     // Hybrid Search (Loop B)
     // Search for relevant global context from other projects
     let globalContext = '';
+    let searchResults: SearchResult[] = [];
     try {
       const lastUserMessage = messages[messages.length - 1];
       console.log('[DEBUG] Last User Message:', lastUserMessage);
@@ -179,7 +195,7 @@ export async function POST(req: Request) {
 
       if (userText) {
         const queryEmbedding = await generateEmbedding(userText);
-        const searchResults = await hybridSearch(
+        searchResults = await hybridSearch(
           queryEmbedding,
           0.82, // High threshold for "Wisdom"
           5,    // Top 5 results
@@ -429,8 +445,51 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
               }
             }
 
-            // Save assistant message
+            // Save assistant message with source tracking
             if (assistantParts.length > 0) {
+              // Extract text from assistant parts for source tracking
+              const assistantText = assistantParts
+                .filter(p => p.type === 'text')
+                .map(p => p.text)
+                .join(' ');
+
+              // Track sources and insert inline citations
+              let finalText = assistantText;
+              const allCitations: Citation[] = [];
+
+              // Track project sources (Loop A)
+              if (projectContext && projectContext.files.length > 0) {
+                const projectCitations = trackProjectSources(assistantText, projectContext, projectName);
+                allCitations.push(...projectCitations);
+              }
+
+              // Track global sources (Loop B)
+              if (searchResults.length > 0) {
+                const projectNamesMap = new Map<string, string>(); // TODO: Query project names from DB
+                const globalCitations = trackGlobalSources(
+                  searchResults,
+                  projectNamesMap,
+                  allCitations.length + 1
+                );
+                allCitations.push(...globalCitations);
+              }
+
+              // Insert inline citations if any sources were found
+              if (allCitations.length > 0) {
+                const citationResult = insertInlineCitations(assistantText, allCitations);
+                finalText = citationResult.text;
+
+                // Replace text parts with citation-enhanced text
+                const textPartIndex = assistantParts.findIndex(p => p.type === 'text');
+                if (textPartIndex >= 0) {
+                  assistantParts[textPartIndex].text = finalText;
+                }
+
+                // Append source metadata as separate parts
+                const sourceParts = citationsToMessageParts(allCitations);
+                assistantParts.push(...sourceParts);
+              }
+
               const assistantMsg = await createMessage({
                 chat_id: activeChatId!,
                 role: 'assistant',
@@ -440,9 +499,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 
               // Generate embedding for assistant message (background)
               if (assistantMsg) {
-                const assistantText = assistantParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
-                if (assistantText) {
-                  embedAndSaveMessage(assistantMsg.id, assistantText).catch(console.error);
+                const finalAssistantText = assistantParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
+                if (finalAssistantText) {
+                  embedAndSaveMessage(assistantMsg.id, finalAssistantText).catch(console.error);
                 }
               }
             }
@@ -504,8 +563,41 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             }
           }
 
-          // Save assistant response
-          const assistantParts: MessagePart[] = [{ type: 'text', text: text }];
+          // Track sources and insert inline citations
+          let finalText = text;
+          const allCitations: Citation[] = [];
+
+          // Track project sources (Loop A)
+          if (projectContext && projectContext.files.length > 0) {
+            const projectCitations = trackProjectSources(text, projectContext, projectName);
+            allCitations.push(...projectCitations);
+          }
+
+          // Track global sources (Loop B)
+          if (searchResults.length > 0) {
+            const projectNamesMap = new Map<string, string>(); // TODO: Query project names from DB
+            const globalCitations = trackGlobalSources(
+              searchResults,
+              projectNamesMap,
+              allCitations.length + 1 // Start numbering after project citations
+            );
+            allCitations.push(...globalCitations);
+          }
+
+          // Insert inline citations if any sources were found
+          if (allCitations.length > 0) {
+            const citationResult = insertInlineCitations(text, allCitations);
+            finalText = citationResult.text;
+          }
+
+          // Build assistant message parts
+          const assistantParts: MessagePart[] = [{ type: 'text', text: finalText }];
+
+          // Append source metadata as separate parts
+          if (allCitations.length > 0) {
+            const sourceParts = citationsToMessageParts(allCitations);
+            assistantParts.push(...sourceParts);
+          }
 
           const assistantMsg = await createMessage({
             chat_id: activeChatId!,

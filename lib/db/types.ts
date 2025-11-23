@@ -7,12 +7,22 @@
 
 /**
  * Message content structure matching Vercel AI SDK UIMessage format
+ * Extended with inline citation support for Double-Loop architecture
  */
 export type MessagePart = {
-  type: 'text' | 'reasoning' | 'source-url' | 'tool-result';
+  type: 'text' | 'reasoning' | 'source-url' | 'tool-result' | 'project-source' | 'global-source';
   text?: string;
   url?: string;
   result?: string;
+
+  // Citation metadata (for project-source and global-source types)
+  sourceId?: string;           // file_id or message_id from database
+  sourceType?: 'project-file' | 'global-file' | 'global-message';
+  sourceTitle?: string;        // filename or message preview
+  projectId?: string;          // for global sources, which project they came from
+  projectName?: string;        // for global sources, project display name
+  similarity?: number;         // relevance score (0-1) from hybrid search
+  citationIndex?: number;      // position in citation list (1, 2, 3...)
 };
 
 export type MessageContent = {

@@ -59,6 +59,11 @@ import {
   ReasoningTrigger,
 } from '@/components/ai-elements/reasoning';
 
+import {
+  CitationMarker,
+  CitationsList,
+} from '@/components/ai-elements/inline-citations';
+
 import { Loader } from '@/components/ai-elements/loader';
 import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
 import { cn } from '@/lib/utils';
@@ -109,6 +114,46 @@ const models = [
     value: 'deepseek/deepseek-r1',
   },
 ];
+
+/**
+ * Parse citation markers [1], [2] in text and replace with CitationMarker components
+ */
+function parseCitationMarkers(text: string): React.ReactNode {
+  const citationRegex = /\[(\d+)\]/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = citationRegex.exec(text)) !== null) {
+    // Add text before the citation
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+
+    // Add the citation marker
+    const citationNumber = parseInt(match[1], 10);
+    parts.push(
+      <CitationMarker
+        key={`cite-${match.index}`}
+        number={citationNumber}
+        onClick={() => {
+          // Scroll to citation in list (optional enhancement)
+          const citationElement = document.querySelector(`[data-citation="${citationNumber}"]`);
+          citationElement?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }}
+      />
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
 
 interface ChatInterfaceProps {
   projectId?: string;
@@ -460,11 +505,14 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
               {message.parts.map((part, i) => {
                 switch (part.type) {
                   case 'text':
+                    // Parse citation markers in text
+                    const textWithCitations = parseCitationMarkers(part.text || '');
+
                     return (
                       <Message key={`${message.id}-${i}`} from={message.role}>
                         <MessageContent>
                           <MessageResponse>
-                            {part.text}
+                            {textWithCitations}
                           </MessageResponse>
                         </MessageContent>
                         {message.role === 'assistant' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id && (
@@ -498,10 +546,24 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
                         <ReasoningContent>{part.text}</ReasoningContent>
                       </Reasoning>
                     );
+                  // Don't render source parts directly (they'll be in CitationsList)
+                  case 'project-source':
+                  case 'global-source':
+                    return null;
                   default:
                     return null;
                 }
               })}
+
+              {/* Render citations list at bottom for assistant messages */}
+              {message.role === 'assistant' && (
+                <CitationsList
+                  sources={message.parts.filter(
+                    (p) => p.type === 'project-source' || p.type === 'global-source'
+                  )}
+                  projectId={projectId}
+                />
+              )}
             </div>
           ))}
           {status === 'submitted' && <Loader />}
