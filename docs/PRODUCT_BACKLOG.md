@@ -365,8 +365,15 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 | M3-12 | “About You” settings UI + optional context file upload | 🔴 HIGH | 3h | ⏳ |
 | M3-13 | Inject personal context into system prompt and memory pipeline | 🔴 HIGH | 3h | ⏳ |
 
-**Total M3 Tasks:** 13
-**Estimated Effort:** 2 weeks
+### 3.5 Automatic Runtime Context (Time & Location)
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M3-14 | Detect and store user local time & timezone for each session | 🟡 MEDIUM | 2h | ⏳ |
+| M3-15 | Inject current local time and (optional) rough location into system prompt with privacy controls | 🟡 MEDIUM | 3h | ⏳ |
+
+**Total M3 Tasks:** 15
+**Estimated Effort:** 2–3 weeks
 
 ---
 
@@ -469,6 +476,8 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 | R-4 | Embedding model comparison | OpenAI vs Cohere vs open-source? Cost vs accuracy? | 2h | ⏳ | 🟢 LOW |
 | R-5 | React Query vs SWR | Should we add data fetching library? | 2h | ⏳ | 🟢 LOW |
 | R-6 | WebSocket for streaming | Would WebSockets improve performance vs SSE? | 2h | ⏳ | 🟢 LOW |
+| R-7 | Web search vs deep research orchestration | When should Bobo use quick web search vs multi-step deep research? How does this interact with RAG and model context limits? | 3h | ⏳ | 🟡 MEDIUM |
+| R-8 | Native model tool-calling for search | How can we leverage built-in tools (e.g. Gemini’s Google Search, OpenAI browsing) alongside Perplexity, and route/tool-call intelligently via the AI Gateway? | 3h | ⏳ | 🟡 MEDIUM |
 
 ---
 
@@ -646,6 +655,39 @@ Nice-to-Have:      13 items (35-40 hours)
 
 **Total Items:** 100
 **Total Estimated Effort:** ~11-13 weeks (full-time)
+
+---
+
+## 🗂 CARD STATES & STATUS LEGEND
+
+### Card Groups & Overall State
+
+These are the major “cards” you can think of as lanes on a Kanban board:
+
+| Card Group                  | Current State    | Notes                            |
+|----------------------------|------------------|----------------------------------|
+| V1 Critical Path           | ✅ Complete      | Persistence foundation shipped   |
+| V1.1 Bug Fixes & Polish    | ✅ Complete      | Viewport bug, E2E, UX polish    |
+| M2 Project Intelligence    | ✅ Complete      | Double-Loop + citations shipped |
+| Deferred Tech Debt (TD-*)  | 🟡 Mixed         | Some DONE, some Planned         |
+| M3 User Profile & Bio      | 📝 Planned       | Personal Bio & global memory    |
+| M4 Production & Scale      | 📝 Backlog       | Multi-user, teams, analytics    |
+| M5 Cognitive Layer         | 📝 Backlog       | Living docs, graph, briefs      |
+| Research & Spikes (R-*)    | 📝 Planned       | To inform M3–M5 decisions       |
+| Nice-to-Haves (NTH-*)      | 📝 Backlog       | UX & feature ideas              |
+
+### Status Legend (Per-Item “Card” States)
+
+Each row in the backlog tables (V1, TD, M2, M3, M4, M5, Research, NTH) is treated as a **card** with a simple state:
+
+| Status Text / Icon | Meaning                                  |
+|--------------------|------------------------------------------|
+| 📝 Planned          | Defined but not yet scheduled            |
+| ⏳ Backlog          | In backlog, waiting for prioritization   |
+| 🚧 In Progress      | Actively being worked on                 |
+| ✅ Done             | Implemented and verified                 |
+
+Milestone‑level states (e.g. “✅ Complete”, “📝 Backlog”) are summaries of the states of their child cards. When grooming, update the per‑item Status first, then adjust the milestone’s summary state if needed.
 
 ---
 
