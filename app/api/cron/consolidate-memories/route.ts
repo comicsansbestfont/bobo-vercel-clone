@@ -133,7 +133,7 @@ async function recalculateScoresAndPeriods(userId: string) {
   if (!memories) return;
 
   for (const memory of memories) {
-    let updates: any = {};
+    const updates: Record<string, string | number> = {};
     let changed = false;
 
     // Update time period

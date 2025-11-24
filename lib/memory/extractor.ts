@@ -2,6 +2,7 @@ import { getModel } from '@/lib/ai/models';
 import { generateText } from 'ai';
 import { getMessages } from '@/lib/db/queries';
 import { deduplicateFacts, ExtractedFact } from './deduplicator';
+import { MemoryEntry } from '@/lib/db/types';
 
 const EXTRACTION_SYSTEM_PROMPT = `
 You are a memory extraction assistant for Bobo AI Chatbot. Your job is to analyze conversations and extract facts about the user that would help personalize future interactions.
@@ -164,7 +165,7 @@ const validateFact = (fact: ExtractedFact): boolean => {
 
 export async function extractMemoriesFromChat(
   chatId: string
-): Promise<any[]> {
+): Promise<MemoryEntry[]> {
   try {
     // 1. Fetch recent messages (last 20)
     const messages = await getMessages(chatId);

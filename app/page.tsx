@@ -7,7 +7,7 @@ import { BoboSidebarOptionA } from '@/components/ui/bobo-sidebar-option-a';
 const ChatBotDemo = () => {
   return (
     <BoboSidebarOptionA>
-      <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+      <div className="m-1 md:m-2 flex flex-1 flex-col rounded-lg md:rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
         <ChatInterface />
       </div>
     </BoboSidebarOptionA>

@@ -142,6 +142,21 @@ export type MemorySettings = {
   updated_at: string;
 };
 
+export type MemorySuggestion = {
+  id: string;
+  user_id: string;
+  category: MemoryCategory;
+  subcategory: string | null;
+  content: string;
+  summary: string | null;
+  confidence: number;
+  source_chat_id: string | null;
+  source_chat_name: string | null;
+  time_period: 'current' | 'recent' | 'past' | 'long_ago';
+  status: 'pending' | 'accepted' | 'dismissed';
+  created_at: string;
+};
+
 /**
  * Insert types (for creating new rows)
  * Omits auto-generated fields like id, timestamps
@@ -186,6 +201,10 @@ export type MemoryConsolidationLogInsert = Omit<MemoryConsolidationLog, 'id' | '
   id?: string;
 };
 
+export type MemorySuggestionInsert = Omit<MemorySuggestion, 'id' | 'created_at'> & {
+  id?: string;
+};
+
 /**
  * Update types (for updating existing rows)
  * All fields optional except what's required for the update
@@ -209,6 +228,10 @@ export type UserProfileUpdate = Partial<
 
 export type MemoryEntryUpdate = Partial<
   Omit<MemoryEntry, 'id' | 'user_id' | 'created_at'>
+>;
+
+export type MemorySuggestionUpdate = Partial<
+  Omit<MemorySuggestion, 'id' | 'user_id' | 'created_at'>
 >;
 
 /**
@@ -356,6 +379,25 @@ export type Database = {
             foreignKeyName: 'memory_settings_user_id_fkey';
             columns: ['user_id'];
             referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      memory_suggestions: {
+        Row: MemorySuggestion;
+        Insert: MemorySuggestionInsert;
+        Update: MemorySuggestionUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'memory_suggestions_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'memory_suggestions_source_chat_id_fkey';
+            columns: ['source_chat_id'];
+            referencedRelation: 'chats';
             referencedColumns: ['id'];
           }
         ];

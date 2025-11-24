@@ -438,7 +438,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   }, [contextUsage]);
 
   return (
-    <div className={cn("flex flex-col h-full p-6", className)}>
+    <div className={cn("flex flex-col h-full p-3 md:p-6", className)}>
       <Conversation className="h-full">
         <ConversationContent>
           {messages.map((message) => (
@@ -584,7 +584,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         <ConversationScrollButton />
       </Conversation>
 
-      <PromptInput onSubmit={handleSubmit} className="mt-4" globalDrop multiple>
+      <PromptInput onSubmit={handleSubmit} className="mt-2 md:mt-4" globalDrop multiple>
         <PromptInputHeader>
           <PromptInputAttachments>
             {(attachment) => <PromptInputAttachment data={attachment} />}

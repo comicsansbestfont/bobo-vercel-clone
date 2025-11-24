@@ -26,7 +26,6 @@ import {
   type SearchResult,
   type Message,
   getUserMemories,
-  type MemoryEntry,
 } from '@/lib/db';
 import { getModel } from '@/lib/ai/models';
 import { getProjectContext, prepareSystemPrompt, type ProjectContext } from '@/lib/ai/context-manager';
@@ -333,7 +332,7 @@ export async function POST(req: Request) {
           sections[memory.category].push(`- ${memory.content}`);
         }
 
-        const parts = [];
+        const parts: string[] = [];
         if (sections.work_context.length > 0) {
           parts.push(`WORK CONTEXT:\n${sections.work_context.slice(0, 5).join('\n')}`);
         }
@@ -396,15 +395,11 @@ export async function POST(req: Request) {
       chatLogger.debug('Last User Message:', lastUserMessage);
 
       let userText = '';
-      if (lastUserMessage) {
-        if (typeof (lastUserMessage as any).content === 'string') {
-          userText = (lastUserMessage as any).content;
-        } else if (Array.isArray(lastUserMessage.parts)) {
-          userText = lastUserMessage.parts
-            .filter(p => p.type === 'text')
-            .map(p => p.text)
-            .join(' ');
-        }
+      if (lastUserMessage && Array.isArray(lastUserMessage.parts)) {
+        userText = lastUserMessage.parts
+          .filter(p => p.type === 'text')
+          .map(p => p.text)
+          .join(' ');
       }
 
       if (userText) {
@@ -460,11 +455,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
       // Direct gateway call with raw OpenAI-compatible payload to avoid SDK shaping issues.
       const messagesForPayload = normalizedMessages.map((msg) => {
         chatLogger.debug('Mapping message:', msg);
-        const content = typeof (msg as any).content === 'string'
-          ? (msg as any).content
-          : (msg.parts || [])
-            .map((p) => ('text' in p && p.text ? p.text : ''))
-            .join('');
+        const content = (msg.parts || [])
+          .map((p) => ('text' in p && p.text ? p.text : ''))
+          .join('');
 
         return {
           role: msg.role,
@@ -526,7 +519,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
         const promise = new Promise<void>((r) => (resolve = r));
         return { promise, resolve };
       })();
-      let assistantParts: MessagePart[] = [];
+      const assistantParts: MessagePart[] = [];
       let reasoningStarted = false;
 
       // Emit UIMessage stream start

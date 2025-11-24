@@ -16,6 +16,7 @@ import {
   IconTrash,
   IconEdit,
   IconPlus,
+  IconBrain, // Using Brain icon for Memory
 } from "@tabler/icons-react";
 import {
   Sidebar,
@@ -265,6 +266,16 @@ export function BoboSidebar({ children }: { children: React.ReactNode }) {
                 New Chat
               </motion.span>
             </motion.button>
+
+            <SidebarLink
+              link={{
+                label: "Memory",
+                href: "/memory",
+                icon: (
+                  <IconBrain className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+                ),
+              }}
+            />
 
             {/* Chats Section */}
             <CollapsibleSection
