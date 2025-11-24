@@ -1,8 +1,38 @@
-# Bobo Vercel Clone - AI Chatbot
+# Bobo AI Chatbot - Documentation Index
+
+**Version:** v1.2.0 (M2 Complete)
+**Last Updated:** November 24, 2025
+
+---
+
+## 🗺️ Quick Navigation
+
+**New to the project?** Start here:
+- [PROJECT_BRIEF.md](PROJECT_BRIEF.md) - Product vision, features, architecture (v2.2, 773 lines)
+- [context-memory-vision.md](context-memory-vision.md) - Core architecture philosophy
+
+**Working on tasks?** Check these:
+- [Sprint M3-01](sprints/active/sprint-m3-01.md) - Current sprint (Personal Context Foundation)
+- [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md) - All planned features by milestone
+- [Sprint Management](sprints/README.md) - Sprint history, metrics, and planning
+
+**Deploying or debugging?**
+- [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md) - Production deployment steps
+- [M2 Completion Report](reports/M2_COMPLETION_SUMMARY.md) - Latest milestone summary
+- [changelog.md](changelog.md) - Release notes and version history
+
+---
 
 ## Project Overview
 
-An advanced AI-powered chatbot built with Next.js, Vercel AI SDK, and AI Elements, featuring multi-model support, intelligent context management, and compression capabilities.
+An advanced AI-powered chatbot built with Next.js 16, React 19, and the Vercel AI SDK. Features multi-model support, intelligent context management, Double-Loop RAG architecture, and Perplexity-style inline citations.
+
+### Current Status (M2 Complete)
+- ✅ **V1**: Full persistence layer with Supabase
+- ✅ **M2**: Double-Loop RAG with project context caching + global hybrid search
+- 🚧 **M3**: User Profile & Bio Memory (Sprint M3-01 in progress)
+- 📝 **M4**: Production & Scale (planned Q2 2025)
+- 📝 **M5**: Cognitive Layer - Living docs & knowledge graph (planned Q3 2025)
 
 ## Project Brief
 
@@ -104,39 +134,77 @@ Messages → Token Counter → Context Monitor
     Continue conversation
 ```
 
-## File Structure
+## Documentation Structure
 
 ```
-ai-chatbot/
+docs/
+├── README.md                      # This file - Documentation index
+├── PROJECT_BRIEF.md               # Product vision & specifications (v2.2)
+├── PRODUCT_BACKLOG.md             # Sprint planning & milestone tasks
+├── context-memory-vision.md       # Architecture philosophy (Knowledge/Context/Cognitive layers)
+├── DEPLOYMENT_CHECKLIST.md        # Production deployment checklist
+├── changelog.md                   # Release notes and version history
+├── sprints/                       # Sprint management system
+│   ├── README.md                  # Sprint index & metrics
+│   ├── active/                    # Current sprint(s)
+│   │   └── sprint-m3-01.md        # M3 Week 1 - Personal Context Foundation
+│   ├── completed/                 # Completed sprints
+│   │   ├── sprint-v1-01.md        # V1 - Persistence Layer
+│   │   ├── sprint-v1-02.md        # V1.2 - Polish & Testing
+│   │   └── sprint-m2-01.md        # M2 - Double-Loop RAG
+│   └── templates/                 # Sprint templates
+│       └── sprint-template.md     # Standard sprint format
+├── reports/                       # Completion summaries & test reports
+│   ├── README.md                  # Reports index
+│   ├── M2_COMPLETION_SUMMARY.md   # M2 final report
+│   ├── M2_CITATION_TEST_REPORT.md # M2 citation testing
+│   └── M2_CITATION_BUGS.md        # M2 bug tracking
+└── archive/                       # Deprecated documentation
+    ├── README.md                  # Archive index
+    ├── PROGRESS_TRACKER.md        # (superseded by sprints)
+    ├── INDEX.md                   # (superseded by this README)
+    └── product-roadmap.md         # (superseded by PRODUCT_BACKLOG)
+```
+
+## Project Structure
+
+```
+bobo-vercel-clone/
 ├── app/
 │   ├── api/
-│   │   ├── chat/
-│   │   │   └── route.ts          # Main chat endpoint with custom streaming
-│   │   └── memory/
-│   │       └── compress/
-│   │           └── route.ts      # Memory compression endpoint
+│   │   ├── chat/route.ts          # Main chat endpoint with Loop A+B RAG
+│   │   ├── memory/compress/       # Memory compression endpoint
+│   │   ├── projects/              # Project CRUD + file upload
+│   │   └── chats/                 # Chat management
 │   ├── page.tsx                   # Main chatbot UI
-│   ├── layout.tsx                 # Root layout
-│   └── globals.css                # Global styles
+│   ├── project/[id]/page.tsx      # Project view
+│   └── settings/                  # Settings pages
 ├── components/
-│   ├── ai-elements/               # AI Elements components
-│   └── ui/                        # shadcn/ui components
+│   ├── ai-elements/               # AI Elements (citations, reasoning, etc.)
+│   ├── ui/                        # shadcn/ui components
+│   ├── chat/                      # Chat interface components
+│   └── project/                   # Project management UI
 ├── lib/
-│   ├── context-tracker.ts         # Token tracking and context monitoring
-│   ├── memory-manager.ts          # Compression and summarization logic
-│   └── utils.ts                   # Utility functions
-├── docs/
-│   ├── README.md                  # This file
-│   ├── INDEX.md                   # Documentation hub
-│   ├── PROGRESS_TRACKER.md        # Development progress & version history
-│   ├── PRODUCT_BACKLOG.md         # Sprint planning & future tasks
-│   ├── PROJECT_BRIEF.md           # Product vision & specifications
-│   ├── agents.md                  # AI agent guidelines
-│   ├── audits/                    # Audit documents
-│   ├── bugs/                      # Bug reports
-│   ├── testing/                   # Testing documentation
-│   └── archive/                   # Historical documentation
-└── .env.local                     # Environment variables (AI_GATEWAY_API_KEY)
+│   ├── ai/                        # M2 Double-Loop RAG system
+│   │   ├── context-manager.ts     # Loop A - Project context caching
+│   │   ├── embedding.ts           # Embedding generation (OpenAI)
+│   │   └── source-tracker.ts      # Citation tracking & insertion
+│   ├── db/                        # Database layer
+│   │   ├── client.ts              # Supabase client
+│   │   ├── queries.ts             # All database queries
+│   │   └── types.ts               # TypeScript types
+│   ├── context-tracker.ts         # Token tracking
+│   └── memory-manager.ts          # Compression logic
+├── docs/                          # (see structure above)
+├── tests/
+│   └── e2e/                       # Playwright E2E tests
+│       ├── chat-creation.spec.ts
+│       ├── project-chat-creation.spec.ts
+│       ├── chat-persistence.spec.ts
+│       └── m2-citations.spec.ts
+├── supabase/
+│   └── migrations/                # Database migrations
+└── .env.local                     # Environment variables
 ```
 
 ## Setup Instructions
@@ -227,14 +295,19 @@ Defined in `lib/memory-manager.ts`:
 - Heuristic token counting for attachments
 - Keep original messages in localStorage for reference
 
-## Future Enhancements
+## Current & Upcoming Work
 
-See `product-backlog.md` for planned features including:
-- Vector-based context retrieval (RAG)
-- SuperMemory.ai integration for long-term memory
-- Background/async compression
-- Persistent conversation storage
-- Advanced token visualization
+**Active Sprint:** [M3-01 - Personal Context Foundation](sprints/active/sprint-m3-01.md) (Nov 24-30, 2025)
+- Personal profile schema & settings UI
+- "About You" profile injection into chat prompts
+- Memory schema definition for fact categorization
+
+**Future Milestones:**
+- **M3 (3 weeks)**: Supermemory.ai integration, memory management UI, runtime context
+- **M4 (4+ weeks)**: Authentication, multi-user, team workspaces, analytics
+- **M5 (TBD)**: Living documentation, hierarchical summaries, knowledge graph
+
+See [PRODUCT_BACKLOG.md](PRODUCT_BACKLOG.md) for full task breakdown and [Sprint Management](sprints/README.md) for sprint planning.
 
 ## Resources
 
