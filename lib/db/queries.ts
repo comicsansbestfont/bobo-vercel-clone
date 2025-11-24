@@ -826,6 +826,42 @@ export async function getUserMemorySettings(): Promise<import('./types').MemoryS
 }
 
 /**
+ * Initialize default memory settings for a user
+ */
+export async function ensureMemorySettings(userId: string = DEFAULT_USER_ID): Promise<import('./types').MemorySettings | null> {
+  // Check if settings already exist
+  const existing = await getUserMemorySettings();
+  if (existing) return existing;
+
+  // Create default settings
+  const { data, error } = await supabase
+    .from('memory_settings')
+    .insert({
+      user_id: userId,
+      auto_extraction_enabled: false, // Default: OFF (explicit opt-in)
+      extraction_frequency: 'realtime',
+      enabled_categories: [
+        'work_context',
+        'personal_context',
+        'top_of_mind',
+        'brief_history',
+        'long_term_background',
+        'other_instructions',
+      ],
+      token_budget: 500,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating memory settings:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
  * Get the timestamp of the last memory extraction for a chat
  */
 export async function getLastExtractionTime(chatId: string): Promise<string | null> {

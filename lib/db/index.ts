@@ -83,5 +83,6 @@ export {
   createMemory,
   updateMemory,
   getUserMemorySettings,
+  ensureMemorySettings,
   getLastExtractionTime,
 } from './queries';

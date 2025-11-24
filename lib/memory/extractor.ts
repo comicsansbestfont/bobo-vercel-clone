@@ -181,9 +181,9 @@ export async function extractMemoriesFromChat(
       id: msg.id,
     }));
 
-    // 3. Call GPT-4o-mini
+    // 3. Call Gemini 2.5 Flash Lite (cheaper, faster for extraction)
     const { text } = await generateText({
-      model: getModel('gpt-4o-mini'),
+      model: getModel('google/gemini-2.5-flash-lite'),
       messages: [
         { role: 'system', content: EXTRACTION_SYSTEM_PROMPT },
         { role: 'user', content: JSON.stringify(formattedMessages) },

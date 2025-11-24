@@ -142,6 +142,12 @@ export type MemorySettings = {
   updated_at: string;
 };
 
+export type MemorySettingsInsert = Omit<MemorySettings, 'updated_at'> & {
+  updated_at?: string;
+};
+
+export type MemorySettingsUpdate = Partial<Omit<MemorySettings, 'user_id'>>;
+
 export type MemorySuggestion = {
   id: string;
   user_id: string;
@@ -372,8 +378,8 @@ export type Database = {
       };
       memory_settings: {
         Row: MemorySettings;
-        Insert: MemorySettings;
-        Update: Partial<MemorySettings>;
+        Insert: MemorySettingsInsert;
+        Update: MemorySettingsUpdate;
         Relationships: [
           {
             foreignKeyName: 'memory_settings_user_id_fkey';

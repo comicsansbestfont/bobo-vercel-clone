@@ -24,6 +24,7 @@ export const MODEL_CONTEXT_LIMITS: Record<string, number> = {
   // Google models
   'google/gemini-3-pro-preview': 1_000_000,
   'google/gemini-2.5-flash': 1_000_000,
+  'google/gemini-2.5-flash-lite': 1_000_000,
   'google/gemini-2.0-flash': 1_000_000,
   'google/gemini-2.5-pro': 2_000_000,
   

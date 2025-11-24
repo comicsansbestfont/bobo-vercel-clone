@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractMemoriesFromChat } from '@/lib/memory/extractor';
-import { getUserMemorySettings, getLastExtractionTime } from '@/lib/db/queries';
+import { getUserMemorySettings, ensureMemorySettings, getLastExtractionTime } from '@/lib/db/queries';
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,13 +10,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing chat_id' }, { status: 400 });
     }
 
-    // 1. Check if auto-extraction enabled
+    // 1. Ensure memory settings exist (initialize if first time)
+    await ensureMemorySettings();
+
+    // 2. Check if auto-extraction enabled
     const settings = await getUserMemorySettings();
     if (!settings?.auto_extraction_enabled) {
       return NextResponse.json({ skipped: true, reason: 'disabled' });
     }
 
-    // 2. Check debounce (last extraction > 5 min ago)
+    // 3. Check debounce (last extraction > 5 min ago)
     const lastExtractionTime = await getLastExtractionTime(chat_id);
     if (lastExtractionTime) {
         const lastExtraction = new Date(lastExtractionTime).getTime();
@@ -25,10 +28,10 @@ export async function POST(req: NextRequest) {
         }
     }
 
-    // 3. Extract memories
+    // 4. Extract memories
     const memories = await extractMemoriesFromChat(chat_id);
 
-    // 4. Return result
+    // 5. Return result
     return NextResponse.json({
       success: true,
       extracted: memories.length,

@@ -52,9 +52,9 @@ export function MemorySection({
   return (
     <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
       <div className="border border-border rounded-lg overflow-hidden bg-card shadow-sm">
-        <CollapsibleTrigger asChild>
-          <button className="w-full flex items-center justify-between p-3 md:p-4 hover:bg-accent/50 transition-colors">
-            <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+        <div className="flex items-center p-3 md:p-4 hover:bg-accent/50 transition-colors">
+          <CollapsibleTrigger asChild>
+            <button className="flex-1 flex items-center gap-2 md:gap-3 min-w-0 text-left">
               {isExpanded ? (
                 <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground flex-shrink-0" />
               ) : (
@@ -68,18 +68,18 @@ export function MemorySection({
               <Badge variant="secondary" className="ml-1 md:ml-2 flex-shrink-0 text-xs">
                 {memories.length}
               </Badge>
-            </div>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleAddClick}
-              className="ml-2 h-8 md:h-9 flex-shrink-0"
-            >
-              <Plus className="w-3.5 h-3.5 md:w-4 md:h-4 md:mr-1" />
-              <span className="hidden sm:inline">Add</span>
-            </Button>
-          </button>
-        </CollapsibleTrigger>
+            </button>
+          </CollapsibleTrigger>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleAddClick}
+            className="ml-2 h-8 md:h-9 flex-shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5 md:w-4 md:h-4 md:mr-1" />
+            <span className="hidden sm:inline">Add</span>
+          </Button>
+        </div>
 
         <CollapsibleContent className="border-t border-border">
           <div className="p-4 space-y-3 bg-background/50">

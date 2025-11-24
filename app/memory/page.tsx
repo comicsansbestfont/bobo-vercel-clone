@@ -11,6 +11,7 @@ import { MemorySection } from '@/components/memory/memory-section';
 import { MemorySettingsModal } from '@/components/memory/memory-settings-modal';
 import { calculateTokenUsage, filterByCategory, getLastUpdated } from '@/lib/memory/utils';
 import type { MemoryEntry } from '@/lib/db/types';
+import { BoboSidebarOptionA } from '@/components/ui/bobo-sidebar-option-a';
 
 export default function MemoryPage() {
   const { data: memories, isLoading } = useMemories();
@@ -21,7 +22,18 @@ export default function MemoryPage() {
   const [showSettings, setShowSettings] = useState(false);
 
   if (isLoading) {
-    return <div>Loading memories...</div>;
+    return (
+      <BoboSidebarOptionA>
+        <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900 overflow-hidden">
+          <div className="flex-1 flex items-center justify-center p-6">
+            <div className="text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+              <p className="mt-3 text-muted-foreground">Loading your memories...</p>
+            </div>
+          </div>
+        </div>
+      </BoboSidebarOptionA>
+    );
   }
 
   const filteredMemories = searchQuery
@@ -32,9 +44,9 @@ export default function MemoryPage() {
     if (!memories) return;
     const dataStr = JSON.stringify(memories, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
+
     const exportFileDefaultName = `bobo_memories_${new Date().toISOString()}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -42,7 +54,10 @@ export default function MemoryPage() {
   };
 
   return (
-    <div className="container mx-auto p-3 md:p-6 max-w-6xl">
+    <BoboSidebarOptionA>
+      <div className="m-2 flex flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900 overflow-hidden">
+        <div className="flex-1 overflow-y-auto p-3 md:p-6">
+          <div className="container mx-auto max-w-6xl">
       <MemoryHeader
         onSearch={setSearchQuery}
         onSettingsClick={() => setShowSettings(true)}
@@ -118,6 +133,9 @@ export default function MemoryPage() {
           onClose={() => setShowSettings(false)}
         />
       )}
-    </div>
+          </div>
+        </div>
+      </div>
+    </BoboSidebarOptionA>
   );
 }

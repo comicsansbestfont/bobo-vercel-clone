@@ -310,17 +310,17 @@ export function BoboSidebar({ children }: { children: React.ReactNode }) {
           <div className="border-t border-neutral-200 pt-4 dark:border-neutral-700">
             <SidebarLink
               link={{
-                label: "Settings",
-                href: "#",
+                label: "Home",
+                href: "/",
                 icon: (
-                  <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+                  <IconMessagePlus className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
                 ),
               }}
             />
             <SidebarLink
               link={{
                 label: "Profile",
-                href: "#",
+                href: "/settings/profile",
                 icon: (
                   <IconUser className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
                 ),

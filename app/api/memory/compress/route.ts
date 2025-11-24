@@ -1,7 +1,7 @@
 import { generateText } from 'ai';
 import { chatLogger } from '@/lib/logger';
 
-const SUMMARIZER_MODEL = 'openai/gpt-4o-mini';
+const SUMMARIZER_MODEL = 'google/gemini-2.5-flash-lite';
 
 type Payload = {
   messages: Array<{

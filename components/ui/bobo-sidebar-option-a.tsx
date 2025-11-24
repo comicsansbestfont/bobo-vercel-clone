@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
   IconMessagePlus,
   IconFolder,
@@ -15,6 +15,8 @@ import {
   IconDots,
   IconClock,
   IconCalendar,
+  IconBrain,
+  IconHome,
 } from "@tabler/icons-react";
 import {
   Sidebar,
@@ -29,6 +31,7 @@ import { CreateProjectModal } from "@/components/project/create-project-modal";
 import { toast } from "sonner";
 import { Skeleton } from "./skeleton";
 import { ThemeSwitcherConnected } from "@/components/theme-switcher-connected";
+import { ChatContextMenu } from "@/components/chat/chat-context-menu";
 
 // Skeleton loading components
 const ProjectSkeleton = () => {
@@ -134,12 +137,16 @@ const SimpleChatItem = ({
   chat,
   isActive = false,
   dateMode,
+  projects,
+  onUpdate,
 }: {
   chat: ChatWithProject;
   isActive?: boolean;
   dateMode: 'updated' | 'created';
+  projects: ProjectWithStats[];
+  onUpdate: () => void;
 }) => {
-  const { open: sidebarOpen } = useSidebar();
+  const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar();
   const [isHovered, setIsHovered] = useState(false);
 
   const dateToShow = dateMode === 'updated'
@@ -149,51 +156,68 @@ const SimpleChatItem = ({
   const formattedDate = formatRelativeDate(dateToShow);
 
   return (
-    <Link
-      href={`/?chatId=${chat.id}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={cn(
-        "group relative flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800",
-        isActive && "bg-neutral-100 dark:bg-neutral-800",
-      )}
-    >
-      <motion.span
-        animate={{
-          display: sidebarOpen ? "inline-block" : "none",
-          opacity: sidebarOpen ? 1 : 0,
+    <ChatContextMenu chat={chat} projects={projects} onUpdate={onUpdate}>
+      <Link
+        href={`/?chatId=${chat.id}`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={() => {
+          // Close sidebar on mobile when navigating to a chat
+          if (window.innerWidth < 768) {
+            setSidebarOpen(false);
+          }
         }}
-        className="truncate text-neutral-700 dark:text-neutral-300"
+        onContextMenu={(e) => {
+          e.preventDefault(); // Prevent default browser context menu
+        }}
+        className={cn(
+          "group relative flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800",
+          isActive && "bg-neutral-100 dark:bg-neutral-800",
+        )}
       >
-        {chat.title}
-      </motion.span>
-
-      {isHovered && sidebarOpen && (
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400"
+        <motion.span
+          animate={{
+            display: sidebarOpen ? "inline-block" : "none",
+            opacity: sidebarOpen ? 1 : 0,
+          }}
+          className="truncate text-neutral-700 dark:text-neutral-300"
         >
-          {dateMode === 'updated' ? (
-            <IconClock className="h-3 w-3" />
-          ) : (
-            <IconCalendar className="h-3 w-3" />
-          )}
-          <span className="whitespace-nowrap">{formattedDate}</span>
-        </motion.div>
-      )}
-    </Link>
+          {chat.title}
+        </motion.span>
+
+        {isHovered && sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400"
+          >
+            {dateMode === 'updated' ? (
+              <IconClock className="h-3 w-3" />
+            ) : (
+              <IconCalendar className="h-3 w-3" />
+            )}
+            <span className="whitespace-nowrap">{formattedDate}</span>
+          </motion.div>
+        )}
+      </Link>
+    </ChatContextMenu>
   );
 };
 
 // Inline Project Item (no expansion)
 const InlineProjectItem = ({ project }: { project: ProjectWithStats }) => {
-  const { open: sidebarOpen } = useSidebar();
+  const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar();
 
   return (
     <Link
       href={`/project/${project.id}`}
+      onClick={() => {
+        // Close sidebar on mobile when navigating to a project
+        if (window.innerWidth < 768) {
+          setSidebarOpen(false);
+        }
+      }}
       className="flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
     >
       <IconFolder className="h-4 w-4 flex-shrink-0 text-neutral-600 dark:text-neutral-400" />
@@ -303,6 +327,8 @@ const DateModeToggle = ({
 // Main Bobo Sidebar Option A Component
 export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [open, setOpen] = useState(true);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [dateMode, setDateMode] = useState<'updated' | 'created'>('updated');
@@ -349,6 +375,18 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
     fetchData();
   }, []);
 
+  // Refresh sidebar when URL changes (new chat created or navigation)
+  useEffect(() => {
+    const chatId = searchParams?.get('chatId');
+    if (chatId) {
+      // Debounce to avoid multiple rapid fetches
+      const timeoutId = setTimeout(() => {
+        fetchData();
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [searchParams]);
+
   const visibleProjects = showAllProjects
     ? projects
     : projects.slice(0, 3);
@@ -372,15 +410,21 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
               {open ? <Logo /> : <LogoIcon />}
 
               {/* New Chat Button - Right aligned */}
-              <Link
-                href="/"
+              <button
+                onClick={() => {
+                  router.push('/');
+                  // Close sidebar on mobile after creating new chat
+                  if (window.innerWidth < 768) {
+                    setOpen(false);
+                  }
+                }}
                 className={cn(
                   "flex items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors",
                   !open && "px-2",
                 )}
               >
                 <IconMessagePlus className="h-4 w-4 flex-shrink-0" />
-              </Link>
+              </button>
             </div>
 
             {/* Search Bar */}
@@ -431,7 +475,13 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             {!loading && !error && (
               <div className="space-y-0.5">
                 {chats.map((chat) => (
-                  <SimpleChatItem key={chat.id} chat={chat} dateMode={dateMode} />
+                  <SimpleChatItem
+                    key={chat.id}
+                    chat={chat}
+                    dateMode={dateMode}
+                    projects={projects}
+                    onUpdate={fetchData}
+                  />
                 ))}
                 {chats.length === 0 && (
                   <div className="py-4 text-center text-sm text-neutral-500">
@@ -447,24 +497,45 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             <div className="mb-4 flex justify-start px-2">
               <ThemeSwitcherConnected />
             </div>
-            <SidebarLink
-              link={{
-                label: "Settings",
-                href: "#",
-                icon: (
-                  <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-                ),
-              }}
-            />
-            <SidebarLink
-              link={{
-                label: "Profile",
-                href: "/settings/profile",
-                icon: (
-                  <IconUser className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-                ),
-              }}
-            />
+            <div onClick={() => {
+              if (window.innerWidth < 768) setOpen(false);
+            }}>
+              <SidebarLink
+                link={{
+                  label: "Home",
+                  href: "/",
+                  icon: (
+                    <IconHome className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+                  ),
+                }}
+              />
+            </div>
+            <div onClick={() => {
+              if (window.innerWidth < 768) setOpen(false);
+            }}>
+              <SidebarLink
+                link={{
+                  label: "Memory",
+                  href: "/memory",
+                  icon: (
+                    <IconBrain className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+                  ),
+                }}
+              />
+            </div>
+            <div onClick={() => {
+              if (window.innerWidth < 768) setOpen(false);
+            }}>
+              <SidebarLink
+                link={{
+                  label: "Profile",
+                  href: "/settings/profile",
+                  icon: (
+                    <IconUser className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+                  ),
+                }}
+              />
+            </div>
           </div>
         </SidebarBody>
       </Sidebar>
