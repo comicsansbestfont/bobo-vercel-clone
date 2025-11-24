@@ -699,8 +699,168 @@ export async function deleteFile(id: string): Promise<boolean> {
   return true;
 }
 // ============================================================================
-// SEARCH QUERIES (M2 Phase 2)
+// MEMORY ENTRY QUERIES (M3)
 // ============================================================================
+
+/**
+ * Get all memories for the default user
+ */
+export async function getUserMemories({
+  relevance_threshold = 0.0,
+  limit = 100,
+}: {
+  relevance_threshold?: number;
+  limit?: number;
+} = {}): Promise<import('./types').MemoryEntry[]> {
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .select('*')
+    .eq('user_id', DEFAULT_USER_ID)
+    .gte('relevance_score', relevance_threshold)
+    .order('relevance_score', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching memories:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
+ * Get a single memory by ID
+ */
+export async function getMemory(id: string): Promise<import('./types').MemoryEntry | null> {
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .select('*')
+    .eq('id', id)
+    .eq('user_id', DEFAULT_USER_ID)
+    .single();
+
+  if (error) {
+    console.error('Error fetching memory:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Create a new memory entry
+ */
+export async function createMemory(
+  memory: Omit<import('./types').MemoryEntryInsert, 'user_id'>
+): Promise<import('./types').MemoryEntry | null> {
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .insert({
+      ...memory,
+      user_id: DEFAULT_USER_ID,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating memory:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Update a memory entry
+ */
+export async function updateMemory(
+  id: string,
+  updates: import('./types').MemoryEntryUpdate
+): Promise<import('./types').MemoryEntry | null> {
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .update(updates)
+    .eq('id', id)
+    .eq('user_id', DEFAULT_USER_ID)
+    .select()
+    .single();
+
+  return data;
+}
+
+/**
+ * Delete a memory entry
+ */
+export async function deleteMemory(id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('memory_entries')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', DEFAULT_USER_ID);
+
+  if (error) {
+    console.error('Error deleting memory:', error);
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Get user memory settings
+ */
+export async function getUserMemorySettings(): Promise<import('./types').MemorySettings | null> {
+  const { data, error } = await supabase
+    .from('memory_settings')
+    .select('*')
+    .eq('user_id', DEFAULT_USER_ID)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') return null;
+    console.error('Error fetching memory settings:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Get the timestamp of the last memory extraction for a chat
+ */
+export async function getLastExtractionTime(chatId: string): Promise<string | null> {
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .select('created_at')
+    .contains('source_chat_ids', [chatId])
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') return null;
+    // console.error('Error fetching last extraction:', error);
+    return null;
+  }
+
+  return data?.created_at || null;
+}
+
+/**
+ * Get all users who have memories (for cron job)
+ */
+export async function getAllUsersWithMemories(): Promise<{ id: string }[]> {
+  // Since we are single-user MVP, just return default user
+  return [{ id: DEFAULT_USER_ID }];
+
+  /* Multi-user implementation:
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .select('user_id')
+    .distinct(); // Supabase doesn't support distinct directly like this easily usually
+  */
+}
+
 
 /**
  * Hybrid search for global context

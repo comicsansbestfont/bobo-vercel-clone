@@ -32,6 +32,9 @@ export type {
   MessagePart,
   SearchResult,
   Database,
+  MemoryEntry,
+  MemoryCategory,
+  MemorySettings,
 } from './types';
 
 // Query functions
@@ -74,4 +77,11 @@ export {
   deleteFile,
   // Search
   hybridSearch,
+  // Memory (M3)
+  getUserMemories,
+  getMemory,
+  createMemory,
+  updateMemory,
+  getUserMemorySettings,
+  getLastExtractionTime,
 } from './queries';

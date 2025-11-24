@@ -25,6 +25,8 @@ import {
   type MessageContent,
   type SearchResult,
   type Message,
+  getUserMemories,
+  type MemoryEntry,
 } from '@/lib/db';
 import { getModel } from '@/lib/ai/models';
 import { getProjectContext, prepareSystemPrompt, type ProjectContext } from '@/lib/ai/context-manager';
@@ -211,6 +213,21 @@ async function compressConversationIfNeeded(chatId: string): Promise<void> {
   }
 }
 
+/**
+ * Trigger background memory extraction (M3)
+ */
+function triggerMemoryExtraction(chatId: string) {
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const host = process.env.VERCEL_URL || 'localhost:3000';
+    const url = `${protocol}://${host}/api/memory/extract`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId }),
+    }).catch(err => chatLogger.error('Failed to queue extraction:', err));
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -296,13 +313,61 @@ export async function POST(req: Request) {
       chatLogger.error('Failed to load user profile:', err);
     }
 
+    // Fetch automatic memories (M3-02)
+    let userMemoryContext = '';
+    try {
+      const memories = await getUserMemories({ relevance_threshold: 0.2, limit: 50 });
+
+      if (memories.length > 0) {
+        const sections: Record<string, string[]> = {
+          work_context: [],
+          personal_context: [],
+          top_of_mind: [],
+          brief_history: [],
+          long_term_background: [],
+          other_instructions: [],
+        };
+
+        // Group by category
+        for (const memory of memories) {
+          sections[memory.category].push(`- ${memory.content}`);
+        }
+
+        const parts = [];
+        if (sections.work_context.length > 0) {
+          parts.push(`WORK CONTEXT:\n${sections.work_context.slice(0, 5).join('\n')}`);
+        }
+        if (sections.personal_context.length > 0) {
+          parts.push(`PERSONAL CONTEXT:\n${sections.personal_context.slice(0, 5).join('\n')}`);
+        }
+        if (sections.top_of_mind.length > 0) {
+          parts.push(`TOP OF MIND:\n${sections.top_of_mind.slice(0, 5).join('\n')}`);
+        }
+        if (sections.brief_history.length > 0) {
+          parts.push(`BRIEF HISTORY:\n${sections.brief_history.slice(0, 5).join('\n')}`);
+        }
+        if (sections.long_term_background.length > 0) {
+          parts.push(`BACKGROUND:\n${sections.long_term_background.slice(0, 5).join('\n')}`);
+        }
+        if (sections.other_instructions.length > 0) {
+          parts.push(`PREFERENCES:\n${sections.other_instructions.slice(0, 5).join('\n')}`);
+        }
+
+        if (parts.length > 0) {
+          userMemoryContext = `\n\n### USER MEMORY (Automatic)\n${parts.join('\n\n')}`;
+        }
+      }
+    } catch (err) {
+      chatLogger.error('Failed to fetch user memories:', err);
+    }
+
     // Prepare System Prompt with Context Caching (Loop A)
     let systemPrompt = customInstructions
       ? `${customInstructions}\n\nYou are a helpful assistant that can answer questions and help with tasks`
       : 'You are a helpful assistant that can answer questions and help with tasks';
     
-    // Inject User Profile (M3)
-    systemPrompt += userProfileContext;
+    // Inject User Profile and Memories (M3)
+    systemPrompt += userProfileContext + userMemoryContext;
 
     // Store context for source tracking later
     let projectContext: ProjectContext | null = null;
@@ -659,6 +724,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             compressConversationIfNeeded(activeChatId!).catch((err) =>
               chatLogger.error('Background compression error:', err)
             );
+            
+            // Trigger memory extraction (M3)
+            triggerMemoryExtraction(activeChatId!);
           } catch (err) {
             chatLogger.error('Failed to persist OpenAI messages:', err);
           }
@@ -769,6 +837,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
           compressConversationIfNeeded(activeChatId!).catch((err) =>
             chatLogger.error('Background compression error:', err)
           );
+
+          // Trigger memory extraction (M3)
+          triggerMemoryExtraction(activeChatId!);
         } catch (error) {
           chatLogger.error('Failed to save messages:', error);
           // Don't fail the request - streaming already succeeded

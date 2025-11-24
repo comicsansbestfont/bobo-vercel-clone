@@ -96,6 +96,52 @@ export type UserProfile = {
   updated_at: string;
 };
 
+export type MemoryCategory =
+  | 'work_context'
+  | 'personal_context'
+  | 'top_of_mind'
+  | 'brief_history'
+  | 'long_term_background'
+  | 'other_instructions';
+
+export type MemoryEntry = {
+  id: string;
+  user_id: string;
+  category: MemoryCategory;
+  subcategory: string | null;
+  content: string;
+  summary: string | null;
+  confidence: number;
+  source_type: 'manual' | 'extracted' | 'suggested';
+  source_chat_ids: string[];
+  source_project_ids: string[];
+  source_message_count: number;
+  time_period: 'current' | 'recent' | 'past' | 'long_ago';
+  relevance_score: number;
+  last_updated: string;
+  last_mentioned: string;
+  created_at: string;
+  content_hash: string;
+};
+
+export type MemoryConsolidationLog = {
+  id: string;
+  user_id: string;
+  duplicates_merged: number;
+  memories_archived: number;
+  memories_updated: number;
+  created_at: string;
+};
+
+export type MemorySettings = {
+  user_id: string;
+  auto_extraction_enabled: boolean;
+  extraction_frequency: 'realtime' | 'daily' | 'weekly' | 'manual';
+  enabled_categories: string[];
+  token_budget: number;
+  updated_at: string;
+};
+
 /**
  * Insert types (for creating new rows)
  * Omits auto-generated fields like id, timestamps
@@ -127,6 +173,19 @@ export type UserProfileInsert = Omit<UserProfile, 'id' | 'created_at' | 'updated
   id?: string;
 };
 
+export type MemoryEntryInsert = Omit<
+  MemoryEntry,
+  'id' | 'created_at' | 'last_updated' | 'last_mentioned'
+> & {
+  id?: string;
+  last_updated?: string;
+  last_mentioned?: string;
+};
+
+export type MemoryConsolidationLogInsert = Omit<MemoryConsolidationLog, 'id' | 'created_at'> & {
+  id?: string;
+};
+
 /**
  * Update types (for updating existing rows)
  * All fields optional except what's required for the update
@@ -146,6 +205,10 @@ export type FileUpdate = Partial<
 
 export type UserProfileUpdate = Partial<
   Omit<UserProfile, 'id' | 'user_id' | 'created_at'>
+>;
+
+export type MemoryEntryUpdate = Partial<
+  Omit<MemoryEntry, 'id' | 'user_id' | 'created_at'>
 >;
 
 /**
@@ -258,6 +321,45 @@ export type Database = {
           }
         ];
       };
+      memory_entries: {
+        Row: MemoryEntry;
+        Insert: MemoryEntryInsert;
+        Update: MemoryEntryUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'memory_entries_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      memory_consolidation_log: {
+        Row: MemoryConsolidationLog;
+        Insert: MemoryConsolidationLogInsert;
+        Update: never;
+        Relationships: [
+          {
+            foreignKeyName: 'memory_consolidation_log_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      memory_settings: {
+        Row: MemorySettings;
+        Insert: MemorySettings;
+        Update: Partial<MemorySettings>;
+        Relationships: [
+          {
+            foreignKeyName: 'memory_settings_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
     };
     Views: {
       chats_with_projects: {
@@ -282,6 +384,30 @@ export type Database = {
           result_content: string;
           result_similarity: number;
           result_source_type: 'project' | 'global';
+        }[];
+      };
+      find_similar_memories: {
+        Args: {
+          p_user_id: string;
+          p_category: string;
+          p_content: string;
+          p_threshold?: number;
+        };
+        Returns: {
+          id: string;
+          content: string;
+          similarity_score: number;
+        }[];
+      };
+      find_duplicate_pairs: {
+        Args: {
+          p_user_id: string;
+          p_threshold?: number;
+        };
+        Returns: {
+          id1: string;
+          id2: string;
+          similarity_score: number;
         }[];
       };
     };

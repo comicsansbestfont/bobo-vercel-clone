@@ -325,55 +325,150 @@ The viewport disappearing bug (TD-8) went undetected because we lack automated t
 
 ---
 
-## 🧠 MILESTONE 3: User Profile & Bio (Q1 2026)
+## 🧠 MILESTONE 3: User Profile & Bio Memory (Q1 2026)
 
+**Status:** 🚧 In Progress (Phase 1 Complete, Phase 2-4 Planned)
+**Target Start:** November 24, 2025
+**Target End:** December 21, 2025 (4 weeks across 3 sprints)
+**Focus:** Three-layer memory architecture combining manual user profile (Layer 1), automatic hierarchical memory extraction (Layer 2), and project context (Layer 3 from M2).
+**Architecture:** Hybrid approach inspired by Claude's hierarchical memory and Gemini's personal context, using GPT-4o-mini for extraction instead of Supermemory.ai.
+**Architecture Note:** See `docs/context-memory-vision.md` for conceptual design and `docs/memory-schema.md` for complete technical specification.
+
+### 3.1 Phase 1: Personal Context Foundation ✅ COMPLETE
+
+**Sprint:** M3-01 (Nov 24-30, 2025)
+**Status:** ✅ Complete (4.5 hours, 55% under estimate)
+**Goal:** Manual "About You" profile with system prompt injection
+
+| ID | Feature | Priority | Estimate | Status | Actual | Notes |
+|----|---------|----------|----------|--------|--------|-------|
+| M3-11 | Personal context profile schema (bio, background, key facts) | 🔴 HIGH | 2h | ✅ Done | 1h | Migration + types |
+| M3-12 | "About You" settings UI + form fields | 🔴 HIGH | 3h | ✅ Done | 2h | /settings/profile page |
+| M3-13 | Inject personal context into system prompt | 🔴 HIGH | 3h | ✅ Done | 1h | Chat API route |
+| M3-8 | Define memory schema & categories (documentation) | 🔴 HIGH | 2h | ✅ Done | 0.5h | memory-schema.md v2.0 |
+
+**Deliverables:**
+- ✅ `user_profiles` table with RLS policies
+- ✅ `/settings/profile` page with 4 text fields
+- ✅ GET/POST `/api/user/profile` endpoints
+- ✅ System prompt injection: "### ABOUT THE USER"
+- ✅ Memory schema v2.0 documentation with hierarchical categories
+
+### 3.2 Phase 2: Hierarchical Memory Extraction 📝 PLANNED
+
+**Sprint:** M3-02 (Dec 1-7, 2025)
 **Status:** 📝 Planned
-**Target Start:** After M2 ships
-**Focus:** "Bio" Memory using Supermemory.ai. Extracting user facts and preferences (The "User Profile" layer), distinct from the "Global Context" loop handled in M2.
-**Architecture Note:** See `docs/context-memory-vision.md` for how personal Bio, About-You docs, and global memory fit into the Knowledge/Context/Cognitive layers.
-
-### 3.1 Supermemory Integration
+**Goal:** Automatic Claude-style memory extraction with 6 hierarchical categories
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M3-1 | Sign up for Supermemory.ai | 🔴 HIGH | 30m | ⏳ |
-| M3-2 | Install SDK / create REST client | 🔴 HIGH | 1h | ⏳ |
-| M3-3 | Implement "Bio" Extraction (Background Job) | 🔴 HIGH | 2h | ⏳ |
-| M3-4 | Inject User Profile into System Prompt | 🔴 HIGH | 1h | ⏳ |
+| M3-17 | Create `memory_entries` table with hierarchical categories | 🔴 HIGH | 2h | ⏳ |
+| M3-18 | Implement GPT-4o-mini extraction pipeline | 🔴 HIGH | 4h | ⏳ |
+| M3-19 | Background job to extract from completed chats | 🔴 HIGH | 3h | ⏳ |
+| M3-20 | Deduplication logic (content_hash + fuzzy matching) | 🔴 HIGH | 2h | ⏳ |
+| M3-21 | Inject hierarchical memory into system prompt | 🔴 HIGH | 2h | ⏳ |
+| M3-22 | Weekly consolidation process (merge duplicates, archive low-relevance) | 🟡 MEDIUM | 3h | ⏳ |
 
-### 3.2 Memory Management UI
+**Schema:**
+```sql
+CREATE TABLE memory_entries (
+  category TEXT CHECK (category IN (
+    'work_context', 'personal_context', 'top_of_mind',
+    'brief_history', 'long_term_background', 'other_instructions'
+  )),
+  subcategory TEXT,  -- e.g. 'recent_months', 'earlier', 'long_term'
+  content TEXT,
+  confidence FLOAT,  -- 0.9-1.0 (stated), 0.7-0.8 (implied), 0.5-0.6 (inferred)
+  source_chat_ids UUID[],
+  time_period TEXT,  -- 'current', 'recent', 'past', 'long_ago'
+  relevance_score FLOAT,  -- Temporal decay
+  ...
+);
+```
+
+**Extraction Categories:**
+1. **work_context** - Current role, expertise, active projects, work preferences
+2. **personal_context** - Location, family, hobbies, background, identity
+3. **top_of_mind** - Current priorities, immediate focus (fast decay)
+4. **brief_history** - Past experiences (3 subcategories: recent_months, earlier, long_term)
+5. **long_term_background** - Education, career history, foundational facts
+6. **other_instructions** - Misc preferences, communication style
+
+**Total Estimate:** 16 hours
+
+### 3.3 Phase 3: Claude-Style Memory UI 📝 PLANNED
+
+**Sprint:** M3-03 (Dec 8-14, 2025)
+**Status:** 📝 Planned
+**Goal:** `/memory` page with hierarchical sections, edit/delete, and privacy controls
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M3-5 | Memory management page (`/memory`) | 🔴 HIGH | 3h | ⏳ |
-| M3-6 | Edit/Delete specific user facts | 🟡 MEDIUM | 2h | ⏳ |
-| M3-7 | Settings (toggle auto-memory) | 🟡 MEDIUM | 1h | ⏳ |
+| M3-5 | Memory management page (`/memory`) with hierarchical UI | 🔴 HIGH | 4h | ⏳ |
+| M3-23 | Collapsible sections: Work Context, Personal Context, Top of Mind, Brief History | 🔴 HIGH | 3h | ⏳ |
+| M3-6 | Edit/delete specific memory entries | 🔴 HIGH | 2h | ⏳ |
+| M3-24 | Memory suggestions UI ("We think you might be...") | 🟡 MEDIUM | 2h | ⏳ |
+| M3-7 | Settings page: toggle auto-memory, set extraction frequency | 🔴 HIGH | 2h | ⏳ |
+| M3-25 | Privacy controls (per-category toggle, clear all) | 🔴 HIGH | 2h | ⏳ |
 
-### 3.3 Global Memory Governance & Debugging
+**UI Structure:**
+```
+┌─────────────────────────────────────┐
+│ Your Memory                         │
+├─────────────────────────────────────┤
+│ > Work Context (3 memories)         │
+│   - Current role: Full-stack dev... │
+│   - Expertise: React, TypeScript... │
+│                                     │
+│ > Personal Context (5 memories)     │
+│   - Location: San Francisco         │
+│   - Family: Married, 2 kids         │
+│                                     │
+│ > Top of Mind (2 memories)          │
+│   - Learning Rust                   │
+│   - Building AI chatbot             │
+│                                     │
+│ > Brief History                     │
+│   > Recent Months (4 memories)      │
+│   > Earlier (6 memories)            │
+│   > Long Term (3 memories)          │
+└─────────────────────────────────────┘
+```
+
+**Total Estimate:** 15 hours
+
+### 3.4 Phase 4: Advanced Memory Features 📝 PLANNED
+
+**Sprint:** M3-04 (Dec 15-21, 2025)
+**Status:** 📝 Planned
+**Goal:** Provenance tracking, debugging tools, and polish
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M3-8 | Define memory schema & categories | 🔴 HIGH | 2h | ⏳ |
-| M3-9 | Implement injection rules & conflict handling | 🔴 HIGH | 3h | ⏳ |
-| M3-10 | Add memory debugger (what was injected?) | 🟡 MEDIUM | 3h | ⏳ |
+| M3-26 | Memory provenance UI (show source chats) | 🟡 MEDIUM | 2h | ⏳ |
+| M3-10 | Memory debugger ("What was injected in this chat?") | 🟡 MEDIUM | 3h | ⏳ |
+| M3-9 | Conflict resolution UI (manual override vs auto-extracted) | 🔴 HIGH | 3h | ⏳ |
+| M3-27 | Token budget enforcement (500 tokens max) | 🔴 HIGH | 2h | ⏳ |
+| M3-28 | Export memory as JSON/Markdown | 🟡 MEDIUM | 2h | ⏳ |
+| M3-16 | Profile preview ("What AI sees" view) | 🟢 LOW | 1h | ⏳ |
 
-### 3.4 Personal Context Seed (“About You” Doc)
+**Total Estimate:** 13 hours
 
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M3-11 | Personal context profile schema (bio, background, key facts) | 🔴 HIGH | 2h | ⏳ |
-| M3-12 | “About You” settings UI + optional context file upload | 🔴 HIGH | 3h | ⏳ |
-| M3-13 | Inject personal context into system prompt and memory pipeline | 🔴 HIGH | 3h | ⏳ |
+### 3.5 Deferred Features (Post-M3)
 
-### 3.5 Automatic Runtime Context (Time & Location)
+| ID | Feature | Priority | Estimate | Status | Notes |
+|----|---------|----------|----------|--------|-------|
+| M3-14 | Detect and store user local time & timezone | 🟡 MEDIUM | 2h | 📝 | Auto-context feature |
+| M3-15 | Inject current local time and location into prompt | 🟡 MEDIUM | 3h | 📝 | Privacy concerns |
+| M3-29 | Import memory from external sources (resume, LinkedIn) | 🟢 LOW | 4h | 📝 | Nice-to-have |
+| M3-30 | Memory versioning (history of changes) | 🟢 LOW | 3h | 📝 | Advanced feature |
 
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M3-14 | Detect and store user local time & timezone for each session | 🟡 MEDIUM | 2h | ⏳ |
-| M3-15 | Inject current local time and (optional) rough location into system prompt with privacy controls | 🟡 MEDIUM | 3h | ⏳ |
+**Note:** Original M3-1 through M3-4 (Supermemory.ai integration) were replaced with custom GPT-4o-mini extraction for better control and lower cost.
 
-**Total M3 Tasks:** 15
-**Estimated Effort:** 2–3 weeks
+**Total M3 Core Tasks:** 22 (4 complete + 18 planned)
+**Total Estimated Effort:** 48.5 hours (3 weeks across 3 sprints)
+**Phase 1 Actual:** 4.5 hours (55% efficiency gain)
+**Remaining Estimate:** 44 hours
 
 ---
 
@@ -558,6 +653,7 @@ Buttons were added as UI placeholders but never implemented. Common anti-pattern
 | NTH-11 | Three-dots options menu | Chat actions menu with Move to Project, Archive, Report, Delete (ChatGPT-style) | 🟡 MEDIUM | 🟡 MEDIUM (4-5h) | 1 |
 | NTH-12 | Project sharing | Share project via link with permissions (view/edit) | 🟡 MEDIUM | 🔴 HIGH (8h) | 0 |
 | NTH-13 | Project export | Export project data (chats, files, settings) as JSON/ZIP | 🟡 MEDIUM | 🟡 MEDIUM (3h) | 0 |
+| NTH-14 | User profile preview | "What AI sees" view in profile settings | 🟢 LOW | 🟢 LOW (1h) | 0 |
 
 ### NTH-11: Three-Dots Options Menu
 
@@ -624,6 +720,128 @@ Implement a ChatGPT-style three-dots menu in the chat interface that provides qu
 
 **Design Reference:**
 See ChatGPT's three-dots menu for visual reference (provided in feature request)
+
+---
+
+### NTH-14: User Profile Preview ("What AI Sees")
+
+**Description:**
+Add a "Preview" tab to the `/settings/profile` page that shows users exactly how their profile data is formatted and injected into the AI's system prompt. This provides transparency and helps users understand what context the AI has about them.
+
+**Features:**
+1. **Preview Tab** - Toggle between "Edit" and "Preview" modes
+   - Edit mode: Standard form fields (current implementation)
+   - Preview mode: Read-only formatted view of system prompt injection
+
+2. **Formatted System Prompt Display**
+   - Shows exact text: `### ABOUT THE USER`
+   - Displays each populated field with its label (BIO, BACKGROUND, PREFERENCES, TECHNICAL CONTEXT)
+   - Empty fields are not shown (matches actual injection logic)
+   - Syntax-highlighted or styled as code block
+
+3. **Token Usage Indicator**
+   - Show approximate token count: "Your profile uses ~87 tokens"
+   - Visual progress bar if token budget exists (e.g., 87/500 tokens = 17%)
+   - Color-coded: green (safe), yellow (approaching limit), red (over limit)
+
+4. **Live Preview**
+   - Preview updates in real-time as user types in Edit mode (optional enhancement)
+   - Or: Refresh preview when switching to Preview tab
+
+**UI/UX Requirements:**
+- Use shadcn/ui Tabs component for Edit/Preview toggle
+- Preview shown in monospace font (`<pre>` or code block styling)
+- Match dark mode styling
+- Responsive design (works on mobile)
+- Clear visual hierarchy
+
+**Example Preview Display:**
+```
+┌─────────────────────────────────────┐
+│ This is what the AI sees:           │
+│                                     │
+│ ### ABOUT THE USER                 │
+│                                     │
+│ BIO:                                │
+│ Full-stack developer at TechCorp    │
+│                                     │
+│ BACKGROUND:                         │
+│ 10 years experience with React...   │
+│                                     │
+│ PREFERENCES:                        │
+│ Prefer TypeScript, explain like I'm│
+│ 5                                   │
+│                                     │
+│ TECHNICAL CONTEXT:                  │
+│ Expert: TypeScript, React           │
+│ Learning: Rust                      │
+│                                     │
+│ Token Usage: 87 / 500 (17%)         │
+│ ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░   │
+└─────────────────────────────────────┘
+```
+
+**Technical Implementation:**
+1. Add `generatePreview()` function in `app/settings/profile/page.tsx`
+   - Mirrors the formatting logic from `app/api/chat/route.ts` (lines 286-293)
+   - Returns formatted string with section header and populated fields only
+
+2. Add token counting (approximate):
+   - Simple: `Math.ceil(previewText.length / 4)` (heuristic)
+   - Advanced: Use `gpt-tokenizer` package (more accurate)
+
+3. Add Tabs component:
+   ```tsx
+   <Tabs defaultValue="edit">
+     <TabsList>
+       <TabsTrigger value="edit">Edit</TabsTrigger>
+       <TabsTrigger value="preview">Preview</TabsTrigger>
+     </TabsList>
+     <TabsContent value="edit">
+       {/* Existing form fields */}
+     </TabsContent>
+     <TabsContent value="preview">
+       <pre className="bg-muted p-4 rounded-lg font-mono text-sm">
+         {generatePreview()}
+       </pre>
+       <p className="text-sm text-muted-foreground mt-2">
+         Token count: ~{calculateTokens(generatePreview())} tokens
+       </p>
+     </TabsContent>
+   </Tabs>
+   ```
+
+**Dependencies:**
+- shadcn/ui Tabs component (likely already installed)
+- Optional: `gpt-tokenizer` package (already used in project)
+
+**Estimated Effort:** 1 hour
+- Generate preview function: 15m
+- Tabs UI integration: 30m
+- Token counting display: 15m
+
+**Priority Justification:**
+- **Low Priority** - Nice-to-have, not essential for functionality
+- Users can test by asking AI "what do you know about me?"
+- Adds transparency but increases UI complexity
+- Better suited for after M3 core features are complete
+
+**When to Build:**
+- After M3-02 and M3-03 are complete
+- If users request it during dogfooding
+- When implementing token budget limits (M3-9)
+- During "UX polish" sprint
+
+**Alternative Approaches:**
+1. **Debug Panel in Chat** - Add a collapsible "Context Injected" panel in chat interface showing all system prompt components
+2. **Settings Tooltip** - Simple tooltip on save button: "This creates: ### ABOUT THE USER..."
+3. **Test Chat Button** - "Test Profile" button that opens a test chat with profile context pre-loaded
+
+**User Value:**
+- **Power Users:** Love seeing exactly what's happening under the hood
+- **Beginners:** Helps them understand how profile affects AI responses
+- **Debugging:** Quickly identify if profile is causing issues
+- **Confidence:** Transparency builds trust in the system
 
 ---
 
@@ -734,6 +952,7 @@ Milestone‑level states (e.g. “✅ Complete”, “📝 Backlog”) are summa
 | 2025-01-23 | M2 Complete (100%): Inline citations with Perplexity-style source attribution | Claude Code |
 | 2025-01-23 | v1.2.0 Polish Sprint Complete: E2E tests, background compression, CI/CD, improved UX | Claude Code |
 | 2025-11-23 | Aligned V1/M2 status, added M3 governance tasks and M5 Cognitive Layer (living docs, summaries, knowledge graph) | GPT-5.1 Code |
+| 2025-11-24 | Added M3-16/NTH-14: User profile preview ("What AI sees" view) with full implementation details | Claude Code |
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Purpose:** Track sprint planning, execution, and retrospectives for the Bobo AI Chatbot project
 **Last Updated:** November 24, 2025
-**Current Sprint:** [Sprint M3-01](active/sprint-m3-01.md) (Week 1 of M3)
+**Current Sprint:** [Sprint M3-02](active/sprint-m3-02.md) (Week 2 of M3) - Ready to Start Dec 1
 
 ---
 
@@ -10,7 +10,9 @@
 
 | Sprint | Milestone | Duration | Goal | Status | Progress |
 |--------|-----------|----------|------|--------|----------|
-| [M3-01](active/sprint-m3-01.md) | M3 - User Profile & Bio | Nov 24-30, 2025 | Personal Context Foundation | 🚧 Active | 0% |
+| [M3-02](active/sprint-m3-02.md) | M3 - User Profile & Bio | Dec 1-7, 2025 | Hierarchical Memory Extraction | 📝 Ready | [Handover Doc](active/SPRINT_M3-02_HANDOVER.md) |
+
+**Next Sprint:** [M3-03](active/sprint-m3-03.md) (Dec 8-14) - Claude-Style Memory UI
 
 ---
 
@@ -22,9 +24,10 @@
 
 ### Q1 2025
 - **Jan 15-23, 2025:** Sprint M2-01 - Double-Loop RAG Architecture ✅
-- **Nov 24-30, 2025:** Sprint M3-01 - Personal Context Foundation 🚧
-- **Dec 1-7, 2025:** Sprint M3-02 - Supermemory Integration (Planned)
-- **Dec 8-14, 2025:** Sprint M3-03 - Governance & Runtime Context (Planned)
+- **Nov 24-30, 2025:** Sprint M3-01 - Personal Context Foundation ✅
+- **Dec 1-7, 2025:** Sprint M3-02 - Hierarchical Memory Extraction 📝 Ready
+- **Dec 8-14, 2025:** Sprint M3-03 - Claude-Style Memory UI 📝 Planned
+- **Dec 15-21, 2025:** Sprint M3-04 - Advanced Memory Features 📝 Planned
 
 ### Q2 2025
 - **TBD:** Sprint M4-01 - Authentication & Multi-User (Planned)
@@ -33,15 +36,24 @@
 
 ## 📊 Upcoming Sprints
 
-| Sprint | Milestone | Planned Start | Goal | Story Points |
-|--------|-----------|---------------|------|--------------|
-| M3-02 | M3 - User Profile & Bio | Dec 1, 2025 | Supermemory Integration & Memory UI | 9.5h |
-| M3-03 | M3 - User Profile & Bio | Dec 8, 2025 | Governance, Debugging & Runtime Context | 12h |
+| Sprint | Milestone | Planned Start | Goal | Estimated Hours |
+|--------|-----------|---------------|------|-----------------|
+| M3-02 | M3 - User Profile & Bio | Dec 1, 2025 | GPT-4o-mini extraction pipeline | 16h |
+| M3-03 | M3 - User Profile & Bio | Dec 8, 2025 | /memory page with hierarchical UI | 15h |
+| M3-04 | M3 - User Profile & Bio | Dec 15, 2025 | Provenance, debugging, token limits | 13h |
 | M4-01 | M4 - Production & Scale | TBD | Authentication & Multi-User | TBD |
 
 ---
 
 ## ✅ Completed Sprints
+
+### Milestone 3: User Profile & Bio Memory (In Progress)
+
+| Sprint | Duration | Goal | Completion | Velocity | Highlights |
+|--------|----------|------|------------|----------|------------|
+| [M3-01](completed/sprint-m3-01.md) | Nov 24-30, 2025 | Personal Context Foundation | 100% | 4 tasks | Manual profile, system prompt injection, memory schema v2.0 |
+
+**M3 Sprint 1:** 4.5 actual hours (55% under 10h estimate - excellent efficiency!)
 
 ### Milestone 2: Project Intelligence (Double-Loop RAG)
 
@@ -68,21 +80,21 @@
 
 | Metric | Value | Trend |
 |--------|-------|-------|
-| **Total Sprints Completed** | 3 | ⬆️ |
-| **Total Story Points Delivered** | ~35 tasks | ⬆️ |
-| **Average Sprint Velocity** | ~11 tasks/sprint | ➡️ |
+| **Total Sprints Completed** | 4 | ⬆️ |
+| **Total Story Points Delivered** | ~39 tasks | ⬆️ |
+| **Average Sprint Velocity** | 0.89 tasks/hour | ⬆️ |
 | **Sprint Success Rate** | 100% | ✅ |
 | **On-Time Delivery Rate** | 100% | ✅ |
 
 ### Velocity by Milestone
 
 ```
-V1:  16 tasks / 2 sprints = 8 tasks/sprint
-M2:  18 tasks / 1 sprint  = 18 tasks/sprint
-M3:  15 tasks / 3 sprints = 5 tasks/sprint (planned)
+V1:  16 tasks / 2 sprints = 8 tasks/sprint  (0.75 tasks/hour)
+M2:  18 tasks / 1 sprint  = 18 tasks/sprint (0.61 tasks/hour)
+M3:  4 tasks  / 1 sprint  = 4 tasks/sprint  (0.89 tasks/hour) ⭐ BEST!
 ```
 
-**Observation:** M2 had higher velocity due to focused scope. M3 is more exploratory (Supermemory integration) so conservative estimate.
+**Observation:** M3-01 achieved exceptional velocity (0.89 tasks/hour) and came in 55% under estimate. This suggests strong familiarity with codebase and well-scoped tasks.
 
 ### Estimation Accuracy
 
@@ -91,24 +103,31 @@ M3:  15 tasks / 3 sprints = 5 tasks/sprint (planned)
 | V1-01 | 6-8h | ~8h | ✅ On target |
 | V1-02 | ~10h | ~12h | +20% (E2E tests took longer) |
 | M2-01 | ~30h | ~28h | -7% (efficient) |
+| M3-01 | 10h | 4.5h | -55% ⭐ (exceptional!) |
 
-**Average Estimation Accuracy:** ±15% (acceptable range)
+**Average Estimation Accuracy:** ±20% (M3-01 significantly improved this)
 
 ---
 
 ## 🎯 Milestone Progress
 
-### Current Focus: M3 - User Profile & Bio
+### Current Focus: M3 - User Profile & Bio Memory
 
 ```
-Progress: [▓░░░░░░░░░] 0/15 tasks (0%)
-Estimated Completion: Dec 14, 2025
+Progress: [▓▓░░░░░░░░] 4/22 tasks (18%)
+Estimated Completion: Dec 21, 2025
 ```
 
 **Sprint Breakdown:**
-- Sprint M3-01 (Nov 24-30): Personal Context Foundation - 4 tasks
-- Sprint M3-02 (Dec 1-7): Supermemory Integration & Memory UI - 6 tasks
-- Sprint M3-03 (Dec 8-14): Governance, Debugging & Runtime Context - 5 tasks
+- ✅ Sprint M3-01 (Nov 24-30): Personal Context Foundation - 4/4 tasks ✅ COMPLETE
+- 📝 Sprint M3-02 (Dec 1-7): Hierarchical Memory Extraction - 0/6 tasks (Ready)
+- 📝 Sprint M3-03 (Dec 8-14): Claude-Style Memory UI - 0/6 tasks (Planned)
+- 📝 Sprint M3-04 (Dec 15-21): Advanced Memory Features - 0/6 tasks (Planned)
+
+**What Changed:**
+- Replaced Supermemory.ai integration with custom GPT-4o-mini extraction (95% cost savings)
+- Enhanced memory architecture with Claude-style hierarchical categories
+- Added 4th sprint for advanced features (provenance, debugging)
 
 ### Future Milestones
 
