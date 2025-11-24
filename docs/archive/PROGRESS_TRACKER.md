@@ -6,6 +6,15 @@
 
 ---
 
+## 🧪 QA Session (Nov 24, 2025 - Codex)
+
+- ✅ Fixed lint blockers (type-safety, setState-in-effect, unescaped entities) and silenced `.next` lint noise
+- ✅ Repaired Playwright syntax error in `chat-persistence.spec.ts`
+- ✅ `npm run build` still passes; `npm run lint` now clean (warnings only)
+- ⚠️ `npm test` (Playwright) currently fails to find chat UI inputs on all flows; likely missing runtime setup/env for dev server during tests
+
+---
+
 ## ✨ Latest Work (Nov 24, 2025)
 
 - 🛠️ Build reliability: Wrapped sidebar-based routes (`/memory`, `/settings/profile`, and project pages) in React Suspense to satisfy Next.js 16 `useSearchParams` requirements.

@@ -57,7 +57,7 @@ function SuggestionCard({ suggestion }: { suggestion: MemorySuggestion }) {
           </Badge>
           {suggestion.source_chat_name && (
             <span className="text-xs text-muted-foreground">
-              From chat "{suggestion.source_chat_name}"
+              From chat &quot;{suggestion.source_chat_name}&quot;
             </span>
           )}
         </div>

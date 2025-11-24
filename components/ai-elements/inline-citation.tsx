@@ -155,21 +155,25 @@ export const InlineCitationCarouselIndex = ({
   ...props
 }: InlineCitationCarouselIndexProps) => {
   const api = useCarouselApi();
-  const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
+  const [, forceUpdate] = useState(0);
+  const count = api?.scrollSnapList().length ?? 0;
+  const current = (api?.selectedScrollSnap() ?? 0) + 1;
 
   useEffect(() => {
     if (!api) {
       return;
     }
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
+    const handleSelect = () => {
+      forceUpdate((value) => value + 1);
+    };
 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
+    api.on("select", handleSelect);
+
+    return () => {
+      api.off?.("select", handleSelect);
+    };
+  }, [api, forceUpdate]);
 
   return (
     <div

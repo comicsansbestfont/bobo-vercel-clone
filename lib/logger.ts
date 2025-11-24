@@ -12,7 +12,7 @@ export const apiLogger = logger.withTag('api');
 export const routerLogger = logger.withTag('router');
 
 // Helper to log object with nice formatting
-export function logObject(label: string, obj: any) {
+export function logObject(label: string, obj: unknown) {
   logger.box(label);
   console.dir(obj, { depth: null, colors: true });
 }

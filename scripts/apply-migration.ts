@@ -66,8 +66,9 @@ async function applyMigration() {
           console.log('   ✅ Success');
           successCount++;
         }
-      } catch (err: any) {
-        console.log(`   ❌ Error: ${err.message}`);
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.log(`   ❌ Error: ${message}`);
         failureCount++;
       }
     }
@@ -107,9 +108,9 @@ async function applyMigration() {
     console.log('✅ memory_settings table accessible');
 
     console.log('\n✅ MIGRATION APPLIED SUCCESSFULLY!\n');
-
-  } catch (error: any) {
-    console.error('\n❌ Migration failed:', error.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('\n❌ Migration failed:', message);
     console.log('\n⚠️  Manual action required:');
     console.log('   1. Open Supabase Dashboard → SQL Editor');
     console.log('   2. Paste contents of: supabase/migrations/20251201000000_m3_phase2_memory_entries.sql');

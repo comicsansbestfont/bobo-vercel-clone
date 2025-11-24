@@ -28,7 +28,7 @@ export function ProvenanceModal({ memory, isOpen, onClose }: ProvenanceModalProp
 
         <div className="space-y-4">
           <div className="p-3 bg-muted rounded-md text-sm italic">
-            "{memory.content}"
+            &quot;{memory.content}&quot;
           </div>
 
           <div className="space-y-2">

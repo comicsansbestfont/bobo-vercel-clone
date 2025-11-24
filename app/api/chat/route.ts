@@ -46,7 +46,8 @@ export const maxDuration = 30;
 
 // Disable the SDK warning about non-OpenAI reasoning
 if (typeof globalThis !== 'undefined') {
-  (globalThis as any).AI_SDK_LOG_WARNINGS = false;
+  const globalWithWarnings = globalThis as { AI_SDK_LOG_WARNINGS?: boolean };
+  globalWithWarnings.AI_SDK_LOG_WARNINGS = false;
 }
 
 /**
@@ -95,9 +96,13 @@ async function updateChatTitleFromMessage(
 /**
  * Helper function to query project names for search results
  */
-async function getProjectNamesForSearchResults(
-  searchResults: SearchResult[]
-): Promise<Map<string, string>> {
+type FileWithProject = { id: string; projects?: { name?: string | null } | null };
+type MessageWithProject = {
+  id: string;
+  chats?: { projects?: { name?: string | null } | null } | null;
+};
+
+async function getProjectNamesForSearchResults(searchResults: SearchResult[]): Promise<Map<string, string>> {
   const projectNamesMap = new Map<string, string>();
 
   if (searchResults.length === 0) return projectNamesMap;
@@ -128,7 +133,7 @@ async function getProjectNamesForSearchResults(
       .select('id, project_id, projects(name)')
       .in('id', fileIds);
 
-    files?.forEach((file: any) => {
+    (files as FileWithProject[] | null)?.forEach((file) => {
       if (file.projects?.name) {
         projectNamesMap.set(file.id, file.projects.name);
       }
@@ -142,7 +147,7 @@ async function getProjectNamesForSearchResults(
       .select('id, chats(project_id, projects(name))')
       .in('id', messageIds);
 
-    messages?.forEach((message: any) => {
+    (messages as MessageWithProject[] | null)?.forEach((message) => {
       if (message.chats?.projects?.name) {
         projectNamesMap.set(message.id, message.chats.projects.name);
       }
@@ -216,15 +221,15 @@ async function compressConversationIfNeeded(chatId: string): Promise<void> {
  * Trigger background memory extraction (M3)
  */
 function triggerMemoryExtraction(chatId: string) {
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-    const host = process.env.VERCEL_URL || 'localhost:3000';
-    const url = `${protocol}://${host}/api/memory/extract`;
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const host = process.env.VERCEL_URL || 'localhost:3000';
+  const url = `${protocol}://${host}/api/memory/extract`;
 
-    fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId }),
-    }).catch(err => chatLogger.error('Failed to queue extraction:', err));
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId }),
+  }).catch(err => chatLogger.error('Failed to queue extraction:', err));
 }
 
 export async function POST(req: Request) {
@@ -303,7 +308,7 @@ export async function POST(req: Request) {
         if (profile.background) parts.push(`BACKGROUND & EXPERTISE:\n${profile.background}`);
         if (profile.preferences) parts.push(`PREFERENCES:\n${profile.preferences}`);
         if (profile.technical_context) parts.push(`TECHNICAL CONTEXT:\n${profile.technical_context}`);
-        
+
         if (parts.length > 0) {
           userProfileContext = `\n\n### ABOUT THE USER\n${parts.join('\n\n')}`;
         }
@@ -364,7 +369,7 @@ export async function POST(req: Request) {
     let systemPrompt = customInstructions
       ? `${customInstructions}\n\nYou are a helpful assistant that can answer questions and help with tasks`
       : 'You are a helpful assistant that can answer questions and help with tasks';
-    
+
     // Inject User Profile and Memories (M3)
     systemPrompt += userProfileContext + userMemoryContext;
 
@@ -406,7 +411,7 @@ export async function POST(req: Request) {
         const queryEmbedding = await generateEmbedding(userText);
         searchResults = await hybridSearch(
           queryEmbedding,
-          0.82, // High threshold for "Wisdom"
+          0.6, // Lower threshold for better recall (was 0.82)
           5,    // Top 5 results
           activeProjectId || '00000000-0000-0000-0000-000000000000' // Empty UUID if no project
         );
@@ -717,7 +722,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             compressConversationIfNeeded(activeChatId!).catch((err) =>
               chatLogger.error('Background compression error:', err)
             );
-            
+
             // Trigger memory extraction (M3)
             triggerMemoryExtraction(activeChatId!);
           } catch (err) {

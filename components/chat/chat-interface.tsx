@@ -40,6 +40,7 @@ import {
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import rehypeRaw from 'rehype-raw';
+import type { Pluggable } from 'unified';
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
@@ -507,7 +508,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
                     <Message key={`${message.id}-${i}`} from={message.role}>
                       <MessageContent>
                         <MessageResponse
-                          rehypePlugins={[rehypeRaw as any]}
+                          rehypePlugins={[rehypeRaw as Pluggable]}
                           components={citationComponents}
                         >
                           {textWithSupTags}

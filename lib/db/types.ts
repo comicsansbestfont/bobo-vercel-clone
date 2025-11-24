@@ -459,6 +459,6 @@ export type Database = {
         }[];
       };
     };
-    Enums: {};
+    Enums: Record<string, never>;
   };
 };

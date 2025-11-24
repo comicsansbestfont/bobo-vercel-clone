@@ -121,7 +121,7 @@ export function MemorySettingsModal({ isOpen, onClose }: MemorySettingsModalProp
                   <Label htmlFor="frequency">Extraction Frequency</Label>
                   <Select
                     value={form.watch('extraction_frequency')}
-                    onValueChange={(value: any) => form.setValue('extraction_frequency', value)}
+                    onValueChange={(value: string) => form.setValue('extraction_frequency', value)}
                   >
                     <SelectTrigger>
                       <SelectValue />

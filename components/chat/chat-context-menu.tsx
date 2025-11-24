@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu';
 import {
   Dialog,
   DialogContent,
@@ -60,7 +60,11 @@ export function ChatContextMenu({
   children,
 }: ChatContextMenuProps) {
   const router = useRouter();
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  // ContextMenu handles open state internally better for right clicks, 
+  // but we can still control it if needed. For now, let's rely on default behavior 
+  // or use onOpenChange if we need to track it.
+  // const [contextMenuOpen, setContextMenuOpen] = useState(false); 
+
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [moveDialogOpen, setMoveDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -178,53 +182,50 @@ export function ChatContextMenu({
 
   return (
     <>
-      <DropdownMenu open={contextMenuOpen} onOpenChange={setContextMenuOpen}>
-        <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-48">
-          <DropdownMenuItem
+      <ContextMenu>
+        <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+        <ContextMenuContent align="start" className="w-48">
+          <ContextMenuItem
             onClick={() => {
               setNewTitle(chat.title);
               setRenameDialogOpen(true);
-              setContextMenuOpen(false);
             }}
           >
             <IconEdit className="mr-2 h-4 w-4" />
             Rename
-          </DropdownMenuItem>
+          </ContextMenuItem>
 
-          <DropdownMenuItem
+          <ContextMenuItem
             onClick={() => {
               setSelectedProjectId(chat.project_id);
               setMoveDialogOpen(true);
-              setContextMenuOpen(false);
             }}
           >
             <IconFolder className="mr-2 h-4 w-4" />
             Move to Project
-          </DropdownMenuItem>
+          </ContextMenuItem>
 
-          <DropdownMenuItem disabled className="opacity-50">
+          <ContextMenuItem disabled className="opacity-50">
             <IconArchive className="mr-2 h-4 w-4" />
             Archive
             <span className="ml-auto text-[10px] text-muted-foreground">
               Soon
             </span>
-          </DropdownMenuItem>
+          </ContextMenuItem>
 
-          <DropdownMenuSeparator />
+          <ContextMenuSeparator />
 
-          <DropdownMenuItem
+          <ContextMenuItem
             onClick={() => {
               setDeleteDialogOpen(true);
-              setContextMenuOpen(false);
             }}
             className="text-destructive focus:text-destructive"
           >
             <IconTrash className="mr-2 h-4 w-4" />
             Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
 
       {/* Rename Dialog */}
       <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
@@ -275,7 +276,7 @@ export function ChatContextMenu({
           <DialogHeader>
             <DialogTitle>Move to Project</DialogTitle>
             <DialogDescription>
-              Select a project or choose "No Project" to make this chat
+              Select a project or choose &quot;No Project&quot; to make this chat
               standalone
             </DialogDescription>
           </DialogHeader>

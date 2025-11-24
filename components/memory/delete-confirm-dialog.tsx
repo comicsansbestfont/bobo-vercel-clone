@@ -27,7 +27,7 @@ export function DeleteConfirmDialog({ memory, isOpen, onClose }: DeleteConfirmDi
             Are you sure you want to delete this memory?
             <br />
             <br />
-            <strong>"{memory.content}"</strong>
+            <strong>&quot;{memory.content}&quot;</strong>
             <br />
             <br />
             This action cannot be undone.

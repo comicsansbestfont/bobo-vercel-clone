@@ -154,7 +154,7 @@ export function AddMemoryModal({ category, isOpen, onClose, memory }: AddMemoryM
               {...form.register('notes')}
             />
             <p className="text-xs text-muted-foreground mt-1">
-              These notes are for your reference only and won't be included in the AI's context.
+              These notes are for your reference only and will not be included in the AI context.
             </p>
           </div>
 

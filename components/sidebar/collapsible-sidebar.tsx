@@ -132,7 +132,8 @@ export const MobileSidebar = ({
       )}
       {...props}
     >
-      <div className="z-20 flex w-full justify-end">
+      <div className="z-20 flex w-full items-center justify-between">
+        <LogoIcon />
         <Menu
           className="text-neutral-800 dark:text-neutral-200"
           onClick={() => setOpen(!open)}

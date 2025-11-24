@@ -329,10 +329,17 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [dateMode, setDateMode] = useState<'updated' | 'created'>('updated');
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
+
+  // Initialize sidebar state based on screen size
+  useEffect(() => {
+    if (window.innerWidth >= 768) {
+      setOpen(true);
+    }
+  }, []);
 
   // Real data states
   const [projects, setProjects] = useState<ProjectWithStats[]>([]);

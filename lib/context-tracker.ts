@@ -89,10 +89,10 @@ function extractTextFromMessage(message: UIMessage): string {
 function buildChatTranscript(
   messages: UIMessage[],
   currentInput: string
-): { role: string; content: string }[] {
+): { role: 'system' | 'user' | 'assistant'; content: string }[] {
   const chat = messages
     .map((message) => ({
-      role: message.role,
+      role: (message.role as 'system' | 'user' | 'assistant') ?? 'user',
       content: extractTextFromMessage(message),
     }))
     .filter((entry) => entry.content.length > 0);
@@ -117,7 +117,7 @@ export function countTokensWithFallback(
 
   try {
     // Use gpt-4o as the tokenizer model (works well for most models)
-    return encodeChat(chatTranscript as any, 'gpt-4o').length;
+    return encodeChat(chatTranscript, 'gpt-4o').length;
   } catch (err) {
     console.warn('Tokenizer fallback triggered', err);
     const fallbackText = chatTranscript
@@ -192,4 +192,3 @@ export function getContextUsage(
 export function formatTokenCount(tokens: number): string {
   return tokens.toLocaleString();
 }
-

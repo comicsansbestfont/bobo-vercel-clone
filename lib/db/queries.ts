@@ -907,6 +907,13 @@ export async function hybridSearch(
   limit: number,
   activeProjectId: string
 ): Promise<SearchResult[]> {
+  type HybridSearchRow = {
+    result_id: string;
+    result_content: string;
+    result_similarity: number;
+    result_source_type: SearchResult['source_type'];
+  };
+
   const { data, error } = await supabase.rpc('hybrid_search', {
     p_query_embedding: queryEmbedding,
     p_match_threshold: threshold,
@@ -919,7 +926,7 @@ export async function hybridSearch(
     return [];
   }
 
-  return (data || []).map((row: any) => ({
+  return (data || []).map((row: HybridSearchRow) => ({
     id: row.result_id,
     content: row.result_content,
     similarity: row.result_similarity,

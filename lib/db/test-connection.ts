@@ -6,16 +6,12 @@
  */
 
 // IMPORTANT: Load environment variables BEFORE any other imports
-require('dotenv').config({ path: require('path').resolve(process.cwd(), '.env.local') });
+import path from 'path';
+import dotenv from 'dotenv';
 
-import {
-  getDefaultUser,
-  getProjects,
-  getChats,
-  createProject,
-  createChat,
-  DEFAULT_USER_ID,
-} from './index';
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+
+import { createChat, createProject, DEFAULT_USER_ID, getChats, getDefaultUser, getProjects } from './index';
 
 async function testConnection() {
   console.log('🔍 Testing Supabase connection...\n');

@@ -38,7 +38,7 @@ test.describe('Chat Persistence', () => {
     await expect(page.locator('text=' + message3).first()).toBeVisible({ timeout: 10000 });
 
     // Get chat ID from URL
-    const urlBefore Refresh = page.url();
+    const urlBeforeRefresh = page.url();
     expect(urlBeforeRefresh).toContain('chatId=');
     const chatId = new URL(urlBeforeRefresh).searchParams.get('chatId');
 

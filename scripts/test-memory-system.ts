@@ -227,8 +227,8 @@ async function runTests() {
       console.log(`   API returned ${count} memories`);
 
       return count === 25;
-    } catch (error: any) {
-      if (error.cause?.code === 'ECONNREFUSED') {
+    } catch (error: unknown) {
+      if (error instanceof Error && (error as { cause?: { code?: string } }).cause?.code === 'ECONNREFUSED') {
         console.log('   ⚠️  Dev server not running (this is OK for database tests)');
         return true; // Don't fail if dev server isn't running
       }
