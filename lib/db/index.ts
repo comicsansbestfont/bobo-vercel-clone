@@ -23,6 +23,9 @@ export type {
   MessageUpdate,
   FileInsert,
   FileUpdate,
+  UserProfile,
+  UserProfileInsert,
+  UserProfileUpdate,
   ChatWithProject,
   ProjectWithStats,
   MessageContent,
@@ -35,6 +38,8 @@ export type {
 export {
   // Users
   getDefaultUser,
+  getUserProfile,
+  upsertUserProfile,
   // Projects
   getProjects,
   getProjectsWithStats,

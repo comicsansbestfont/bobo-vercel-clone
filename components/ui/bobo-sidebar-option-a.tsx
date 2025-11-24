@@ -450,7 +450,7 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             <SidebarLink
               link={{
                 label: "Settings",
-                href: "#settings",
+                href: "#",
                 icon: (
                   <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
                 ),
@@ -459,7 +459,7 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             <SidebarLink
               link={{
                 label: "Profile",
-                href: "#profile",
+                href: "/settings/profile",
                 icon: (
                   <IconUser className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
                 ),

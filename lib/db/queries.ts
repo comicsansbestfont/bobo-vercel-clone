@@ -20,6 +20,9 @@ import type {
   File,
   FileInsert,
   FileUpdate,
+  UserProfile,
+  UserProfileInsert,
+  UserProfileUpdate,
   ChatWithProject,
   ProjectWithStats,
   SearchResult,
@@ -41,6 +44,50 @@ export async function getDefaultUser(): Promise<User | null> {
 
   if (error) {
     console.error('Error fetching default user:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Get the user profile for the default user
+ */
+export async function getUserProfile(): Promise<UserProfile | null> {
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('*')
+    .eq('user_id', DEFAULT_USER_ID)
+    .single();
+
+  if (error) {
+    // If no profile exists, that's expected (returns null)
+    if (error.code === 'PGRST116') return null;
+    
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Upsert (create or update) user profile
+ */
+export async function upsertUserProfile(
+  profile: Omit<UserProfileInsert, 'user_id'>
+): Promise<UserProfile | null> {
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .upsert({
+      ...profile,
+      user_id: DEFAULT_USER_ID,
+    }, { onConflict: 'user_id' })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error upserting user profile:', error);
     return null;
   }
 

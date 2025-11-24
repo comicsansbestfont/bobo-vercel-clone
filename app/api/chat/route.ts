@@ -19,6 +19,7 @@ import {
   getProject,
   getMessages,
   deleteMessage,
+  getUserProfile,
   supabase,
   type MessagePart,
   type MessageContent,
@@ -276,10 +277,32 @@ export async function POST(req: Request) {
       }
     }
 
+    // Fetch user profile (M3)
+    let userProfileContext = '';
+    try {
+      const profile = await getUserProfile();
+      if (profile) {
+        const parts = [];
+        if (profile.bio) parts.push(`BIO:\n${profile.bio}`);
+        if (profile.background) parts.push(`BACKGROUND & EXPERTISE:\n${profile.background}`);
+        if (profile.preferences) parts.push(`PREFERENCES:\n${profile.preferences}`);
+        if (profile.technical_context) parts.push(`TECHNICAL CONTEXT:\n${profile.technical_context}`);
+        
+        if (parts.length > 0) {
+          userProfileContext = `\n\n### ABOUT THE USER\n${parts.join('\n\n')}`;
+        }
+      }
+    } catch (err) {
+      chatLogger.error('Failed to load user profile:', err);
+    }
+
     // Prepare System Prompt with Context Caching (Loop A)
     let systemPrompt = customInstructions
       ? `${customInstructions}\n\nYou are a helpful assistant that can answer questions and help with tasks`
       : 'You are a helpful assistant that can answer questions and help with tasks';
+    
+    // Inject User Profile (M3)
+    systemPrompt += userProfileContext;
 
     // Store context for source tracking later
     let projectContext: ProjectContext | null = null;

@@ -85,6 +85,17 @@ export type File = {
   embedding?: string | number[]; // Vector embedding
 };
 
+export type UserProfile = {
+  id: string;
+  user_id: string;
+  bio: string | null;
+  background: string | null;
+  preferences: string | null;
+  technical_context: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 /**
  * Insert types (for creating new rows)
  * Omits auto-generated fields like id, timestamps
@@ -112,6 +123,10 @@ export type FileInsert = Omit<File, 'id' | 'created_at'> & {
   id?: string;
 };
 
+export type UserProfileInsert = Omit<UserProfile, 'id' | 'created_at' | 'updated_at'> & {
+  id?: string;
+};
+
 /**
  * Update types (for updating existing rows)
  * All fields optional except what's required for the update
@@ -127,6 +142,10 @@ export type MessageUpdate = Partial<
 
 export type FileUpdate = Partial<
   Omit<File, 'id' | 'project_id' | 'user_id' | 'created_at'>
+>;
+
+export type UserProfileUpdate = Partial<
+  Omit<UserProfile, 'id' | 'user_id' | 'created_at'>
 >;
 
 /**
@@ -220,6 +239,19 @@ export type Database = {
           },
           {
             foreignKeyName: 'files_user_id_fkey';
+            columns: ['user_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      user_profiles: {
+        Row: UserProfile;
+        Insert: UserProfileInsert;
+        Update: UserProfileUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'user_profiles_user_id_fkey';
             columns: ['user_id'];
             referencedRelation: 'users';
             referencedColumns: ['id'];
