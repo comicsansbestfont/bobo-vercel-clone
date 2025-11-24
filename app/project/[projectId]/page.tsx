@@ -3,10 +3,9 @@
 import { ChatInterface } from "@/components/chat/chat-interface";
 import { BoboSidebarOptionA } from "@/components/ui/bobo-sidebar-option-a";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { Project, ChatWithProject } from "@/lib/db/types";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ProjectHeader } from "@/components/project/project-header";
 import { ProjectEmptyState } from "@/components/project/empty-state";
 import {
@@ -225,77 +224,79 @@ export default function ProjectPage() {
   const loadingOrError = renderLoadingOrError();
 
   return (
-    <BoboSidebarOptionA>
-      <div className="m-2 flex min-h-[calc(100vh-1rem)] flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
-        {!shellHidden && (
-          <ProjectHeader
-            projectId={projectId}
-            projectName={project?.name || ""}
-            onNameChange={handleNameChange}
-          />
-        )}
-
-        <div className="flex flex-1 flex-col overflow-hidden">
+    <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading project...</div>}>
+      <BoboSidebarOptionA>
+        <div className="m-2 flex min-h-[calc(100vh-1rem)] flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
           {!shellHidden && (
-            <div className="flex-1 overflow-y-auto px-6 py-4">
-              {loadingOrError ? (
-                loadingOrError
-              ) : chats.length === 0 ? (
-                <ProjectEmptyState />
-              ) : (
-                <div className="cursor-pointer">
-                  <TableProvider columns={columns} data={tableData}>
-                    <TableHeader>
-                      {({ headerGroup }) => (
-                        <TableHeaderGroup headerGroup={headerGroup}>
-                          {({ header }) => <TableHead header={header} />}
-                        </TableHeaderGroup>
-                      )}
-                    </TableHeader>
-                    <TableBody>
-                      {({ row }) => (
-                        (() => {
-                          const chat = row.original as ChatTableRow;
-
-                          return (
-                            <TableRow
-                              row={row}
-                              className="hover:bg-muted/50 transition-colors"
-                            >
-                              {({ cell }) => (
-                                <TableCell
-                                  cell={cell}
-                                  className="cursor-pointer"
-                                  onClick={() =>
-                                    router.push(`/project/${projectId}?chatId=${chat.id}`)
-                                  }
-                                />
-                              )}
-                            </TableRow>
-                          );
-                        })()
-                      )}
-                    </TableBody>
-                  </TableProvider>
-                </div>
-              )}
-            </div>
+            <ProjectHeader
+              projectId={projectId}
+              projectName={project?.name || ""}
+              onNameChange={handleNameChange}
+            />
           )}
 
-          <div
-            className={
-              shellHidden
-                ? "flex-1"
-                : "border-t border-neutral-200 dark:border-neutral-700"
-            }
-          >
-            <ChatInterface
-              projectId={projectId}
-              className={shellHidden ? "h-full" : "h-auto p-4"}
-            />
+          <div className="flex flex-1 flex-col overflow-hidden">
+            {!shellHidden && (
+              <div className="flex-1 overflow-y-auto px-6 py-4">
+                {loadingOrError ? (
+                  loadingOrError
+                ) : chats.length === 0 ? (
+                  <ProjectEmptyState />
+                ) : (
+                  <div className="cursor-pointer">
+                    <TableProvider columns={columns} data={tableData}>
+                      <TableHeader>
+                        {({ headerGroup }) => (
+                          <TableHeaderGroup headerGroup={headerGroup}>
+                            {({ header }) => <TableHead header={header} />}
+                          </TableHeaderGroup>
+                        )}
+                      </TableHeader>
+                      <TableBody>
+                        {({ row }) => (
+                          (() => {
+                            const chat = row.original as ChatTableRow;
+
+                            return (
+                              <TableRow
+                                row={row}
+                                className="hover:bg-muted/50 transition-colors"
+                              >
+                                {({ cell }) => (
+                                  <TableCell
+                                    cell={cell}
+                                    className="cursor-pointer"
+                                    onClick={() =>
+                                      router.push(`/project/${projectId}?chatId=${chat.id}`)
+                                    }
+                                  />
+                                )}
+                              </TableRow>
+                            );
+                          })()
+                        )}
+                      </TableBody>
+                    </TableProvider>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div
+              className={
+                shellHidden
+                  ? "flex-1"
+                  : "border-t border-neutral-200 dark:border-neutral-700"
+              }
+            >
+              <ChatInterface
+                projectId={projectId}
+                className={shellHidden ? "h-full" : "h-auto p-4"}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </BoboSidebarOptionA>
+      </BoboSidebarOptionA>
+    </Suspense>
   );
 }

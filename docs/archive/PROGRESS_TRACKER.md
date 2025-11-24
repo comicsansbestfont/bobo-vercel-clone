@@ -1,10 +1,15 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** January 23, 2025 - M2 Complete (100%)
+**Last Updated:** November 24, 2025 - Build pipeline fixes
 **Current Phase:** M2 - Project Intelligence ✅ COMPLETE
 **Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ 100% (18/18 tasks)
 
 ---
+
+## ✨ Latest Work (Nov 24, 2025)
+
+- 🛠️ Build reliability: Wrapped sidebar-based routes (`/memory`, `/settings/profile`, and project pages) in React Suspense to satisfy Next.js 16 `useSearchParams` requirements.
+- ✅ Local `npm run build` now passes with Turbopack after the Suspense adjustments.
 
 ## 📊 Overall Progress
 

@@ -2,7 +2,7 @@
 
 import { BoboSidebarOptionA } from '@/components/ui/bobo-sidebar-option-a';
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect, useCallback } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import type { Project, File } from '@/lib/db/types';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -174,9 +174,9 @@ export default function ProjectSettingsPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <BoboSidebarOptionA>
+  const renderContent = () => {
+    if (loading) {
+      return (
         <div className="flex h-screen flex-col bg-white dark:bg-neutral-900">
           <div className="border-b border-neutral-200 p-6 dark:border-neutral-700">
             <Skeleton className="h-8 w-64" />
@@ -185,13 +185,11 @@ export default function ProjectSettingsPage() {
             <Skeleton className="h-64 w-full" />
           </div>
         </div>
-      </BoboSidebarOptionA>
-    );
-  }
+      );
+    }
 
-  if (!project) {
-    return (
-      <BoboSidebarOptionA>
+    if (!project) {
+      return (
         <div className="flex h-screen items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold">Project not found</h1>
@@ -200,12 +198,10 @@ export default function ProjectSettingsPage() {
             </Button>
           </div>
         </div>
-      </BoboSidebarOptionA>
-    );
-  }
+      );
+    }
 
-  return (
-    <BoboSidebarOptionA>
+    return (
       <div className="flex h-screen flex-col bg-white dark:bg-neutral-900">
         {/* Header */}
         <div className="border-b border-neutral-200 p-6 dark:border-neutral-700">
@@ -359,6 +355,14 @@ export default function ProjectSettingsPage() {
           </div>
         </div>
       </div>
-    </BoboSidebarOptionA>
+    );
+  };
+
+  return (
+    <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading project settings...</div>}>
+      <BoboSidebarOptionA>
+        {renderContent()}
+      </BoboSidebarOptionA>
+    </Suspense>
   );
 }
