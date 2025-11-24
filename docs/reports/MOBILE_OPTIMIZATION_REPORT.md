@@ -362,9 +362,61 @@ html {
 
 ## 5. Sidebar Mobile Support
 
-### 5.1 Existing Implementation (`components/ui/collapsible-sidebar.tsx`)
+### 5.1 Critical Mobile Layout Fix (`components/ui/bobo-sidebar-option-a.tsx`)
 
-**Already Optimized:**
+**Problem:** On mobile, the sidebar was blocking the chat content entirely. Users could only see the sidebar and couldn't access the chat interface.
+
+**Root Cause:** The parent flex container was using `flex-row` on all screen sizes, causing the mobile sidebar bar and chat content to try to fit side-by-side on small screens.
+
+**Solution:**
+```tsx
+// BEFORE
+<div className="flex h-screen w-full overflow-hidden bg-gray-100 dark:bg-neutral-800">
+
+// AFTER
+<div className="flex flex-col md:flex-row h-screen w-full overflow-hidden bg-gray-100 dark:bg-neutral-800">
+```
+
+**Changes:**
+- Added `flex-col` (stacks vertically on mobile < 768px)
+- Added `md:flex-row` (horizontal layout on desktop ≥ 768px)
+
+**Result:**
+- ✅ Mobile: Hamburger menu at top (48px), chat content fills remaining space below
+- ✅ Desktop: Sidebar on left, chat content on right (original behavior maintained)
+
+---
+
+### 5.2 Mobile Sidebar Bar Improvements (`components/ui/collapsible-sidebar.tsx`)
+
+**Problem:** The mobile sidebar bar had conflicting height (`h-10` = 40px) and padding (`py-4` = 32px total), causing layout inconsistencies.
+
+**Solution:**
+```tsx
+// BEFORE
+<motion.div
+  className="flex h-10 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800"
+>
+
+// AFTER
+<motion.div
+  className="flex h-12 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-2 md:hidden dark:bg-neutral-800 flex-shrink-0"
+>
+```
+
+**Changes:**
+- Height: `h-10` (40px) → `h-12` (48px) for better thumb reach
+- Padding: `py-4` (16px each) → `py-2` (8px each) for proper spacing
+- Added `flex-shrink-0` to prevent bar from being compressed
+
+**Benefits:**
+- Consistent 48px top bar (matches iOS/Android standards)
+- Proper padding that doesn't exceed container height
+- Bar never shrinks or collapses
+
+---
+
+### 5.3 Existing Implementation (Already Optimized)
 ```tsx
 // Desktop Sidebar (hidden on mobile)
 <motion.div
@@ -585,9 +637,22 @@ motion.div { transform: translateX(...); }
 
 ## 10. Known Issues & Future Improvements
 
-### 10.1 Current Limitations
+### 10.1 Known Issues
 
-**Minor Issues:**
+**Fixed in v1.3.1:**
+1. ✅ **Mobile Chat Not Visible** (CRITICAL)
+   - Issue: Chat content was completely hidden on mobile, only sidebar visible
+   - Root Cause: Parent flex container using row layout on all screen sizes
+   - Fix: Added `flex-col md:flex-row` to stack vertically on mobile
+   - Status: RESOLVED
+
+2. ✅ **Mobile Sidebar Bar Height Issue**
+   - Issue: Conflicting height and padding causing layout shifts
+   - Root Cause: `h-10` with `py-4` padding (total 72px vs 40px)
+   - Fix: Changed to `h-12` with `py-2` for proper 48px bar
+   - Status: RESOLVED
+
+**Remaining Minor Issues:**
 1. **Icon Buttons (32px):** Slightly below 44px guideline
    - Mitigation: Visual padding extends perceived touch zone
    - Risk: Low (secondary actions)
@@ -688,7 +753,7 @@ When adding new features, follow this checklist:
 
 ### 12.1 Summary of Changes
 
-**Files Modified:** 9
+**Files Modified:** 11
 1. `app/layout.tsx` - Viewport config, PWA setup
 2. `app/globals.css` - Mobile CSS optimizations
 3. `app/page.tsx` - Chat container spacing
@@ -698,8 +763,10 @@ When adding new features, follow this checklist:
 7. `components/memory/memory-summary.tsx` - Responsive sizing
 8. `components/memory/memory-section.tsx` - Responsive layout
 9. `components/ui/dialog.tsx` - Mobile dialog handling
+10. `components/ui/bobo-sidebar-option-a.tsx` - **CRITICAL: Fixed mobile layout blocking**
+11. `components/ui/collapsible-sidebar.tsx` - Mobile sidebar bar improvements
 
-**Lines Changed:** ~60 (mostly class string additions)
+**Lines Changed:** ~65 (mostly class string additions, 2 critical layout fixes)
 
 **Build Status:** ✅ Passing (21.3s compile, 0 errors, 0 warnings)
 

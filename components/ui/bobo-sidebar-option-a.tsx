@@ -363,7 +363,7 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-gray-100 dark:bg-neutral-800">
+    <div className="flex flex-col md:flex-row h-screen w-full overflow-hidden bg-gray-100 dark:bg-neutral-800">
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-0">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">

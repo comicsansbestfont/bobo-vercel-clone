@@ -308,7 +308,7 @@ export const MobileSidebar = ({
   return (
     <motion.div
       className={cn(
-        "flex h-10 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden dark:bg-neutral-800",
+        "flex h-12 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-2 md:hidden dark:bg-neutral-800 flex-shrink-0",
       )}
       {...props}
     >
