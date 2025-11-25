@@ -1,8 +1,8 @@
 # Bobo AI Chatbot - Comprehensive Project Brief
 
-**Version:** 2.2
-**Last Updated:** November 23, 2025
-**Status:** Milestones 1–2 COMPLETE (100%), preparing for M3–M5
+**Version:** 2.3
+**Last Updated:** November 25, 2025
+**Status:** Milestones 1–2 COMPLETE (100%), M3 79% Complete, Mobile UX Sprint v1.3.0 Complete
 
 ---
 
@@ -94,7 +94,7 @@ To avoid “building forever without shipping to myself”, Bobo follows a usage
 
 This keeps the roadmap grounded in lived experience: every phase exists to solve pains you actually feel while using Bobo day-to-day.
 
-### Current State (Milestone 0.5)
+### Current State (v1.3.0 - Mobile UX Sprint Complete)
 
 ✅ **Completed:**
 - Streaming chat interface with markdown/code support
@@ -102,15 +102,27 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 - Real-time context tracking with visual progress bar
 - Automatic memory compression at 90% context usage
 - Web search integration via Perplexity
-- Project UI scaffolding (frontend only)
+- Full persistence layer (Supabase PostgreSQL + pgvector)
 - ChatGPT-style collapsible sidebar
+- Double-Loop RAG architecture (M2 complete)
+- Hierarchical memory extraction system (M3 79% complete)
+- **Mobile-first responsive design (v1.3.0)**
+- **Bobo identity/personality system**
 
-❌ **Missing:**
-- Database and persistence layer
-- Project backend API
-- Chat history and loading
-- File upload and RAG pipeline
-- Supermemory integration
+✅ **v1.3.0 Mobile UX Sprint (Nov 25, 2025):**
+- Redesigned welcome screen with prominent Bobo character (512px)
+- New greeting: "Tell Bobo Anything" with placeholder "What's on your mind?"
+- Mobile sidebar redesigned as 85% width drawer with backdrop
+- Pure slide animation (0.2s) replacing clunky slide+fade
+- Horizontal footer icon bar (Home, Memory, Profile, Theme)
+- Accessibility improvements (proper button semantics, aria-labels)
+- Bobo identity trigger responding to "who is Bobo?" questions
+
+❌ **Remaining (M3 Phase 4 + M4):**
+- Memory provenance tracking and debugger
+- Multi-user authentication
+- Team workspaces
+- Advanced file support (PDFs, code repos)
 
 ### Milestone 1: Persistence Foundation (Current)
 

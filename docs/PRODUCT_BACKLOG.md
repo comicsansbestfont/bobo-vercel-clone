@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 25, 2025 (Added M6 Agentic Capabilities)
+**Last Updated:** November 25, 2025 (v1.3.0 Mobile UX Sprint Complete + M6 Agentic Capabilities)
 **Maintained By:** Product Owner / CTO
 **Purpose:** Track all planned features, improvements, and technical debt not in current milestone
 
@@ -1213,6 +1213,55 @@ Milestone‑level states (e.g. “✅ Complete”, “📝 Backlog”) are summa
 **Effort:** 4 hours
 **Goal:** Optimize entire app for mobile devices (320px - 768px viewports)
 
+---
+
+## 📱 MOBILE UX SPRINT v1.3.0 (Completed Nov 25, 2025)
+
+**Status:** ✅ Complete
+**Effort:** 3-4 hours
+**Goal:** Enhanced mobile experience with Bobo character prominence and sidebar redesign
+
+### v1.3.0 Mobile UX Tasks
+
+| ID | Feature | Priority | Status | Notes |
+|----|---------|----------|--------|-------|
+| MUX-1 | Change greeting to "Tell Bobo Anything" | 🔴 HIGH | ✅ Done | Replaced time-based greeting |
+| MUX-2 | Change placeholder to "What's on your mind?" | 🔴 HIGH | ✅ Done | Avoids redundancy with greeting |
+| MUX-3 | Make Bobo character 4x larger | 🔴 HIGH | ✅ Done | w-96 h-96 (384px), md:w-[32rem] (512px) |
+| MUX-4 | Reduce Bobo-greeting spacing on mobile | 🟡 MEDIUM | ✅ Done | mb-0 on mobile, mb-2 on desktop |
+| MUX-5 | Redesign mobile sidebar as drawer panel | 🔴 HIGH | ✅ Done | 85% width, max 320px, backdrop overlay |
+| MUX-6 | Improve sidebar animation | 🟡 MEDIUM | ✅ Done | Pure slide (0.2s), removed opacity fade |
+| MUX-7 | Redesign footer to horizontal icon bar | 🔴 HIGH | ✅ Done | Home, Memory, Profile, Theme icons |
+| MUX-8 | Add Bobo identity/personality system | 🔴 HIGH | ✅ Done | Triggers on "who is Bobo?" questions |
+| MUX-9 | Fix accessibility (button semantics) | 🔴 HIGH | ✅ Done | Proper aria-labels, button elements |
+| MUX-10 | Remove SVG black background | 🟡 MEDIUM | ✅ Done | Fixed bobo-character.svg |
+
+**Deliverables:**
+- ✅ Prominent Bobo character on welcome screen (512px on desktop)
+- ✅ Friendly greeting "Tell Bobo Anything" with inviting placeholder
+- ✅ 85% width mobile drawer with backdrop (max 320px)
+- ✅ Smooth slide animation (0.2s) without clunky fade
+- ✅ Horizontal footer bar with 44px touch targets
+- ✅ Bobo personality that responds warmly to identity questions
+- ✅ Full accessibility compliance (button semantics, aria-labels)
+
+**Files Modified:**
+- `components/chat/chat-interface.tsx` - Greeting, placeholder, Bobo size
+- `components/ui/collapsible-sidebar.tsx` - Drawer redesign, animation, accessibility
+- `components/ui/bobo-sidebar-option-a.tsx` - Footer bar redesign
+- `app/api/chat/route.ts` - Bobo identity system prompt
+- `public/bobo-character.svg` - Removed black background
+
+**Bobo Identity System:**
+```typescript
+// Triggers on "who is Bobo?", "who are you?", etc.
+const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
+  "G'day! I'm Bobo - a friendly AI companion who lives for curiosity
+   and connection. Picture me as a constellation creature made of
+   interconnected nodes, with big curious eyes and a warm smile..."
+`
+```
+
 ### Mobile Optimization Tasks
 
 | ID | Feature | Priority | Estimate | Status | Actual | Notes |
@@ -1301,6 +1350,11 @@ Milestone‑level states (e.g. “✅ Complete”, “📝 Backlog”) are summa
 | 2025-11-24 | Documentation Update: Comprehensive product backlog refresh with 11 new changelog entries | Claude Code |
 | 2025-11-25 | Added M6 Agentic Capabilities milestone (22 tasks, 4 phases, ~102h estimate) | Claude Code |
 | 2025-11-25 | Deprecated docs/archive/product-roadmap.md - consolidated into this document | Claude Code |
+| 2025-11-25 | v1.3.0 Mobile UX Sprint Complete: Bobo character prominence, drawer sidebar, footer bar | Claude Code |
+| 2025-11-25 | Added Bobo identity/personality system (triggers on "who is Bobo?" questions) | Claude Code |
+| 2025-11-25 | Mobile sidebar redesigned: 85% width drawer, backdrop overlay, pure slide animation | Claude Code |
+| 2025-11-25 | Footer bar redesigned: Horizontal icon layout (Home, Memory, Profile, Theme) | Claude Code |
+| 2025-11-25 | Accessibility fixes: Button semantics, aria-labels for hamburger and close buttons | Claude Code |
 
 ---
 
