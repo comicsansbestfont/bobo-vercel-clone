@@ -12,6 +12,7 @@ import {
   IconUser,
   IconSearch,
   IconFolderPlus,
+  IconDots,
   IconDotsVertical,
   IconClock,
   IconCalendar,
