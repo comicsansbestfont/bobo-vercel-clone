@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-11-25
+
+### Added
+- **Bobo Identity System**
+  - Bobo now has a personality that activates when users ask "who is Bobo?" or "who are you?"
+  - Friendly Australian-ish persona: "constellation creature made of interconnected nodes"
+  - Identity only triggers on direct questions, otherwise acts as normal assistant
+  - System prompt injection in `/api/chat/route.ts`
+
+- **Welcome Screen with Bobo Character**
+  - Large Bobo mascot (384x384px mobile, 512x512px desktop) on empty chat state
+  - Greeting: "Tell Bobo Anything"
+  - Placeholder: "What's on your mind?"
+  - Character SVG at `/public/bobo-character.svg` (transparent background)
+
+### Improved
+- **Mobile Sidebar Overhaul** (Complete redesign)
+  - Changed from full-screen overlay to 85% width panel with backdrop
+  - Smooth 0.2s slide animation (removed clunky fade)
+  - Dark backdrop that dims content and can be clicked to close
+  - Shadow on panel for visual depth
+  - Close button (X) properly positioned
+  - `components/ui/collapsible-sidebar.tsx` completely refactored
+
+- **Mobile Footer Bar** (Option B design)
+  - Changed from stacked list (Home, Memory, Profile) to horizontal icon bar
+  - 44px touch targets for proper mobile accessibility
+  - Icons: Home, Memory, Profile + Theme switcher in single row
+  - `justify-around` spacing for even distribution
+  - `components/ui/bobo-sidebar-option-a.tsx` bottom section redesigned
+
+- **Accessibility Improvements**
+  - Wrapped hamburger menu (IconMenu2) in proper `<button>` with `aria-label="Open navigation menu"`
+  - Wrapped close button (IconX) in proper `<button>` with `aria-label="Close navigation menu"`
+  - Added `aria-expanded` state to hamburger button
+  - Fixed raw SVG accessibility violations
+
+- **Toolbar Layout** (Claude-inspired)
+  - Single row layout with left/right grouping
+  - Left: Action buttons (attach, web search, context)
+  - Right: Model selector + submit button
+  - Consistent spacing and alignment
+
+### Fixed
+- Bobo character SVG had black background - removed via sed
+- Sidebar animation was clunky (slide + fade combo) - now pure slide
+- Close button in mobile sidebar was hard to find - now floating top-right
+- Footer navigation items (Home, Memory, Profile) were stacked - now horizontal
+- Touch targets on mobile footer were too small - now 44x44px minimum
+
+### Changed
+- `components/chat/chat-interface.tsx` - Added Bobo welcome screen, redesigned toolbar
+- `components/ui/collapsible-sidebar.tsx` - Mobile sidebar panel + backdrop
+- `components/ui/bobo-sidebar-option-a.tsx` - Footer bar redesign
+- `app/api/chat/route.ts` - Bobo identity trigger system prompt
+- `public/bobo-character.svg` - Copied from docs, removed black background
+
 ## [1.2.0] - 2025-01-23
 
 ### Added
