@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **STRATEGIC PIVOT**: Reframed Bobo as personal internal tool (not SaaS)
+- Renamed M4 milestone to "Agent SDK" (Claude Agent SDK integration)
+- Moved old M4 tasks (auth, teams, analytics) to "Future/If SaaS" section
+- Deferred M5 (Knowledge Graph) to pain-driven implementation
+- Removed SaaS success metrics from PROJECT_BRIEF.md
+
+### Documentation
+- Updated PROJECT_BRIEF.md to reflect personal tool focus
+- Restructured PRODUCT_BACKLOG.md with new milestone order
+- Saved strategic pivot decision to docs/decisions/
+
 ## [1.3.0] - 2025-11-25
 
 ### Added
@@ -313,5 +325,5 @@ ALTER TABLE messages ADD COLUMN embedding vector(1536);
 
 ---
 
-**Maintained by**: Product Owner / CTO
-**Last Updated**: January 23, 2025
+**Maintained by**: Solo Developer (Personal Tool)
+**Last Updated**: November 25, 2025 (Strategic Pivot)

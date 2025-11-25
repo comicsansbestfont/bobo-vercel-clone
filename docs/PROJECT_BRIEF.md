@@ -1,12 +1,14 @@
 # Bobo AI Chatbot - Comprehensive Project Brief
 
-**Version:** 2.3
+**Version:** 3.0
 **Last Updated:** November 25, 2025
-**Status:** Milestones 1–2 COMPLETE (100%), M3 79% Complete, Mobile UX Sprint v1.3.0 Complete
+**Status:** Personal productivity tool | M1-M2 Complete | M3 79% | Agent SDK Next
 
 ---
 
 ## 1. Executive Summary
+
+> **Note:** Bobo is built as a **personal internal tool** for the developer. If successful after extended dogfooding (3-6 months), it may be adapted for broader use.
 
 **Bobo AI** is a next-generation AI chatbot that goes beyond simple question-and-answer. It provides **deep contextual understanding** through three key innovations:
 
@@ -68,14 +70,6 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 - No visibility into token usage
 - Files aren't searchable semantically
 
-### Secondary: Power Users & Teams
-
-**Future Market:**
-- Teams collaborating on shared projects
-- Companies with internal knowledge bases
-- Educators with course materials
-- Writers with research libraries
-
 ---
 
 ## 4. Product Vision & Roadmap
@@ -84,17 +78,18 @@ Unlike ChatGPT or Claude, Bobo maintains persistent context through advanced mem
 
 ### 4.0 Usage-First Roadmap & Dogfooding Guidelines
 
-To avoid “building forever without shipping to myself”, Bobo follows a usage-first cadence:
+To avoid "building forever without shipping to myself", Bobo follows a usage-first cadence:
 
-- After each milestone ships (V1, V1.1, M2, etc.), pause net-new features for 1–2 weeks and use Bobo as the primary assistant for real work (coding, planning, docs).  
-- During these periods, only fix bugs, address paper-cuts, and refine backlog priorities based on actual friction you encounter.  
-- Start **M3 (User Profile & Bio)** only after you repeatedly feel the pain of re-explaining who you are, how you like to work, or your long-term preferences.  
-- Start **M4 (Production & Scale)** only once the single-user experience is strong enough that you genuinely want to invite other people into Bobo.  
-- Start **M5 (Cognitive Layer & Living Docs)** after you have months of real data and feel the need for higher-level reviews (weekly briefs, project “brains”, cross-project decision views).
+- After each milestone ships, pause net-new features for 1–2 weeks and use Bobo as the primary assistant for real work (coding, planning, docs).
+- During these periods, only fix bugs, address paper-cuts, and refine backlog priorities based on actual friction you encounter.
+- Start **M4 (Agent SDK)** now that M3 memory foundation is ready and agentic capabilities will accelerate everything else.
+- Start **M5 (Cognitive Layer)** only when cross-project querying feels limited or project summaries become necessary.
 
 This keeps the roadmap grounded in lived experience: every phase exists to solve pains you actually feel while using Bobo day-to-day.
 
-### Current State (v1.3.0 - Mobile UX Sprint Complete)
+**Personal Tool Principle:** "Let pain guide priorities." Build features when you feel their absence, not speculatively.
+
+### Current State (v1.3.0 - Personal Tool MVP)
 
 ✅ **Completed:**
 - Streaming chat interface with markdown/code support
@@ -106,45 +101,35 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 - ChatGPT-style collapsible sidebar
 - Double-Loop RAG architecture (M2 complete)
 - Hierarchical memory extraction system (M3 79% complete)
-- **Mobile-first responsive design (v1.3.0)**
-- **Bobo identity/personality system**
+- Mobile-first responsive design (v1.3.0)
+- Bobo identity/personality system
 
-✅ **v1.3.0 Mobile UX Sprint (Nov 25, 2025):**
-- Redesigned welcome screen with prominent Bobo character (512px)
-- New greeting: "Tell Bobo Anything" with placeholder "What's on your mind?"
-- Mobile sidebar redesigned as 85% width drawer with backdrop
-- Pure slide animation (0.2s) replacing clunky slide+fade
-- Horizontal footer icon bar (Home, Memory, Profile, Theme)
-- Accessibility improvements (proper button semantics, aria-labels)
-- Bobo identity trigger responding to "who is Bobo?" questions
+🎯 **Next Priority: Agent SDK (M4)**
+- Claude Agent SDK integration
+- Built-in tools: Read, Write, Edit, Bash, Glob, Grep
+- Agent mode toggle in UI
+- Tool execution streaming and display
+- User confirmation for sensitive operations
+- Integration with existing memory/context systems
 
-❌ **Remaining (M3 Phase 4 + M4):**
-- Memory provenance tracking and debugger
-- Multi-user authentication
-- Team workspaces
-- Advanced file support (PDFs, code repos)
+📝 **Deferred (Pain-Driven):**
+- M3 Phase 4: Memory polish features (provenance, debugger, export)
+- M5: Knowledge graph & living docs
+- Future: Multi-user features (if SaaS pivot)
 
-### Milestone 1: Persistence Foundation (Current)
+### Milestone 1: Persistence Foundation ✅
 
 **Goal:** Users can create projects, save chats, and move chats between projects.
 
-**Timeline:** 2-3 weeks
-**Status:** 🚧 Schema complete, building backend
+**Status:** ✅ COMPLETE
 
 **Deliverables:**
 - ✅ Supabase database schema
-- ⏳ Database client utilities
-- ⏳ Project CRUD API routes
-- ⏳ Chat persistence (save/load messages)
-- ⏳ Chat-project association (add/move/detach)
-- ⏳ Replace all mock data with real DB calls
-
-**Success Criteria:**
-- User creates a project → persists across refresh
-- User sends message → saved to database in real-time
-- User returns → sees full chat history
-- User moves chat to project → association updates
-- Zero mock data in codebase
+- ✅ Database client utilities
+- ✅ Project CRUD API routes
+- ✅ Chat persistence (save/load messages)
+- ✅ Chat-project association (add/move/detach)
+- ✅ Replace all mock data with real DB calls
 
 ### Milestone 2: Project Intelligence (Q1 2025)
 
@@ -168,41 +153,87 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 - ✅ AI response includes sources with inline citations [1], [2]
 - ✅ Context tracking accounts for injected knowledge
 
-### Milestone 3: Global Memory (Q1 2025)
+### Milestone 3: Global Memory 🚧
 
 **Goal:** AI remembers user preferences and facts across all projects.
 
-**Timeline:** 2-3 weeks after M2
-**Status:** 📝 Planned
+**Status:** 🚧 79% Complete (Phase 4 deferred)
 
 **Deliverables:**
-- Supermemory.ai integration
-- Automatic memory extraction from conversations
-- Memory retrieval before each AI response
-- Memory management UI
-- Cross-project context sharing
-- Knowledge graph visualization
+- ✅ User profile system (bio, background, preferences, technical context)
+- ✅ Automatic memory extraction (Gemini 2.5 Flash Lite - 56% cheaper than GPT-4o-mini)
+- ✅ 6 hierarchical memory categories
+- ✅ Memory retrieval before each AI response
+- ✅ Memory management UI (/memory page)
+- ✅ Memory deduplication and consolidation
+- 📝 Phase 4: Provenance tracking, debugger, export (deferred)
 
 **Success Criteria:**
-- AI remembers user's name, role, preferences
-- Facts from old projects inform new ones
-- User can view and edit memories
-- Cross-project context improves responses
+- ✅ AI remembers user's name, role, preferences
+- ✅ Facts from conversations inform future responses
+- ✅ User can view and edit memories
 
-### Milestone 4: Polish & Scale (Q2 2025)
+### Milestone 4: Agent SDK 🎯
 
-**Goal:** Production-ready with teams support.
+**Goal:** Transform Bobo into an agentic assistant using Claude Agent SDK.
 
-**Timeline:** Ongoing
-**Status:** 📝 Backlog
+**Status:** 🎯 Current Priority
 
-**Features:**
+**Architecture:**
+```
+Chat Mode (/api/chat)    → AI Gateway → GPT, Gemini, Claude, Deepseek
+Agent Mode (/api/chat)   → Claude SDK → Claude only (with tools)
+
+Both modes share:
+├─ User memory injection (M3)
+├─ Project context injection (M2 Loop A)
+├─ RAG search (M2 Loop B)
+└─ Context tracking
+```
+
+**Deliverables:**
+- Claude Agent SDK integration
+- Built-in tools: Read, Write, Edit, Bash, Glob, Grep
+- Agent mode toggle in UI
+- Tool execution streaming and display
+- User confirmation for sensitive operations (writes, deletes, bash)
+- PreToolUse safety hooks
+- Integration with existing memory/context systems
+
+**Success Criteria:**
+- Can toggle between Chat Mode and Agent Mode
+- Agent can read/search project files
+- Agent can create/edit files (with confirmation)
+- Agent has access to user memory and project context
+- Tool execution visible in real-time
+
+### Milestone 5: Cognitive Layer (Deferred)
+
+**Goal:** Living documentation and knowledge graph.
+
+**Status:** 📝 Deferred (Pain-Driven)
+
+**Trigger:** Implement when cross-project querying feels limited or project summaries become necessary.
+
+**Features (when needed):**
+- Per-project living doc entity (status, decisions, risks)
+- Hierarchical summaries (session → daily → weekly)
+- Fact extraction (subject/predicate/object)
+- Cross-project knowledge graph queries
+- Weekly executive brief
+
+### Future: Production & Scale (If SaaS Pivot)
+
+**Status:** 📝 Not Planned
+
+> These features would only be built if Bobo transitions from personal tool to multi-user SaaS product after extended dogfooding (3-6 months minimum).
+
+**Deferred Features:**
 - Multi-user authentication (OAuth, email)
 - Team workspaces and sharing
 - Usage analytics and cost tracking
-- Advanced RAG (PDFs, code repos, URLs)
-- Performance optimizations (caching, CDN)
-- Deployment pipeline and monitoring
+- Rate limiting and quotas
+- Enterprise features
 
 ---
 
@@ -218,8 +249,9 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 | **AI SDK** | Vercel AI SDK (@ai-sdk/react) | Streaming, model abstraction |
 | **Database** | Supabase (PostgreSQL) | Managed, free tier, pgvector |
 | **Vector Store** | Supabase pgvector | No separate service needed |
-| **Memory** | Supermemory.ai | Specialized for long-term memory |
+| **Memory** | Custom (Gemini 2.5 Flash Lite) | 56% cheaper than GPT-4o-mini |
 | **AI Gateway** | Custom (supports OpenAI, Anthropic, etc.) | Model flexibility, cost control |
+| **Agent SDK** | Claude Agent SDK | Agentic capabilities (M4) |
 | **Token Counting** | gpt-tokenizer | Accurate, fast |
 | **Markdown** | streamdown + Shiki | Streaming-friendly, code highlighting |
 | **Animation** | Motion (Framer Motion) | Smooth transitions |
@@ -256,15 +288,15 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
           │                  │                  │
           ▼                  ▼                  ▼
 ┌──────────────────┐ ┌─────────────────┐ ┌──────────────────┐
-│   AI Gateway     │ │    Supabase     │ │  Supermemory.ai  │
-│ (OpenAI, etc.)   │ │   (Postgres)    │ │ (Global Memory)  │
+│   AI Gateway     │ │    Supabase     │ │  Custom Memory   │
+│ (OpenAI, etc.)   │ │   (Postgres)    │ │  (Gemini 2.5)    │
 │                  │ │                 │ │                  │
 │  - GPT-4o        │ │  - users        │ │ - User prefs     │
 │  - Claude        │ │  - projects     │ │ - Facts          │
 │  - Gemini        │ │  - chats        │ │ - Decisions      │
-│  - Deepseek      │ │  - messages     │ │ - Knowledge      │
-│  - Perplexity    │ │  - files        │ │   graph          │
-│                  │ │  - embeddings   │ │                  │
+│  - Deepseek      │ │  - messages     │ │ - Categories     │
+│  - Perplexity    │ │  - files        │ │ - Technical      │
+│                  │ │  - embeddings   │ │   context        │
 └──────────────────┘ └─────────────────┘ └──────────────────┘
 ```
 
@@ -348,7 +380,7 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 5. API executes Double-Loop context gathering (M2):
    - **Loop A:** Project files + custom instructions (high fidelity)
    - **Loop B:** Hybrid search across all projects (associative wisdom)
-6. API injects memories from Supermemory (M3)
+6. API injects user memories from custom extraction system (M3)
 7. API calls AI model via AI Gateway with enriched context
 8. Streaming response → parsed by AI SDK → rendered
 9. Messages saved to database with embeddings
@@ -380,9 +412,9 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 7. AI response can reference patterns from other projects
 
 **Memory Flow (M3):**
-1. Every N messages → extract facts (background job)
-2. Facts sent to Supermemory API
-3. Before each AI response → search memories
+1. Every N messages → extract facts using Gemini 2.5 Flash Lite
+2. Facts stored in Supabase with hierarchical categories
+3. Before each AI response → search relevant memories
 4. Relevant memories injected into system prompt
 5. AI response informed by global user context
 
@@ -512,7 +544,7 @@ messages
 
 **Problem:** AI doesn't remember you across sessions or projects.
 
-**Solution:** Supermemory extracts and stores facts, preferences, decisions.
+**Solution:** Custom Gemini-powered system extracts and stores facts, preferences, decisions.
 
 **Memory Types:**
 - **User Profile:** Name, role, company, location
@@ -522,8 +554,8 @@ messages
 
 **Implementation:**
 - Background job: Every 10 messages → extract facts
-- Extraction model: GPT-4o-mini with structured prompt
-- Storage: Supermemory.ai API
+- Extraction model: Gemini 2.5 Flash Lite (56% cheaper than GPT-4o-mini)
+- Storage: Supabase with 6 hierarchical memory categories
 - Retrieval: Before each response → search memories
 - Injection: Relevant memories in system prompt
 
@@ -569,31 +601,7 @@ messages
 
 ---
 
-## 8. Success Metrics
-
-### MVP (Milestone 1)
-
-- **Adoption:** 10 beta users within 1 week
-- **Retention:** 50%+ return after 1 week
-- **Usage:** 100+ chats created
-- **Technical:** < 2s p95 response latency
-
-### Product-Market Fit (Milestone 3)
-
-- **Adoption:** 1,000 users within 3 months
-- **Retention:** 40%+ DAU/MAU
-- **Engagement:** 20+ messages per user per day
-- **NPS:** 50+
-
-### Long-Term (Milestone 4)
-
-- **Revenue:** $10k MRR from pro subscriptions
-- **Scale:** 10k active users
-- **Enterprise:** 5 team accounts
-
----
-
-## 9. Risks & Mitigation
+## 8. Risks & Mitigation
 
 ### Technical Risks
 
@@ -606,8 +614,8 @@ messages
 **Risk:** Context compression loses important info
 **Mitigation:** Keep 4 recent messages, use high-quality summarizer (GPT-4o-mini).
 
-**Risk:** Supermemory doesn't integrate well
-**Mitigation:** Build fallback with local vector store, or skip M3 for now.
+**Risk:** Memory extraction quality varies
+**Mitigation:** Use Gemini 2.5 Flash Lite with structured extraction, deduplication.
 
 ### Product Risks
 
@@ -622,7 +630,7 @@ messages
 
 ---
 
-## 10. Competitive Landscape
+## 9. Competitive Landscape
 
 | Feature | Bobo AI | ChatGPT | Claude Projects | Perplexity |
 |---------|---------|---------|-----------------|------------|
@@ -643,116 +651,28 @@ messages
 
 ---
 
-## 11. Development Timeline
+## 10. Development Timeline
 
-### Phase 1: Foundation (Weeks 1-3) - CURRENT
+### Completed
+- ✅ Phase 1: Persistence Foundation (M1)
+- ✅ Phase 2: Project Intelligence (M2)
+- 🚧 Phase 3: User Memory (M3) - 79%
 
-- **Week 1:** Database + Client Setup
-  - Set up Supabase
-  - Run migrations
-  - Create `lib/db/` utilities
-  - Build user service (hardcoded for now)
+### Current
+- 🎯 Phase 4: Agent SDK Integration
 
-- **Week 2:** Chat Persistence
-  - Save messages in real-time
-  - Load chat history on mount
-  - Generate chat titles automatically
-  - Delete/archive chats
-
-- **Week 3:** Projects Backend
-  - Project CRUD API routes
-  - Chat-project associations
-  - Replace all mock data
-  - End-to-end testing
-
-### Phase 2: Intelligence (Weeks 4-6)
-
-- **Week 4:** File Upload
-  - Upload API + validation
-  - File storage in DB
-  - Chunking algorithm
-  - Basic UI for file management
-
-- **Week 5:** RAG Pipeline
-  - Embedding generation
-  - pgvector setup
-  - Semantic search implementation
-  - Context injection in chat
-
-- **Week 6:** RAG Polish
-  - Source citations
-  - Relevance scoring
-  - Token accounting for context
-  - Performance optimization
-
-### Phase 3: Memory (Weeks 7-9)
-
-- **Week 7:** Supermemory Setup
-  - API integration
-  - Memory extraction logic
-  - Background job scheduling
-  - Basic memory storage
-
-- **Week 8:** Memory Retrieval
-  - Search before each response
-  - Memory injection in prompts
-  - Cross-project memories
-  - Memory UI (view/edit/delete)
-
-- **Week 9:** Memory Polish
-  - Knowledge graph visualization
-  - Memory categorization
-  - User controls (toggle, frequency)
-  - Analytics and insights
-
-### Phase 4: Production (Weeks 10+)
-
-- **Week 10:** Multi-User Auth
-- **Week 11:** Performance & Caching
-- **Week 12:** Deployment & Monitoring
-- **Week 13+:** Iterate based on feedback
+### Future (Pain-Driven)
+- 📝 Cognitive Layer (M5) - when cross-project querying feels limited
+- 📝 SaaS Features - if pivot decision made after dogfooding
 
 ---
 
-## 12. Next Actions
-
-### This Week (Milestone 1 - Setup)
-
-- [x] Create Supabase schema
-- [ ] Set up Supabase project at supabase.com
-- [ ] Run migration in SQL editor
-- [ ] Install `@supabase/supabase-js`
-- [ ] Create `lib/db/client.ts`
-- [ ] Create `lib/db/queries.ts`
-- [ ] Create `lib/db/types.ts`
-- [ ] Test database connection
-
-### Next Week (Milestone 1 - API)
-
-- [ ] Build `/api/projects/*` routes
-- [ ] Build `/api/chats/*` routes
-- [ ] Update `/api/chat` to save messages
-- [ ] Create server actions for mutations
-- [ ] Test all CRUD operations
-
-### Week After (Milestone 1 - Frontend)
-
-- [ ] Replace mock data in sidebar
-- [ ] Replace mock data in project view
-- [ ] Implement chat loading from DB
-- [ ] Implement project creation flow
-- [ ] Implement chat association (add/move/detach)
-- [ ] End-to-end testing
-- [ ] Deploy Milestone 1 MVP
-
----
-
-## 13. Resources
+## 11. Resources
 
 **Documentation:**
 - [Vercel AI SDK](https://sdk.vercel.ai/docs)
 - [Supabase Docs](https://supabase.com/docs)
-- [Supermemory API](https://supermemory.ai/docs)
+- [Claude Agent SDK](https://platform.claude.com/docs/en/agent-sdk/overview)
 - [OpenAI API](https://platform.openai.com/docs)
 
 **Code References:**
@@ -766,19 +686,12 @@ messages
 
 ---
 
-## 14. Team & Contacts
+## 12. Development
 
-**Single Developer (MVP)**
-- Developer/Designer: You
-- Target Support: Indie makers, solo devs
-
-**Future Team (Post-MVP)**
-- Backend Engineer: API, database, RAG
-- Frontend Engineer: UI/UX, components
-- DevOps: Deployment, monitoring, scaling
-- Growth: Marketing, user acquisition
+**Solo Developer Project** - Built for personal use
+**AI Assistance:** Claude Code
 
 ---
 
-**Document Maintained By:** Claude Code (AI Assistant)
-**Next Review:** After Milestone 1 completion
+**Document Maintained By:** Claude Code
+**Last Major Update:** November 25, 2025 (Personal Tool + Agent SDK Pivot)

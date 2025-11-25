@@ -1,15 +1,17 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 25, 2025 (v1.3.0 Mobile UX Sprint Complete + M6 Agentic Capabilities)
-**Maintained By:** Product Owner / CTO
-**Purpose:** Track all planned features, improvements, and technical debt not in current milestone
+**Last Updated:** November 25, 2025 (Strategic Pivot: Personal Tool + Agent SDK)
+**Maintained By:** Solo Developer (Personal Tool)
+**Purpose:** Track all planned features, improvements, and technical debt
+
+> **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
 
 ---
 
 ## 📊 Backlog Priority Matrix
 
 ```
-Critical Path (V1) → High Priority (M2) → Medium Priority (M3) → Low Priority (M4+)
+Agent SDK (M4) → M3 Phase 4 (polish) → M5 (cognitive) → Future (if SaaS)
 ```
 
 ---
@@ -627,71 +629,80 @@ CREATE TABLE memory_entries (
 
 ---
 
-## 🚀 MILESTONE 4: Production & Scale (Q2 2026)
+## 🤖 MILESTONE 4: Agent SDK (Current Priority)
 
-**Status:** 📝 Backlog
-**Target:** Q2 2026 (ongoing)
+**Status:** 🎯 Current Priority
+**Target Start:** December 2025
+**Target End:** December 2025 (2-3 weeks)
+**Total Tasks:** 10
+**Total Estimated Effort:** 25-35 hours
+**Architecture:** Hybrid (Chat Mode + Agent Mode)
 
-### 4.1 Authentication & Multi-User
+### Why Agent SDK Now?
 
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M4-1 | OAuth integration (Google, GitHub) | 🔴 HIGH | 4h | ⏳ |
-| M4-2 | Email/password authentication | 🔴 HIGH | 3h | ⏳ |
-| M4-3 | User management UI | 🔴 HIGH | 3h | ⏳ |
-| M4-4 | Row-level security (RLS) in Supabase | 🔴 HIGH | 3h | ⏳ |
-| M4-5 | Update all queries to use `user_id` | 🔴 HIGH | 2h | ⏳ |
+1. **Core differentiator** - Everyone has chat, few have good agents
+2. **Foundation ready** - M1/M2 provide persistence and RAG
+3. **Memory ready** - M3 at 79% provides user context
+4. **Accelerator** - Agent can help build remaining features
 
-### 4.2 Team Workspaces
+### Architecture
 
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M4-6 | Create `teams` and `team_members` tables | 🟡 MEDIUM | 2h | ⏳ |
-| M4-7 | Team creation and invitation flow | 🟡 MEDIUM | 4h | ⏳ |
-| M4-8 | Shared projects within teams | 🟡 MEDIUM | 3h | ⏳ |
-| M4-9 | Permission system (view/edit/admin) | 🟡 MEDIUM | 4h | ⏳ |
+```
+Chat Mode (/api/chat)    → AI Gateway → GPT, Gemini, Claude, Deepseek
+Agent Mode (/api/chat)   → Claude SDK → Claude only (with tools)
 
-### 4.3 Analytics & Monitoring
+Both modes share:
+├─ User memory injection (M3)
+├─ Project context injection (M2 Loop A)
+├─ RAG search (M2 Loop B)
+└─ Context tracking
+```
 
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M4-10 | Usage analytics dashboard | 🟡 MEDIUM | 4h | ⏳ |
-| M4-11 | Cost tracking per user | 🟡 MEDIUM | 3h | ⏳ |
-| M4-12 | Token usage history | 🟡 MEDIUM | 2h | ⏳ |
-| M4-13 | Error tracking (Sentry integration) | 🔴 HIGH | 2h | ⏳ |
-| M4-14 | Performance monitoring (APM) | 🟡 MEDIUM | 3h | ⏳ |
-
-### 4.4 Advanced Features
+### 4.1 Core Agent Integration
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M4-15 | PDF upload support | 🟡 MEDIUM | 4h | ⏳ |
-| M4-16 | Code repository integration | 🟢 LOW | 6h | ⏳ |
-| M4-17 | URL scraping for knowledge base | 🟢 LOW | 4h | ⏳ |
-| M4-18 | Redis caching layer | 🟡 MEDIUM | 3h | ⏳ |
-| M4-19 | CDN for static assets | 🟢 LOW | 2h | ⏳ |
-| M4-20 | Rate limiting middleware | 🔴 HIGH | 2h | ⏳ |
+| M4-1 | Install Claude Agent SDK | 🔴 HIGH | 0.5h | ⏳ |
+| M4-2 | Add agentMode flag to /api/chat | 🔴 HIGH | 2h | ⏳ |
+| M4-3 | Integrate memory injection with agent | 🔴 HIGH | 2h | ⏳ |
+| M4-4 | Integrate project context with agent | 🔴 HIGH | 2h | ⏳ |
+| M4-5 | Configure built-in tools (Read, Write, Edit, Bash, Glob, Grep) | 🔴 HIGH | 4h | ⏳ |
 
-### 4.5 DevOps & Infrastructure
+### 4.2 UI & Streaming
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M4-21 | CI/CD pipeline (GitHub Actions) | 🔴 HIGH | 3h | ⏳ |
-| M4-22 | Automated database backups | 🔴 HIGH | 2h | ⏳ |
-| M4-23 | Staging environment | 🟡 MEDIUM | 2h | ⏳ |
-| M4-24 | API versioning strategy | 🟡 MEDIUM | 2h | ⏳ |
-| M4-25 | Load testing and benchmarks | 🟡 MEDIUM | 4h | ⏳ |
+| M4-6 | Agent mode toggle in chat interface | 🔴 HIGH | 2h | ⏳ |
+| M4-7 | Tool execution streaming to UI | 🔴 HIGH | 4h | ⏳ |
+| M4-8 | Tool result display components | 🔴 HIGH | 4h | ⏳ |
 
-**Total M4 Tasks:** 25
-**Estimated Effort:** Ongoing (4+ weeks)
+### 4.3 Safety & Confirmation
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M4-9 | User confirmation for write operations | 🔴 HIGH | 3h | ⏳ |
+| M4-10 | PreToolUse safety hooks | 🟡 MEDIUM | 2h | ⏳ |
+
+**Total:** 10 tasks, 25.5 hours estimate (budget 35h for unknowns)
+
+### Success Criteria
+
+- [ ] Can toggle between Chat Mode and Agent Mode
+- [ ] Agent can read files from projects
+- [ ] Agent can search codebase (Grep, Glob)
+- [ ] Agent can create/edit files (with confirmation)
+- [ ] Agent has access to user memory
+- [ ] Agent has access to project context
+- [ ] Tool execution streams to UI in real-time
 
 ---
 
-## 🧭 MILESTONE 5: Cognitive Layer & Living Documentation (Q3 2026+)
+## 🧭 MILESTONE 5: Cognitive Layer & Living Documentation (Deferred)
 
-**Status:** 📝 Backlog  
-**Target:** After M4 stabilizes (post-production rollout)  
-**Focus:** Turn Bobo into a true “Memory Palace” with project living docs, hierarchical summaries, and a lightweight knowledge graph.
+**Status:** 📝 Deferred (Pain-Driven)
+**Target:** When cross-project querying feels limited
+**Trigger:** "Implement when frustrated by its absence"
+**Focus:** Turn Bobo into a true "Memory Palace" with project living docs, hierarchical summaries, and a lightweight knowledge graph.
 **Architecture Note:** See `docs/context-memory-vision.md` for the conceptual design of the Cognitive Layer (Project Brains, hierarchical summaries, fact graph, executive briefs).
 
 ### 5.1 Living Documentation & Hierarchical Summaries
@@ -714,133 +725,96 @@ CREATE TABLE memory_entries (
 
 ---
 
-## 🤖 MILESTONE 6: Agentic Capabilities (2027 Q1+)
+## 🔮 FUTURE: Production & Scale (If SaaS Pivot)
 
-**Status:** 📝 Backlog
-**Target:** After M5 stabilizes (post-knowledge graph)
-**Focus:** Transform Bobo into an autonomous agent capable of executing tools, running code, and completing multi-step tasks like Claude Code.
-**Architecture Note:** Start with Native Anthropic Agent SDK for Claude models, then progressively add multi-provider support via AI SDK + Direct Providers.
+**Status:** 📝 Not Planned - Personal Tool Focus
+**Trigger:** Only if decision made to pivot to multi-user SaaS after extended dogfooding (3-6 months minimum)
 
-### Why M6 Comes Last
+### Why Deferred Indefinitely
 
-| Prerequisite | Why M6 Needs It |
-|--------------|-----------------|
-| **M3 (Memory)** | Agent needs to know user preferences, coding style, tool permissions |
-| **M4 (Production)** | Tool execution needs auth, rate limiting, audit logging, permissions |
-| **M5 (Knowledge Graph)** | Agent can query structured project knowledge, not just RAG |
+Bobo is a personal internal tool. These features would only be needed if:
+1. Extended dogfooding (3-6 months) proves the tool is valuable
+2. Explicit decision made to offer Bobo to other users
+3. Business model and target market defined
 
-### 6.1 Phase A: Native Anthropic Agent SDK (Claude-First)
+### Preserved Tasks (From Original M4)
 
-**Goal:** Implement agentic capabilities using Anthropic's native SDK for Claude models, enabling tool use and multi-step execution.
+#### Authentication & Multi-User
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M6-1 | Define core tools (read_file, write_file, search_files, bash) | 🔴 HIGH | 4h | ⏳ |
-| M6-2 | Implement multi-step agentic loop (tool_use → tool_result cycle) | 🔴 HIGH | 6h | ⏳ |
-| M6-3 | Tool call streaming (show tools as they execute) | 🔴 HIGH | 4h | ⏳ |
-| M6-4 | Tool call UI components (display tool name, args, result) | 🔴 HIGH | 4h | ⏳ |
-| M6-5 | User confirmation flow for sensitive tools (write, delete, bash) | 🔴 HIGH | 3h | ⏳ |
+| FUT-1 | OAuth integration (Google, GitHub) | - | 4h | 📝 |
+| FUT-2 | Email/password authentication | - | 3h | 📝 |
+| FUT-3 | User management UI | - | 3h | 📝 |
+| FUT-4 | Row-level security (RLS) in Supabase | - | 3h | 📝 |
+| FUT-5 | Update all queries to use `user_id` | - | 2h | 📝 |
 
-**Estimated Effort:** 21 hours
-
-### 6.2 Phase B: Code Execution Sandbox
-
-**Goal:** Safely execute code in isolated environments.
+#### Team Workspaces
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M6-6 | Sandboxed code execution (Docker/vm2/WebContainers) | 🔴 HIGH | 8h | ⏳ |
-| M6-7 | File system isolation (temp directories, cleanup) | 🔴 HIGH | 4h | ⏳ |
-| M6-8 | Output streaming (real-time stdout/stderr) | 🟡 MEDIUM | 3h | ⏳ |
-| M6-9 | Security guardrails (timeout, resource limits, blocklist) | 🔴 HIGH | 4h | ⏳ |
-| M6-10 | Code execution UI (terminal-like output display) | 🟡 MEDIUM | 3h | ⏳ |
+| FUT-6 | Create `teams` and `team_members` tables | - | 2h | 📝 |
+| FUT-7 | Team creation and invitation flow | - | 4h | 📝 |
+| FUT-8 | Shared projects within teams | - | 3h | 📝 |
+| FUT-9 | Permission system (view/edit/admin) | - | 4h | 📝 |
 
-**Estimated Effort:** 22 hours
-
-### 6.3 Phase C: Multi-Provider Tool Support
-
-**Goal:** Migrate from AI Gateway to AI SDK + Direct Providers for unified tool calling across all models.
+#### Analytics & Monitoring
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M6-11 | Replace AI Gateway with @ai-sdk/anthropic, @ai-sdk/openai, @ai-sdk/google | 🔴 HIGH | 6h | ⏳ |
-| M6-12 | Unified tool definitions (Zod schemas, single definition for all providers) | 🔴 HIGH | 4h | ⏳ |
-| M6-13 | Model-specific tool capability detection | 🟡 MEDIUM | 3h | ⏳ |
-| M6-14 | OpenAI Assistants API integration (Code Interpreter) | 🟡 MEDIUM | 6h | ⏳ |
-| M6-15 | Gemini native code execution integration | 🟡 MEDIUM | 4h | ⏳ |
-| M6-16 | Mid-chat model switching with tool history handling | 🟡 MEDIUM | 4h | ⏳ |
+| FUT-10 | Usage analytics dashboard | - | 4h | 📝 |
+| FUT-11 | Cost tracking per user | - | 3h | 📝 |
+| FUT-12 | Token usage history | - | 2h | 📝 |
+| FUT-13 | Error tracking (Sentry integration) | - | 2h | 📝 |
+| FUT-14 | Performance monitoring (APM) | - | 3h | 📝 |
 
-**Estimated Effort:** 27 hours
-
-### 6.4 Phase D: Advanced Agent Features
-
-**Goal:** Add sophisticated agent behaviors for complex, multi-step tasks.
+#### DevOps & Infrastructure
 
 | ID | Feature | Priority | Estimate | Status |
 |----|---------|----------|----------|--------|
-| M6-17 | Task planning tool (TodoWrite equivalent) | 🟡 MEDIUM | 4h | ⏳ |
-| M6-18 | Multi-agent orchestration (spawn sub-agents for complex tasks) | 🟢 LOW | 8h | ⏳ |
-| M6-19 | Web browsing/automation (fetch, scrape, interact) | 🟢 LOW | 6h | ⏳ |
-| M6-20 | MCP server integration (Model Context Protocol) | 🟢 LOW | 6h | ⏳ |
-| M6-21 | Agent memory (persist tool preferences, learned patterns) | 🟡 MEDIUM | 4h | ⏳ |
-| M6-22 | Knowledge graph integration (agent can query/update M5 graph) | 🟡 MEDIUM | 4h | ⏳ |
+| FUT-15 | CI/CD pipeline (GitHub Actions) | - | 3h | 📝 |
+| FUT-16 | Automated database backups | - | 2h | 📝 |
+| FUT-17 | Staging environment | - | 2h | 📝 |
+| FUT-18 | API versioning strategy | - | 2h | 📝 |
+| FUT-19 | Load testing and benchmarks | - | 4h | 📝 |
+| FUT-20 | Rate limiting middleware | - | 2h | 📝 |
 
-**Estimated Effort:** 32 hours
+**Note:** These are preserved for reference, not scheduled for implementation.
 
-### 6.5 Tool Definitions Reference
+---
 
-```typescript
-// Example tool definitions (AI SDK format)
-const agentTools = {
-  readFile: tool({
-    description: 'Read the contents of a file',
-    parameters: z.object({
-      path: z.string().describe('The file path to read'),
-    }),
-    execute: async ({ path }) => fs.readFile(path, 'utf-8'),
-  }),
+## 🚀 Advanced Agent Features (Post-M4, Pain-Driven)
 
-  writeFile: tool({
-    description: 'Write content to a file (requires confirmation)',
-    parameters: z.object({
-      path: z.string().describe('The file path to write'),
-      content: z.string().describe('The content to write'),
-    }),
-    // Marked as sensitive - requires user confirmation
-  }),
+**Status:** 📝 Deferred
+**Trigger:** After M4 Agent SDK is implemented, if advanced features become necessary
 
-  searchFiles: tool({
-    description: 'Search for files matching a pattern',
-    parameters: z.object({
-      pattern: z.string().describe('Glob pattern to match'),
-      directory: z.string().optional(),
-    }),
-    execute: async ({ pattern, directory }) => glob(pattern, { cwd: directory }),
-  }),
+> These features extend M4's Agent SDK capabilities. Only implement when the basic agent feels limiting.
 
-  executeCommand: tool({
-    description: 'Execute a shell command (requires confirmation)',
-    parameters: z.object({
-      command: z.string().describe('The command to execute'),
-    }),
-    // Sandboxed execution with timeout
-  }),
-};
-```
+### Code Execution Sandbox (If Needed)
 
-### Start Trigger (When to Begin M6)
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| ADV-1 | Sandboxed code execution (Docker/WebContainers) | 🟢 LOW | 8h | 📝 |
+| ADV-2 | File system isolation (temp directories, cleanup) | 🟢 LOW | 4h | 📝 |
+| ADV-3 | Output streaming (real-time stdout/stderr) | 🟢 LOW | 3h | 📝 |
 
-> *"Start M6 only once you consistently feel the pain of manually doing tasks that an agent could automate"*
+### Multi-Provider Tool Support (If Needed)
 
-**Signs you're ready:**
-- You copy-paste code between chat and files frequently
-- You wish Bobo could "just run this and show me the output"
-- You want Bobo to search/read files without copying content into chat
-- Knowledge graph queries feel limited without action capabilities
-- You find yourself describing multi-step tasks that an agent could execute
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| ADV-4 | Unified tool definitions for non-Claude models | 🟢 LOW | 4h | 📝 |
+| ADV-5 | OpenAI native tool calling | 🟢 LOW | 4h | 📝 |
+| ADV-6 | Gemini native tool calling | 🟢 LOW | 4h | 📝 |
 
-**Total M6 Tasks:** 22
-**Total Estimated Effort:** ~102 hours (10-12 weeks part-time)
+### Advanced Agent Behaviors (If Needed)
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| ADV-7 | Multi-agent orchestration (sub-agents) | 🟢 LOW | 8h | 📝 |
+| ADV-8 | MCP server integration | 🟢 LOW | 6h | 📝 |
+| ADV-9 | Knowledge graph integration (with M5) | 🟢 LOW | 4h | 📝 |
+
+**Note:** Claude Agent SDK provides most capabilities out of the box. Only build custom extensions when SDK limitations are felt.
 
 ---
 
@@ -1155,13 +1129,14 @@ Add a "Preview" tab to the `/settings/profile` page that shows users exactly how
 ### Distribution by Milestone
 
 ```
-V1 (Critical):     6 items  (6-8 hours)     ✅ Complete
+V1 (Critical):     6 items  (6-8 hours)      ✅ Complete
 Deferred (TD):     10 items (23-28 hours)
-M2 (Intelligence): 18 items (3 weeks)       ✅ Complete
-M3 (Memory):       28 items (52 hours)      🚧 79% Complete
-M4 (Production):   25 items (4+ weeks)
-M5 (Cognitive):    8 items  (36 hours)
-M6 (Agentic):      22 items (102 hours)     📝 NEW
+M2 (Intelligence): 18 items (3 weeks)        ✅ Complete
+M3 (Memory):       28 items (52 hours)       🚧 79% Complete
+M4 (Agent SDK):    10 items (25-35 hours)    🎯 Current Priority
+M5 (Cognitive):    8 items  (36 hours)       📝 Deferred
+Future (SaaS):     20 items (~48 hours)      📝 Not Planned
+Advanced Agent:    9 items  (~45 hours)      📝 Deferred
 Research:          8 items  (18 hours)
 Nice-to-Have:      14 items (35-40 hours)
 ```
@@ -1185,11 +1160,12 @@ These are the major “cards” you can think of as lanes on a Kanban board:
 | V1.1 Bug Fixes & Polish    | ✅ Complete      | Viewport bug, E2E, UX polish    |
 | M2 Project Intelligence    | ✅ Complete      | Double-Loop + citations shipped |
 | Deferred Tech Debt (TD-*)  | 🟡 Mixed         | Some DONE, some Planned         |
-| M3 User Profile & Bio      | 🚧 In Progress   | 15/22 tasks (68%), 3/4 phases done |
-| M4 Production & Scale      | 📝 Backlog       | Multi-user, teams, analytics    |
-| M5 Cognitive Layer         | 📝 Backlog       | Living docs, graph, briefs      |
-| M6 Agentic Capabilities    | 📝 Backlog       | Tool use, code exec, autonomous |
-| Research & Spikes (R-*)    | 📝 Planned       | To inform M3–M6 decisions       |
+| M3 User Profile & Bio      | 🚧 In Progress   | 22/28 tasks (79%), Phase 4 deferred |
+| M4 Agent SDK               | 🎯 Current       | Claude Agent SDK integration    |
+| M5 Cognitive Layer         | 📝 Deferred      | Pain-driven implementation      |
+| Future (If SaaS)           | 📝 Not Planned   | Multi-user, teams, analytics    |
+| Advanced Agent             | 📝 Deferred      | Extends M4 if needed            |
+| Research & Spikes (R-*)    | 📝 Planned       | To inform decisions             |
 | Nice-to-Haves (NTH-*)      | 📝 Backlog       | UX & feature ideas              |
 
 ### Status Legend (Per-Item “Card” States)
@@ -1355,6 +1331,12 @@ const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
 | 2025-11-25 | Mobile sidebar redesigned: 85% width drawer, backdrop overlay, pure slide animation | Claude Code |
 | 2025-11-25 | Footer bar redesigned: Horizontal icon layout (Home, Memory, Profile, Theme) | Claude Code |
 | 2025-11-25 | Accessibility fixes: Button semantics, aria-labels for hamburger and close buttons | Claude Code |
+| 2025-11-25 | **STRATEGIC PIVOT**: Reframed Bobo as personal internal tool (not SaaS) | Claude Code |
+| 2025-11-25 | Renamed M4 milestone to "Agent SDK" (Claude Agent SDK integration) | Claude Code |
+| 2025-11-25 | Moved old M4 tasks (auth, teams, analytics) to "Future/If SaaS" section | Claude Code |
+| 2025-11-25 | Deferred M5 (Knowledge Graph) to pain-driven implementation | Claude Code |
+| 2025-11-25 | Removed SaaS success metrics from PROJECT_BRIEF.md | Claude Code |
+| 2025-11-25 | Replaced M6 Agentic Capabilities with "Advanced Agent Features (Post-M4)" | Claude Code |
 
 ---
 
@@ -1389,6 +1371,6 @@ const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
 
 ---
 
-**Document Maintained By:** Product Owner / CTO
-**Next Grooming Session:** After M3 Phase 4 completion
-**Last Updated:** November 25, 2025
+**Document Maintained By:** Solo Developer (Personal Tool)
+**Next Grooming Session:** After M4 Agent SDK completion
+**Last Updated:** November 25, 2025 (Strategic Pivot)
