@@ -1,7 +1,22 @@
 # Bobo AI Chatbot – Product Roadmap
 
-**Last Updated:** November 23, 2025  
-**Scope:** High-level timeline from initial prototype to future milestones. For granular status, see `docs/PROGRESS_TRACKER.md` and `docs/PRODUCT_BACKLOG.md`.
+> ⚠️ **DEPRECATED - DO NOT USE**
+>
+> **This document is no longer maintained as of November 25, 2025.**
+>
+> The product roadmap has been consolidated into the **Product Backlog** document.
+>
+> **Please refer to:** `docs/PRODUCT_BACKLOG.md`
+> - Section: "Card Groups & Overall State" for milestone overview
+> - Individual milestone sections (M3, M4, M5) for detailed planning
+> - "Backlog Metrics" section for timeline and effort estimates
+>
+> This file is kept for historical reference only.
+
+---
+
+~~**Last Updated:** November 23, 2025~~
+~~**Scope:** High-level timeline from initial prototype to future milestones. For granular status, see `docs/PROGRESS_TRACKER.md` and `docs/PRODUCT_BACKLOG.md`.~~
 
 ---
 

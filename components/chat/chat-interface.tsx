@@ -46,7 +46,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import type { Message as DBMessage, MessagePart } from '@/lib/db/types';
 
-import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon } from 'lucide-react';
+import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, SlidersHorizontalIcon } from 'lucide-react';
 
 import {
   Source,
@@ -477,12 +477,13 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         <PromptInputTextarea
           onChange={(e) => setInput(e.target.value)}
           value={input}
-          placeholder="How can I help you today?"
+          placeholder="What's on your mind?"
         />
       </PromptInputBody>
 
-      <PromptInputFooter>
-        <PromptInputTools>
+      <PromptInputFooter className="flex items-center justify-between gap-2">
+        {/* Left group: Action buttons */}
+        <PromptInputTools className="gap-1">
           <PromptInputActionMenu>
             <PromptInputActionMenuTrigger />
             <PromptInputActionMenuContent>
@@ -492,10 +493,66 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
           <PromptInputButton
             variant={webSearch ? 'default' : 'ghost'}
             onClick={() => setWebSearch(!webSearch)}
+            title={webSearch ? "Web search enabled" : "Enable web search"}
           >
             <GlobeIcon size={16} />
-            <span>Search</span>
           </PromptInputButton>
+          {/* Context Monitor Button */}
+          <Collapsible
+            open={!isContextCollapsed}
+            onOpenChange={(open) => setIsContextCollapsed(!open)}
+          >
+            <CollapsibleTrigger asChild>
+              <PromptInputButton
+                variant="ghost"
+                className={cn(
+                  contextUsage.usageState === 'critical' && "text-destructive",
+                  contextUsage.usageState === 'warning' && "text-amber-600"
+                )}
+                title={`Context: ${formatTokenCount(contextUsage.tokensUsed)}/${formatTokenCount(contextUsage.contextLimit)}`}
+              >
+                <SlidersHorizontalIcon size={16} />
+              </PromptInputButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="absolute left-0 bottom-full mb-2 p-2 rounded-lg border border-border bg-background shadow-lg z-10">
+                <div className="flex items-center justify-between mb-1.5 gap-4">
+                  <span className="text-[10px] font-medium text-muted-foreground">Context</span>
+                  <span className={cn('text-[10px] font-medium tabular-nums', usageMeta.usageTextColor)}>
+                    {formatTokenCount(contextUsage.tokensUsed)}/{formatTokenCount(contextUsage.contextLimit)}
+                  </span>
+                </div>
+                <div className="mb-1.5 h-0.5 w-48 overflow-hidden rounded-full bg-muted/40">
+                  <div className="flex h-full w-full">
+                    {usageMeta.segments.map((segment) => (
+                      <div
+                        key={segment.key}
+                        className={cn(segment.color, 'h-full transition-all')}
+                        style={{ width: `${segment.width}%` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-muted-foreground/50">
+                  {usageMeta.segments.map((segment) => (
+                    <div key={segment.key} className="flex items-center gap-1">
+                      <span className={cn('h-1 w-1 rounded-full', segment.dot)} aria-hidden />
+                      <span>{segment.label} {formatTokenCount(segment.tokens)}</span>
+                    </div>
+                  ))}
+                </div>
+                {isCompressing && (
+                  <p className="mt-1 text-[9px] text-muted-foreground/50">
+                    Compressing…
+                  </p>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </PromptInputTools>
+
+        {/* Right group: Model selector + Submit */}
+        <div className="flex items-center gap-1">
           <PromptInputSelect
             onValueChange={(value) => {
               setModel(value);
@@ -513,87 +570,37 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
               ))}
             </PromptInputSelectContent>
           </PromptInputSelect>
-
-          {/* Context Monitor - Right-aligned */}
-          <div className="ml-auto">
-            <Collapsible
-              open={!isContextCollapsed}
-              onOpenChange={(open) => setIsContextCollapsed(!open)}
-            >
-              <CollapsibleTrigger asChild>
-                <button className="group">
-                  <div className="flex items-center gap-1.5">
-                    <span className="hidden md:inline text-[10px] font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
-                      Context
-                    </span>
-                    <span className={cn('text-[10px] font-medium tabular-nums whitespace-nowrap', usageMeta.usageTextColor)}>
-                      {formatTokenCount(contextUsage.tokensUsed)}/{formatTokenCount(contextUsage.contextLimit)}
-                    </span>
-                    <ChevronDownIcon
-                      className={cn(
-                        'h-2.5 w-2.5 transition-all opacity-0 group-hover:opacity-60',
-                        isContextCollapsed && 'rotate-180'
-                      )}
-                    />
-                  </div>
-                </button>
-              </CollapsibleTrigger>
-
-              <CollapsibleContent>
-                <div className="absolute right-0 mt-2 p-2 rounded-lg border border-border bg-background shadow-lg z-10">
-                  <div className="mb-1.5 h-0.5 w-48 overflow-hidden rounded-full bg-muted/40">
-                    <div className="flex h-full w-full">
-                      {usageMeta.segments.map((segment) => (
-                        <div
-                          key={segment.key}
-                          className={cn(segment.color, 'h-full transition-all')}
-                          style={{ width: `${segment.width}%` }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-muted-foreground/50">
-                    {usageMeta.segments.map((segment) => (
-                      <div key={segment.key} className="flex items-center gap-1">
-                        <span
-                          className={cn('h-1 w-1 rounded-full', segment.dot)}
-                          aria-hidden
-                        />
-                        <span>
-                          {segment.label} {formatTokenCount(segment.tokens)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  {isCompressing && (
-                    <p className="mt-1 text-[9px] text-muted-foreground/50">
-                      Compressing…
-                    </p>
-                  )}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </PromptInputTools>
-        <PromptInputSubmit
-          disabled={(!input && !status) || isCompressing}
-          status={isCompressing ? 'submitted' : status}
-          onClick={(e) => {
-            if (status === 'streaming') {
-              e.preventDefault();
-              stop();
-            }
-          }}
-        />
+          <PromptInputSubmit
+            disabled={(!input && !status) || isCompressing}
+            status={isCompressing ? 'submitted' : status}
+            onClick={(e) => {
+              if (status === 'streaming') {
+                e.preventDefault();
+                stop();
+              }
+            }}
+          />
+        </div>
       </PromptInputFooter>
     </PromptInput>
   );
 
-  // Empty state: Centered input layout
+  // Empty state: Centered input layout with greeting
   if (messages.length === 0 && !isLoadingHistory) {
     return (
       <div className={cn("flex flex-col h-full items-center justify-center p-3 md:p-6", className)}>
         <div className="w-full max-w-2xl">
+          {/* Bobo Character and Greeting */}
+          <div className="flex flex-col items-center mb-8">
+            <img
+              src="/bobo-character.svg"
+              alt="Bobo"
+              className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2"
+            />
+            <h1 className="text-2xl md:text-3xl font-light text-foreground/80">
+              Tell Bobo Anything
+            </h1>
+          </div>
           {promptInputElement}
         </div>
       </div>
