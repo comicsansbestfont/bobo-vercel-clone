@@ -23,7 +23,7 @@ export interface CitationMarkerProps {
 export function CitationMarker({ number, onClick }: CitationMarkerProps) {
   return (
     <sup
-      className="inline-flex items-center justify-center w-4 h-4 ml-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+      className="ml-0.5 text-[10px] font-medium text-blue-600 dark:text-blue-400 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {

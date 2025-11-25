@@ -523,10 +523,10 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
               <CollapsibleTrigger asChild>
                 <button className="group">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
+                    <span className="hidden md:inline text-[10px] font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
                       Context
                     </span>
-                    <span className={cn('text-[10px] font-medium tabular-nums', usageMeta.usageTextColor)}>
+                    <span className={cn('text-[10px] font-medium tabular-nums whitespace-nowrap', usageMeta.usageTextColor)}>
                       {formatTokenCount(contextUsage.tokensUsed)}/{formatTokenCount(contextUsage.contextLimit)}
                     </span>
                     <ChevronDownIcon

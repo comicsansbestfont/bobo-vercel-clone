@@ -248,7 +248,16 @@ export default function ProjectPage() {
                       <TableHeader>
                         {({ headerGroup }) => (
                           <TableHeaderGroup headerGroup={headerGroup}>
-                            {({ header }) => <TableHead header={header} />}
+                            {({ header }) => (
+                              <TableHead
+                                header={header}
+                                className={
+                                  header.id === "model" || header.id === "updated_at"
+                                    ? "hidden md:table-cell"
+                                    : undefined
+                                }
+                              />
+                            )}
                           </TableHeaderGroup>
                         )}
                       </TableHeader>
@@ -265,7 +274,11 @@ export default function ProjectPage() {
                                 {({ cell }) => (
                                   <TableCell
                                     cell={cell}
-                                    className="cursor-pointer"
+                                    className={`cursor-pointer ${
+                                      cell.column.id === "model" || cell.column.id === "updated_at"
+                                        ? "hidden md:table-cell"
+                                        : ""
+                                    }`}
                                     onClick={() =>
                                       router.push(`/project/${projectId}?chatId=${chat.id}`)
                                     }
