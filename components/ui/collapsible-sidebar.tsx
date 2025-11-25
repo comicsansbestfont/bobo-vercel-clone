@@ -313,10 +313,14 @@ export const MobileSidebar = ({
       {...props}
     >
       <div className="z-20 flex w-full justify-end">
-        <IconMenu2
-          className="text-neutral-800 dark:text-neutral-200"
+        <button
           onClick={() => setOpen(!open)}
-        />
+          className="p-2 -m-2 rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+          aria-label="Open navigation menu"
+          aria-expanded={open}
+        >
+          <IconMenu2 className="text-neutral-800 dark:text-neutral-200" />
+        </button>
       </div>
       <AnimatePresence>
         {open && (
@@ -330,12 +334,13 @@ export const MobileSidebar = ({
               className,
             )}
           >
-            <div
-              className="absolute top-10 right-10 z-50 text-neutral-800 dark:text-neutral-200"
+            <button
+              className="absolute top-10 right-10 z-50 p-2 -m-2 rounded-md text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               onClick={() => setOpen(!open)}
+              aria-label="Close navigation menu"
             >
               <IconX />
-            </div>
+            </button>
             {children as React.ReactNode}
           </motion.div>
         )}
