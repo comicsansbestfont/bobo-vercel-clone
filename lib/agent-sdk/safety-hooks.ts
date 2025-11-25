@@ -4,7 +4,12 @@
  * PreToolUse hooks that block dangerous commands and protect sensitive files.
  */
 
-import type { Options as AgentOptions } from '@anthropic-ai/claude-agent-sdk';
+import type {
+  Options as AgentOptions,
+  HookCallback,
+  PreToolUseHookInput,
+  SyncHookJSONOutput,
+} from '@anthropic-ai/claude-agent-sdk';
 import { chatLogger } from '@/lib/logger';
 
 /**
@@ -172,12 +177,58 @@ export async function canUseTool(
 }
 
 /**
+ * PreToolUse hook callback for blocking dangerous operations
+ * Uses the SDK's HookCallback signature
+ */
+const preToolUseHook: HookCallback = async (
+  input,
+  _toolUseID,
+  _options
+): Promise<SyncHookJSONOutput> => {
+  // Type guard: only process PreToolUse events
+  if (input.hook_event_name !== 'PreToolUse') {
+    return {};
+  }
+
+  const preToolInput = input as PreToolUseHookInput;
+  const toolName = preToolInput.tool_name;
+  const toolInput = (preToolInput.tool_input as Record<string, unknown>) || {};
+
+  const result = await canUseTool(toolName, toolInput);
+
+  if (!result.allowed) {
+    chatLogger.warn('Tool blocked by safety hooks:', { toolName, reason: result.reason });
+    // Return block decision with reason
+    return {
+      decision: 'block',
+      reason: result.reason || 'Operation blocked by safety hooks',
+      hookSpecificOutput: {
+        hookEventName: 'PreToolUse',
+        permissionDecision: 'deny',
+        permissionDecisionReason: result.reason,
+      },
+    };
+  }
+
+  // Allow tool to proceed
+  return {
+    hookSpecificOutput: {
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'allow',
+    },
+  };
+};
+
+/**
  * Safety hooks configuration for Agent SDK
- * Note: The actual hook format may vary based on SDK version
+ * Implements PreToolUse hook to block dangerous operations
  */
 export const SAFETY_HOOKS: AgentOptions['hooks'] = {
-  // PreToolUse hooks run before each tool execution
-  // The SDK will call canUseTool for permission checks
+  PreToolUse: [
+    {
+      hooks: [preToolUseHook],
+    },
+  ],
 };
 
 /**
