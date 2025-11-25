@@ -46,7 +46,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import type { Message as DBMessage, MessagePart } from '@/lib/db/types';
 
-import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, SlidersHorizontalIcon } from 'lucide-react';
+import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, SlidersHorizontalIcon, BotIcon } from 'lucide-react';
 
 import {
   Source,
@@ -74,6 +74,7 @@ import { compressHistory } from '@/lib/memory-manager';
 import { toast } from 'sonner';
 import { chatLogger } from '@/lib/logger';
 import { ChatHeader } from './chat-header';
+import { isClaudeModel } from '@/lib/agent-sdk/utils';
 
 const models = [
   {
@@ -131,6 +132,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
+  const [agentMode, setAgentMode] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [chatId, setChatId] = useState<string | null>(chatIdFromUrl);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -359,6 +361,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
           body: {
             model,
             webSearch,
+            agentMode: agentMode && isClaudeModel(model), // Only enable if Claude model
             chatId,
             projectId,
           },
@@ -408,6 +411,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         body: {
           model: model,
           webSearch: webSearch,
+          agentMode: agentMode && isClaudeModel(model), // Only enable if Claude model
           chatId: chatId,
           projectId: projectId,
         },
@@ -496,6 +500,31 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
             title={webSearch ? "Web search enabled" : "Enable web search"}
           >
             <GlobeIcon size={16} />
+          </PromptInputButton>
+          {/* Agent Mode Toggle - only enabled for Claude models */}
+          <PromptInputButton
+            variant={agentMode && isClaudeModel(model) ? 'default' : 'ghost'}
+            onClick={() => {
+              if (!isClaudeModel(model)) {
+                toast.info('Agent Mode requires a Claude model', {
+                  description: 'Select Claude Sonnet 4.5 or Claude Opus 4 to use Agent Mode.'
+                });
+                return;
+              }
+              setAgentMode(!agentMode);
+            }}
+            title={
+              !isClaudeModel(model)
+                ? "Agent Mode (requires Claude model)"
+                : agentMode
+                ? "Agent Mode enabled"
+                : "Enable Agent Mode"
+            }
+            className={cn(
+              !isClaudeModel(model) && "opacity-50"
+            )}
+          >
+            <BotIcon size={16} />
           </PromptInputButton>
           {/* Context Monitor Button */}
           <Collapsible

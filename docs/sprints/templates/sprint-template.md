@@ -1,175 +1,106 @@
 # Sprint {Milestone}-{Number}: {Sprint Name}
 
-**Sprint Duration:** {Start Date} - {End Date}
-**Milestone:** {Milestone Name (e.g., M3 - User Profile & Bio)}
-**Sprint Goal:** {One-sentence description of primary objective}
-**Team Capacity:** {Total hours available}
+**Duration:** {Start Date} - {End Date}
+**Milestone:** {Milestone Name}
+**Goal:** {One-sentence description}
+**Capacity:** {X hours}
+**Execution Guide:** [HANDOVER_{Milestone}-{Number}.md](../handover/HANDOVER_{Milestone}-{Number}.md)
 
 ---
 
-## 🎯 Sprint Goal
+## Sprint Backlog
 
-{Detailed description of what we're trying to achieve this sprint and why it matters}
+| ID | Task | Est | Status | Actual | Notes |
+|----|------|-----|--------|--------|-------|
+| {ID} | {Task description} | {Xh} | ⏳ | - | |
 
-### Success Criteria
-- [ ] {Measurable outcome 1}
-- [ ] {Measurable outcome 2}
-- [ ] {Measurable outcome 3}
+**Legend:** ⏳ Pending | 🚧 In Progress | ✅ Done | 🚫 Blocked
 
----
-
-## 📋 Sprint Backlog
-
-| ID | Task | Estimate | Status | Actual | Notes |
-|----|------|----------|--------|--------|-------|
-| {Task-ID} | {Task description} | {Xh} | 🚧 In Progress | {Xh} | {Notes} |
-| {Task-ID} | {Task description} | {Xh} | ✅ Done | {Xh} | {Notes} |
-| {Task-ID} | {Task description} | {Xh} | ⏳ Pending | - | {Notes} |
-
-**Status Legend:**
-- ⏳ Pending - Not started
-- 🚧 In Progress - Currently working
-- ✅ Done - Completed and verified
-- 🚫 Blocked - Cannot proceed
-- 📝 Deferred - Moved to future sprint
-
-**Total Estimated:** {X hours}
-**Total Actual:** {X hours}
-**Variance:** {+/- X hours}
+**Estimated:** {X}h | **Actual:** 0h | **Variance:** -
 
 ---
 
-## 📅 Daily Progress Log
+## Daily Progress
 
 ### Day 1 - {Date}
-**Hours Worked:** {X}
-**Completed:**
-- {Task or milestone completed}
-
-**In Progress:**
-- {Current work}
-
-**Blockers:**
-- {Any blockers or issues}
-
-**Notes:**
-- {Observations, decisions, or insights}
-
----
+**Hours:** -
+**Done:** -
+**Blockers:** -
+**Notes:** Sprint starts
 
 ### Day 2 - {Date}
-**Hours Worked:** {X}
-**Completed:**
-- {Task or milestone completed}
+**Hours:** -
+**Done:** -
+**Blockers:** -
 
-**In Progress:**
-- {Current work}
-
-**Blockers:**
-- {Any blockers or issues}
-
-**Notes:**
-- {Observations, decisions, or insights}
+{Continue for each day...}
 
 ---
 
-{Continue for each day of the sprint}
+## Blockers
+
+| Issue | Impact | Status | Resolution |
+|-------|--------|--------|------------|
+| - | - | - | - |
 
 ---
 
-## 🚧 Blockers & Risks
+## Demo ({End Date})
 
-| Blocker | Impact | Status | Resolution |
-|---------|--------|--------|------------|
-| {Description} | {HIGH/MEDIUM/LOW} | {Active/Resolved} | {How it was resolved} |
+### Script
+1. {Demo step 1}
+2. {Demo step 2}
+3. {Demo step 3}
 
----
-
-## 📦 Deliverables
-
-### Code Artifacts
-- [ ] {Component/file created}
-- [ ] {Migration/schema update}
-- [ ] {API endpoint}
-
-### Documentation
-- [ ] {Updated doc}
-- [ ] {New doc created}
-
-### Tests
-- [ ] {E2E test}
-- [ ] {Unit test}
+### Feedback
+- (To be filled)
 
 ---
 
-## 🎬 Sprint Demo
+## Retrospective
 
-**Demo Date:** {Date}
-**Attendees:** {Who attended}
+### What Went Well
+- (To be filled)
 
-### Demo Script
-1. {Step 1 - what to show}
-2. {Step 2 - what to show}
-3. {Step 3 - what to show}
+### What Didn't Go Well
+- (To be filled)
 
-### Feedback Received
-- {Stakeholder name}: {Feedback}
-- {Stakeholder name}: {Feedback}
+### Learnings
+- (To be filled)
 
-### Action Items from Demo
-- [ ] {Action item based on feedback}
+### Next Sprint Actions
+- [ ] (To be filled)
 
 ---
 
-## 🔄 Sprint Retrospective
+## Metrics
 
-### What Went Well ✅
-- {Thing that worked well}
-- {Process or technique that helped}
+| Metric | Target | Actual |
+|--------|--------|--------|
+| Tasks Completed | {X} | - |
+| Hours | {X}h | - |
+| Build Status | ✅ | - |
 
-### What Didn't Go Well ❌
-- {Challenge or problem encountered}
-- {Inefficiency or pain point}
-
-### What We Learned 📚
-- {Technical insight}
-- {Process insight}
-
-### Action Items for Next Sprint 🎯
-- [ ] {Process improvement}
-- [ ] {Technical debt item}
+**Velocity:** - tasks/sprint
+**Completion:** -%
 
 ---
 
-## 📊 Sprint Metrics
+## Links
 
-| Metric | Target | Actual | Variance |
-|--------|--------|--------|----------|
-| Story Points Completed | {X} | {X} | {+/- X} |
-| Hours Estimated | {X} | {X} | {+/- X} |
-| Tasks Completed | {X} | {X} | {+/- X} |
-| Bugs Found | {X} | {X} | {+/- X} |
-| Tests Added | {X} | {X} | {+/- X} |
-
-**Velocity:** {X story points/week}
-**Completion Rate:** {X%}
+- **Execution Guide:** [HANDOVER_{Milestone}-{Number}.md](../handover/HANDOVER_{Milestone}-{Number}.md)
+- **Backlog:** [PRODUCT_BACKLOG.md](../../PRODUCT_BACKLOG.md)
+- **Previous:** [sprint-{prev}.md](../completed/sprint-{prev}.md)
 
 ---
 
-## 🔗 Related Links
+## Carry-Over (if any)
 
-- **Product Backlog:** [PRODUCT_BACKLOG.md](../../PRODUCT_BACKLOG.md)
-- **Previous Sprint:** [Sprint {Prev}](../completed/sprint-{prev}.md)
-- **Next Sprint:** [Sprint {Next}](../active/sprint-{next}.md)
-- **Milestone Overview:** {Link to milestone doc}
-- **Demo Recording:** {Link if recorded}
+| Task | Reason | Next Sprint |
+|------|--------|-------------|
+| - | - | - |
 
 ---
 
-## 📌 Carry-Over Items
-
-Items that didn't complete and are moving to the next sprint:
-
-| Task ID | Description | Reason for Carry-Over | New Sprint |
-|---------|-------------|----------------------|------------|
-| {ID} | {Task} | {Reason} | {Sprint #} |
+**Created:** {Date}
+**Status:** Ready to Start

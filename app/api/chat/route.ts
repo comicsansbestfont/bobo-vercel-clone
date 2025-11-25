@@ -1,4 +1,6 @@
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { handleAgentMode, isClaudeModel } from '@/lib/agent-sdk';
+
 type ChatCompletionChoiceDelta =
   | string
   | Array<{ type?: string; text?: string }>
@@ -243,14 +245,38 @@ export async function POST(req: Request) {
       webSearch,
       chatId: providedChatId,
       projectId,
+      agentMode,
     }: {
       messages: UIMessage[];
       model: string;
       webSearch: boolean;
       chatId?: string;
       projectId?: string;
+      agentMode?: boolean;
     } = await req.json();
-    chatLogger.debug('Chat Request:', { model, chatId: providedChatId, projectId, msgCount: messages?.length });
+    chatLogger.debug('Chat Request:', { model, chatId: providedChatId, projectId, agentMode, msgCount: messages?.length });
+
+    // M4: Route to Agent Mode if enabled and using a Claude model
+    if (agentMode) {
+      if (!isClaudeModel(model)) {
+        return new Response(
+          JSON.stringify({
+            error: 'Agent Mode is only available for Claude models. Please select a Claude model or disable Agent Mode.'
+          }),
+          {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+      }
+
+      return handleAgentMode({
+        messages,
+        model,
+        chatId: providedChatId,
+        projectId,
+      });
+    }
 
     // Check if API key is configured
     if (!process.env.AI_GATEWAY_API_KEY) {
