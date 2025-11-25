@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 24, 2025 (Evening Session - Comprehensive Update)
+**Last Updated:** November 25, 2025 (Added M6 Agentic Capabilities)
 **Maintained By:** Product Owner / CTO
 **Purpose:** Track all planned features, improvements, and technical debt not in current milestone
 
@@ -714,6 +714,136 @@ CREATE TABLE memory_entries (
 
 ---
 
+## 🤖 MILESTONE 6: Agentic Capabilities (2027 Q1+)
+
+**Status:** 📝 Backlog
+**Target:** After M5 stabilizes (post-knowledge graph)
+**Focus:** Transform Bobo into an autonomous agent capable of executing tools, running code, and completing multi-step tasks like Claude Code.
+**Architecture Note:** Start with Native Anthropic Agent SDK for Claude models, then progressively add multi-provider support via AI SDK + Direct Providers.
+
+### Why M6 Comes Last
+
+| Prerequisite | Why M6 Needs It |
+|--------------|-----------------|
+| **M3 (Memory)** | Agent needs to know user preferences, coding style, tool permissions |
+| **M4 (Production)** | Tool execution needs auth, rate limiting, audit logging, permissions |
+| **M5 (Knowledge Graph)** | Agent can query structured project knowledge, not just RAG |
+
+### 6.1 Phase A: Native Anthropic Agent SDK (Claude-First)
+
+**Goal:** Implement agentic capabilities using Anthropic's native SDK for Claude models, enabling tool use and multi-step execution.
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M6-1 | Define core tools (read_file, write_file, search_files, bash) | 🔴 HIGH | 4h | ⏳ |
+| M6-2 | Implement multi-step agentic loop (tool_use → tool_result cycle) | 🔴 HIGH | 6h | ⏳ |
+| M6-3 | Tool call streaming (show tools as they execute) | 🔴 HIGH | 4h | ⏳ |
+| M6-4 | Tool call UI components (display tool name, args, result) | 🔴 HIGH | 4h | ⏳ |
+| M6-5 | User confirmation flow for sensitive tools (write, delete, bash) | 🔴 HIGH | 3h | ⏳ |
+
+**Estimated Effort:** 21 hours
+
+### 6.2 Phase B: Code Execution Sandbox
+
+**Goal:** Safely execute code in isolated environments.
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M6-6 | Sandboxed code execution (Docker/vm2/WebContainers) | 🔴 HIGH | 8h | ⏳ |
+| M6-7 | File system isolation (temp directories, cleanup) | 🔴 HIGH | 4h | ⏳ |
+| M6-8 | Output streaming (real-time stdout/stderr) | 🟡 MEDIUM | 3h | ⏳ |
+| M6-9 | Security guardrails (timeout, resource limits, blocklist) | 🔴 HIGH | 4h | ⏳ |
+| M6-10 | Code execution UI (terminal-like output display) | 🟡 MEDIUM | 3h | ⏳ |
+
+**Estimated Effort:** 22 hours
+
+### 6.3 Phase C: Multi-Provider Tool Support
+
+**Goal:** Migrate from AI Gateway to AI SDK + Direct Providers for unified tool calling across all models.
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M6-11 | Replace AI Gateway with @ai-sdk/anthropic, @ai-sdk/openai, @ai-sdk/google | 🔴 HIGH | 6h | ⏳ |
+| M6-12 | Unified tool definitions (Zod schemas, single definition for all providers) | 🔴 HIGH | 4h | ⏳ |
+| M6-13 | Model-specific tool capability detection | 🟡 MEDIUM | 3h | ⏳ |
+| M6-14 | OpenAI Assistants API integration (Code Interpreter) | 🟡 MEDIUM | 6h | ⏳ |
+| M6-15 | Gemini native code execution integration | 🟡 MEDIUM | 4h | ⏳ |
+| M6-16 | Mid-chat model switching with tool history handling | 🟡 MEDIUM | 4h | ⏳ |
+
+**Estimated Effort:** 27 hours
+
+### 6.4 Phase D: Advanced Agent Features
+
+**Goal:** Add sophisticated agent behaviors for complex, multi-step tasks.
+
+| ID | Feature | Priority | Estimate | Status |
+|----|---------|----------|----------|--------|
+| M6-17 | Task planning tool (TodoWrite equivalent) | 🟡 MEDIUM | 4h | ⏳ |
+| M6-18 | Multi-agent orchestration (spawn sub-agents for complex tasks) | 🟢 LOW | 8h | ⏳ |
+| M6-19 | Web browsing/automation (fetch, scrape, interact) | 🟢 LOW | 6h | ⏳ |
+| M6-20 | MCP server integration (Model Context Protocol) | 🟢 LOW | 6h | ⏳ |
+| M6-21 | Agent memory (persist tool preferences, learned patterns) | 🟡 MEDIUM | 4h | ⏳ |
+| M6-22 | Knowledge graph integration (agent can query/update M5 graph) | 🟡 MEDIUM | 4h | ⏳ |
+
+**Estimated Effort:** 32 hours
+
+### 6.5 Tool Definitions Reference
+
+```typescript
+// Example tool definitions (AI SDK format)
+const agentTools = {
+  readFile: tool({
+    description: 'Read the contents of a file',
+    parameters: z.object({
+      path: z.string().describe('The file path to read'),
+    }),
+    execute: async ({ path }) => fs.readFile(path, 'utf-8'),
+  }),
+
+  writeFile: tool({
+    description: 'Write content to a file (requires confirmation)',
+    parameters: z.object({
+      path: z.string().describe('The file path to write'),
+      content: z.string().describe('The content to write'),
+    }),
+    // Marked as sensitive - requires user confirmation
+  }),
+
+  searchFiles: tool({
+    description: 'Search for files matching a pattern',
+    parameters: z.object({
+      pattern: z.string().describe('Glob pattern to match'),
+      directory: z.string().optional(),
+    }),
+    execute: async ({ pattern, directory }) => glob(pattern, { cwd: directory }),
+  }),
+
+  executeCommand: tool({
+    description: 'Execute a shell command (requires confirmation)',
+    parameters: z.object({
+      command: z.string().describe('The command to execute'),
+    }),
+    // Sandboxed execution with timeout
+  }),
+};
+```
+
+### Start Trigger (When to Begin M6)
+
+> *"Start M6 only once you consistently feel the pain of manually doing tasks that an agent could automate"*
+
+**Signs you're ready:**
+- You copy-paste code between chat and files frequently
+- You wish Bobo could "just run this and show me the output"
+- You want Bobo to search/read files without copying content into chat
+- Knowledge graph queries feel limited without action capabilities
+- You find yourself describing multi-step tasks that an agent could execute
+
+**Total M6 Tasks:** 22
+**Total Estimated Effort:** ~102 hours (10-12 weeks part-time)
+
+---
+
 ## 🔬 RESEARCH & SPIKES
 
 **Items that need investigation before committing to implementation**
@@ -1025,20 +1155,21 @@ Add a "Preview" tab to the `/settings/profile` page that shows users exactly how
 ### Distribution by Milestone
 
 ```
-V1 (Critical):     6 items  (6-8 hours)
+V1 (Critical):     6 items  (6-8 hours)     ✅ Complete
 Deferred (TD):     10 items (23-28 hours)
-M2 (Intelligence): 18 items (3 weeks)
-M3 (Memory):       22 items (3 weeks)
+M2 (Intelligence): 18 items (3 weeks)       ✅ Complete
+M3 (Memory):       28 items (52 hours)      🚧 79% Complete
 M4 (Production):   25 items (4+ weeks)
-M5 (Cognitive):    TBD      (not yet sized)
-Research:          6 items  (12 hours)
-Nice-to-Have:      13 items (35-40 hours)
+M5 (Cognitive):    8 items  (36 hours)
+M6 (Agentic):      22 items (102 hours)     📝 NEW
+Research:          8 items  (18 hours)
+Nice-to-Have:      14 items (35-40 hours)
 ```
 
 ### Total Backlog Size
 
-**Total Items:** 100
-**Total Estimated Effort:** ~11-13 weeks (full-time)
+**Total Items:** 139
+**Total Estimated Effort:** ~18-20 weeks (full-time)
 
 ---
 
@@ -1057,7 +1188,8 @@ These are the major “cards” you can think of as lanes on a Kanban board:
 | M3 User Profile & Bio      | 🚧 In Progress   | 15/22 tasks (68%), 3/4 phases done |
 | M4 Production & Scale      | 📝 Backlog       | Multi-user, teams, analytics    |
 | M5 Cognitive Layer         | 📝 Backlog       | Living docs, graph, briefs      |
-| Research & Spikes (R-*)    | 📝 Planned       | To inform M3–M5 decisions       |
+| M6 Agentic Capabilities    | 📝 Backlog       | Tool use, code exec, autonomous |
+| Research & Spikes (R-*)    | 📝 Planned       | To inform M3–M6 decisions       |
 | Nice-to-Haves (NTH-*)      | 📝 Backlog       | UX & feature ideas              |
 
 ### Status Legend (Per-Item “Card” States)
@@ -1167,6 +1299,8 @@ Milestone‑level states (e.g. “✅ Complete”, “📝 Backlog”) are summa
 | 2025-11-24 | Mobile Navigation Fix: Auto-close sidebar after navigation on mobile devices | Claude Code |
 | 2025-11-24 | Bug Fix: Nested button hydration error in MemorySection component | Claude Code |
 | 2025-11-24 | Documentation Update: Comprehensive product backlog refresh with 11 new changelog entries | Claude Code |
+| 2025-11-25 | Added M6 Agentic Capabilities milestone (22 tasks, 4 phases, ~102h estimate) | Claude Code |
+| 2025-11-25 | Deprecated docs/archive/product-roadmap.md - consolidated into this document | Claude Code |
 
 ---
 
@@ -1203,4 +1337,4 @@ Milestone‑level states (e.g. “✅ Complete”, “📝 Backlog”) are summa
 
 **Document Maintained By:** Product Owner / CTO
 **Next Grooming Session:** After M3 Phase 4 completion
-**Last Updated:** November 24, 2025
+**Last Updated:** November 25, 2025

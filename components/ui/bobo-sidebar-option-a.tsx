@@ -588,49 +588,42 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             )}
           </div>
 
-          {/* Bottom Section */}
-          <div className="border-t border-neutral-200 pt-4 dark:border-neutral-700">
-            <div className="mb-4 flex justify-start px-2">
-              <ThemeSwitcherConnected />
-            </div>
-            <div onClick={() => {
-              if (window.innerWidth < 768) setOpen(false);
-            }}>
-              <SidebarLink
-                link={{
-                  label: "Home",
-                  href: "/",
-                  icon: (
-                    <IconHome className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-                  ),
+          {/* Bottom Footer Bar */}
+          <div className="border-t border-neutral-200 dark:border-neutral-700 py-3">
+            <div className="flex items-center justify-around">
+              <Link
+                href="/"
+                onClick={() => {
+                  if (window.innerWidth < 768) setOpen(false);
                 }}
-              />
-            </div>
-            <div onClick={() => {
-              if (window.innerWidth < 768) setOpen(false);
-            }}>
-              <SidebarLink
-                link={{
-                  label: "Memory",
-                  href: "/memory",
-                  icon: (
-                    <IconBrain className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-                  ),
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+                title="Home"
+              >
+                <IconHome className="h-5 w-5" />
+              </Link>
+              <Link
+                href="/memory"
+                onClick={() => {
+                  if (window.innerWidth < 768) setOpen(false);
                 }}
-              />
-            </div>
-            <div onClick={() => {
-              if (window.innerWidth < 768) setOpen(false);
-            }}>
-              <SidebarLink
-                link={{
-                  label: "Profile",
-                  href: "/settings/profile",
-                  icon: (
-                    <IconUser className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-                  ),
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+                title="Memory"
+              >
+                <IconBrain className="h-5 w-5" />
+              </Link>
+              <Link
+                href="/settings/profile"
+                onClick={() => {
+                  if (window.innerWidth < 768) setOpen(false);
                 }}
-              />
+                className="flex h-11 w-11 items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 transition-colors"
+                title="Profile"
+              >
+                <IconUser className="h-5 w-5" />
+              </Link>
+              <div className="flex h-11 items-center justify-center">
+                <ThemeSwitcherConnected />
+              </div>
             </div>
           </div>
         </SidebarBody>

@@ -595,7 +595,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
             <img
               src="/bobo-character.svg"
               alt="Bobo"
-              className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2"
+              className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2 animate-bobo-breathe"
             />
             <h1 className="text-2xl md:text-3xl font-light text-foreground/80">
               Tell Bobo Anything

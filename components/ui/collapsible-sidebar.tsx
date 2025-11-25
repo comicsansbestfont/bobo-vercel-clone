@@ -324,25 +324,38 @@ export const MobileSidebar = ({
       </div>
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ x: "-100%", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "-100%", opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className={cn(
-              "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
-              className,
-            )}
-          >
-            <button
-              className="absolute top-10 right-10 z-50 p-2 -m-2 rounded-md text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-              onClick={() => setOpen(!open)}
-              aria-label="Close navigation menu"
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[99] bg-black/50"
+              onClick={() => setOpen(false)}
+            />
+            {/* Sidebar panel */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className={cn(
+                "fixed inset-y-0 left-0 z-[100] flex w-[85%] max-w-[320px] flex-col bg-white px-4 py-4 dark:bg-neutral-900 shadow-xl",
+                className,
+              )}
             >
-              <IconX />
-            </button>
-            {children as React.ReactNode}
-          </motion.div>
+              {/* Close button - floating top right */}
+              <button
+                className="absolute top-3 right-3 z-50 p-2 rounded-md text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                onClick={() => setOpen(false)}
+                aria-label="Close navigation menu"
+              >
+                <IconX className="h-5 w-5" />
+              </button>
+              {children as React.ReactNode}
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.div>
