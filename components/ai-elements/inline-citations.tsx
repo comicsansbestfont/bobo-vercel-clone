@@ -159,9 +159,11 @@ function CitationItem({ source, projectId, isGlobal, isConversation }: CitationI
 
   // Build URL for clickable sources
   let href: string | null = null;
-  if (isConversation && projectId && source.chatId) {
-    // Link to the chat that the message came from
-    href = `/projects/${projectId}/chats/${source.chatId}`;
+  if (isConversation && source.chatId) {
+    // Link to the chat that the message came from (use query param format)
+    href = projectId
+      ? `/project/${projectId}?chatId=${source.chatId}`
+      : `/?chatId=${source.chatId}`;
   } else if (!isGlobal && !isConversation && projectId && source.sourceId) {
     // Link to project file
     href = `/projects/${projectId}/files/${source.sourceId}`;

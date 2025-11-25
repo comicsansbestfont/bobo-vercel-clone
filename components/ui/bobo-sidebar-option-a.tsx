@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import { Skeleton } from "./skeleton";
 import { ThemeSwitcherConnected } from "@/components/theme-switcher-connected";
 import { ChatContextMenu } from "@/components/chat/chat-context-menu";
+import { RenameDialog, MoveToProjectDialog } from "@/components/chat/chat-dialogs";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -161,16 +162,8 @@ const SimpleChatItem = ({
   const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar();
   const [isHovered, setIsHovered] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const handleRename = () => {
-    // Dispatch custom event to open rename dialog
-    window.dispatchEvent(new CustomEvent('openChatRename', { detail: { chatId: chat.id, title: chat.title } }));
-  };
-
-  const handleMoveToProject = () => {
-    // Dispatch custom event to open move dialog
-    window.dispatchEvent(new CustomEvent('openChatMove', { detail: { chatId: chat.id, projectId: chat.project_id } }));
-  };
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [moveOpen, setMoveOpen] = useState(false);
 
   const handleDelete = async () => {
     if (!confirm(`Delete "${chat.title}"? This cannot be undone.`)) return;
@@ -191,85 +184,103 @@ const SimpleChatItem = ({
   };
 
   return (
-    <ChatContextMenu chat={chat} projects={projects} onUpdate={onUpdate}>
-      <div
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => !menuOpen && setIsHovered(false)}
-        className={cn(
-          "group relative flex items-center justify-between rounded-md text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800",
-          isActive && "bg-neutral-100 dark:bg-neutral-800",
-        )}
-      >
-        <Link
-          href={`/?chatId=${chat.id}`}
-          onClick={() => {
-            if (window.innerWidth < 768) {
-              setSidebarOpen(false);
-            }
-          }}
-          onContextMenu={(e) => {
-            e.preventDefault();
-          }}
-          className="flex-1 truncate px-3 py-2 text-neutral-700 dark:text-neutral-300"
+    <>
+      <ChatContextMenu chat={chat} projects={projects} onUpdate={onUpdate}>
+        <div
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => !menuOpen && setIsHovered(false)}
+          className={cn(
+            "group relative flex items-center justify-between rounded-md text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800",
+            isActive && "bg-neutral-100 dark:bg-neutral-800",
+          )}
         >
-          <motion.span
-            animate={{
-              display: sidebarOpen ? "inline-block" : "none",
-              opacity: sidebarOpen ? 1 : 0,
+          <Link
+            href={`/?chatId=${chat.id}`}
+            onClick={() => {
+              if (window.innerWidth < 768) {
+                setSidebarOpen(false);
+              }
             }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+            }}
+            className="flex-1 truncate px-3 py-2 text-neutral-700 dark:text-neutral-300"
           >
-            {chat.title}
-          </motion.span>
-        </Link>
+            <motion.span
+              animate={{
+                display: sidebarOpen ? "inline-block" : "none",
+                opacity: sidebarOpen ? 1 : 0,
+              }}
+            >
+              {chat.title}
+            </motion.span>
+          </Link>
 
-        {/* Three-dot menu button - appears on hover */}
-        {(isHovered || menuOpen) && sidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex-shrink-0 pr-1"
-          >
-            <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-              <DropdownMenuTrigger asChild>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  className="flex h-6 w-6 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
-                >
-                  <IconDotsVertical className="h-4 w-4" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem onClick={handleRename}>
-                  <IconEdit className="mr-2 h-4 w-4" />
-                  Rename
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleMoveToProject}>
-                  <IconFolder className="mr-2 h-4 w-4" />
-                  Move to Project
-                </DropdownMenuItem>
-                <DropdownMenuItem disabled className="opacity-50">
-                  <IconArchive className="mr-2 h-4 w-4" />
-                  Archive
-                  <span className="ml-auto text-[10px] text-muted-foreground">Soon</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <IconTrash className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </motion.div>
-        )}
-      </div>
-    </ChatContextMenu>
+          {/* Three-dot menu button - appears on hover */}
+          {(isHovered || menuOpen) && sidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-shrink-0 pr-1"
+            >
+              <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className="flex h-6 w-6 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
+                  >
+                    <IconDotsVertical className="h-4 w-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => setRenameOpen(true)}>
+                    <IconEdit className="mr-2 h-4 w-4" />
+                    Rename
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setMoveOpen(true)}>
+                    <IconFolder className="mr-2 h-4 w-4" />
+                    Move to Project
+                  </DropdownMenuItem>
+                  <DropdownMenuItem disabled className="opacity-50">
+                    <IconArchive className="mr-2 h-4 w-4" />
+                    Archive
+                    <span className="ml-auto text-[10px] text-muted-foreground">Soon</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleDelete}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <IconTrash className="mr-2 h-4 w-4" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </motion.div>
+          )}
+        </div>
+      </ChatContextMenu>
+
+      {/* Dialogs */}
+      <RenameDialog
+        open={renameOpen}
+        onOpenChange={setRenameOpen}
+        chatId={chat.id}
+        currentTitle={chat.title}
+        onSuccess={onUpdate}
+      />
+      <MoveToProjectDialog
+        open={moveOpen}
+        onOpenChange={setMoveOpen}
+        chatId={chat.id}
+        currentProjectId={chat.project_id}
+        onSuccess={onUpdate}
+      />
+    </>
   );
 };
 
