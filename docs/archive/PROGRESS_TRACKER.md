@@ -11,7 +11,9 @@
 - ✅ Fixed lint blockers (type-safety, setState-in-effect, unescaped entities) and silenced `.next` lint noise
 - ✅ Repaired Playwright syntax error in `chat-persistence.spec.ts`
 - ✅ `npm run build` still passes; `npm run lint` now clean (warnings only)
+- ✅ Chat input placeholder updated to match E2E locator expectations
 - ⚠️ `npm test` (Playwright) currently fails to find chat UI inputs on all flows; likely missing runtime setup/env for dev server during tests
+- ⚠️ Latest Playwright run now times out launching Chromium and waiting for `/project/...` pages; needs env/seed + possibly lower worker count or explicit browser install
 
 ---
 

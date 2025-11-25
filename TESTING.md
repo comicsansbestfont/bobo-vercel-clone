@@ -394,6 +394,113 @@ test.afterEach(async () => {
 - [ ] Tests pass locally multiple times
 - [ ] Tests pass in CI
 
+## Cross-Chat Context Sharing Testing
+
+### ✅ Automated Verification
+
+The database implementation has been verified:
+- ✅ `search_project_messages` SQL function exists and is callable
+- ✅ TypeScript wrapper functions work correctly
+- ✅ Build compiles without errors
+- ✅ All code changes integrated successfully
+
+Run verification: `npx tsx scripts/verify-search-function.ts`
+
+### Manual E2E Testing Steps
+
+**Objective**: Verify that chats within the same project can share context with each other.
+
+#### Step 1: Create a Test Project
+1. Navigate to http://localhost:3000
+2. Create a project named "Mining Equipment"
+3. Add description: "Testing cross-chat context"
+
+#### Step 2: Create Chat A and Add Context
+1. Inside "Mining Equipment" project, start a new chat
+2. Rename to "Chat A - Equipment Details"
+3. Send message:
+   ```
+   We use Caterpillar D11 bulldozers for our mining operations.
+   They are very reliable for heavy earthmoving. We have 5 units operating 24/7.
+   ```
+4. Wait for AI response (embedding generated automatically)
+
+#### Step 3: Create Chat B and Test Context Sharing
+1. Create a NEW chat in the same project
+2. Rename to "Chat B - Equipment Inquiry"
+3. Send message: `What bulldozers do we use at the site?`
+
+#### Step 4: Verify Context Sharing
+
+**Expected Results:**
+
+1. **Response Content**: AI mentions Caterpillar D11 bulldozers
+2. **Citations Appear**:
+   - Look for "Sources (N)" at bottom of response
+   - Click to expand
+   - Section: "📨 Referenced from Project Conversations"
+   - Shows: "From: Chat A - Equipment Details"
+   - Similarity percentage displayed
+
+3. **System Prompt (in logs)**:
+   ```
+   ### RELATED CONVERSATIONS IN THIS PROJECT
+   The following are relevant excerpts from your OTHER conversations...
+   ```
+
+#### Step 5: Test Threshold Lowering
+Create a third chat with tangential question: `Tell me about our heavy equipment.`
+- Should still find relevant context (threshold is 0.25)
+
+#### Step 6: Test Cross-Project Isolation
+1. Create a DIFFERENT project (e.g., "Restaurant Operations")
+2. Ask about bulldozers
+3. **Expected**: Should NOT reference Mining Equipment chats
+
+### Troubleshooting
+
+**Issue: No citations appear**
+- Check messages have embeddings: `SELECT id FROM messages WHERE embedding IS NULL`
+- Verify project has multiple chats
+- Check console for errors
+
+**Issue: Current chat appears in results**
+- Check `app/api/chat/route.ts:424` excludes `p_current_chat_id`
+
+**Issue: Citations from wrong project**
+- Verify SQL function: `WHERE c.project_id = p_project_id`
+
+### Database Verification Queries
+
+```sql
+-- Check projects with multiple chats
+SELECT p.name, COUNT(c.id) as chat_count
+FROM projects p
+JOIN chats c ON c.project_id = p.id
+GROUP BY p.id, p.name
+HAVING COUNT(c.id) > 1;
+
+-- Test search function directly
+SELECT * FROM search_project_messages(
+  'YOUR_PROJECT_ID'::uuid,
+  'YOUR_CURRENT_CHAT_ID'::uuid,
+  (SELECT embedding FROM messages WHERE embedding IS NOT NULL LIMIT 1),
+  0.25,
+  5
+);
+```
+
+### Success Criteria
+
+Implementation is successful if:
+- [x] Database function exists and works
+- [x] Build compiles without errors
+- [ ] Chat B retrieves context from Chat A within same project
+- [ ] Citations appear in "Referenced from Project Conversations" section
+- [ ] Current chat excluded from search results
+- [ ] Different projects don't leak context
+- [ ] Threshold of 0.25 returns relevant results
+
 ## Resources
 
 - [Playwright Documentation](https://playwright.dev/)

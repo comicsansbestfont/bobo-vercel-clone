@@ -6,7 +6,7 @@
  * and inserts inline Perplexity-style citations.
  */
 
-import type { MessagePart, SearchResult } from '@/lib/db/types';
+import type { MessagePart, SearchResult, ProjectMessageSearchResult } from '@/lib/db/types';
 import type { ProjectContext } from './context-manager';
 import { supabase } from '@/lib/db';
 
@@ -15,12 +15,14 @@ import { supabase } from '@/lib/db';
  */
 export interface Citation {
   index: number;              // [1], [2], [3]...
-  type: 'project-source' | 'global-source';
+  type: 'project-source' | 'global-source' | 'project-conversation';
   sourceId: string;
-  sourceType: 'project-file' | 'global-file' | 'global-message';
+  sourceType: 'project-file' | 'global-file' | 'global-message' | 'project-conversation';
   sourceTitle: string;
   projectId?: string;
   projectName?: string;
+  chatId?: string;            // For project-conversation: the source chat ID
+  chatTitle?: string;         // For project-conversation: the source chat title
   similarity?: number;
   positions: number[];        // Character positions where citations appear in text
 }
@@ -115,6 +117,39 @@ export async function trackGlobalSources(
       sourceType,
       sourceTitle: result.content.substring(0, 60) + (result.content.length > 60 ? '...' : ''),
       projectName: projectNames.get(result.id),
+      similarity: result.similarity,
+      positions: [], // Will be filled by insertInlineCitations
+    });
+  }
+
+  return citations;
+}
+
+/**
+ * Track project conversation sources from intra-project message search
+ * These are messages from sibling chats within the same project
+ */
+export function trackProjectConversations(
+  searchResults: ProjectMessageSearchResult[],
+  projectId: string,
+  projectName: string,
+  startingIndex: number = 1
+): Citation[] {
+  const citations: Citation[] = [];
+
+  for (let i = 0; i < searchResults.length; i++) {
+    const result = searchResults[i];
+
+    citations.push({
+      index: startingIndex + i,
+      type: 'project-conversation',
+      sourceId: result.message_id,
+      sourceType: 'project-conversation',
+      sourceTitle: result.content.substring(0, 60) + (result.content.length > 60 ? '...' : ''),
+      projectId,
+      projectName,
+      chatId: result.chat_id,
+      chatTitle: result.chat_title,
       similarity: result.similarity,
       positions: [], // Will be filled by insertInlineCitations
     });
@@ -241,6 +276,8 @@ export function citationsToMessageParts(citations: Citation[]): MessagePart[] {
     sourceTitle: citation.sourceTitle,
     projectId: citation.projectId,
     projectName: citation.projectName,
+    chatId: citation.chatId,
+    chatTitle: citation.chatTitle,
     similarity: citation.similarity,
     citationIndex: citation.index,
   }));

@@ -31,6 +31,7 @@ export type {
   MessageContent,
   MessagePart,
   SearchResult,
+  ProjectMessageSearchResult,
   Database,
   MemoryEntry,
   MemoryCategory,
@@ -77,6 +78,7 @@ export {
   deleteFile,
   // Search
   hybridSearch,
+  searchProjectMessages,
   // Memory (M3)
   getUserMemories,
   getMemory,

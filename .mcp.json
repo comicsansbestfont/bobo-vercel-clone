@@ -7,6 +7,10 @@
       "headers": {
         "Authorization": "Bearer sbp_2cee7c51375bfd3dd875d340f094e0f161e1e5dd"
       }
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
     }
   }
 }

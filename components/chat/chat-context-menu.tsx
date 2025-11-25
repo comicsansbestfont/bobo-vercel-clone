@@ -184,7 +184,7 @@ export function ChatContextMenu({
     <>
       <ContextMenu>
         <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-        <ContextMenuContent align="start" className="w-48">
+        <ContextMenuContent className="w-48">
           <ContextMenuItem
             onClick={() => {
               setNewTitle(chat.title);

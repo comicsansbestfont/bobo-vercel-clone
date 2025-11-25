@@ -933,3 +933,57 @@ export async function hybridSearch(
     source_type: row.result_source_type
   }));
 }
+
+// ============================================================================
+// INTRA-PROJECT MESSAGE SEARCH (Cross-chat context sharing)
+// ============================================================================
+
+/**
+ * Search for relevant messages from sibling chats within the same project
+ * Enables context sharing between chats in a project
+ */
+export async function searchProjectMessages(
+  projectId: string | null,
+  currentChatId: string | null,
+  queryEmbedding: number[],
+  threshold: number = 0.25,
+  limit: number = 5
+): Promise<import('./types').ProjectMessageSearchResult[]> {
+  // Return empty if no project (standalone chats don't have siblings)
+  if (!projectId) {
+    return [];
+  }
+
+  type ProjectMessageRow = {
+    message_id: string;
+    chat_id: string;
+    chat_title: string;
+    role: string;
+    content: string;
+    similarity: number;
+    created_at: string;
+  };
+
+  const { data, error } = await supabase.rpc('search_project_messages', {
+    p_project_id: projectId,
+    p_current_chat_id: currentChatId,
+    p_query_embedding: queryEmbedding,
+    p_match_threshold: threshold,
+    p_match_count: limit,
+  });
+
+  if (error) {
+    console.error('Error searching project messages:', error);
+    return [];
+  }
+
+  return (data || []).map((row: ProjectMessageRow) => ({
+    message_id: row.message_id,
+    chat_id: row.chat_id,
+    chat_title: row.chat_title,
+    role: row.role as 'user' | 'assistant' | 'system',
+    content: row.content,
+    similarity: row.similarity,
+    created_at: row.created_at,
+  }));
+}

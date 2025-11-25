@@ -73,6 +73,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/component
 import { compressHistory } from '@/lib/memory-manager';
 import { toast } from 'sonner';
 import { chatLogger } from '@/lib/logger';
+import { ChatHeader } from './chat-header';
 
 const models = [
   {
@@ -134,6 +135,9 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   const [chatId, setChatId] = useState<string | null>(chatIdFromUrl);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [isContextCollapsed, setIsContextCollapsed] = useState(true);
+  const [chatTitle, setChatTitle] = useState<string | null>(null);
+  const [chatProjectId, setChatProjectId] = useState<string | null>(projectId || null);
+  const [chatProjectName, setChatProjectName] = useState<string | null>(null);
 
   // Track which message we've auto-submitted to prevent duplicates
   const autoSubmittedMessageRef = useRef<string | null>(null);
@@ -264,6 +268,28 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
 
         chatLogger.success(`✅ Loaded ${uiMessages.length} messages`);
         setMessages(uiMessages);
+
+        // Set chat metadata for header
+        if (data.chat.title) {
+          setChatTitle(data.chat.title);
+        }
+        if (data.chat.project_id !== undefined) {
+          setChatProjectId(data.chat.project_id);
+          // Fetch project name if chat has a project
+          if (data.chat.project_id) {
+            try {
+              const projectRes = await fetch(`/api/projects/${data.chat.project_id}`);
+              if (projectRes.ok) {
+                const projectData = await projectRes.json();
+                setChatProjectName(projectData.project?.name || null);
+              }
+            } catch {
+              // Ignore project fetch errors
+            }
+          } else {
+            setChatProjectName(null);
+          }
+        }
 
         if (data.chat.model) {
           chatLogger.debug('Setting model:', data.chat.model);
@@ -438,8 +464,195 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
     };
   }, [contextUsage]);
 
+  // Reusable PromptInput component for both layouts
+  const promptInputElement = (
+    <PromptInput onSubmit={handleSubmit} className="mt-2 md:mt-4" globalDrop multiple>
+      <PromptInputHeader>
+        <PromptInputAttachments>
+          {(attachment) => <PromptInputAttachment data={attachment} />}
+        </PromptInputAttachments>
+      </PromptInputHeader>
+
+      <PromptInputBody>
+        <PromptInputTextarea
+          onChange={(e) => setInput(e.target.value)}
+          value={input}
+          placeholder="How can I help you today?"
+        />
+      </PromptInputBody>
+
+      <PromptInputFooter>
+        <PromptInputTools>
+          <PromptInputActionMenu>
+            <PromptInputActionMenuTrigger />
+            <PromptInputActionMenuContent>
+              <PromptInputActionAddAttachments />
+            </PromptInputActionMenuContent>
+          </PromptInputActionMenu>
+          <PromptInputButton
+            variant={webSearch ? 'default' : 'ghost'}
+            onClick={() => setWebSearch(!webSearch)}
+          >
+            <GlobeIcon size={16} />
+            <span>Search</span>
+          </PromptInputButton>
+          <PromptInputSelect
+            onValueChange={(value) => {
+              setModel(value);
+            }}
+            value={model}
+          >
+            <PromptInputSelectTrigger>
+              <PromptInputSelectValue />
+            </PromptInputSelectTrigger>
+            <PromptInputSelectContent>
+              {models.map((model) => (
+                <PromptInputSelectItem key={model.value} value={model.value}>
+                  {model.name}
+                </PromptInputSelectItem>
+              ))}
+            </PromptInputSelectContent>
+          </PromptInputSelect>
+
+          {/* Context Monitor - Right-aligned */}
+          <div className="ml-auto">
+            <Collapsible
+              open={!isContextCollapsed}
+              onOpenChange={(open) => setIsContextCollapsed(!open)}
+            >
+              <CollapsibleTrigger asChild>
+                <button className="group">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
+                      Context
+                    </span>
+                    <span className={cn('text-[10px] font-medium tabular-nums', usageMeta.usageTextColor)}>
+                      {formatTokenCount(contextUsage.tokensUsed)}/{formatTokenCount(contextUsage.contextLimit)}
+                    </span>
+                    <ChevronDownIcon
+                      className={cn(
+                        'h-2.5 w-2.5 transition-all opacity-0 group-hover:opacity-60',
+                        isContextCollapsed && 'rotate-180'
+                      )}
+                    />
+                  </div>
+                </button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent>
+                <div className="absolute right-0 mt-2 p-2 rounded-lg border border-border bg-background shadow-lg z-10">
+                  <div className="mb-1.5 h-0.5 w-48 overflow-hidden rounded-full bg-muted/40">
+                    <div className="flex h-full w-full">
+                      {usageMeta.segments.map((segment) => (
+                        <div
+                          key={segment.key}
+                          className={cn(segment.color, 'h-full transition-all')}
+                          style={{ width: `${segment.width}%` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-muted-foreground/50">
+                    {usageMeta.segments.map((segment) => (
+                      <div key={segment.key} className="flex items-center gap-1">
+                        <span
+                          className={cn('h-1 w-1 rounded-full', segment.dot)}
+                          aria-hidden
+                        />
+                        <span>
+                          {segment.label} {formatTokenCount(segment.tokens)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  {isCompressing && (
+                    <p className="mt-1 text-[9px] text-muted-foreground/50">
+                      Compressing…
+                    </p>
+                  )}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        </PromptInputTools>
+        <PromptInputSubmit
+          disabled={(!input && !status) || isCompressing}
+          status={isCompressing ? 'submitted' : status}
+          onClick={(e) => {
+            if (status === 'streaming') {
+              e.preventDefault();
+              stop();
+            }
+          }}
+        />
+      </PromptInputFooter>
+    </PromptInput>
+  );
+
+  // Empty state: Centered input layout
+  if (messages.length === 0 && !isLoadingHistory) {
+    return (
+      <div className={cn("flex flex-col h-full items-center justify-center p-3 md:p-6", className)}>
+        <div className="w-full max-w-2xl">
+          {promptInputElement}
+        </div>
+      </div>
+    );
+  }
+
+  // Refresh chat metadata after rename or move
+  const refreshChatMetadata = async () => {
+    if (!chatId) return;
+    try {
+      const res = await fetch(`/api/chats/${chatId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.chat?.title) {
+          setChatTitle(data.chat.title);
+        }
+        if (data.chat?.project_id !== undefined) {
+          setChatProjectId(data.chat.project_id);
+          // Fetch project name if chat has a project
+          if (data.chat.project_id) {
+            try {
+              const projectRes = await fetch(`/api/projects/${data.chat.project_id}`);
+              if (projectRes.ok) {
+                const projectData = await projectRes.json();
+                setChatProjectName(projectData.project?.name || null);
+              }
+            } catch {
+              // Ignore project fetch errors
+            }
+          } else {
+            setChatProjectName(null);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error refreshing chat metadata:', error);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col h-full p-3 md:p-6", className)}>
+      {/* Chat Header - only show when we have a chat with title */}
+      {chatId && chatTitle && (
+        <ChatHeader
+          chatId={chatId}
+          title={chatTitle}
+          projectId={chatProjectId}
+          projectName={chatProjectName}
+          onTitleChange={refreshChatMetadata}
+          onDelete={() => {
+            // Reset state and redirect handled by DeleteDialog
+            setChatId(null);
+            setChatTitle(null);
+            setChatProjectName(null);
+            setMessages([]);
+          }}
+        />
+      )}
+
       <Conversation className="h-full">
         <ConversationContent>
           {messages.map((message) => (
@@ -585,126 +798,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         <ConversationScrollButton />
       </Conversation>
 
-      <PromptInput onSubmit={handleSubmit} className="mt-2 md:mt-4" globalDrop multiple>
-        <PromptInputHeader>
-          <PromptInputAttachments>
-            {(attachment) => <PromptInputAttachment data={attachment} />}
-          </PromptInputAttachments>
-        </PromptInputHeader>
-
-        <PromptInputBody>
-          <PromptInputTextarea
-            onChange={(e) => setInput(e.target.value)}
-            value={input}
-          />
-        </PromptInputBody>
-
-        <PromptInputFooter>
-          <PromptInputTools>
-            <PromptInputActionMenu>
-              <PromptInputActionMenuTrigger />
-              <PromptInputActionMenuContent>
-                <PromptInputActionAddAttachments />
-              </PromptInputActionMenuContent>
-            </PromptInputActionMenu>
-            <PromptInputButton
-              variant={webSearch ? 'default' : 'ghost'}
-              onClick={() => setWebSearch(!webSearch)}
-            >
-              <GlobeIcon size={16} />
-              <span>Search</span>
-            </PromptInputButton>
-            <PromptInputSelect
-              onValueChange={(value) => {
-                setModel(value);
-              }}
-              value={model}
-            >
-              <PromptInputSelectTrigger>
-                <PromptInputSelectValue />
-              </PromptInputSelectTrigger>
-              <PromptInputSelectContent>
-                {models.map((model) => (
-                  <PromptInputSelectItem key={model.value} value={model.value}>
-                    {model.name}
-                  </PromptInputSelectItem>
-                ))}
-              </PromptInputSelectContent>
-            </PromptInputSelect>
-
-            {/* Context Monitor - Right-aligned */}
-            <div className="ml-auto">
-              <Collapsible
-                open={!isContextCollapsed}
-                onOpenChange={(open) => setIsContextCollapsed(!open)}
-              >
-                <CollapsibleTrigger asChild>
-                  <button className="group">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-medium text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
-                        Context
-                      </span>
-                      <span className={cn('text-[10px] font-medium tabular-nums', usageMeta.usageTextColor)}>
-                        {formatTokenCount(contextUsage.tokensUsed)}/{formatTokenCount(contextUsage.contextLimit)}
-                      </span>
-                      <ChevronDownIcon
-                        className={cn(
-                          'h-2.5 w-2.5 transition-all opacity-0 group-hover:opacity-60',
-                          isContextCollapsed && 'rotate-180'
-                        )}
-                      />
-                    </div>
-                  </button>
-                </CollapsibleTrigger>
-
-                <CollapsibleContent>
-                  <div className="absolute right-0 mt-2 p-2 rounded-lg border border-border bg-background shadow-lg z-10">
-                    <div className="mb-1.5 h-0.5 w-48 overflow-hidden rounded-full bg-muted/40">
-                      <div className="flex h-full w-full">
-                        {usageMeta.segments.map((segment) => (
-                          <div
-                            key={segment.key}
-                            className={cn(segment.color, 'h-full transition-all')}
-                            style={{ width: `${segment.width}%` }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-muted-foreground/50">
-                      {usageMeta.segments.map((segment) => (
-                        <div key={segment.key} className="flex items-center gap-1">
-                          <span
-                            className={cn('h-1 w-1 rounded-full', segment.dot)}
-                            aria-hidden
-                          />
-                          <span>
-                            {segment.label} {formatTokenCount(segment.tokens)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    {isCompressing && (
-                      <p className="mt-1 text-[9px] text-muted-foreground/50">
-                        Compressing…
-                      </p>
-                    )}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
-          </PromptInputTools>
-          <PromptInputSubmit
-            disabled={(!input && !status) || isCompressing}
-            status={isCompressing ? 'submitted' : status}
-            onClick={(e) => {
-              if (status === 'streaming') {
-                e.preventDefault();
-                stop();
-              }
-            }}
-          />
-        </PromptInputFooter>
-      </PromptInput>
+      {promptInputElement}
     </div>
   );
 }

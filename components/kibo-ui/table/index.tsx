@@ -17,7 +17,7 @@ import {
 import { atom, useAtom } from "jotai";
 import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon } from "lucide-react";
 import type { HTMLAttributes, ReactNode } from "react";
-import { createContext, memo, useCallback, useContext } from "react";
+import { cloneElement, createContext, isValidElement, memo, useCallback, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -117,7 +117,13 @@ export const TableHeaderGroup = ({
   children,
 }: TableHeaderGroupProps) => (
   <TableRowRaw key={headerGroup.id}>
-    {headerGroup.headers.map((header) => children({ header }))}
+    {headerGroup.headers.map((header) => {
+      const element = children({ header });
+      if (isValidElement(element)) {
+        return cloneElement(element, { key: header.id });
+      }
+      return element;
+    })}
   </TableRowRaw>
 );
 
@@ -131,7 +137,13 @@ export const TableHeader = ({ className, children }: TableHeaderProps) => {
 
   return (
     <TableHeaderRaw className={className}>
-      {table?.getHeaderGroups().map((headerGroup) => children({ headerGroup }))}
+      {table?.getHeaderGroups().map((headerGroup) => {
+        const element = children({ headerGroup });
+        if (isValidElement(element)) {
+          return cloneElement(element, { key: headerGroup.id });
+        }
+        return element;
+      })}
     </TableHeaderRaw>
   );
 };
@@ -217,7 +229,13 @@ export const TableRow = ({ row, children, className }: TableRowProps) => (
     data-state={row.getIsSelected() && "selected"}
     key={row.id}
   >
-    {row.getVisibleCells().map((cell) => children({ cell }))}
+    {row.getVisibleCells().map((cell) => {
+      const element = children({ cell });
+      if (isValidElement(element)) {
+        return cloneElement(element, { key: cell.id });
+      }
+      return element;
+    })}
   </TableRowRaw>
 );
 
@@ -233,7 +251,13 @@ export const TableBody = ({ children, className }: TableBodyProps) => {
   return (
     <TableBodyRaw className={className}>
       {rows?.length ? (
-        rows.map((row) => children({ row }))
+        rows.map((row) => {
+          const element = children({ row });
+          if (isValidElement(element)) {
+            return cloneElement(element, { key: row.id });
+          }
+          return element;
+        })
       ) : (
         <TableRowRaw>
           <TableCellRaw className="h-24 text-center" colSpan={columns.length}>

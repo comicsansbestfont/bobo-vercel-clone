@@ -12,11 +12,14 @@ import {
   IconUser,
   IconSearch,
   IconFolderPlus,
-  IconDots,
+  IconDotsVertical,
   IconClock,
   IconCalendar,
   IconBrain,
   IconHome,
+  IconEdit,
+  IconTrash,
+  IconArchive,
 } from "@tabler/icons-react";
 import {
   Sidebar,
@@ -32,6 +35,13 @@ import { toast } from "sonner";
 import { Skeleton } from "./skeleton";
 import { ThemeSwitcherConnected } from "@/components/theme-switcher-connected";
 import { ChatContextMenu } from "@/components/chat/chat-context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Skeleton loading components
 const ProjectSkeleton = () => {
@@ -132,7 +142,7 @@ const SearchBar = () => {
   );
 };
 
-// Simple Chat Item (no icons) with hover dates
+// Simple Chat Item (no icons) with hover three-dot menu
 const SimpleChatItem = ({
   chat,
   isActive = false,
@@ -146,61 +156,118 @@ const SimpleChatItem = ({
   projects: ProjectWithStats[];
   onUpdate: () => void;
 }) => {
+  const router = useRouter();
   const { open: sidebarOpen, setOpen: setSidebarOpen } = useSidebar();
   const [isHovered, setIsHovered] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const dateToShow = dateMode === 'updated'
-    ? new Date(chat.updated_at)
-    : new Date(chat.created_at);
-  const dateLabel = dateMode === 'updated' ? 'Updated' : 'Created';
-  const formattedDate = formatRelativeDate(dateToShow);
+  const handleRename = () => {
+    // Dispatch custom event to open rename dialog
+    window.dispatchEvent(new CustomEvent('openChatRename', { detail: { chatId: chat.id, title: chat.title } }));
+  };
+
+  const handleMoveToProject = () => {
+    // Dispatch custom event to open move dialog
+    window.dispatchEvent(new CustomEvent('openChatMove', { detail: { chatId: chat.id, projectId: chat.project_id } }));
+  };
+
+  const handleDelete = async () => {
+    if (!confirm(`Delete "${chat.title}"? This cannot be undone.`)) return;
+
+    try {
+      const res = await fetch(`/api/chats/${chat.id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Failed to delete chat');
+
+      toast.success('Chat deleted');
+      onUpdate();
+
+      if (window.location.search.includes(chat.id)) {
+        router.push('/');
+      }
+    } catch {
+      toast.error('Failed to delete chat');
+    }
+  };
 
   return (
     <ChatContextMenu chat={chat} projects={projects} onUpdate={onUpdate}>
-      <Link
-        href={`/?chatId=${chat.id}`}
+      <div
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onClick={() => {
-          // Close sidebar on mobile when navigating to a chat
-          if (window.innerWidth < 768) {
-            setSidebarOpen(false);
-          }
-        }}
-        onContextMenu={(e) => {
-          e.preventDefault(); // Prevent default browser context menu
-        }}
+        onMouseLeave={() => !menuOpen && setIsHovered(false)}
         className={cn(
-          "group relative flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800",
+          "group relative flex items-center justify-between rounded-md text-sm transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800",
           isActive && "bg-neutral-100 dark:bg-neutral-800",
         )}
       >
-        <motion.span
-          animate={{
-            display: sidebarOpen ? "inline-block" : "none",
-            opacity: sidebarOpen ? 1 : 0,
+        <Link
+          href={`/?chatId=${chat.id}`}
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              setSidebarOpen(false);
+            }
           }}
-          className="truncate text-neutral-700 dark:text-neutral-300"
+          onContextMenu={(e) => {
+            e.preventDefault();
+          }}
+          className="flex-1 truncate px-3 py-2 text-neutral-700 dark:text-neutral-300"
         >
-          {chat.title}
-        </motion.span>
-
-        {isHovered && sidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400"
+          <motion.span
+            animate={{
+              display: sidebarOpen ? "inline-block" : "none",
+              opacity: sidebarOpen ? 1 : 0,
+            }}
           >
-            {dateMode === 'updated' ? (
-              <IconClock className="h-3 w-3" />
-            ) : (
-              <IconCalendar className="h-3 w-3" />
-            )}
-            <span className="whitespace-nowrap">{formattedDate}</span>
+            {chat.title}
+          </motion.span>
+        </Link>
+
+        {/* Three-dot menu button - appears on hover */}
+        {(isHovered || menuOpen) && sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-shrink-0 pr-1"
+          >
+            <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+              <DropdownMenuTrigger asChild>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className="flex h-6 w-6 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
+                >
+                  <IconDotsVertical className="h-4 w-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={handleRename}>
+                  <IconEdit className="mr-2 h-4 w-4" />
+                  Rename
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleMoveToProject}>
+                  <IconFolder className="mr-2 h-4 w-4" />
+                  Move to Project
+                </DropdownMenuItem>
+                <DropdownMenuItem disabled className="opacity-50">
+                  <IconArchive className="mr-2 h-4 w-4" />
+                  Archive
+                  <span className="ml-auto text-[10px] text-muted-foreground">Soon</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleDelete}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <IconTrash className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </motion.div>
         )}
-      </Link>
+      </div>
     </ChatContextMenu>
   );
 };
@@ -419,7 +486,12 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
               {/* New Chat Button - Right aligned */}
               <button
                 onClick={() => {
-                  router.push('/');
+                  // If we're on the home page, force a reload to clear chat state
+                  if (pathname === '/') {
+                    window.location.href = '/';
+                  } else {
+                    router.push('/');
+                  }
                   // Close sidebar on mobile after creating new chat
                   if (window.innerWidth < 768) {
                     setOpen(false);
@@ -429,6 +501,7 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
                   "flex items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors",
                   !open && "px-2",
                 )}
+                title="New Chat"
               >
                 <IconMessagePlus className="h-4 w-4 flex-shrink-0" />
               </button>
@@ -481,15 +554,19 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
             {/* Chats - Flat List (no section header, no icons) */}
             {!loading && !error && (
               <div className="space-y-0.5">
-                {chats.map((chat) => (
-                  <SimpleChatItem
-                    key={chat.id}
-                    chat={chat}
-                    dateMode={dateMode}
-                    projects={projects}
-                    onUpdate={fetchData}
-                  />
-                ))}
+                {chats.map((chat) => {
+                  const currentChatId = searchParams?.get('chatId');
+                  return (
+                    <SimpleChatItem
+                      key={chat.id}
+                      chat={chat}
+                      isActive={chat.id === currentChatId}
+                      dateMode={dateMode}
+                      projects={projects}
+                      onUpdate={fetchData}
+                    />
+                  );
+                })}
                 {chats.length === 0 && (
                   <div className="py-4 text-center text-sm text-neutral-500">
                     No chats yet. Start a conversation!

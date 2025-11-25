@@ -4,24 +4,19 @@ import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import {
   type CSSProperties,
-  type ElementType,
   memo,
   useMemo,
 } from "react";
 
 export type TextShimmerProps = {
   children: string;
-  as?: ElementType;
   className?: string;
   duration?: number;
   spread?: number;
 };
 
-const MotionText = motion.span;
-
 const ShimmerComponent = ({
   children,
-  as: Component = "p",
   className,
   duration = 2,
   spread = 2,
@@ -32,8 +27,7 @@ const ShimmerComponent = ({
   );
 
   return (
-    <MotionText
-      as={Component}
+    <motion.span
       animate={{ backgroundPosition: "0% center" }}
       className={cn(
         "relative inline-block bg-[length:250%_100%,auto] bg-clip-text text-transparent",
@@ -55,7 +49,7 @@ const ShimmerComponent = ({
       }}
     >
       {children}
-    </MotionText>
+    </motion.span>
   );
 };
 

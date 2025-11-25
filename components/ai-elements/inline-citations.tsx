@@ -8,7 +8,7 @@
  */
 
 import { useState } from 'react';
-import { ChevronDown, FileText, Sparkles, ExternalLink } from 'lucide-react';
+import { ChevronDown, FileText, Sparkles, MessageSquare, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import type { MessagePart } from '@/lib/db/types';
 
@@ -51,11 +51,12 @@ export interface CitationsListProps {
 export function CitationsList({ sources, projectId }: CitationsListProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Separate project and global sources
+  // Separate project, conversation, and global sources
   const projectSources = sources.filter(s => s.type === 'project-source');
+  const conversationSources = sources.filter(s => s.type === 'project-conversation');
   const globalSources = sources.filter(s => s.type === 'global-source');
 
-  const totalCount = projectSources.length + globalSources.length;
+  const totalCount = projectSources.length + conversationSources.length + globalSources.length;
 
   if (totalCount === 0) return null;
 
@@ -97,6 +98,26 @@ export function CitationsList({ sources, projectId }: CitationsListProps) {
             </div>
           )}
 
+          {/* Project conversations section */}
+          {conversationSources.length > 0 && (
+            <div>
+              <h4 className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <MessageSquare className="h-3.5 w-3.5" />
+                Referenced from Project Conversations
+              </h4>
+              <div className="space-y-1.5">
+                {conversationSources.map((source, index) => (
+                  <CitationItem
+                    key={`conversation-${index}`}
+                    source={source}
+                    projectId={projectId}
+                    isConversation
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Global sources section */}
           {globalSources.length > 0 && (
             <div>
@@ -125,22 +146,26 @@ interface CitationItemProps {
   source: MessagePart;
   projectId?: string;
   isGlobal?: boolean;
+  isConversation?: boolean;
 }
 
 /**
  * Individual citation item in the list
  */
-function CitationItem({ source, projectId, isGlobal }: CitationItemProps) {
+function CitationItem({ source, projectId, isGlobal, isConversation }: CitationItemProps) {
   const citationNumber = source.citationIndex || 0;
   const sourceTitle = source.sourceTitle || 'Untitled';
   const similarity = source.similarity ? Math.round(source.similarity * 100) : null;
 
   // Build URL for clickable sources
-  const href = isGlobal
-    ? null // Global sources not yet clickable (TODO: Add cross-project navigation)
-    : projectId && source.sourceId
-    ? `/projects/${projectId}/files/${source.sourceId}`
-    : null;
+  let href: string | null = null;
+  if (isConversation && projectId && source.chatId) {
+    // Link to the chat that the message came from
+    href = `/projects/${projectId}/chats/${source.chatId}`;
+  } else if (!isGlobal && !isConversation && projectId && source.sourceId) {
+    // Link to project file
+    href = `/projects/${projectId}/files/${source.sourceId}`;
+  }
 
   const content = (
     <div
@@ -154,6 +179,11 @@ function CitationItem({ source, projectId, isGlobal }: CitationItemProps) {
         {isGlobal && source.projectName && (
           <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">
             {source.projectName}
+          </p>
+        )}
+        {isConversation && source.chatTitle && (
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5">
+            From: {source.chatTitle}
           </p>
         )}
         <p className="text-sm text-gray-800 dark:text-gray-200 truncate">

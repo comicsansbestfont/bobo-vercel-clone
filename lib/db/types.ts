@@ -10,17 +10,19 @@
  * Extended with inline citation support for Double-Loop architecture
  */
 export type MessagePart = {
-  type: 'text' | 'reasoning' | 'source-url' | 'tool-result' | 'project-source' | 'global-source';
+  type: 'text' | 'reasoning' | 'source-url' | 'tool-result' | 'project-source' | 'global-source' | 'project-conversation';
   text?: string;
   url?: string;
   result?: string;
 
-  // Citation metadata (for project-source and global-source types)
+  // Citation metadata (for project-source, global-source, and project-conversation types)
   sourceId?: string;           // file_id or message_id from database
-  sourceType?: 'project-file' | 'global-file' | 'global-message';
+  sourceType?: 'project-file' | 'global-file' | 'global-message' | 'project-conversation';
   sourceTitle?: string;        // filename or message preview
   projectId?: string;          // for global sources, which project they came from
   projectName?: string;        // for global sources, project display name
+  chatId?: string;             // for project-conversation, the source chat ID
+  chatTitle?: string;          // for project-conversation, the source chat title
   similarity?: number;         // relevance score (0-1) from hybrid search
   citationIndex?: number;      // position in citation list (1, 2, 3...)
 };
@@ -261,6 +263,20 @@ export type SearchResult = {
 };
 
 /**
+ * Result from intra-project message search
+ * Used for cross-chat context sharing within the same project
+ */
+export type ProjectMessageSearchResult = {
+  message_id: string;
+  chat_id: string;
+  chat_title: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  similarity: number;
+  created_at: string;
+};
+
+/**
  * Supabase Database Type
  * Used by Supabase client for type inference
  */
@@ -456,6 +472,24 @@ export type Database = {
           id1: string;
           id2: string;
           similarity_score: number;
+        }[];
+      };
+      search_project_messages: {
+        Args: {
+          p_project_id: string | null;
+          p_current_chat_id: string | null;
+          p_query_embedding: number[];
+          p_match_threshold?: number;
+          p_match_count?: number;
+        };
+        Returns: {
+          message_id: string;
+          chat_id: string;
+          chat_title: string;
+          role: string;
+          content: string;
+          similarity: number;
+          created_at: string;
         }[];
       };
     };

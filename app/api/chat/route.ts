@@ -25,7 +25,9 @@ import {
   type MessageContent,
   type SearchResult,
   type Message,
+  type ProjectMessageSearchResult,
   getUserMemories,
+  searchProjectMessages,
 } from '@/lib/db';
 import { getModel } from '@/lib/ai/models';
 import { getProjectContext, prepareSystemPrompt, type ProjectContext } from '@/lib/ai/context-manager';
@@ -35,6 +37,7 @@ import { chatLogger } from '@/lib/logger';
 import {
   trackProjectSources,
   trackGlobalSources,
+  trackProjectConversations,
   insertInlineCitations,
   citationsToMessageParts,
   type Citation,
@@ -391,27 +394,68 @@ export async function POST(req: Request) {
       }
     }
 
+    // Generate query embedding once for all searches
+    let queryEmbedding: number[] | null = null;
+    const lastUserMessage = messages[messages.length - 1];
+    let userText = '';
+    if (lastUserMessage && Array.isArray(lastUserMessage.parts)) {
+      userText = lastUserMessage.parts
+        .filter(p => p.type === 'text')
+        .map(p => p.text)
+        .join(' ');
+    }
+
+    if (userText) {
+      try {
+        queryEmbedding = await generateEmbedding(userText);
+      } catch (err) {
+        chatLogger.error('Failed to generate query embedding:', err);
+      }
+    }
+
+    // Intra-Project Chat Context (NEW)
+    // Search for relevant messages from sibling chats within the same project
+    let projectChatContext = '';
+    let projectChatResults: ProjectMessageSearchResult[] = [];
+    if (queryEmbedding && activeProjectId) {
+      try {
+        projectChatResults = await searchProjectMessages(
+          activeProjectId,
+          activeChatId || null,
+          queryEmbedding,
+          0.25, // Lower threshold for better recall
+          5     // Top 5 results
+        );
+
+        if (projectChatResults.length > 0) {
+          const snippets = projectChatResults
+            .map(r => `[${r.chat_title}]: ${r.content}`)
+            .join('\n');
+
+          projectChatContext = `
+### RELATED CONVERSATIONS IN THIS PROJECT
+The following are relevant excerpts from your OTHER conversations in this project.
+<project_conversations>
+${snippets}
+</project_conversations>
+INSTRUCTION: Use these to maintain continuity across conversations in this project.
+`;
+          systemPrompt += projectChatContext;
+        }
+      } catch (err) {
+        chatLogger.error('Intra-project search failed:', err);
+      }
+    }
+
     // Hybrid Search (Loop B)
     // Search for relevant global context from other projects
     let globalContext = '';
     let searchResults: SearchResult[] = [];
-    try {
-      const lastUserMessage = messages[messages.length - 1];
-      chatLogger.debug('Last User Message:', lastUserMessage);
-
-      let userText = '';
-      if (lastUserMessage && Array.isArray(lastUserMessage.parts)) {
-        userText = lastUserMessage.parts
-          .filter(p => p.type === 'text')
-          .map(p => p.text)
-          .join(' ');
-      }
-
-      if (userText) {
-        const queryEmbedding = await generateEmbedding(userText);
+    if (queryEmbedding) {
+      try {
         searchResults = await hybridSearch(
           queryEmbedding,
-          0.6, // Lower threshold for better recall (was 0.82)
+          0.25, // Lower threshold for better recall (was 0.6)
           5,    // Top 5 results
           activeProjectId || '00000000-0000-0000-0000-000000000000' // Empty UUID if no project
         );
@@ -438,9 +482,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             systemPrompt += `\n\n${globalContext}`;
           }
         }
+      } catch (err) {
+        chatLogger.error('Hybrid search failed:', err);
       }
-    } catch (err) {
-      chatLogger.error('Hybrid search failed:', err);
     }
 
     // Normalize roles to avoid invalid payloads to the gateway
@@ -670,6 +714,17 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
                 allCitations.push(...projectCitations);
               }
 
+              // Track project conversation sources (Intra-Project)
+              if (projectChatResults.length > 0 && activeProjectId) {
+                const conversationCitations = trackProjectConversations(
+                  projectChatResults,
+                  activeProjectId,
+                  projectName,
+                  allCitations.length + 1
+                );
+                allCitations.push(...conversationCitations);
+              }
+
               // Track global sources (Loop B)
               if (searchResults.length > 0) {
                 const projectNamesMap = await getProjectNamesForSearchResults(searchResults);
@@ -788,13 +843,24 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             allCitations.push(...projectCitations);
           }
 
+          // Track project conversation sources (Intra-Project)
+          if (projectChatResults.length > 0 && activeProjectId) {
+            const conversationCitations = trackProjectConversations(
+              projectChatResults,
+              activeProjectId,
+              projectName,
+              allCitations.length + 1
+            );
+            allCitations.push(...conversationCitations);
+          }
+
           // Track global sources (Loop B)
           if (searchResults.length > 0) {
             const projectNamesMap = await getProjectNamesForSearchResults(searchResults);
             const globalCitations = await trackGlobalSources(
               searchResults,
               projectNamesMap,
-              allCitations.length + 1 // Start numbering after project citations
+              allCitations.length + 1 // Start numbering after project/conversation citations
             );
             allCitations.push(...globalCitations);
           }
