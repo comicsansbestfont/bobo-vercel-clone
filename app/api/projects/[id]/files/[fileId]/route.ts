@@ -4,6 +4,7 @@
  * DELETE /api/projects/[id]/files/[fileId] - Delete a file
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { getFile, deleteFile, getProject } from '@/lib/db';
 
@@ -84,7 +85,7 @@ export async function DELETE(
     // Return 204 No Content on successful deletion
     return new Response(null, { status: 204 });
   } catch (error) {
-    console.error('Error deleting file:', error);
+    apiLogger.error('Error deleting file:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to delete file',

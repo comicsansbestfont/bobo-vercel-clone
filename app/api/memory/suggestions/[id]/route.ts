@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 
@@ -13,7 +14,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('DELETE /api/memory/suggestions/[id] error:', error);
+    apiLogger.error('DELETE /api/memory/suggestions/[id] error:', error);
     return NextResponse.json({ error: 'Failed to dismiss suggestion' }, { status: 500 });
   }
 }

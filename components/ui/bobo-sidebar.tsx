@@ -282,7 +282,7 @@ export function BoboSidebar({ children }: { children: React.ReactNode }) {
               title="Chats"
               icon={<IconMessage className="h-3 w-3" />}
               actionIcon={<IconPlus className="h-3 w-3" />}
-              onAction={() => console.log("Create new chat")}
+              onAction={() => {}}
             >
               <div className="space-y-1">
                 {mockChats.map((chat) => (
@@ -296,7 +296,7 @@ export function BoboSidebar({ children }: { children: React.ReactNode }) {
               title="Projects"
               icon={<IconFolder className="h-3 w-3" />}
               actionIcon={<IconPlus className="h-3 w-3" />}
-              onAction={() => console.log("Create new project")}
+              onAction={() => {}}
             >
               <div className="space-y-1">
                 {mockProjects.map((project) => (

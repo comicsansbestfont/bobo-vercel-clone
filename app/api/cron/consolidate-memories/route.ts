@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/db/client';
 import { getAllUsersWithMemories, getMemory, deleteMemory, updateMemory } from '@/lib/db/queries';
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
       memories_archived: totalArchived,
     });
   } catch (error) {
-    console.error('Consolidation failed:', error);
+    apiLogger.error('Consolidation failed:', error);
     return NextResponse.json(
       { error: 'Consolidation failed' },
       { status: 500 }
@@ -40,15 +41,15 @@ export async function GET(request: NextRequest) {
 }
 
 async function consolidateUserMemories(userId: string) {
-  console.log(`[Consolidation] Starting for user ${userId}`);
+  apiLogger.info(`[Consolidation] Starting for user ${userId}`);
 
   // 1. Find duplicates
   const { data: duplicates } = await supabase.rpc('find_duplicate_pairs', {
     p_user_id: userId,
     p_threshold: 0.9,
   });
-  
-  console.log(`[Consolidation] Found ${duplicates?.length || 0} duplicate pairs`);
+
+  apiLogger.info(`[Consolidation] Found ${duplicates?.length || 0} duplicate pairs`);
 
   let mergedCount = 0;
   // Use a set to track merged/deleted IDs to avoid double processing

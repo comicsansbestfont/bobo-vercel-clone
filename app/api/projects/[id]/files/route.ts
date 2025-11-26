@@ -5,6 +5,7 @@
  * POST /api/projects/[id]/files - Upload a new file to a project
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import {
   getFilesByProject,
@@ -48,7 +49,7 @@ export async function GET(
 
     return Response.json({ files });
   } catch (error) {
-    console.error('Error fetching files:', error);
+    apiLogger.error('Error fetching files:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch files',
@@ -191,12 +192,12 @@ export async function POST(
 
     // Generate embedding in background (fire and forget)
     embedAndSaveFile(file.id, content).catch(err =>
-      console.error('[api/files] background embedding failed', err)
+      apiLogger.error('[api/files] background embedding failed', err)
     );
 
     return Response.json({ file }, { status: 201 });
   } catch (error) {
-    console.error('Error uploading file:', error);
+    apiLogger.error('Error uploading file:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to upload file',

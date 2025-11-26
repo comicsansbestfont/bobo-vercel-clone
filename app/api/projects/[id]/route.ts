@@ -6,6 +6,7 @@
  * DELETE /api/projects/[id] - Delete a project (soft delete)
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import {
   getProject,
@@ -46,7 +47,7 @@ export async function GET(
 
     return Response.json({ project });
   } catch (error) {
-    console.error('Error fetching project:', error);
+    apiLogger.error('Error fetching project:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch project',
@@ -147,7 +148,7 @@ export async function PATCH(
 
     return Response.json({ project });
   } catch (error) {
-    console.error('Error updating project:', error);
+    apiLogger.error('Error updating project:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to update project',
@@ -190,7 +191,7 @@ export async function DELETE(
     // Return 204 No Content on successful deletion
     return new Response(null, { status: 204 });
   } catch (error) {
-    console.error('Error deleting project:', error);
+    apiLogger.error('Error deleting project:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to delete project',

@@ -5,6 +5,7 @@
  * POST /api/projects/[id]/chats - Create a new chat in a project
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import {
   getChatsByProjectWithPreviews,
@@ -55,7 +56,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error fetching project chats:', error);
+    apiLogger.error('Error fetching project chats:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch project chats',
@@ -178,7 +179,7 @@ export async function POST(
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating chat in project:', error);
+    apiLogger.error('Error creating chat in project:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to create chat',

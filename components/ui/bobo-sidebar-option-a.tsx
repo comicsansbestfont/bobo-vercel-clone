@@ -447,7 +447,6 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
       setProjects(projectsData.projects || []);
       setChats(chatsData.chats || []);
     } catch (err) {
-      console.error('Failed to fetch sidebar data:', err);
       const errorMessage = 'Failed to load sidebar data';
       setError(errorMessage);
       toast.error(errorMessage, {

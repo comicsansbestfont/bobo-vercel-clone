@@ -90,7 +90,6 @@ export function RenameDialog({
       onOpenChange(false);
       onSuccess?.();
     } catch (error) {
-      console.error('Error renaming chat:', error);
       toast.error(
         error instanceof Error ? error.message : 'Failed to rename chat'
       );
@@ -187,7 +186,7 @@ export function MoveToProjectDialog({
         setProjects(data);
       }
     } catch (error) {
-      console.error('Error fetching projects:', error);
+      // Silently fail - projects dropdown will just be empty
     } finally {
       setIsLoading(false);
     }
@@ -219,7 +218,6 @@ export function MoveToProjectDialog({
       onOpenChange(false);
       onSuccess?.();
     } catch (error) {
-      console.error('Error moving chat:', error);
       toast.error(
         error instanceof Error ? error.message : 'Failed to move chat'
       );
@@ -324,7 +322,6 @@ export function DeleteDialog({
         router.push('/');
       }
     } catch (error) {
-      console.error('Error deleting chat:', error);
       toast.error(
         error instanceof Error ? error.message : 'Failed to delete chat'
       );

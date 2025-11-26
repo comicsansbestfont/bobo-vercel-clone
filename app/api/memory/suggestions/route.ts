@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextResponse } from 'next/server';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 
@@ -14,7 +15,7 @@ export async function GET() {
     if (error) throw error;
     return NextResponse.json(data || []);
   } catch (error) {
-    console.error('GET /api/memory/suggestions error:', error);
+    apiLogger.error('GET /api/memory/suggestions error:', error);
     return NextResponse.json({ error: 'Failed to fetch suggestions' }, { status: 500 });
   }
 }

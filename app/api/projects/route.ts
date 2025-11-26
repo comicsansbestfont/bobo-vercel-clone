@@ -5,6 +5,7 @@
  * POST /api/projects - Create a new project
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import {
   getProjectsWithStats,
@@ -25,7 +26,7 @@ export async function GET() {
       count: projects.length,
     });
   } catch (error) {
-    console.error('Error fetching projects:', error);
+    apiLogger.error('Error fetching projects:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch projects',
@@ -104,7 +105,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating project:', error);
+    apiLogger.error('Error creating project:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to create project',

@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { extractMemoriesFromChat } from '@/lib/memory/extractor';
 import { getUserMemorySettings, ensureMemorySettings, getLastExtractionTime } from '@/lib/db/queries';
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
       memories: memories.map(m => ({ id: m.id, content: m.content })),
     });
   } catch (error) {
-    console.error('Extraction API error:', error);
+    apiLogger.error('Extraction API error:', error);
     return NextResponse.json(
       { error: 'Extraction failed' },
       { status: 500 }

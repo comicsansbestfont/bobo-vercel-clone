@@ -5,6 +5,9 @@ import { Toaster } from "sonner";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Providers } from "@/components/providers";
+import { PostHogProvider } from "@/components/posthog-provider";
+import { PostHogPageView } from "@/components/posthog-pageview";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,19 +50,24 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ErrorBoundary>
-              {children}
-            </ErrorBoundary>
-            <Toaster position="bottom-right" />
-          </ThemeProvider>
-        </Providers>
+        <PostHogProvider>
+          <Suspense fallback={null}>
+            <PostHogPageView />
+          </Suspense>
+          <Providers>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <ErrorBoundary>
+                {children}
+              </ErrorBoundary>
+              <Toaster position="bottom-right" />
+            </ThemeProvider>
+          </Providers>
+        </PostHogProvider>
       </body>
     </html>
   );

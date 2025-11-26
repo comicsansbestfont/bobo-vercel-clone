@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 import { MemoryEntry, MemoryCategory } from '@/lib/db/types';
 import { createMemory } from '@/lib/db/queries';
+import { memoryLogger } from '@/lib/logger';
 
 export type ExtractedFact = {
   category: MemoryCategory;
@@ -90,7 +91,7 @@ export async function mergeDuplicateMemories(
     .single();
     
   if (error) {
-    console.error('Error merging memory:', error);
+    memoryLogger.error('Error merging memory:', error);
     return null;
   }
   

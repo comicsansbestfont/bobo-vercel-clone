@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserProfile, upsertUserProfile } from '@/lib/db/queries';
 import { z } from 'zod';
@@ -17,7 +18,7 @@ export async function GET() {
     const profile = await getUserProfile();
     return NextResponse.json(profile || {});
   } catch (error) {
-    console.error('Error fetching profile:', error);
+    apiLogger.error('Error fetching profile:', error);
     return NextResponse.json(
       { error: 'Failed to fetch profile' },
       { status: 500 }
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(profile);
   } catch (error) {
-    console.error('Error updating profile:', error);
+    apiLogger.error('Error updating profile:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

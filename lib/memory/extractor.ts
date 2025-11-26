@@ -3,6 +3,7 @@ import { generateText } from 'ai';
 import { getMessages } from '@/lib/db/queries';
 import { deduplicateFacts, ExtractedFact } from './deduplicator';
 import { MemoryEntry } from '@/lib/db/types';
+import { memoryLogger } from '@/lib/logger';
 
 const EXTRACTION_SYSTEM_PROMPT = `
 You are a memory extraction assistant for Bobo AI Chatbot. Your job is to analyze conversations and extract facts about the user that would help personalize future interactions.
@@ -218,11 +219,11 @@ export async function extractMemoriesFromChat(
         } else if (parsed.facts && Array.isArray(parsed.facts)) {
             facts = parsed.facts;
         } else {
-            console.log('Extraction returned unexpected format:', typeof parsed);
+            memoryLogger.warn('Extraction returned unexpected format:', typeof parsed);
             return [];
         }
     } catch (e) {
-        console.error('Failed to parse extraction response:', text, e);
+        memoryLogger.error('Failed to parse extraction response:', text, e);
         return [];
     }
 
@@ -238,7 +239,7 @@ export async function extractMemoriesFromChat(
 
     return stored;
   } catch (error) {
-    console.error('Memory extraction failed:', error);
+    memoryLogger.error('Memory extraction failed:', error);
     return []; // Graceful degradation
   }
 }

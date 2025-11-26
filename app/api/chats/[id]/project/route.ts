@@ -4,6 +4,7 @@
  * PATCH /api/chats/[id]/project - Move chat to/from a project
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import {
   getChat,
@@ -139,7 +140,7 @@ export async function PATCH(
 
     return Response.json({ chat: updatedChat });
   } catch (error) {
-    console.error('Error updating chat project:', error);
+    apiLogger.error('Error updating chat project:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to update chat project',

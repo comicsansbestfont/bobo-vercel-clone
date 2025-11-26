@@ -6,6 +6,7 @@
  */
 
 import { supabase, supabaseAdmin, DEFAULT_USER_ID } from './client';
+import { dbLogger } from '@/lib/logger';
 import type {
   User,
   Project,
@@ -43,7 +44,7 @@ export async function getDefaultUser(): Promise<User | null> {
     .single();
 
   if (error) {
-    console.error('Error fetching default user:', error);
+    dbLogger.error('Error fetching default user:', error);
     return null;
   }
 
@@ -64,7 +65,7 @@ export async function getUserProfile(): Promise<UserProfile | null> {
     // If no profile exists, that's expected (returns null)
     if (error.code === 'PGRST116') return null;
     
-    console.error('Error fetching user profile:', error);
+    dbLogger.error('Error fetching user profile:', error);
     return null;
   }
 
@@ -87,7 +88,7 @@ export async function upsertUserProfile(
     .single();
 
   if (error) {
-    console.error('Error upserting user profile:', error);
+    dbLogger.error('Error upserting user profile:', error);
     return null;
   }
 
@@ -109,7 +110,7 @@ export async function getProjects(): Promise<Project[]> {
     .order('updated_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching projects:', error);
+    dbLogger.error('Error fetching projects:', error);
     return [];
   }
 
@@ -127,7 +128,7 @@ export async function getProjectsWithStats(): Promise<ProjectWithStats[]> {
     .order('last_activity_at', { ascending: false, nullsFirst: false });
 
   if (error) {
-    console.error('Error fetching projects with stats:', error);
+    dbLogger.error('Error fetching projects with stats:', error);
     return [];
   }
 
@@ -146,7 +147,7 @@ export async function getProject(id: string): Promise<Project | null> {
     .single();
 
   if (error) {
-    console.error('Error fetching project:', error);
+    dbLogger.error('Error fetching project:', error);
     return null;
   }
 
@@ -169,7 +170,7 @@ export async function createProject(
     .single();
 
   if (error) {
-    console.error('Error creating project:', error);
+    dbLogger.error('Error creating project:', error);
     return null;
   }
 
@@ -192,7 +193,7 @@ export async function updateProject(
     .single();
 
   if (error) {
-    console.error('Error updating project:', error);
+    dbLogger.error('Error updating project:', error);
     return null;
   }
 
@@ -210,7 +211,7 @@ export async function deleteProject(id: string): Promise<boolean> {
     .eq('user_id', DEFAULT_USER_ID);
 
   if (error) {
-    console.error('Error deleting project:', error);
+    dbLogger.error('Error deleting project:', error);
     return false;
   }
 
@@ -232,7 +233,7 @@ export async function getChats(): Promise<Chat[]> {
     .order('last_message_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching chats:', error);
+    dbLogger.error('Error fetching chats:', error);
     return [];
   }
 
@@ -250,7 +251,7 @@ export async function getChatsWithProjects(): Promise<ChatWithProject[]> {
     .order('last_message_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching chats with projects:', error);
+    dbLogger.error('Error fetching chats with projects:', error);
     return [];
   }
 
@@ -269,7 +270,7 @@ export async function getChatsByProject(projectId: string): Promise<Chat[]> {
     .order('last_message_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching project chats:', error);
+    dbLogger.error('Error fetching project chats:', error);
     return [];
   }
 
@@ -300,7 +301,7 @@ export async function getChatsByProjectWithPreviews(
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching message previews:', error);
+    dbLogger.error('Error fetching message previews:', error);
     // Return chats without previews on error
     return chats;
   }
@@ -357,7 +358,7 @@ export async function getStandaloneChats(): Promise<Chat[]> {
     .order('last_message_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching standalone chats:', error);
+    dbLogger.error('Error fetching standalone chats:', error);
     return [];
   }
 
@@ -376,7 +377,7 @@ export async function getChat(id: string): Promise<Chat | null> {
     .single();
 
   if (error) {
-    console.error('Error fetching chat:', error);
+    dbLogger.error('Error fetching chat:', error);
     return null;
   }
 
@@ -399,7 +400,7 @@ export async function createChat(
     .single();
 
   if (error) {
-    console.error('Error creating chat:', error);
+    dbLogger.error('Error creating chat:', error);
     return null;
   }
 
@@ -422,7 +423,7 @@ export async function updateChat(
     .single();
 
   if (error) {
-    console.error('Error updating chat:', error);
+    dbLogger.error('Error updating chat:', error);
     return null;
   }
 
@@ -440,7 +441,7 @@ export async function deleteChat(id: string): Promise<boolean> {
     .eq('user_id', DEFAULT_USER_ID);
 
   if (error) {
-    console.error('Error deleting chat:', error);
+    dbLogger.error('Error deleting chat:', error);
     return false;
   }
 
@@ -461,7 +462,7 @@ export async function addChatToProject(
     .eq('user_id', DEFAULT_USER_ID);
 
   if (error) {
-    console.error('Error adding chat to project:', error);
+    dbLogger.error('Error adding chat to project:', error);
     return false;
   }
 
@@ -479,7 +480,7 @@ export async function removeChatFromProject(chatId: string): Promise<boolean> {
     .eq('user_id', DEFAULT_USER_ID);
 
   if (error) {
-    console.error('Error removing chat from project:', error);
+    dbLogger.error('Error removing chat from project:', error);
     return false;
   }
 
@@ -501,7 +502,7 @@ export async function getMessages(chatId: string): Promise<Message[]> {
     .order('sequence_number', { ascending: true });
 
   if (error) {
-    console.error('Error fetching messages:', error);
+    dbLogger.error('Error fetching messages:', error);
     return [];
   }
 
@@ -519,7 +520,7 @@ export async function getMessage(id: string): Promise<Message | null> {
     .single();
 
   if (error) {
-    console.error('Error fetching message:', error);
+    dbLogger.error('Error fetching message:', error);
     return null;
   }
 
@@ -558,7 +559,7 @@ export async function createMessage(
     .single();
 
   if (error) {
-    console.error('Error creating message:', error);
+    dbLogger.error('Error creating message:', error);
     return null;
   }
 
@@ -599,7 +600,7 @@ export async function createMessages(
     .select();
 
   if (error) {
-    console.error('Error creating messages:', error);
+    dbLogger.error('Error creating messages:', error);
     return [];
   }
 
@@ -621,7 +622,7 @@ export async function updateMessage(
     .single();
 
   if (error) {
-    console.error('Error updating message:', error);
+    dbLogger.error('Error updating message:', error);
     return null;
   }
 
@@ -638,7 +639,7 @@ export async function deleteMessage(id: string): Promise<boolean> {
     .eq('id', id);
 
   if (error) {
-    console.error('Error deleting message:', error);
+    dbLogger.error('Error deleting message:', error);
     return false;
   }
 
@@ -655,7 +656,7 @@ export async function deleteAllMessages(chatId: string): Promise<boolean> {
     .eq('chat_id', chatId);
 
   if (error) {
-    console.error('Error deleting all messages:', error);
+    dbLogger.error('Error deleting all messages:', error);
     return false;
   }
 
@@ -678,7 +679,7 @@ export async function getFilesByProject(projectId: string): Promise<File[]> {
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching files:', error);
+    dbLogger.error('Error fetching files:', error);
     return [];
   }
 
@@ -697,7 +698,7 @@ export async function getFile(id: string): Promise<File | null> {
     .single();
 
   if (error) {
-    console.error('Error fetching file:', error);
+    dbLogger.error('Error fetching file:', error);
     return null;
   }
 
@@ -720,7 +721,7 @@ export async function createFile(
     .single();
 
   if (error) {
-    console.error('Error creating file:', error);
+    dbLogger.error('Error creating file:', error);
     return null;
   }
 
@@ -743,7 +744,7 @@ export async function updateFile(
     .single();
 
   if (error) {
-    console.error('Error updating file:', error);
+    dbLogger.error('Error updating file:', error);
     return null;
   }
 
@@ -761,7 +762,7 @@ export async function deleteFile(id: string): Promise<boolean> {
     .eq('user_id', DEFAULT_USER_ID);
 
   if (error) {
-    console.error('Error deleting file:', error);
+    dbLogger.error('Error deleting file:', error);
     return false;
   }
 
@@ -790,7 +791,7 @@ export async function getUserMemories({
     .limit(limit);
 
   if (error) {
-    console.error('Error fetching memories:', error);
+    dbLogger.error('Error fetching memories:', error);
     return [];
   }
 
@@ -809,7 +810,7 @@ export async function getMemory(id: string): Promise<import('./types').MemoryEnt
     .single();
 
   if (error) {
-    console.error('Error fetching memory:', error);
+    dbLogger.error('Error fetching memory:', error);
     return null;
   }
 
@@ -832,7 +833,7 @@ export async function createMemory(
     .single();
 
   if (error) {
-    console.error('Error creating memory:', error);
+    dbLogger.error('Error creating memory:', error);
     return null;
   }
 
@@ -868,7 +869,7 @@ export async function deleteMemory(id: string): Promise<boolean> {
     .eq('user_id', DEFAULT_USER_ID);
 
   if (error) {
-    console.error('Error deleting memory:', error);
+    dbLogger.error('Error deleting memory:', error);
     return false;
   }
 
@@ -887,7 +888,7 @@ export async function getUserMemorySettings(): Promise<import('./types').MemoryS
 
   if (error) {
     if (error.code === 'PGRST116') return null;
-    console.error('Error fetching memory settings:', error);
+    dbLogger.error('Error fetching memory settings:', error);
     return null;
   }
 
@@ -923,7 +924,7 @@ export async function ensureMemorySettings(userId: string = DEFAULT_USER_ID): Pr
     .single();
 
   if (error) {
-    console.error('Error creating memory settings:', error);
+    dbLogger.error('Error creating memory settings:', error);
     return null;
   }
 
@@ -991,7 +992,7 @@ export async function hybridSearch(
   });
 
   if (error) {
-    console.error('Error performing hybrid search:', error);
+    dbLogger.error('Error performing hybrid search:', error);
     return [];
   }
 
@@ -1042,7 +1043,7 @@ export async function searchProjectMessages(
   });
 
   if (error) {
-    console.error('Error searching project messages:', error);
+    dbLogger.error('Error searching project messages:', error);
     return [];
   }
 

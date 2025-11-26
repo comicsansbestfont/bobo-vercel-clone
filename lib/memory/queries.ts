@@ -22,7 +22,6 @@ export function useCreateMemory() {
     },
     onError: (error) => {
       toast.error('Failed to create memory');
-      console.error(error);
     },
   });
 }

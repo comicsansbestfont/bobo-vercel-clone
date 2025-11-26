@@ -1,5 +1,6 @@
 import type { UIMessage } from 'ai';
 import { encodeChat } from 'gpt-tokenizer';
+import { logger } from '@/lib/logger';
 
 // Context window limits for different AI models (in tokens)
 // Based on Vercel AI Gateway specifications
@@ -119,7 +120,7 @@ export function countTokensWithFallback(
     // Use gpt-4o as the tokenizer model (works well for most models)
     return encodeChat(chatTranscript, 'gpt-4o').length;
   } catch (err) {
-    console.warn('Tokenizer fallback triggered', err);
+    logger.warn('Tokenizer fallback triggered', err);
     const fallbackText = chatTranscript
       .map((segment) => `${segment.role}: ${segment.content}`)
       .join('\n');

@@ -58,13 +58,16 @@ export function ProjectChatCreation({
     const [input, setInput] = useState('');
     const [model, setModel] = useState<string>(models[0].value);
     const [webSearch, setWebSearch] = useState(false);
-    const [isCreating, setIsCreating] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (message: PromptInputMessage) => {
-        if (!message.text?.trim()) return;
+        const text = message.text || input;
 
-        setIsCreating(true);
+        if (!text.trim() && message.files.length === 0) return;
+
         try {
+            setIsLoading(true);
+
             // Create the chat first
             const response = await fetch(`/api/projects/${projectId}/chats`, {
                 method: 'POST',
@@ -72,7 +75,7 @@ export function ProjectChatCreation({
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    title: message.text.slice(0, 50), // Initial title from message
+                    title: text.slice(0, 50) || 'New Chat',
                     model: model,
                     web_search_enabled: webSearch,
                 }),
@@ -85,25 +88,21 @@ export function ProjectChatCreation({
             const data = await response.json();
             const chatId = data.chat.id;
 
-            // Redirect to the chat with the message
-            // The ChatInterface will handle sending the message
+            // Build URL with chatId and message params, then hard navigate
             const params = new URLSearchParams();
             params.set('chatId', chatId);
-            if (message.text) {
-                params.set('message', encodeURIComponent(message.text));
+
+            if (text) {
+                params.set('message', encodeURIComponent(text));
             }
 
-            // Use full path to avoid any ambiguity
-            // Using window.location.assign to force a hard navigation if router.push is stripping params
             const targetUrl = `/project/${projectId}?${params.toString()}`;
-            console.log('Redirecting to:', targetUrl);
-            window.location.assign(targetUrl);
+            window.location.href = targetUrl;
         } catch (error) {
-            console.error('Failed to create chat:', error);
             toast.error('Failed to start chat', {
                 description: 'Please try again.',
             });
-            setIsCreating(false);
+            setIsLoading(false);
         }
     };
 
@@ -126,7 +125,7 @@ export function ProjectChatCreation({
                         onChange={(e) => setInput(e.target.value)}
                         value={input}
                         placeholder={projectName ? `New chat in ${projectName}...` : "What's on your mind?"}
-                        disabled={isCreating}
+                        disabled={isLoading}
                     />
                 </PromptInputBody>
 
@@ -166,8 +165,8 @@ export function ProjectChatCreation({
                             </PromptInputSelectContent>
                         </PromptInputSelect>
                         <PromptInputSubmit
-                            disabled={!input || isCreating}
-                            status={isCreating ? 'submitted' : 'ready'}
+                            disabled={!input || isLoading}
+                            status={isLoading ? 'submitted' : 'ready'}
                         />
                     </div>
                 </PromptInputFooter>

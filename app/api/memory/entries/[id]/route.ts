@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 
@@ -16,7 +17,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (error) throw error;
     return NextResponse.json(data);
   } catch (error) {
-    console.error('PATCH /api/memory/entries/[id] error:', error);
+    apiLogger.error('PATCH /api/memory/entries/[id] error:', error);
     return NextResponse.json({ error: 'Failed to update memory' }, { status: 500 });
   }
 }
@@ -33,7 +34,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('DELETE /api/memory/entries/[id] error:', error);
+    apiLogger.error('DELETE /api/memory/entries/[id] error:', error);
     return NextResponse.json({ error: 'Failed to delete memory' }, { status: 500 });
   }
 }

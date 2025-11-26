@@ -41,7 +41,6 @@ export default function ProfileSettingsPage() {
           });
         }
       } catch (error) {
-        console.error("Error fetching profile:", error);
         toast.error("Failed to load profile");
       } finally {
         setLoading(false);
@@ -70,7 +69,6 @@ export default function ProfileSettingsPage() {
         description: "Your personal context has been saved.",
       });
     } catch (error) {
-      console.error("Error saving profile:", error);
       toast.error("Failed to save profile");
     } finally {
       setSaving(false);

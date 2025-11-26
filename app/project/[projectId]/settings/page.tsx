@@ -47,7 +47,6 @@ export default function ProjectSettingsPage() {
         setCustomInstructions(projectData.project.custom_instructions || '');
         setFiles(filesData.files || []);
       } catch (err) {
-        console.error('Failed to fetch project data:', err);
         toast.error('Failed to load project settings');
       } finally {
         setLoading(false);
@@ -78,7 +77,6 @@ export default function ProjectSettingsPage() {
 
       toast.success('Custom instructions saved');
     } catch (err) {
-      console.error('Failed to save instructions:', err);
       toast.error('Failed to save instructions');
     } finally {
       setIsSavingInstructions(false);
@@ -144,7 +142,6 @@ export default function ProjectSettingsPage() {
 
       toast.success('File uploaded successfully');
     } catch (err) {
-      console.error('Failed to upload file:', err);
       toast.error('Failed to upload file', {
         description: err instanceof Error ? err.message : 'Unknown error',
       });
@@ -169,7 +166,6 @@ export default function ProjectSettingsPage() {
       setFiles((prev) => prev.filter((f) => f.id !== fileId));
       toast.success('File deleted');
     } catch (err) {
-      console.error('Failed to delete file:', err);
       toast.error('Failed to delete file');
     }
   };

@@ -161,6 +161,7 @@ export function ChatInterface({
 }: ChatInterfaceProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
+
   const chatIdFromUrl = searchParams?.get('chatId');
 
   const [input, setInput] = useState('');
@@ -168,7 +169,8 @@ export function ChatInterface({
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [chatId, setChatId] = useState<string | null>(chatIdFromUrl);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  // Initialize to true when chatId is present to prevent empty state flash during page load
+  const [isLoadingHistory, setIsLoadingHistory] = useState(Boolean(chatIdFromUrl));
   const [chatTitle, setChatTitle] = useState<string | null>(null);
   const [chatProjectId, setChatProjectId] = useState<string | null>(projectId || null);
   const [chatProjectName, setChatProjectName] = useState<string | null>(null);
@@ -207,15 +209,12 @@ export function ChatInterface({
       },
     }),
     onError: (error) => {
-      console.error('Chat error:', error);
       toast.error('Chat error', {
         description: error.message || 'An error occurred while processing your message.',
       });
     },
-    onFinish: (message) => {
+    onFinish: () => {
       // Message finished streaming and is now in the messages array
-      console.log('Message finished:', message);
-
       // Clear the previous timeout if it exists
       if (persistenceTimeoutRef.current) {
         clearTimeout(persistenceTimeoutRef.current);
@@ -231,6 +230,15 @@ export function ChatInterface({
 
   // Keep local chatId in sync with URL when navigating between chats
   useEffect(() => {
+    // Handle navigation away from a chat (chatId cleared)
+    if (!chatIdFromUrl && chatId) {
+      chatLogger.info('🔁 Chat closed, clearing state');
+      setChatId(null);
+      setMessages([]);
+      setIsLoadingHistory(false);
+      return;
+    }
+
     if (!chatIdFromUrl || chatIdFromUrl === chatId) {
       return;
     }
@@ -244,6 +252,8 @@ export function ChatInterface({
 
     setChatId(chatIdFromUrl);
     setMessages([]);
+    // Set loading state to prevent empty state flash
+    setIsLoadingHistory(true);
   }, [chatIdFromUrl, chatId, status, setMessages]);
 
   // Cleanup timeout on unmount
@@ -277,9 +287,16 @@ export function ChatInterface({
       return;
     }
 
+    // Skip history load if there's a message param - we'll auto-submit instead
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('message')) {
+      chatLogger.info('⏭️  Skipping history load - auto-submit pending');
+      setIsLoadingHistory(false);
+      return;
+    }
+
     async function loadChatHistory() {
       chatLogger.info('📚 Loading chat history for chatId:', chatId);
-      setIsLoadingHistory(true);
       try {
         const res = await fetch(`/api/chats/${chatId}`);
         if (!res.ok) {
@@ -352,7 +369,9 @@ export function ChatInterface({
   useEffect(() => {
     chatLogger.info('🔄 Auto-submit useEffect triggered');
 
-    const initialMessage = searchParams?.get('message');
+    // Read directly from window.location to avoid Next.js router hydration issues
+    const params = new URLSearchParams(window.location.search);
+    const initialMessage = params.get('message');
 
     chatLogger.debug('Auto-submit conditions:', {
       hasInitialMessage: !!initialMessage,
@@ -376,7 +395,12 @@ export function ChatInterface({
       chatLogger.success('✅ All conditions met - auto-submitting message');
 
       // Decode the message (it was encoded in the URL)
-      const decodedMessage = decodeURIComponent(initialMessage);
+      let decodedMessage = initialMessage;
+      try {
+        decodedMessage = decodeURIComponent(initialMessage);
+      } catch (e) {
+        chatLogger.error('Failed to decode message:', e);
+      }
       chatLogger.debug('Decoded message:', decodedMessage);
 
       // Mark this message as submitted
@@ -425,7 +449,7 @@ export function ChatInterface({
           setMessages(compressedMessages);
         }
       } catch (compressionError) {
-        console.error('History compression failed', compressionError);
+        chatLogger.error('History compression failed', compressionError);
       } finally {
         setIsCompressing(false);
       }
@@ -576,6 +600,18 @@ export function ChatInterface({
     </PromptInput>
   );
 
+  // Loading state: Show while loading history or preparing auto-submit
+  if (isLoadingHistory && messages.length === 0) {
+    return (
+      <div className={cn("flex flex-col h-full items-center justify-center p-3 md:p-6", className)}>
+        <div className="flex flex-col items-center gap-3">
+          <Loader className="h-8 w-8" />
+          <p className="text-sm text-muted-foreground">Loading chat...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Empty state: Centered input layout with greeting
   if (messages.length === 0 && !isLoadingHistory) {
     // Project variant: minimal empty state without Bobo
@@ -639,7 +675,7 @@ export function ChatInterface({
         }
       }
     } catch (error) {
-      console.error('Error refreshing chat metadata:', error);
+      chatLogger.error('Error refreshing chat metadata:', error);
     }
   };
 

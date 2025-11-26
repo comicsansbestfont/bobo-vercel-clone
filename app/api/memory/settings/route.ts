@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 
@@ -29,7 +30,7 @@ export async function GET() {
 
     return NextResponse.json(data || defaultSettings);
   } catch (error) {
-    console.error('GET /api/memory/settings error:', error);
+    apiLogger.error('GET /api/memory/settings error:', error);
     return NextResponse.json({ error: 'Failed to fetch settings' }, { status: 500 });
   }
 }
@@ -51,7 +52,7 @@ export async function PATCH(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json(data);
   } catch (error) {
-    console.error('PATCH /api/memory/settings error:', error);
+    apiLogger.error('PATCH /api/memory/settings error:', error);
     return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 });
   }
 }

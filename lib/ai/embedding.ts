@@ -1,6 +1,7 @@
 import { embed } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { supabase } from '@/lib/db/client';
+import { embeddingLogger } from '@/lib/logger';
 
 // Create a separate OpenAI provider instance for embeddings if needed,
 // or reuse the gateway configuration.
@@ -24,7 +25,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
         });
         return embedding;
     } catch (error) {
-        console.error('Failed to generate embedding:', error);
+        embeddingLogger.error('Failed to generate embedding:', error);
         throw error;
     }
 }
@@ -42,11 +43,11 @@ export async function embedAndSaveFile(fileId: string, content: string): Promise
             .eq('id', fileId);
 
         if (error) {
-            console.error('Failed to save file embedding:', error);
+            embeddingLogger.error('Failed to save file embedding:', error);
             throw error;
         }
     } catch (error) {
-        console.error(`Error embedding file ${fileId}:`, error);
+        embeddingLogger.error(`Error embedding file ${fileId}:`, error);
         // Don't throw, just log error so we don't crash the request
     }
 }
@@ -64,10 +65,10 @@ export async function embedAndSaveMessage(messageId: string, content: string): P
             .eq('id', messageId);
 
         if (error) {
-            console.error('Failed to save message embedding:', error);
+            embeddingLogger.error('Failed to save message embedding:', error);
             throw error;
         }
     } catch (error) {
-        console.error(`Error embedding message ${messageId}:`, error);
+        embeddingLogger.error(`Error embedding message ${messageId}:`, error);
     }
 }

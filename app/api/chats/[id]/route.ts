@@ -6,6 +6,7 @@
  * DELETE /api/chats/[id] - Delete chat and all messages
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import {
   getChat,
@@ -54,7 +55,7 @@ export async function GET(
       messages,
     });
   } catch (error) {
-    console.error('Error fetching chat:', error);
+    apiLogger.error('Error fetching chat:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch chat',
@@ -192,7 +193,7 @@ export async function PATCH(
 
     return Response.json({ chat: updatedChat });
   } catch (error) {
-    console.error('Error updating chat:', error);
+    apiLogger.error('Error updating chat:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to update chat',
@@ -251,7 +252,7 @@ export async function DELETE(
     // Return 204 No Content on successful deletion
     return new Response(null, { status: 204 });
   } catch (error) {
-    console.error('Error deleting chat:', error);
+    apiLogger.error('Error deleting chat:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to delete chat',

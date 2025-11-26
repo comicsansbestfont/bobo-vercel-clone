@@ -5,6 +5,7 @@
  * POST /api/chats/[id]/messages - Create a new message
  */
 
+import { apiLogger } from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import {
   getChat,
@@ -53,7 +54,7 @@ export async function GET(
       count: messages.length,
     });
   } catch (error) {
-    console.error('Error fetching messages:', error);
+    apiLogger.error('Error fetching messages:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch messages',
@@ -203,7 +204,7 @@ export async function POST(
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating message:', error);
+    apiLogger.error('Error creating message:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to create message',

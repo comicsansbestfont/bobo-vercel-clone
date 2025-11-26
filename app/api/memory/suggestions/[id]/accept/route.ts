@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 import { generateContentHash } from '@/lib/memory/deduplicator';
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     return NextResponse.json(memory);
   } catch (error) {
-    console.error('POST /api/memory/suggestions/[id]/accept error:', error);
+    apiLogger.error('POST /api/memory/suggestions/[id]/accept error:', error);
     return NextResponse.json({ error: 'Failed to accept suggestion' }, { status: 500 });
   }
 }

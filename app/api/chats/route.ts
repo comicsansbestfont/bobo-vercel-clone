@@ -12,6 +12,7 @@ import {
   createChat,
   type ChatInsert,
 } from '@/lib/db';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * GET /api/chats
@@ -38,7 +39,7 @@ export async function GET(req: NextRequest) {
       count: chats.length,
     });
   } catch (error) {
-    console.error('Error fetching chats:', error);
+    apiLogger.error('Error fetching chats:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch chats',
@@ -123,7 +124,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating chat:', error);
+    apiLogger.error('Error creating chat:', error);
     return new Response(
       JSON.stringify({
         error: 'Failed to create chat',

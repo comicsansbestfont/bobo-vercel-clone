@@ -1,3 +1,4 @@
+import { apiLogger } from '@/lib/logger';
 import { NextResponse } from 'next/server';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 
@@ -17,7 +18,7 @@ export async function DELETE() {
       message: `Deleted ${data.length} extracted memories`,
     });
   } catch (error) {
-    console.error('DELETE /api/memory/clear-all error:', error);
+    apiLogger.error('DELETE /api/memory/clear-all error:', error);
     return NextResponse.json({ error: 'Failed to clear memories' }, { status: 500 });
   }
 }

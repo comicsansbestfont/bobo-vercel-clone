@@ -104,7 +104,6 @@ export function ChatContextMenu({
       setRenameDialogOpen(false);
       onUpdate?.();
     } catch (error) {
-      console.error('Error renaming chat:', error);
       toast.error(
         error instanceof Error ? error.message : 'Failed to rename chat'
       );
@@ -140,7 +139,6 @@ export function ChatContextMenu({
       setMoveDialogOpen(false);
       onUpdate?.();
     } catch (error) {
-      console.error('Error moving chat:', error);
       toast.error(
         error instanceof Error ? error.message : 'Failed to move chat'
       );
@@ -171,7 +169,6 @@ export function ChatContextMenu({
         router.push('/');
       }
     } catch (error) {
-      console.error('Error deleting chat:', error);
       toast.error(
         error instanceof Error ? error.message : 'Failed to delete chat'
       );

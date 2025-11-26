@@ -60,7 +60,6 @@ export default function ProjectPage() {
       setChats(chatsData.chats || []);
       setProjects(projectsData.projects || []);
     } catch (err) {
-      console.error("Failed to fetch project data:", err);
       const errorMessage = err instanceof Error ? err.message : "Failed to load project";
       setError(errorMessage);
       toast.error("Failed to load project", {
