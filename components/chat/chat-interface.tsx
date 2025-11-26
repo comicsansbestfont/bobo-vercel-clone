@@ -375,6 +375,7 @@ export function ChatInterface({
     if (initialMessage && chatId && !isLoadingHistory && messages.length === 0 && status === 'ready') {
       chatLogger.success('✅ All conditions met - auto-submitting message');
 
+      // Decode the message (it was encoded in the URL)
       const decodedMessage = decodeURIComponent(initialMessage);
       chatLogger.debug('Decoded message:', decodedMessage);
 

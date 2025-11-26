@@ -1,6 +1,7 @@
 "use client";
 
 import { ChatInterface } from "@/components/chat/chat-interface";
+import { ProjectChatCreation } from "@/components/project/project-chat-creation";
 import { BoboSidebarOptionA } from "@/components/ui/bobo-sidebar-option-a";
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -134,56 +135,57 @@ export default function ProjectPage() {
             ) : (
               // Project overview - ChatGPT-style folder view
               <div className="flex flex-1 flex-col overflow-y-auto">
-                                  {loadingOrError || (
-                                    <>
-                                                            {/* Header Section: Title Left, Action Right */}
-                                                            <div className="px-6 py-8">
-                                                              <div className="mx-auto flex max-w-3xl items-center justify-between">
-                                                                <div className="flex items-center gap-3">
-                                                                  <IconFolder className="h-6 w-6 text-neutral-500" />
-                                                                  <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
-                                                                    {project?.name}
-                                                                  </h1>
-                                                                </div>
-                                                                <Link
-                                                                  href={`/project/${projectId}/settings`}
-                                                                  className="inline-flex items-center justify-center rounded-full border border-neutral-200 px-4 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
-                                                                >
-                                                                  Add files
-                                                                </Link>
-                                                              </div>
-                                                            </div>                
-                                      {/* Chat Input Section */}
-                                      <div className="px-6 pb-6">
-                                        <div className="mx-auto max-w-3xl">
-                                          <ChatInterface
-                                            projectId={projectId}
-                                            className="h-auto"
-                                            variant="project"
-                                            projectName={project?.name}
-                                          />
-                                        </div>
-                                      </div>
-                
-                                      {/* Chat List Section */}
-                                      <div className="flex-1 px-6">
-                                        {chats.length === 0 ? (
-                                          <div className="mt-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
-                                            Start a conversation to work on this project
-                                          </div>
-                                        ) : (
-                                          <div className="mx-auto max-w-3xl">
-                                            <ProjectChatList
-                                              chats={chats}
-                                              projectId={projectId}
-                                              projects={projects}
-                                              onUpdate={fetchData}
-                                            />
-                                          </div>
-                                        )}
-                                      </div>
-                                    </>
-                                  )}              </div>
+                {loadingOrError || (
+                  <>
+                    {/* Header Section: Title Left, Action Right */}
+                    <div className="px-6 py-8">
+                      <div className="mx-auto flex max-w-3xl items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <IconFolder className="h-6 w-6 text-neutral-500" />
+                          <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
+                            {project?.name}
+                          </h1>
+                        </div>
+                        <Link
+                          href={`/project/${projectId}/settings`}
+                          className="inline-flex items-center justify-center rounded-full border border-neutral-200 px-4 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                        >
+                          Add files
+                        </Link>
+                      </div>
+                    </div>
+                    {/* Chat Input Section */}
+                    <div className="px-6 pb-6">
+                      <div className="mx-auto max-w-3xl">
+                        <div className="mx-auto max-w-3xl">
+                          <ProjectChatCreation
+                            projectId={projectId}
+                            className="h-auto"
+                            projectName={project?.name}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Chat List Section */}
+                    <div className="flex-1 px-6">
+                      {chats.length === 0 ? (
+                        <div className="mt-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                          Start a conversation to work on this project
+                        </div>
+                      ) : (
+                        <div className="mx-auto max-w-3xl">
+                          <ProjectChatList
+                            chats={chats}
+                            projectId={projectId}
+                            projects={projects}
+                            onUpdate={fetchData}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}              </div>
             )}
           </div>
         </div>
