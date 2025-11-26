@@ -7,7 +7,7 @@
 
 import { NextRequest } from 'next/server';
 import {
-  getChatsByProject,
+  getChatsByProjectWithPreviews,
   createChat,
   getProject,
   type ChatInsert,
@@ -43,8 +43,8 @@ export async function GET(
       );
     }
 
-    // Get all chats in this project
-    const chats = await getChatsByProject(projectId);
+    // Get all chats in this project with message previews
+    const chats = await getChatsByProjectWithPreviews(projectId);
 
     return Response.json({
       chats,

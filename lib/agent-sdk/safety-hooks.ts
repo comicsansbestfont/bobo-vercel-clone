@@ -2,6 +2,9 @@
  * M4-10: Safety Hooks for Agent SDK
  *
  * PreToolUse hooks that block dangerous commands and protect sensitive files.
+ *
+ * M4-11: Fixed path traversal vulnerability by using path.resolve() instead
+ * of string prefix matching to properly canonicalize paths.
  */
 
 import type {
@@ -11,6 +14,8 @@ import type {
   SyncHookJSONOutput,
 } from '@anthropic-ai/claude-agent-sdk';
 import { chatLogger } from '@/lib/logger';
+import path from 'path';
+import fs from 'fs';
 
 /**
  * Dangerous bash command patterns that should always be blocked
@@ -112,14 +117,48 @@ function checkBashSafety(input: HookInput): { allowed: boolean; reason?: string 
 
 /**
  * File write safety hook - prevents writes to protected files/directories
+ *
+ * M4-11: Uses path.resolve() to canonicalize paths and prevent path traversal
+ * attacks using ".." sequences. Also handles symlink resolution.
  */
 function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string } {
-  const filePath = String(input.file_path || input.path || '');
+  const rawFilePath = String(input.file_path || input.path || '');
+  const cwd = process.cwd();
 
-  // Block writes to protected files
+  // Resolve to absolute path and canonicalize (removes ..)
+  const resolvedPath = path.resolve(cwd, rawFilePath);
+
+  // Use realpath for symlink resolution (if parent directory exists)
+  let canonicalPath = resolvedPath;
+  try {
+    // Check parent directory to handle new files in existing directories
+    const parentDir = path.dirname(resolvedPath);
+    if (fs.existsSync(parentDir)) {
+      const resolvedParent = fs.realpathSync(parentDir);
+      canonicalPath = path.join(resolvedParent, path.basename(resolvedPath));
+    }
+  } catch {
+    // Parent doesn't exist or can't be resolved, use the resolved path
+  }
+
+  // Check if canonical path is within project directory
+  // Must be either exactly cwd or start with cwd + separator
+  if (canonicalPath !== cwd && !canonicalPath.startsWith(cwd + path.sep)) {
+    chatLogger.warn('Blocked write outside project (path traversal attempt):', {
+      rawPath: rawFilePath,
+      canonicalPath,
+      cwd,
+    });
+    return {
+      allowed: false,
+      reason: `Cannot write outside project directory`,
+    };
+  }
+
+  // Block writes to protected files (check against canonical path)
   for (const protectedFile of PROTECTED_FILES) {
-    if (filePath.endsWith(protectedFile) || filePath.includes(`/${protectedFile}`)) {
-      chatLogger.warn('Blocked write to protected file:', { filePath, protectedFile });
+    if (canonicalPath.endsWith(protectedFile) || canonicalPath.includes(`${path.sep}${protectedFile}`)) {
+      chatLogger.warn('Blocked write to protected file:', { canonicalPath, protectedFile });
       return {
         allowed: false,
         reason: `Cannot modify protected file: ${protectedFile}`,
@@ -127,26 +166,16 @@ function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string
     }
   }
 
-  // Block writes to protected directories
+  // Block writes to protected directories (check against canonical path)
   for (const protectedDir of PROTECTED_DIRECTORIES) {
-    if (filePath.includes(protectedDir)) {
-      chatLogger.warn('Blocked write to protected directory:', { filePath, protectedDir });
+    // Remove trailing slash for consistent checking
+    const dirName = protectedDir.replace(/\/$/, '');
+    if (canonicalPath.includes(`${path.sep}${dirName}${path.sep}`) ||
+        canonicalPath.endsWith(`${path.sep}${dirName}`)) {
+      chatLogger.warn('Blocked write to protected directory:', { canonicalPath, protectedDir });
       return {
         allowed: false,
         reason: `Cannot write to protected directory: ${protectedDir}`,
-      };
-    }
-  }
-
-  // Block absolute paths outside project (basic check)
-  if (filePath.startsWith('/') && !filePath.startsWith(process.cwd())) {
-    // Allow if it's within cwd
-    const cwd = process.cwd();
-    if (!filePath.startsWith(cwd)) {
-      chatLogger.warn('Blocked write outside project:', { filePath, cwd });
-      return {
-        allowed: false,
-        reason: `Cannot write outside project directory`,
       };
     }
   }

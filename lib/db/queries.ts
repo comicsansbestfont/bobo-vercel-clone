@@ -277,6 +277,75 @@ export async function getChatsByProject(projectId: string): Promise<Chat[]> {
 }
 
 /**
+ * Get chats in a specific project with message previews
+ * Returns the first 100 chars of the most recent assistant message
+ */
+export async function getChatsByProjectWithPreviews(
+  projectId: string
+): Promise<(Chat & { preview?: string })[]> {
+  // First get all chats for the project
+  const chats = await getChatsByProject(projectId);
+
+  if (chats.length === 0) return [];
+
+  // Get the most recent assistant message for each chat
+  const chatIds = chats.map(c => c.id);
+
+  // Query to get the last assistant message per chat
+  const { data: messages, error } = await supabase
+    .from('messages')
+    .select('chat_id, content')
+    .in('chat_id', chatIds)
+    .eq('role', 'assistant')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching message previews:', error);
+    // Return chats without previews on error
+    return chats;
+  }
+
+  // Build a map of chat_id -> first assistant message content
+  const previewMap = new Map<string, string>();
+
+  for (const msg of messages || []) {
+    // Only keep the first (most recent) message per chat
+    if (!previewMap.has(msg.chat_id)) {
+      // Extract text from message content
+      let previewText = '';
+
+      if (msg.content && typeof msg.content === 'object') {
+        // Handle parts array format
+        const parts = (msg.content as { parts?: Array<{ type: string; text?: string }> }).parts;
+        if (Array.isArray(parts)) {
+          const textPart = parts.find(p => p.type === 'text' && p.text);
+          if (textPart?.text) {
+            previewText = textPart.text;
+          }
+        }
+      } else if (typeof msg.content === 'string') {
+        previewText = msg.content;
+      }
+
+      // Truncate to ~80 chars and add ellipsis
+      if (previewText) {
+        previewText = previewText.slice(0, 80).trim();
+        if (previewText.length === 80) {
+          previewText += '...';
+        }
+        previewMap.set(msg.chat_id, previewText);
+      }
+    }
+  }
+
+  // Merge previews into chats
+  return chats.map(chat => ({
+    ...chat,
+    preview: previewMap.get(chat.id),
+  }));
+}
+
+/**
  * Get standalone chats (not in any project)
  */
 export async function getStandaloneChats(): Promise<Chat[]> {
@@ -838,7 +907,7 @@ export async function ensureMemorySettings(userId: string = DEFAULT_USER_ID): Pr
     .from('memory_settings')
     .insert({
       user_id: userId,
-      auto_extraction_enabled: false, // Default: OFF (explicit opt-in)
+      auto_extraction_enabled: true, // Default: ON for personal tool
       extraction_frequency: 'realtime',
       enabled_categories: [
         'work_context',

@@ -256,20 +256,17 @@ export async function POST(req: Request) {
     } = await req.json();
     chatLogger.debug('Chat Request:', { model, chatId: providedChatId, projectId, agentMode, msgCount: messages?.length });
 
-    // M4: Route to Agent Mode if enabled and using a Claude model
-    if (agentMode) {
-      if (!isClaudeModel(model)) {
-        return new Response(
-          JSON.stringify({
-            error: 'Agent Mode is only available for Claude models. Please select a Claude model or disable Agent Mode.'
-          }),
-          {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' }
-          }
-        );
-      }
+    // Validate model is provided
+    if (!model) {
+      return new Response(
+        JSON.stringify({ error: 'Model is required' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
+    // Always route Claude models through the Agent SDK
+    // This provides consistent behavior with memory, project context, and agent capabilities
+    if (isClaudeModel(model)) {
       return handleAgentMode({
         messages,
         model,
@@ -534,12 +531,35 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
       return msg;
     });
 
+    // Validate messages array is not empty
+    if (!normalizedMessages || normalizedMessages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'No messages provided' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Ensure messages have valid content for convertToModelMessages
+    const validatedMessages: UIMessage[] = normalizedMessages.map((msg) => {
+      // Ensure parts array exists
+      if (!msg.parts || !Array.isArray(msg.parts)) {
+        chatLogger.debug('Message missing parts, adding empty array:', { id: msg.id, role: msg.role });
+        return { ...msg, parts: [] };
+      }
+      return msg;
+    });
+
+    chatLogger.debug('Validated messages for conversion:', {
+      count: validatedMessages.length,
+      roles: validatedMessages.map(m => m.role),
+    });
+
     const isOpenAIModel = model?.startsWith('openai/');
-    const modelMessages = convertToModelMessages(normalizedMessages);
+    const modelMessages = convertToModelMessages(validatedMessages);
 
     if (isOpenAIModel) {
       // Direct gateway call with raw OpenAI-compatible payload to avoid SDK shaping issues.
-      const messagesForPayload = normalizedMessages.map((msg) => {
+      const messagesForPayload = validatedMessages.map((msg) => {
         chatLogger.debug('Mapping message:', msg);
         const content = (msg.parts || [])
           .map((p) => ('text' in p && p.text ? p.text : ''))

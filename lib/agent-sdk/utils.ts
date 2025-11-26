@@ -8,7 +8,8 @@
 /**
  * Check if the model is a Claude model (supports Agent Mode)
  */
-export function isClaudeModel(model: string): boolean {
+export function isClaudeModel(model: string | undefined | null): boolean {
+  if (!model) return false;
   const lowerModel = model.toLowerCase();
   return (
     lowerModel.includes('claude') ||
@@ -56,3 +57,24 @@ export const TOOL_ICONS: Record<string, string> = {
   WebSearch: 'globe',
   WebFetch: 'download',
 };
+
+/**
+ * Tool emojis for text-based display in streamed content
+ */
+export const TOOL_EMOJIS: Record<string, string> = {
+  Read: '📖',
+  Write: '✍️',
+  Edit: '📝',
+  Bash: '💻',
+  Glob: '🔍',
+  Grep: '🔎',
+  WebSearch: '🌐',
+  WebFetch: '📥',
+};
+
+/**
+ * Get emoji for a tool name (for streamed text display)
+ */
+export function getToolEmoji(toolName: string): string {
+  return TOOL_EMOJIS[toolName] || '🔧';
+}

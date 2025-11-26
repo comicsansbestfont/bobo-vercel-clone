@@ -68,24 +68,28 @@ CATEGORIES:
 
 OUTPUT FORMAT:
 
-Return a JSON array of extracted facts. Each fact must have:
+Return a JSON object with a "facts" array. Each fact must have:
 {
-  "category": "work_context" | "personal_context" | "top_of_mind" | "brief_history" | "long_term_background" | "other_instructions",
-  "subcategory": string | null,  // Only for brief_history: "recent_months" | "earlier" | "long_term"
-  "content": string,              // The fact itself (50-200 chars)
-  "summary": string | null,       // Optional 1-sentence summary
-  "confidence": number,           // 0.5 - 1.0
-  "source_message_id": string,    // ID of the message this came from
-  "time_period": "current" | "recent" | "past" | "long_ago",
-  "reasoning": string             // Why you extracted this (for debugging, not stored)
+  "facts": [
+    {
+      "category": "work_context" | "personal_context" | "top_of_mind" | "brief_history" | "long_term_background" | "other_instructions",
+      "subcategory": string | null,  // Only for brief_history: "recent_months" | "earlier" | "long_term"
+      "content": string,              // The fact itself (50-200 chars)
+      "summary": string | null,       // Optional 1-sentence summary
+      "confidence": number,           // 0.5 - 1.0
+      "source_message_id": string,    // ID of the message this came from
+      "time_period": "current" | "recent" | "past" | "long_ago",
+      "reasoning": string             // Why you extracted this (for debugging, not stored)
+    }
+  ]
 }
 
-If no facts should be extracted, return an empty array: []
+If no facts should be extracted, return: {"facts": []}
 
 EXAMPLES OF GOOD EXTRACTIONS:
 
 User: "I'm a senior software engineer at Google, working on YouTube's recommendation algorithm."
-Output: [
+Output: {"facts": [
   {
     "category": "work_context",
     "subcategory": null,
@@ -106,10 +110,10 @@ Output: [
     "time_period": "current",
     "reasoning": "User explicitly stated their project area"
   }
-]
+]}
 
 User: "I live in San Francisco with my wife and two kids."
-Output: [
+Output: {"facts": [
   {
     "category": "personal_context",
     "subcategory": null,
@@ -130,10 +134,10 @@ Output: [
     "time_period": "current",
     "reasoning": "User explicitly mentioned family structure"
   }
-]
+]}
 
 User: "I'm learning Rust right now, it's been challenging but fun."
-Output: [
+Output: {"facts": [
   {
     "category": "top_of_mind",
     "subcategory": null,
@@ -144,7 +148,7 @@ Output: [
     "time_period": "current",
     "reasoning": "User explicitly stated current learning activity"
   }
-]
+]}
 
 NOW, analyze the following conversation and extract relevant facts about the user.
 `;
@@ -192,23 +196,42 @@ export async function extractMemoriesFromChat(
     });
 
     // 4. Parse response
-    let extracted;
+    let facts: ExtractedFact[] = [];
     try {
         // Find JSON in the response (handle markdown code blocks)
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        const jsonString = jsonMatch ? jsonMatch[0] : text;
-        extracted = JSON.parse(jsonString);
+        // Try to match object {...} first, then array [...]
+        const objectMatch = text.match(/\{[\s\S]*\}/);
+        const arrayMatch = text.match(/\[[\s\S]*\]/);
+
+        let jsonString = text;
+        if (objectMatch) {
+            jsonString = objectMatch[0];
+        } else if (arrayMatch) {
+            jsonString = arrayMatch[0];
+        }
+
+        const parsed = JSON.parse(jsonString);
+
+        // Handle both formats: {facts: [...]} or just [...]
+        if (Array.isArray(parsed)) {
+            facts = parsed;
+        } else if (parsed.facts && Array.isArray(parsed.facts)) {
+            facts = parsed.facts;
+        } else {
+            console.log('Extraction returned unexpected format:', typeof parsed);
+            return [];
+        }
     } catch (e) {
         console.error('Failed to parse extraction response:', text, e);
         return [];
     }
 
-    if (!extracted.facts || !Array.isArray(extracted.facts)) {
+    if (facts.length === 0) {
         return [];
     }
 
     // 5. Validate
-    const validated = extracted.facts.filter(validateFact);
+    const validated = facts.filter(validateFact);
 
     // 6. Deduplicate & Store
     const stored = await deduplicateFacts(validated, chatId);

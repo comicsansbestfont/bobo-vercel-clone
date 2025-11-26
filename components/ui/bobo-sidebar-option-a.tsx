@@ -204,6 +204,7 @@ const SimpleChatItem = ({
             onContextMenu={(e) => {
               e.preventDefault();
             }}
+            title={chat.title}
             className="flex-1 truncate px-3 py-2 text-neutral-700 dark:text-neutral-300"
           >
             <motion.span

@@ -37,7 +37,7 @@ import {
   PromptInputHeader,
 } from '@/components/ai-elements/prompt-input';
 
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import rehypeRaw from 'rehype-raw';
 import type { Pluggable } from 'unified';
@@ -46,7 +46,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import type { Message as DBMessage, MessagePart } from '@/lib/db/types';
 
-import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, SlidersHorizontalIcon, BotIcon } from 'lucide-react';
+import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon } from 'lucide-react';
 
 import {
   Source,
@@ -62,6 +62,17 @@ import {
 } from '@/components/ai-elements/reasoning';
 
 import {
+  Context,
+  ContextTrigger,
+  ContextContent,
+  ContextContentHeader,
+  ContextContentBody,
+  ContextContentFooter,
+  ContextInputUsage,
+  ContextOutputUsage,
+} from '@/components/ai-elements/context';
+
+import {
   CitationMarker,
   CitationsList,
 } from '@/components/ai-elements/inline-citations';
@@ -69,62 +80,85 @@ import {
 import { Loader } from '@/components/ai-elements/loader';
 import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
 import { cn } from '@/lib/utils';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { compressHistory } from '@/lib/memory-manager';
 import { toast } from 'sonner';
 import { chatLogger } from '@/lib/logger';
 import { ChatHeader } from './chat-header';
-import { isClaudeModel } from '@/lib/agent-sdk/utils';
+
+/**
+ * Parse message content to extract thinking blocks for Reasoning component
+ * Used for Agent Mode where thinking is streamed as <thinking> blocks in text
+ */
+function parseMessageContent(text: string): Array<{ type: 'text' | 'thinking'; content: string }> {
+  const thinkingRegex = /<thinking>([\s\S]*?)<\/thinking>/g;
+  const parts: Array<{ type: 'text' | 'thinking'; content: string }> = [];
+
+  let lastIndex = 0;
+  let match;
+  while ((match = thinkingRegex.exec(text)) !== null) {
+    // Add text before the thinking block
+    if (match.index > lastIndex) {
+      const textContent = text.slice(lastIndex, match.index).trim();
+      if (textContent) {
+        parts.push({ type: 'text', content: textContent });
+      }
+    }
+    // Add the thinking block
+    const thinkingContent = match[1].trim();
+    if (thinkingContent) {
+      parts.push({ type: 'thinking', content: thinkingContent });
+    }
+    lastIndex = match.index + match[0].length;
+  }
+  // Add remaining text after the last thinking block
+  if (lastIndex < text.length) {
+    const remainingText = text.slice(lastIndex).trim();
+    if (remainingText) {
+      parts.push({ type: 'text', content: remainingText });
+    }
+  }
+
+  // If no thinking blocks found, return original text
+  if (parts.length === 0 && text.trim()) {
+    return [{ type: 'text', content: text }];
+  }
+
+  return parts;
+}
 
 const models = [
   {
-    name: 'GPT 5.1 Thinking',
-    value: 'openai/gpt-5.1-thinking',
-  },
-  {
-    name: 'GPT 5.1 Instant',
-    value: 'openai/gpt-5.1-instant',
-  },
-  {
-    name: 'GPT 4o',
-    value: 'openai/gpt-4o',
-  },
-  {
-    name: 'GPT 5 Pro',
-    value: 'openai/gpt-5-pro',
-  },
-  {
-    name: 'GPT 5 Mini',
-    value: 'openai/gpt-5-mini',
-  },
-  {
     name: 'Claude Sonnet 4.5',
-    value: 'anthropic/claude-sonnet-4.5',
+    value: 'anthropic/claude-sonnet-4-5-20250929',
   },
   {
-    name: 'Claude Opus 4',
-    value: 'anthropic/claude-opus-4',
+    name: 'Claude Opus 4.5',
+    value: 'anthropic/claude-opus-4-5-20251101',
   },
   {
-    name: 'Gemini 3 Pro Preview',
-    value: 'google/gemini-3-pro-preview',
-  },
-  {
-    name: 'Gemini 2.5 Flash',
-    value: 'google/gemini-2.5-flash',
-  },
-  {
-    name: 'Deepseek R1',
-    value: 'deepseek/deepseek-r1',
+    name: 'Claude Haiku 4.5',
+    value: 'anthropic/claude-haiku-4-5-20251001',
   },
 ];
 
 interface ChatInterfaceProps {
   projectId?: string;
   className?: string;
+  /** Custom placeholder text for the input */
+  placeholder?: string;
+  /** Variant affects empty state rendering: 'default' shows Bobo, 'project' shows minimal */
+  variant?: 'default' | 'project';
+  /** Project name for contextual placeholder in project variant */
+  projectName?: string;
 }
 
-export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
+export function ChatInterface({
+  projectId,
+  className,
+  placeholder,
+  variant = 'default',
+  projectName,
+}: ChatInterfaceProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const chatIdFromUrl = searchParams?.get('chatId');
@@ -132,11 +166,9 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
-  const [agentMode, setAgentMode] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [chatId, setChatId] = useState<string | null>(chatIdFromUrl);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
-  const [isContextCollapsed, setIsContextCollapsed] = useState(true);
   const [chatTitle, setChatTitle] = useState<string | null>(null);
   const [chatProjectId, setChatProjectId] = useState<string | null>(projectId || null);
   const [chatProjectName, setChatProjectName] = useState<string | null>(null);
@@ -361,7 +393,6 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
           body: {
             model,
             webSearch,
-            agentMode: agentMode && isClaudeModel(model), // Only enable if Claude model
             chatId,
             projectId,
           },
@@ -411,7 +442,6 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         body: {
           model: model,
           webSearch: webSearch,
-          agentMode: agentMode && isClaudeModel(model), // Only enable if Claude model
           chatId: chatId,
           projectId: projectId,
         },
@@ -423,50 +453,6 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
 
   // Calculate context usage
   const contextUsage = getContextUsage(messages, input, model);
-
-  const usageMeta = useMemo(() => {
-    const segments = [
-      {
-        key: 'system',
-        label: 'System',
-        tokens: contextUsage.segments.system,
-        color: 'bg-slate-500/80',
-        dot: 'bg-slate-500',
-      },
-      {
-        key: 'history',
-        label: 'History',
-        tokens: contextUsage.segments.history,
-        color: 'bg-primary',
-        dot: 'bg-primary',
-      },
-      {
-        key: 'draft',
-        label: 'Draft',
-        tokens: contextUsage.segments.draft,
-        color: 'bg-amber-500',
-        dot: 'bg-amber-500',
-      },
-    ];
-
-    const usageTextColor =
-      contextUsage.usageState === 'critical'
-        ? 'text-destructive'
-        : contextUsage.usageState === 'warning'
-        ? 'text-amber-600'
-        : 'text-emerald-600';
-
-    return {
-      segments: segments.map((segment) => ({
-        ...segment,
-        width: Math.min(
-          (segment.tokens / contextUsage.contextLimit) * 100,
-          100
-        ),
-      })),
-      usageTextColor,
-    };
-  }, [contextUsage]);
 
   // Reusable PromptInput component for both layouts
   const promptInputElement = (
@@ -481,7 +467,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
         <PromptInputTextarea
           onChange={(e) => setInput(e.target.value)}
           value={input}
-          placeholder="What's on your mind?"
+          placeholder={placeholder || (projectName ? `New chat in ${projectName}...` : "What's on your mind?")}
         />
       </PromptInputBody>
 
@@ -501,83 +487,58 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
           >
             <GlobeIcon size={16} />
           </PromptInputButton>
-          {/* Agent Mode Toggle - only enabled for Claude models */}
-          <PromptInputButton
-            variant={agentMode && isClaudeModel(model) ? 'default' : 'ghost'}
-            onClick={() => {
-              if (!isClaudeModel(model)) {
-                toast.info('Agent Mode requires a Claude model', {
-                  description: 'Select Claude Sonnet 4.5 or Claude Opus 4 to use Agent Mode.'
-                });
-                return;
-              }
-              setAgentMode(!agentMode);
-            }}
-            title={
-              !isClaudeModel(model)
-                ? "Agent Mode (requires Claude model)"
-                : agentMode
-                ? "Agent Mode enabled"
-                : "Enable Agent Mode"
-            }
-            className={cn(
-              !isClaudeModel(model) && "opacity-50"
-            )}
+          {/* Context Monitor - AI Elements Context Component */}
+          <Context
+            usedTokens={contextUsage.tokensUsed}
+            maxTokens={contextUsage.contextLimit}
+            modelId={model}
           >
-            <BotIcon size={16} />
-          </PromptInputButton>
-          {/* Context Monitor Button */}
-          <Collapsible
-            open={!isContextCollapsed}
-            onOpenChange={(open) => setIsContextCollapsed(!open)}
-          >
-            <CollapsibleTrigger asChild>
-              <PromptInputButton
-                variant="ghost"
-                className={cn(
-                  contextUsage.usageState === 'critical' && "text-destructive",
-                  contextUsage.usageState === 'warning' && "text-amber-600"
-                )}
-                title={`Context: ${formatTokenCount(contextUsage.tokensUsed)}/${formatTokenCount(contextUsage.contextLimit)}`}
-              >
-                <SlidersHorizontalIcon size={16} />
-              </PromptInputButton>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div className="absolute left-0 bottom-full mb-2 p-2 rounded-lg border border-border bg-background shadow-lg z-10">
-                <div className="flex items-center justify-between mb-1.5 gap-4">
-                  <span className="text-[10px] font-medium text-muted-foreground">Context</span>
-                  <span className={cn('text-[10px] font-medium tabular-nums', usageMeta.usageTextColor)}>
-                    {formatTokenCount(contextUsage.tokensUsed)}/{formatTokenCount(contextUsage.contextLimit)}
-                  </span>
-                </div>
-                <div className="mb-1.5 h-0.5 w-48 overflow-hidden rounded-full bg-muted/40">
-                  <div className="flex h-full w-full">
-                    {usageMeta.segments.map((segment) => (
-                      <div
-                        key={segment.key}
-                        className={cn(segment.color, 'h-full transition-all')}
-                        style={{ width: `${segment.width}%` }}
-                      />
-                    ))}
+            <ContextTrigger
+              className={cn(
+                "h-8 px-2",
+                contextUsage.usageState === 'critical' && "text-destructive",
+                contextUsage.usageState === 'warning' && "text-amber-600"
+              )}
+            />
+            <ContextContent side="top" align="start">
+              <ContextContentHeader />
+              <ContextContentBody className="space-y-1">
+                {/* Segment breakdown */}
+                <div className="space-y-1 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-slate-500/80" />
+                      <span className="text-muted-foreground">System</span>
+                    </span>
+                    <span className="font-mono">{formatTokenCount(contextUsage.segments.system)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-primary" />
+                      <span className="text-muted-foreground">History</span>
+                    </span>
+                    <span className="font-mono">{formatTokenCount(contextUsage.segments.history)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-amber-500" />
+                      <span className="text-muted-foreground">Draft</span>
+                    </span>
+                    <span className="font-mono">{formatTokenCount(contextUsage.segments.draft)}</span>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-muted-foreground/50">
-                  {usageMeta.segments.map((segment) => (
-                    <div key={segment.key} className="flex items-center gap-1">
-                      <span className={cn('h-1 w-1 rounded-full', segment.dot)} aria-hidden />
-                      <span>{segment.label} {formatTokenCount(segment.tokens)}</span>
-                    </div>
-                  ))}
-                </div>
                 {isCompressing && (
-                  <p className="mt-1 text-[9px] text-muted-foreground/50">
+                  <p className="text-xs text-muted-foreground animate-pulse">
                     Compressing…
                   </p>
                 )}
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
+              </ContextContentBody>
+              <ContextContentFooter>
+                <span className="text-muted-foreground">Model</span>
+                <span className="truncate max-w-32">{model.split('/').pop()}</span>
+              </ContextContentFooter>
+            </ContextContent>
+          </Context>
         </PromptInputTools>
 
         {/* Right group: Model selector + Submit */}
@@ -616,6 +577,18 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
 
   // Empty state: Centered input layout with greeting
   if (messages.length === 0 && !isLoadingHistory) {
+    // Project variant: minimal empty state without Bobo
+    if (variant === 'project') {
+      return (
+        <div className={cn("flex flex-col h-full items-center justify-center p-3 md:p-6", className)}>
+          <div className="w-full max-w-3xl">
+            {promptInputElement}
+          </div>
+        </div>
+      );
+    }
+
+    // Default variant: Show Bobo character and greeting
     return (
       <div className={cn("flex flex-col h-full items-center justify-center p-3 md:p-6", className)}>
         <div className="w-full max-w-2xl">
@@ -624,7 +597,7 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
             <img
               src="/bobo-character.svg"
               alt="Bobo"
-              className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2 animate-bobo-breathe"
+              className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2 animate-bobo-breathe dark:drop-shadow-none drop-shadow-[0_0_30px_rgba(0,0,0,0.15)]"
             />
             <h1 className="text-2xl md:text-3xl font-light text-foreground/80">
               Tell Bobo Anything
@@ -719,13 +692,8 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
                 if (partType === 'text') {
                   const plainText = (part as { text?: string }).text || '';
 
-                  // Extract source parts from this message for citation markers
-                  const sourceParts = (message.parts as unknown as MessagePart[]).filter(
-                    (p) => p.type === 'project-source' || p.type === 'global-source'
-                  );
-
-                  // Wrap [1], [2] markers in <sup> tags for styling
-                  const textWithSupTags = plainText.replace(/\[(\d+)\]/g, '<sup class="citation-marker">[$1]</sup>');
+                  // Parse text to extract thinking blocks (for Agent Mode)
+                  const parsedContent = parseMessageContent(plainText);
 
                   // Custom component mapping to replace <sup> with CitationMarker
                   const citationComponents = {
@@ -753,35 +721,62 @@ export function ChatInterface({ projectId, className }: ChatInterfaceProps) {
                     },
                   };
 
+                  // Check if this is the last part of the last message (for streaming detection)
+                  const isLastPartOfLastMessage = i === message.parts.length - 1 && message.id === messages.at(-1)?.id;
+
                   return (
-                    <Message key={`${message.id}-${i}`} from={message.role}>
-                      <MessageContent>
-                        <MessageResponse
-                          rehypePlugins={[rehypeRaw as Pluggable]}
-                          components={citationComponents}
-                        >
-                          {textWithSupTags}
-                        </MessageResponse>
-                      </MessageContent>
-                      {message.role === 'assistant' && i === message.parts.length - 1 && message.id === messages.at(-1)?.id && (
-                        <MessageActions>
-                          <MessageAction
-                            onClick={() => regenerate()}
-                            label="Retry"
-                          >
-                            <RefreshCcwIcon className="size-3" />
-                          </MessageAction>
-                          <MessageAction
-                            onClick={() =>
-                              navigator.clipboard.writeText((part as { text?: string }).text || '')
-                            }
-                            label="Copy"
-                          >
-                            <CopyIcon className="size-3" />
-                          </MessageAction>
-                        </MessageActions>
-                      )}
-                    </Message>
+                    <div key={`${message.id}-${i}`}>
+                      {parsedContent.map((parsed, j) => {
+                        if (parsed.type === 'thinking') {
+                          // Render thinking blocks with Reasoning component
+                          return (
+                            <Reasoning
+                              key={`${message.id}-${i}-thinking-${j}`}
+                              className="w-full mb-2"
+                              isStreaming={status === 'streaming' && isLastPartOfLastMessage}
+                            >
+                              <ReasoningTrigger>Agent Thinking</ReasoningTrigger>
+                              <ReasoningContent>{parsed.content}</ReasoningContent>
+                            </Reasoning>
+                          );
+                        }
+
+                        // Render text content with MessageResponse
+                        // Wrap [1], [2] markers in <sup> tags for citation styling
+                        const textWithSupTags = parsed.content.replace(/\[(\d+)\]/g, '<sup class="citation-marker">[$1]</sup>');
+
+                        return (
+                          <Message key={`${message.id}-${i}-text-${j}`} from={message.role}>
+                            <MessageContent>
+                              <MessageResponse
+                                rehypePlugins={[rehypeRaw as Pluggable]}
+                                components={citationComponents}
+                              >
+                                {textWithSupTags}
+                              </MessageResponse>
+                            </MessageContent>
+                            {message.role === 'assistant' && isLastPartOfLastMessage && j === parsedContent.length - 1 && (
+                              <MessageActions>
+                                <MessageAction
+                                  onClick={() => regenerate()}
+                                  label="Retry"
+                                >
+                                  <RefreshCcwIcon className="size-3" />
+                                </MessageAction>
+                                <MessageAction
+                                  onClick={() =>
+                                    navigator.clipboard.writeText((part as { text?: string }).text || '')
+                                  }
+                                  label="Copy"
+                                >
+                                  <CopyIcon className="size-3" />
+                                </MessageAction>
+                              </MessageActions>
+                            )}
+                          </Message>
+                        );
+                      })}
+                    </div>
                   );
                 }
 

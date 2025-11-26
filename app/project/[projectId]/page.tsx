@@ -2,184 +2,80 @@
 
 import { ChatInterface } from "@/components/chat/chat-interface";
 import { BoboSidebarOptionA } from "@/components/ui/bobo-sidebar-option-a";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
-import type { Project, ChatWithProject } from "@/lib/db/types";
-import { ProjectHeader } from "@/components/project/project-header";
-import { ProjectEmptyState } from "@/components/project/empty-state";
-import {
-  TableProvider,
-  TableHeader,
-  TableHeaderGroup,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableColumnHeader,
-  type ColumnDef,
-} from "@/components/kibo-ui/table";
+import type { Project, ChatWithProject, ProjectWithStats } from "@/lib/db/types";
+import { ProjectChatList } from "@/components/project/project-chat-list";
+import { IconFolder } from "@tabler/icons-react";
+import Link from "next/link";
 
-type ChatTableRow = {
-  id: string;
-  title: string;
-  updated_at: Date;
-  model: string;
-};
+// Extended chat type with preview
+interface ChatWithPreview extends ChatWithProject {
+  preview?: string;
+}
 
 export default function ProjectPage() {
   const params = useParams();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const projectId = params.projectId as string;
   const chatId = searchParams?.get("chatId");
 
   const [project, setProject] = useState<Project | null>(null);
-  const [chats, setChats] = useState<ChatWithProject[]>([]);
+  const [chats, setChats] = useState<ChatWithPreview[]>([]);
+  const [projects, setProjects] = useState<ProjectWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch project and chats data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
+  // Fetch project, chats, and all projects (for move dialog)
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
 
-      try {
-        const [projectRes, chatsRes] = await Promise.all([
-          fetch(`/api/projects/${projectId}`),
-          fetch(`/api/projects/${projectId}/chats`),
-        ]);
+    try {
+      const [projectRes, chatsRes, projectsRes] = await Promise.all([
+        fetch(`/api/projects/${projectId}`),
+        fetch(`/api/projects/${projectId}/chats`),
+        fetch(`/api/projects`),
+      ]);
 
-        if (!projectRes.ok) {
-          if (projectRes.status === 404) {
-            setError("not_found");
-            return;
-          }
-          throw new Error("Failed to fetch project");
+      if (!projectRes.ok) {
+        if (projectRes.status === 404) {
+          setError("not_found");
+          return;
         }
-
-        if (!chatsRes.ok) {
-          throw new Error("Failed to fetch chats");
-        }
-
-        const projectData = await projectRes.json();
-        const chatsData = await chatsRes.json();
-
-        setProject(projectData.project);
-        setChats(chatsData.chats || []);
-      } catch (err) {
-        console.error("Failed to fetch project data:", err);
-        const errorMessage = err instanceof Error ? err.message : "Failed to load project";
-        setError(errorMessage);
-        toast.error("Failed to load project", {
-          description: errorMessage,
-        });
-      } finally {
-        setLoading(false);
+        throw new Error("Failed to fetch project");
       }
-    };
 
+      if (!chatsRes.ok) {
+        throw new Error("Failed to fetch chats");
+      }
+
+      const projectData = await projectRes.json();
+      const chatsData = await chatsRes.json();
+      const projectsData = projectsRes.ok ? await projectsRes.json() : { projects: [] };
+
+      setProject(projectData.project);
+      setChats(chatsData.chats || []);
+      setProjects(projectsData.projects || []);
+    } catch (err) {
+      console.error("Failed to fetch project data:", err);
+      const errorMessage = err instanceof Error ? err.message : "Failed to load project";
+      setError(errorMessage);
+      toast.error("Failed to load project", {
+        description: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [projectId]);
 
-  const handleNameChange = async (newName: string) => {
-    try {
-      const response = await fetch(`/api/projects/${projectId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: newName }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update project name");
-      }
-
-      const data = await response.json();
-      setProject(data.project);
-
-      toast.success("Project updated", {
-        description: "Project name has been updated successfully.",
-      });
-    } catch (err) {
-      console.error("Failed to update project name:", err);
-      toast.error("Failed to update project", {
-        description: "Unable to update project name. Please try again.",
-      });
-    }
-  };
-
-  // Show chat list when no chat is selected
-  const formatRelativeDate = (date: Date): string => {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMins < 60) {
-      return `${diffMins}m ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours}h ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays}d ago`;
-    } else {
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      });
-    }
-  };
-
-  const columns: ColumnDef<ChatTableRow>[] = [
-    {
-      accessorKey: "title",
-      header: ({ column }) => (
-        <TableColumnHeader column={column} title="Chat Title" />
-      ),
-      cell: ({ row }) => {
-        return (
-          <div className="font-medium">{row.getValue("title")}</div>
-        );
-      },
-    },
-    {
-      accessorKey: "model",
-      header: ({ column }) => (
-        <TableColumnHeader column={column} title="Model" />
-      ),
-      cell: ({ row }) => {
-        const model = row.getValue("model") as string;
-        const modelName = model.split("/")[1] || model;
-        return <div className="text-sm text-muted-foreground">{modelName}</div>;
-      },
-    },
-    {
-      accessorKey: "updated_at",
-      header: ({ column }) => (
-        <TableColumnHeader column={column} title="Last Updated" />
-      ),
-      cell: ({ row }) => {
-        const date = row.getValue("updated_at") as Date;
-        return (
-          <div className="text-sm text-muted-foreground">
-            {formatRelativeDate(date)}
-          </div>
-        );
-      },
-    },
-  ];
-
-  const tableData: ChatTableRow[] = chats.map((chat) => ({
-    id: chat.id,
-    title: chat.title,
-    updated_at: new Date(chat.updated_at),
-    model: chat.model,
-  }));
-
-  const shellHidden = Boolean(chatId);
+  // Show chat view when chatId is present
+  const isInChatView = Boolean(chatId);
 
   const renderLoadingOrError = () => {
     if (loading) {
@@ -227,86 +123,68 @@ export default function ProjectPage() {
     <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading project...</div>}>
       <BoboSidebarOptionA>
         <div className="m-2 flex min-h-[calc(100vh-1rem)] flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
-          {!shellHidden && (
-            <ProjectHeader
-              projectId={projectId}
-              projectName={project?.name || ""}
-              onNameChange={handleNameChange}
-            />
-          )}
-
           <div className="flex flex-1 flex-col overflow-hidden">
-            {!shellHidden && (
-              <div className="flex-1 overflow-y-auto px-6 py-4">
-                {loadingOrError ? (
-                  loadingOrError
-                ) : chats.length === 0 ? (
-                  <ProjectEmptyState />
-                ) : (
-                  <div className="cursor-pointer">
-                    <TableProvider columns={columns} data={tableData}>
-                      <TableHeader>
-                        {({ headerGroup }) => (
-                          <TableHeaderGroup headerGroup={headerGroup}>
-                            {({ header }) => (
-                              <TableHead
-                                header={header}
-                                className={
-                                  header.id === "model" || header.id === "updated_at"
-                                    ? "hidden md:table-cell"
-                                    : undefined
-                                }
-                              />
-                            )}
-                          </TableHeaderGroup>
-                        )}
-                      </TableHeader>
-                      <TableBody>
-                        {({ row }) => (
-                          (() => {
-                            const chat = row.original as ChatTableRow;
-
-                            return (
-                              <TableRow
-                                row={row}
-                                className="hover:bg-muted/50 transition-colors"
-                              >
-                                {({ cell }) => (
-                                  <TableCell
-                                    cell={cell}
-                                    className={`cursor-pointer ${
-                                      cell.column.id === "model" || cell.column.id === "updated_at"
-                                        ? "hidden md:table-cell"
-                                        : ""
-                                    }`}
-                                    onClick={() =>
-                                      router.push(`/project/${projectId}?chatId=${chat.id}`)
-                                    }
-                                  />
-                                )}
-                              </TableRow>
-                            );
-                          })()
-                        )}
-                      </TableBody>
-                    </TableProvider>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div
-              className={
-                shellHidden
-                  ? "flex-1"
-                  : "border-t border-neutral-200 dark:border-neutral-700"
-              }
-            >
+            {isInChatView ? (
+              // Active chat view - full height chat interface
               <ChatInterface
                 projectId={projectId}
-                className={shellHidden ? "h-full" : "h-auto p-4"}
+                className="h-full"
+                projectName={project?.name}
               />
-            </div>
+            ) : (
+              // Project overview - ChatGPT-style folder view
+              <div className="flex flex-1 flex-col overflow-y-auto">
+                                  {loadingOrError || (
+                                    <>
+                                                            {/* Header Section: Title Left, Action Right */}
+                                                            <div className="px-6 py-8">
+                                                              <div className="mx-auto flex max-w-3xl items-center justify-between">
+                                                                <div className="flex items-center gap-3">
+                                                                  <IconFolder className="h-6 w-6 text-neutral-500" />
+                                                                  <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
+                                                                    {project?.name}
+                                                                  </h1>
+                                                                </div>
+                                                                <Link
+                                                                  href={`/project/${projectId}/settings`}
+                                                                  className="inline-flex items-center justify-center rounded-full border border-neutral-200 px-4 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                                                                >
+                                                                  Add files
+                                                                </Link>
+                                                              </div>
+                                                            </div>                
+                                      {/* Chat Input Section */}
+                                      <div className="px-6 pb-6">
+                                        <div className="mx-auto max-w-3xl">
+                                          <ChatInterface
+                                            projectId={projectId}
+                                            className="h-auto"
+                                            variant="project"
+                                            projectName={project?.name}
+                                          />
+                                        </div>
+                                      </div>
+                
+                                      {/* Chat List Section */}
+                                      <div className="flex-1 px-6">
+                                        {chats.length === 0 ? (
+                                          <div className="mt-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                                            Start a conversation to work on this project
+                                          </div>
+                                        ) : (
+                                          <div className="mx-auto max-w-3xl">
+                                            <ProjectChatList
+                                              chats={chats}
+                                              projectId={projectId}
+                                              projects={projects}
+                                              onUpdate={fetchData}
+                                            />
+                                          </div>
+                                        )}
+                                      </div>
+                                    </>
+                                  )}              </div>
+            )}
           </div>
         </div>
       </BoboSidebarOptionA>

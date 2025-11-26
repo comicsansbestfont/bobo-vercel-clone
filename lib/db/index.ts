@@ -55,6 +55,7 @@ export {
   getChats,
   getChatsWithProjects,
   getChatsByProject,
+  getChatsByProjectWithPreviews,
   getStandaloneChats,
   getChat,
   createChat,

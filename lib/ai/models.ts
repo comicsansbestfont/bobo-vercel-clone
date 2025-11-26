@@ -24,7 +24,10 @@ const openaiGateway = createOpenAI({
  * "google/gemini-2.5-flash", "perplexity/sonar"). If no provider is given, we default
  * to "openai".
  */
-export function getModel(modelId: string) {
+export function getModel(modelId: string | undefined | null) {
+  if (!modelId) {
+    throw new Error('Model ID is required');
+  }
   const normalizedModelId = modelId.includes('/')
     ? modelId
     : `openai/${modelId}`;

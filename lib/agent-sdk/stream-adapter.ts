@@ -50,8 +50,34 @@ export async function* streamAgentResponse(
       // The exact message structure depends on SDK version
       const msgType = (message as Record<string, unknown>).type as string;
 
+      // Debug: Log ALL incoming messages to understand structure
+      chatLogger.debug('Agent SDK message received:', {
+        type: msgType,
+        keys: Object.keys(message as object),
+        message: JSON.stringify(message).slice(0, 500),
+      });
+
       switch (msgType) {
-        case 'assistant':
+        case 'assistant': {
+          // Agent SDK wraps content in message.message.content array
+          const msg = message as Record<string, unknown>;
+          const innerMessage = msg.message as Record<string, unknown> | undefined;
+
+          if (innerMessage?.content) {
+            const content = extractContent(innerMessage);
+            if (content) {
+              yield { type: 'text', content };
+            }
+          } else {
+            // Fallback to direct extraction
+            const content = extractContent(message);
+            if (content) {
+              yield { type: 'text', content };
+            }
+          }
+          break;
+        }
+
         case 'text': {
           // Text content from the assistant
           const content = extractContent(message);
@@ -90,9 +116,41 @@ export async function* streamAgentResponse(
           break;
         }
 
-        case 'tool-result':
-        case 'tool_result':
         case 'result': {
+          // Agent SDK final result message - NOT a tool result
+          // This contains the complete agent response in the 'result' field
+          const msg = message as Record<string, unknown>;
+
+          // Check if this is actually a tool result (has tool_name) or final agent result
+          if (msg.tool_name || currentToolName) {
+            // This is a tool result
+            const toolName = msg.tool_name as string || currentToolName || 'unknown';
+            const output = extractToolOutput(message);
+            const error = msg.error as string | undefined;
+            const duration = toolStartTime ? Date.now() - toolStartTime : undefined;
+
+            yield {
+              type: 'tool-result',
+              toolName,
+              output,
+              duration,
+              success: !error,
+            };
+
+            toolStartTime = null;
+            currentToolName = null;
+          } else if (typeof msg.result === 'string' && msg.result) {
+            // This is the final agent response - emit as text
+            // Skip if we already emitted from 'assistant' message
+            chatLogger.debug('Final agent result received:', { resultLength: msg.result.length });
+            // The 'assistant' message should have already emitted the text,
+            // so we skip emitting again to avoid duplication
+          }
+          break;
+        }
+
+        case 'tool-result':
+        case 'tool_result': {
           // Tool execution completed
           const toolName = (message as Record<string, unknown>).tool_name as string ||
                           currentToolName ||
@@ -199,24 +257,84 @@ function extractDelta(message: unknown): string | null {
 
 /**
  * Extract tool output from result message
+ * Handles multiple field naming conventions from different SDK versions
  */
 function extractToolOutput(message: unknown): string {
   const msg = message as Record<string, unknown>;
 
-  if (typeof msg.output === 'string') {
+  // Debug: Log what we're trying to extract from
+  chatLogger.debug('extractToolOutput - message fields:', {
+    hasOutput: 'output' in msg,
+    hasResult: 'result' in msg,
+    hasContent: 'content' in msg,
+    hasText: 'text' in msg,
+    hasData: 'data' in msg,
+    keys: Object.keys(msg),
+  });
+
+  // Try 'output' field (common)
+  if (typeof msg.output === 'string' && msg.output) {
     return msg.output;
   }
 
-  if (typeof msg.result === 'string') {
+  // Try 'result' field
+  if (typeof msg.result === 'string' && msg.result) {
     return msg.result;
   }
 
+  // Try 'content' field (Claude API format)
+  if (typeof msg.content === 'string' && msg.content) {
+    return msg.content;
+  }
+
+  // Try 'text' field
+  if (typeof msg.text === 'string' && msg.text) {
+    return msg.text;
+  }
+
+  // Try 'data' field
+  if (typeof msg.data === 'string' && msg.data) {
+    return msg.data;
+  }
+
+  // Handle object outputs
   if (msg.output && typeof msg.output === 'object') {
     return JSON.stringify(msg.output, null, 2);
   }
 
   if (msg.result && typeof msg.result === 'object') {
     return JSON.stringify(msg.result, null, 2);
+  }
+
+  if (msg.content && typeof msg.content === 'object') {
+    // Handle content blocks array (Claude API format)
+    if (Array.isArray(msg.content)) {
+      return msg.content
+        .map((block: unknown) => {
+          const b = block as Record<string, unknown>;
+          if (b.type === 'text' && typeof b.text === 'string') {
+            return b.text;
+          }
+          if (b.type === 'tool_result' && typeof b.content === 'string') {
+            return b.content;
+          }
+          return JSON.stringify(b);
+        })
+        .filter(Boolean)
+        .join('\n');
+    }
+    return JSON.stringify(msg.content, null, 2);
+  }
+
+  if (msg.data && typeof msg.data === 'object') {
+    return JSON.stringify(msg.data, null, 2);
+  }
+
+  // Last resort: stringify the entire message (excluding type)
+  const { type, ...rest } = msg;
+  if (Object.keys(rest).length > 0) {
+    chatLogger.debug('extractToolOutput - using fallback stringify:', rest);
+    return JSON.stringify(rest, null, 2);
   }
 
   return '';

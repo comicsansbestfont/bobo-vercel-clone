@@ -14,7 +14,7 @@ export async function GET() {
     // Return default settings if none exist
     const defaultSettings = {
       user_id: DEFAULT_USER_ID,
-      auto_extraction_enabled: false,
+      auto_extraction_enabled: true, // Default: ON for personal tool
       extraction_frequency: 'realtime',
       enabled_categories: [
         'work_context',

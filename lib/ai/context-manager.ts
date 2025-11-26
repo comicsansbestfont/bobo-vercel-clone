@@ -51,8 +51,8 @@ export function prepareSystemPrompt(
     context: ProjectContext,
     modelId: string
 ): { system: string; messages?: CoreMessage[] } {
-    const isAnthropic = modelId.includes('claude');
-    const isGemini = modelId.includes('gemini');
+    const isAnthropic = modelId?.includes('claude') ?? false;
+    const isGemini = modelId?.includes('gemini') ?? false;
 
     // Format the context block
     const contextBlock = context.files.map(f => `
