@@ -26,8 +26,6 @@ import {
   Sidebar,
   SidebarBody,
   SidebarLink,
-  Logo,
-  LogoIcon,
   useSidebar,
 } from "./collapsible-sidebar";
 import type { ProjectWithStats, ChatWithProject } from "@/lib/db/types";
@@ -44,6 +42,66 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+// Custom Logo with smart navigation (handles clicking when already on home page)
+const BoboLogo = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { setOpen } = useSidebar();
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    // Clear URL params and navigate to clean home state
+    router.push('/');
+
+    // Close sidebar on mobile
+    if (window.innerWidth < 768) {
+      setOpen(false);
+    }
+  };
+
+  return (
+    <Link
+      href="/"
+      onClick={handleLogoClick}
+      className="relative z-20 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
+    >
+      <div className="h-5 w-6 flex-shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="font-medium whitespace-pre text-black dark:text-white"
+      >
+        Bobo AI
+      </motion.span>
+    </Link>
+  );
+};
+
+const BoboLogoIcon = () => {
+  const router = useRouter();
+  const { setOpen } = useSidebar();
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    router.push('/');
+
+    if (window.innerWidth < 768) {
+      setOpen(false);
+    }
+  };
+
+  return (
+    <Link
+      href="/"
+      onClick={handleLogoClick}
+      className="relative z-20 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
+    >
+      <div className="h-5 w-6 flex-shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
+    </Link>
+  );
+};
 
 // Skeleton loading components
 const ProjectSkeleton = () => {
@@ -493,17 +551,13 @@ export function BoboSidebarOptionA({ children }: { children: React.ReactNode }) 
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
             {/* Logo and New Chat Button Row */}
             <div className="mb-4 flex items-center justify-between gap-2">
-              {open ? <Logo /> : <LogoIcon />}
+              {open ? <BoboLogo /> : <BoboLogoIcon />}
 
               {/* New Chat Button - Right aligned */}
               <button
                 onClick={() => {
-                  // If we're on the home page, force a reload to clear chat state
-                  if (pathname === '/') {
-                    window.location.href = '/';
-                  } else {
-                    router.push('/');
-                  }
+                  // Always use client-side navigation - ChatInterface handles state clearing
+                  router.push('/');
                   // Close sidebar on mobile after creating new chat
                   if (window.innerWidth < 768) {
                     setOpen(false);

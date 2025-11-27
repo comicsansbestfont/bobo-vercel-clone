@@ -187,7 +187,14 @@ export function ChatInterface({
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
-  const [chatId, setChatId] = useState<string | null>(chatIdFromUrl);
+  // Initialize chatId from URL directly to avoid Next.js searchParams hydration delay
+  const [chatId, setChatId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('chatId');
+    }
+    return chatIdFromUrl;
+  });
   // Initialize to true when chatId is present to prevent empty state flash during page load
   const [isLoadingHistory, setIsLoadingHistory] = useState(Boolean(chatIdFromUrl));
   const [chatTitle, setChatTitle] = useState<string | null>(null);
@@ -210,18 +217,23 @@ export function ChatInterface({
 
         // Extract chat ID from header if creating new chat
         const responseChatId = response.headers.get('X-Chat-Id');
-        if (responseChatId && !chatId) {
+
+        // Check URL directly instead of stale state variable to prevent redundant updates
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlChatId = urlParams.get('chatId');
+
+        if (responseChatId && !urlChatId) {
           // Mark that we're creating a new chat to prevent history loading
           justSubmittedRef.current = true;
           chatLogger.info('🆕 New chat created - blocking history loads until persistence completes');
 
-          // Update state first
+          // Update state
           setChatId(responseChatId);
 
-          // Update URL with Next.js router (keeps router in sync)
+          // Use history.replaceState instead of router.replace to avoid React re-renders
           const params = new URLSearchParams(window.location.search);
           params.set('chatId', responseChatId);
-          router.replace(`?${params.toString()}`, { scroll: false });
+          window.history.replaceState({}, '', `?${params.toString()}`);
         }
 
         return response;
@@ -263,7 +275,9 @@ export function ChatInterface({
     }
 
     // Only sync when we're not in the middle of sending/streaming a message
+    // Also check if messages exist - don't clear them during active conversation
     if (status === 'submitted' || status === 'streaming' || justSubmittedRef.current) {
+      chatLogger.info('⏭️  Skipping chatId sync - message in progress');
       return;
     }
 
