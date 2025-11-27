@@ -1,10 +1,14 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** November 27, 2025 - URL message decoding fix
+**Last Updated:** November 28, 2025 - Mobile header regression fix
 **Current Phase:** M2 - Project Intelligence ✅ COMPLETE
 **Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ 100% (18/18 tasks)
 
 ---
+
+## ✨ Latest Work (Nov 28, 2025)
+
+- 🐛 Restored `MobileHeader` rendering so memory/settings/project pages regain a sidebar toggle; kept chat views on the inline trigger path to avoid duplicate headers.
 
 ## ✨ Latest Work (Nov 27, 2025)
 

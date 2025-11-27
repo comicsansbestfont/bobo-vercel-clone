@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@mermaid-js/parser'],
+  // Force Turbopack to treat this workspace as the root to avoid parent lockfile warnings
+  turbopack: {
+    root: __dirname,
+  },
   experimental: {
     optimizePackageImports: ['streamdown'],
   },

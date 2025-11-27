@@ -1,12 +1,14 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 27, 2025 (v1.3.1 Sidebar UX Enhancement)
+**Last Updated:** November 27, 2025 (Sprint M3.5-01 Planning)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
 
 > **November 27, 2025 Update:** Integrated learnings from [Letta AI Memory SDK](https://github.com/letta-ai/ai-memory-sdk) competitive analysis. Key additions: Agent Memory Tools (self-editing memory), description-driven extraction, async memory processing. See "Letta SDK Learnings" section below.
+
+> **November 27, 2025 Sprint Planning:** CPO review identified sequencing optimization. **NEW ORDER: M3.5 (Agent Memory Tools) → M3 Phase 4 (Polish)**. Rationale: Agent mode (M4) can't self-edit memory, creating trust gap ("I'll remember that" does nothing). M3.5 unlocks M4's full value. Added 3 new tasks (search_memory, error handling, safety permissions) based on implementation gap analysis.
 
 ---
 
@@ -19,11 +21,11 @@
 | **Milestones Complete** | 4 of 5 core (M1, M2, M3*, M4) |
 | **Tasks Complete** | 67 of 89 (75%) |
 | **Hours Invested** | ~60 hours actual |
-| **Hours Remaining** | ~27 hours (M3 Phase 4 + M3.5) |
+| **Hours Remaining** | ~45 hours (M3.5: 28h + M3 Phase 4: 17h) |
 | **Build Status** | ✅ Passing |
-| **Current Phase** | M4 Complete → M3 Phase 4 → M3.5 |
+| **Current Phase** | M4 Complete → **M3.5 (Agent Memory)** → M3 Phase 4 |
 
-*M3 is 69% complete (Phase 4 + Phase 5/M3.5 planned with Letta enhancements)
+*M3 is 69% complete. **Sequencing changed:** M3.5 now executes BEFORE M3 Phase 4 to unlock Agent Mode value.
 
 ### Gantt Chart - Timeline View
 
@@ -44,7 +46,10 @@ M3: MEMORY          ░░░░░░░░░░░░░░░░░░██
   Phase 2 (12)                        ██ Nov 24 ✅ 4h
   Phase 3 (7)                         ██ Nov 24 ✅ 16h
   Phase 3.1 (7)                       ██ Nov 24 ✅ 3.5h
-  Phase 4 (6)                                  ░░░░░░ Dec 15-21 📝 Planned
+  Phase 4 (7)                                          ░░░░░░ Jan 2026 📝 After M3.5
+
+M3.5: AGENT MEMORY  ░░░░░░░░░░░░░░░░░░░░░░░░████████░░░░░░░░░░░░░░░░░░░░░░░░
+  Sprint 01 (7)                                ████████ Nov 28 - Dec 8 📝 ACTIVE
 
 MOBILE v1.3.0       ░░░░░░░░░░░░░░░░░░░░██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
   UX Sprint (10)                        ██ Nov 25 ✅ 4h
@@ -67,12 +72,12 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 |-----------|--------|-------|-----------|--------------|------------|------------------|
 | **M1: Persistence** | ✅ Complete | 16/16 | 16h | 16h | 100% | Supabase integration, CRUD APIs, E2E tests |
 | **M2: RAG** | ✅ Complete | 18/18 | 28h | 26h | 107% | Double-Loop architecture, pgvector, citations |
-| **M3: Memory** | 🚧 69% | 22/32 | 79h | 28h | - | Hierarchical memory, Memory UI, UX polish |
-| **M3.5: Agent Memory** | 📝 Planned | 0/4 | 11h | - | - | Self-editing memory tools (Letta-inspired) |
+| **M3: Memory** | 🚧 69% | 22/29 | 79h | 28h | - | Hierarchical memory, Memory UI, UX polish |
+| **M3.5: Agent Memory** | 🚧 ACTIVE | 0/7 | 28h | - | - | Self-editing memory tools (Letta-inspired) **← NOW ACTIVE** |
 | **M4: Agent SDK** | ✅ Complete | 10/10 | 25.5h | 10h | 255% | Claude SDK, tools, safety hooks, streaming |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
-*M3 includes 7 Phase 4 tasks + 4 M3.5 tasks (Letta enhancements)
+*M3.5 expanded to 7 tasks (+3 from implementation gap analysis). Phase 4 has 7 tasks.
 
 ### Sprint Velocity History
 
@@ -165,7 +170,10 @@ MAYBE (If SaaS Pivot)
 ## 📊 Backlog Priority Matrix
 
 ```
-Agent SDK (M4) ✅ → M3 Phase 4 (polish) → M3.5 (agent memory) → M5 (cognitive) → Future (if SaaS)
+Agent SDK (M4) ✅ → M3.5 (agent memory) → M3 Phase 4 (polish) → M5 (cognitive) → Future (if SaaS)
+                   ─────────────────────
+                   ↑ SEQUENCING CHANGED (Nov 27, 2025)
+                   Rationale: Agent can't self-edit memory = trust gap
 ```
 
 ---
@@ -223,13 +231,15 @@ Agent SDK (M4) ✅ → M3 Phase 4 (polish) → M3.5 (agent memory) → M5 (cogni
 | Opaque token management | Keep transparency |
 | Vercel AI SDK Provider wrapper | Direct SDK integration works fine |
 
-### Implementation Priority
+### Implementation Priority (UPDATED Nov 27, 2025)
 
-| Phase | Tasks | Effort | Timeline |
-|-------|-------|--------|----------|
-| **Phase 1** | M3 Phase 4 + description-driven extraction | 16h | This sprint |
-| **Phase 2** | Agent Memory Tools (M3.5) | 11h | Next sprint |
-| **Phase 3** | M5 Cognitive Layer | 36h | Pain-driven |
+| Phase | Tasks | Effort | Timeline | Status |
+|-------|-------|--------|----------|--------|
+| **Sprint 1** | M3.5 Agent Memory Tools (7 tasks) | 28h | Nov 28 - Dec 8 | 🚧 ACTIVE |
+| **Sprint 2** | M3 Phase 4 + description-driven extraction | 17h | Jan 2026 | 📝 Planned |
+| **Sprint 3** | M5 Cognitive Layer | 36h | Pain-driven | 📝 Deferred |
+
+> **Sequencing Change:** M3.5 moved BEFORE Phase 4. Agent mode (M4) delivered on Day 1 but can't self-edit memory. User says "Remember that I moved to London" and agent responds "I'll remember that!" but actually does nothing. This trust gap undermines M4's value proposition. M3.5 fixes this.
 
 ---
 
@@ -878,22 +888,56 @@ For each extraction, determine:
 - [ ] Extraction quality improves (fewer miscategorized entries)
 - [ ] Categories are self-documenting in database
 
-### 3.5 Phase 5: Agent Memory Tools (M3.5) 📝 PLANNED - LETTA INSPIRED
+### 3.5 Phase 5: Agent Memory Tools (M3.5) 🚧 ACTIVE - LETTA INSPIRED
 
-**Sprint:** M3.5 (Q1 2026)
-**Status:** 📝 Planned (after M3 Phase 4)
+**Sprint:** M3.5-01 (Nov 28 - Dec 8, 2025) **← NOW ACTIVE**
+**Status:** 🚧 In Progress (moved before Phase 4 per CPO review)
 **Goal:** Enable agent to self-edit memory in real-time during conversations
 **Source:** Letta AI Memory SDK competitive analysis (Nov 27, 2025)
-**Rationale:** Biggest functional gap vs Letta. Passive extraction misses user corrections and in-the-moment insights.
+**Rationale:** Biggest functional gap vs Letta. Passive extraction misses user corrections and in-the-moment insights. **Agent mode (M4) can't self-edit memory = trust gap.**
+**Execution Guide:** [HANDOVER_M35-01.md](sprints/handover/HANDOVER_M35-01.md)
 
 | ID | Feature | Priority | Estimate | Status | Notes |
 |----|---------|----------|----------|--------|-------|
+| M3.5-0 | `search_memory` agent tool | 🔴 HIGH | 3h | ⏳ | **NEW** - Prerequisite for update/forget |
 | M3.5-1 | `remember_fact` agent tool | 🔴 HIGH | 3h | ⏳ | Real-time memory capture |
-| M3.5-2 | `update_memory` agent tool | 🔴 HIGH | 2h | ⏳ | User corrections flow to memory |
-| M3.5-3 | `forget_memory` agent tool | 🟡 MEDIUM | 2h | ⏳ | Graceful memory deletion |
-| M3.5-4 | Async extraction pipeline | 🟡 MEDIUM | 4h | ⏳ | Non-blocking background processing |
+| M3.5-2 | `update_memory` agent tool | 🔴 HIGH | 5h | ⏳ | User corrections (revised +3h for search) |
+| M3.5-3 | `forget_memory` agent tool | 🟡 MEDIUM | 3h | ⏳ | Graceful memory deletion (revised +1h) |
+| M3.5-4 | Async extraction pipeline | 🟡 MEDIUM | 6h | ⏳ | Non-blocking background (revised +2h) |
+| M3.5-5 | Memory tool error handling | 🟡 MEDIUM | 2h | ⏳ | **NEW** - Graceful failure recovery |
+| M3.5-6 | Memory tool safety permissions | 🔴 HIGH | 2h | ⏳ | **NEW** - Confirmation dialogs for destructive ops |
 
-**Total Estimate:** 11 hours
+**Total Estimate:** 28 hours (revised from 11h based on implementation gap analysis)
+
+#### Why Estimates Increased (+17h)
+
+| Task | Original | Revised | Reason |
+|------|----------|---------|--------|
+| M3.5-0 | N/A | 3h | NEW: Agent needs to find memories before updating |
+| M3.5-2 | 2h | 5h | Needs memory search + conflict handling |
+| M3.5-3 | 2h | 3h | Needs search logic to find target memory |
+| M3.5-4 | 4h | 6h | Edge cases, race conditions, testing |
+| M3.5-5 | N/A | 2h | NEW: Error recovery prevents chat crashes |
+| M3.5-6 | N/A | 2h | NEW: Safety hooks for destructive operations |
+
+#### M3.5-0: `search_memory` Agent Tool (NEW)
+
+**What:** Tool to search user's memories by category, keywords, or recency. **Critical prerequisite** for M3.5-2 and M3.5-3.
+
+**Why:** `update_memory` and `forget_memory` need to discover which memory to modify. Without search, agent would need to guess memory IDs.
+
+**Parameters:**
+```typescript
+{
+  category?: MemoryCategory,  // Filter by category
+  keywords?: string,          // Semantic search query
+  limit?: number              // Max results (default 10)
+}
+```
+
+**Returns:** Array of `{ id, category, content, last_updated, confidence }` sorted by relevance.
+
+**Implementation:** Reuses existing hybrid search from Loop B (70% vector + 30% BM25).
 
 #### M3.5-1: `remember_fact` Agent Tool
 
@@ -1018,6 +1062,88 @@ export async function POST(req: Request) {
 - Better UX (user doesn't wait for extraction)
 - Enables longer extraction windows without blocking
 
+#### M3.5-5: Memory Tool Error Handling (NEW)
+
+**What:** Graceful handling of memory tool failures during conversation. Ensures failed memory operations don't crash the chat API.
+
+**Why:** Memory tools call external services (database, embeddings). Failures shouldn't break the user's conversation.
+
+**Implementation:**
+```typescript
+// In lib/agent-sdk/memory-tools.ts
+const wrapWithErrorHandling = (tool) => ({
+  ...tool,
+  execute: async (params) => {
+    try {
+      return await tool.execute(params);
+    } catch (error) {
+      logger.error('Memory tool failed:', error);
+      return `Memory operation failed: ${error.message}. Please try again or use the /memory page.`;
+    }
+  }
+});
+
+// Apply to all memory tools
+export const safeMemoryTools = Object.fromEntries(
+  Object.entries(memoryTools).map(([name, tool]) =>
+    [name, wrapWithErrorHandling(tool)]
+  )
+);
+```
+
+**Acceptance Criteria:**
+- [ ] Failed memory operations return error strings (not thrown exceptions)
+- [ ] Chat API doesn't crash if createMemory() times out
+- [ ] Agent acknowledges failures gracefully in conversation
+- [ ] Errors logged for debugging
+
+#### M3.5-6: Memory Tool Safety Permissions (NEW)
+
+**What:** Prevent agent from manipulating memories without user awareness. Destructive operations require confirmation.
+
+**Why:** Agent shouldn't be able to delete memories or overwrite manual entries without user consent.
+
+**Implementation:**
+```typescript
+// In lib/agent-sdk/tool-config.ts
+export const CONFIRMATION_REQUIRED_TOOLS = [
+  'Write',
+  'Edit',
+  'Bash',
+  'forget_memory',  // NEW: Destructive memory operation
+  'update_memory',  // NEW: Show diff for approval
+];
+
+// remember_fact is auto-approved (additive only)
+export const AUTO_APPROVED_TOOLS = [
+  'Read',
+  'Glob',
+  'Grep',
+  'search_memory',   // NEW: Read-only
+  'remember_fact',   // NEW: Additive, low risk
+];
+```
+
+**Confirmation Dialog Enhancements:**
+```typescript
+// In components/agent/tool-confirmation-dialog.tsx
+const MemoryUpdatePreview = ({ oldContent, newContent }) => (
+  <div className="space-y-2">
+    <div className="text-sm text-muted-foreground">Current memory:</div>
+    <div className="text-red-500 line-through">{oldContent}</div>
+    <div className="text-sm text-muted-foreground">Will be updated to:</div>
+    <div className="text-green-500">{newContent}</div>
+  </div>
+);
+```
+
+**Acceptance Criteria:**
+- [ ] `forget_memory` triggers permission modal before execution
+- [ ] `update_memory` shows before/after diff for approval
+- [ ] `remember_fact` auto-approved (no modal needed)
+- [ ] `search_memory` auto-approved (read-only)
+- [ ] Manual memory entries (source_type='manual') protected from agent modification
+
 ### 3.6 Deferred Features (Post-M3)
 
 | ID | Feature | Priority | Estimate | Status | Notes |
@@ -1029,14 +1155,14 @@ export async function POST(req: Request) {
 
 **Note:** Original M3-1 through M3-4 (Supermemory.ai integration) were replaced with custom Gemini 2.5 Flash Lite extraction for better control and 56% lower cost.
 
-**Total M3 Core Tasks:** 32 (22 complete + 7 Phase 4 + 4 Phase 5/M3.5)
-**Total Estimated Effort:** 79 hours (original 52h + 27h Letta enhancements)
+**Total M3 Core Tasks:** 36 (22 complete + 7 Phase 4 + 7 M3.5)
+**Total Estimated Effort:** 96 hours (revised with realistic M3.5 estimates)
 **Phase 1 Actual:** 4.5 hours (55% efficiency gain)
 **Phase 2 Actual:** 4 hours (75% efficiency gain)
 **Phase 3 Actual:** 16 hours (+1h over estimate)
 **Phase 3.1 Actual:** 3.5 hours (on estimate)
-**Phase 4 Remaining:** 16 hours (+3h for M3-31 Letta enhancement)
-**Phase 5 (M3.5) Remaining:** 11 hours (NEW - Agent Memory Tools)
+**M3.5 (NOW FIRST):** 28 hours (7 tasks - Agent Memory Tools) **← ACTIVE**
+**Phase 4 (AFTER M3.5):** 17 hours (7 tasks - Polish features)
 
 ---
 
@@ -1781,6 +1907,17 @@ const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
 | 2025-11-27 | Documented Bobo's advantages over Letta: Hybrid search (RRF), Cross-project RAG, Citations, Token transparency | Claude Code |
 | 2025-11-27 | **v1.3.1 Sidebar UX Enhancement**: Removed redundant header space, integrated toggle inline with content (ChatGPT-style pattern) | Claude Code |
 | 2025-11-27 | Sidebar trigger now shown inline with ChatHeader and empty states (mobile + desktop collapsed state) | Claude Code |
+| 2025-11-27 | **CPO Sprint Planning**: Deployed 3 sub-agents to analyze backlog status, Letta tasks, and M4/M5 strategy | Claude Code |
+| 2025-11-27 | **SEQUENCING CHANGE**: M3.5 (Agent Memory) now executes BEFORE M3 Phase 4 (Polish) | Claude Code |
+| 2025-11-27 | Rationale: Agent mode (M4) can't self-edit memory = trust gap ("I'll remember that" does nothing) | Claude Code |
+| 2025-11-27 | Added M3.5-0: search_memory tool (prerequisite for update/forget operations) | Claude Code |
+| 2025-11-27 | Added M3.5-5: Memory tool error handling (graceful failure recovery) | Claude Code |
+| 2025-11-27 | Added M3.5-6: Memory tool safety permissions (confirmation dialogs for destructive ops) | Claude Code |
+| 2025-11-27 | Revised M3.5 estimates: 11h → 28h (realistic based on implementation gap analysis) | Claude Code |
+| 2025-11-27 | M3.5-2 revised from 2h → 5h (needs search + conflict handling) | Claude Code |
+| 2025-11-27 | M3.5-4 revised from 4h → 6h (edge cases, race conditions, testing) | Claude Code |
+| 2025-11-27 | Created Sprint M3.5-01 documentation (active sprint Nov 28 - Dec 8) | Claude Code |
+| 2025-11-27 | Created HANDOVER_M35-01.md execution guide with team composition | Claude Code |
 | 2025-11-27 | Eliminated ~48px wasted header space on all devices by removing MobileHeader component | Claude Code |
 | 2025-11-27 | Updated chat-header.tsx, chat-interface.tsx, app-sidebar.tsx for consistent sidebar UX | Claude Code |
 

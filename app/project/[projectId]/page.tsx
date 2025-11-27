@@ -124,7 +124,9 @@ export default function ProjectPage() {
       <AppSidebar>
         <div className="flex min-h-svh flex-1 flex-col">
           {/* Mobile Header */}
-          <MobileHeader title={isInChatView ? chats.find(c => c.id === chatId)?.title : project?.name} />
+          {!isInChatView && (
+            <MobileHeader title={project?.name} />
+          )}
 
           {/* Main Content */}
           <div className="m-2 flex flex-1 flex-col rounded-2xl border border-border bg-background md:m-2">

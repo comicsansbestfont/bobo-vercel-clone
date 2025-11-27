@@ -480,11 +480,23 @@ function AppSidebarContent({
   );
 }
 
-// Legacy MobileHeader - kept for backwards compatibility but no longer renders
-// The sidebar trigger is now integrated into ChatHeader and empty states
+// Mobile Header Component (shows toggle on mobile or when sidebar is collapsed)
 export function MobileHeader({ title }: { title?: string }) {
-  // No longer renders - trigger is integrated into content
-  return null;
+  const { state, isMobile } = useSidebar();
+  const showHeader = isMobile || state === "collapsed";
+
+  if (!showHeader) {
+    return null;
+  }
+
+  return (
+    <header className="sticky top-0 z-20 flex h-12 items-center gap-2 border-b border-border bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/75 md:px-4">
+      <SidebarTrigger className="-ml-1 h-8 w-8" />
+      <span className="flex-1 truncate text-sm font-medium">
+        {title || "Bobo AI"}
+      </span>
+    </header>
+  );
 }
 
 // Main App Sidebar Component
