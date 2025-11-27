@@ -2,6 +2,9 @@ import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { DEFAULT_USER_ID } from '@/lib/db/client';
 import { createMemory, getUserMemories } from '@/lib/db/queries';
+import { generateContentHash } from '@/lib/memory/deduplicator';
+import { createMemorySchema } from '@/lib/schemas/memory';
+import { ZodError } from 'zod';
 
 export async function GET() {
   try {
@@ -15,14 +18,40 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json();
+    const body = await req.json();
+
+    // Validate input with Zod
+    const validated = createMemorySchema.parse(body);
+
     const memory = await createMemory({
-      ...data,
+      ...validated,
       user_id: DEFAULT_USER_ID,
+      content_hash: generateContentHash(validated.content),
     });
-    return NextResponse.json(memory);
+
+    if (!memory) {
+      return NextResponse.json(
+        { error: 'Failed to create memory' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(memory, { status: 201 });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          details: error.errors.map(e => ({
+            field: e.path.join('.'),
+            message: e.message,
+          }))
+        },
+        { status: 400 }
+      );
+    }
+
     apiLogger.error('POST /api/memory/entries error:', error);
-    return NextResponse.json({ error: 'Failed to create memory' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

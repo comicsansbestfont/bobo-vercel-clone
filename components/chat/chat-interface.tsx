@@ -263,6 +263,28 @@ export function ChatInterface({
     },
   });
 
+  // Auto-generate chatId if missing (enables chat to work without URL parameter)
+  useEffect(() => {
+    // Skip if we already have a chatId (from URL or previous generation)
+    if (chatId || chatIdFromUrl) {
+      return;
+    }
+
+    // Generate a new chatId and update URL
+    const newChatId = crypto.randomUUID();
+    chatLogger.info('[Chat] Auto-generating chatId:', newChatId);
+
+    // Update state
+    setChatId(newChatId);
+
+    // Preserve existing search params (model, projectId, etc.)
+    const params = new URLSearchParams(window.location.search);
+    params.set('chatId', newChatId);
+
+    // Use history.replaceState to avoid React re-renders
+    window.history.replaceState({}, '', `?${params.toString()}`);
+  }, [chatId, chatIdFromUrl]);
+
   // Keep local chatId in sync with URL when navigating between chats
   useEffect(() => {
     // Handle navigation away from a chat (chatId cleared)
@@ -337,6 +359,14 @@ export function ChatInterface({
       try {
         const res = await fetch(`/api/chats/${chatId}`);
         if (!res.ok) {
+          // 404 means the chat doesn't exist yet (new chat) - this is OK
+          if (res.status === 404) {
+            chatLogger.info('✨ New chat detected (404) - starting with empty history');
+            setMessages([]);
+            return;
+          }
+
+          // Other errors (500, etc.) are real problems
           chatLogger.error('❌ Failed to load chat - Response not OK');
           toast.error('Failed to load chat', {
             description: 'The chat could not be found or loaded.',

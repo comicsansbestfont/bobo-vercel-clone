@@ -157,6 +157,29 @@ Context limits stored in `MODEL_CONTEXT_LIMITS` map in `lib/context-tracker.ts`
 - `@/*` maps to project root (configured in `tsconfig.json`)
 - Use `@/components/*`, `@/lib/*`, `@/app/*` for imports
 
+## Sprint Planning & Quality Assurance
+
+**Sprint Planning Agent** (`.claude/agents/sprint-planning-agent.md`)
+- Ubiquitous co-pilot for ALL sprint planning sessions
+- Enforces quality gates learned from M3.5-01 post-mortem
+- Guides through 4 phases: Scoping → Task Definition → Capacity Planning → Quality Gates
+- Validates pre-sprint audit (integration surface, reusable code verification)
+- Prevents anti-patterns: vague testing phases, missing DoD, narrow sub-agent instructions
+- Use in plan mode: `@sprint-planning-agent let's plan {sprint name}`
+
+**Sprint Planning Skill** (`.claude/skills/sprint-planning/SKILL.md`)
+- Reusable DoD templates (Feature, Bug Fix, Refactoring, API, UI, Database tasks)
+- Testing task templates (Unit, Integration, E2E, Manual)
+- Pre-sprint audit checklist
+- Sub-agent instruction template
+- Capacity calculator (65% impl, 20% testing, 10% docs, 5% buffer)
+- Quality gates checklist
+- Historical velocity reference (average 1.5x faster than estimates)
+
+**Key Principle:** Sprint planning quality directly impacts execution quality. A 2-hour planning session with proper audit prevents week-long debugging later.
+
+---
+
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router)
 - **React**: v19.2.0
