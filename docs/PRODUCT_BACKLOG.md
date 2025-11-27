@@ -1,10 +1,12 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 26, 2025 (M4 Agent SDK Complete)
+**Last Updated:** November 27, 2025 (Letta SDK Analysis Integration)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **November 27, 2025 Update:** Integrated learnings from [Letta AI Memory SDK](https://github.com/letta-ai/ai-memory-sdk) competitive analysis. Key additions: Agent Memory Tools (self-editing memory), description-driven extraction, async memory processing. See "Letta SDK Learnings" section below.
 
 ---
 
@@ -15,12 +17,13 @@
 | Metric | Value |
 |--------|-------|
 | **Milestones Complete** | 4 of 5 core (M1, M2, M3*, M4) |
-| **Tasks Complete** | 67 of 78 (86%) |
+| **Tasks Complete** | 67 of 89 (75%) |
 | **Hours Invested** | ~60 hours actual |
+| **Hours Remaining** | ~27 hours (M3 Phase 4 + M3.5) |
 | **Build Status** | ✅ Passing |
-| **Current Phase** | M4 Complete → M3 Phase 4 or M5 |
+| **Current Phase** | M4 Complete → M3 Phase 4 → M3.5 |
 
-*M3 is 79% complete (Phase 4 deferred)
+*M3 is 69% complete (Phase 4 + Phase 5/M3.5 planned with Letta enhancements)
 
 ### Gantt Chart - Timeline View
 
@@ -64,11 +67,12 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 |-----------|--------|-------|-----------|--------------|------------|------------------|
 | **M1: Persistence** | ✅ Complete | 16/16 | 16h | 16h | 100% | Supabase integration, CRUD APIs, E2E tests |
 | **M2: RAG** | ✅ Complete | 18/18 | 28h | 26h | 107% | Double-Loop architecture, pgvector, citations |
-| **M3: Memory** | 🚧 79% | 22/28 | 52h | 28h | 185%* | Hierarchical memory, Memory UI, UX polish |
+| **M3: Memory** | 🚧 69% | 22/32 | 79h | 28h | - | Hierarchical memory, Memory UI, UX polish |
+| **M3.5: Agent Memory** | 📝 Planned | 0/4 | 11h | - | - | Self-editing memory tools (Letta-inspired) |
 | **M4: Agent SDK** | ✅ Complete | 10/10 | 25.5h | 10h | 255% | Claude SDK, tools, safety hooks, streaming |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
-*M3 efficiency calculated on completed phases only
+*M3 includes 7 Phase 4 tasks + 4 M3.5 tasks (Letta enhancements)
 
 ### Sprint Velocity History
 
@@ -118,6 +122,9 @@ TOTALS        │  84   │ 120h    │  84h   │  -30%    │ 100% ✅
 | **Safety Hooks** | ✅ Live | M4 | Blocked patterns, protected files |
 | **Memory Provenance** | 📝 Planned | M3-04 | Source chat tracking |
 | **Memory Debugger** | 📝 Planned | M3-04 | "What was injected?" view |
+| **Description-Driven Extraction** | 📝 Planned | M3-04 | Letta-inspired guidance fields |
+| **Agent Memory Tools** | 📝 Planned | M3.5 | remember_fact, update_memory, forget_memory |
+| **Async Memory Extraction** | 📝 Planned | M3.5 | Non-blocking background processing |
 | **Living Documentation** | 📝 Deferred | M5 | Auto-updating project docs |
 | **Knowledge Graph** | 📝 Deferred | M5 | Fact extraction & queries |
 | **Multi-User Auth** | 📝 Not Planned | Future | OAuth, if SaaS pivot |
@@ -130,7 +137,15 @@ NOW (Q4 2025)
 │  ├─ Memory provenance UI
 │  ├─ Memory debugger
 │  ├─ Conflict resolution
-│  └─ Token budget enforcement
+│  ├─ Token budget enforcement
+│  └─ NEW: Description-driven extraction (Letta learning)
+│
+NEXT (Q1 2026)
+├─ M3.5: Agent Memory Tools (11h est) ← NEW from Letta analysis
+│  ├─ remember_fact tool (real-time memory capture)
+│  ├─ update_memory tool (user corrections)
+│  ├─ forget_memory tool (graceful deletion)
+│  └─ Async extraction pipeline
 │
 LATER (When Pain-Driven)
 ├─ M5: Cognitive Layer (36h est)
@@ -150,8 +165,71 @@ MAYBE (If SaaS Pivot)
 ## 📊 Backlog Priority Matrix
 
 ```
-Agent SDK (M4) → M3 Phase 4 (polish) → M5 (cognitive) → Future (if SaaS)
+Agent SDK (M4) ✅ → M3 Phase 4 (polish) → M3.5 (agent memory) → M5 (cognitive) → Future (if SaaS)
 ```
+
+---
+
+## 🧪 LETTA SDK LEARNINGS (Competitive Analysis - Nov 27, 2025)
+
+**Source:** [Letta AI Memory SDK](https://github.com/letta-ai/ai-memory-sdk)
+**Analysis:** Deep-dive comparison of Letta's memory architecture vs Bobo's implementation
+
+### Executive Summary
+
+| Dimension | Letta SDK | Bobo (Current) | Verdict |
+|-----------|-----------|----------------|---------|
+| Memory Structure | Labeled blocks with descriptions | 6 hierarchical categories | **Bobo ahead** |
+| Self-Editing Memory | Agent tools (append, replace, rethink) | Passive extraction only | **Letta ahead** |
+| Retrieval | Pure vector (cosine) | Hybrid (70% vector + 30% BM25) | **Bobo ahead** |
+| Cross-Project | Per-subject isolation | Double-Loop with Loop B | **Bobo ahead** |
+| Async Processing | Background "sleeptime agent" | Synchronous extraction | **Letta ahead** |
+| Token Transparency | Opaque/server-side | Real-time tracking with segments | **Bobo ahead** |
+| Citations | None | Perplexity-style inline [1], [2] | **Bobo ahead** |
+
+### What to ADOPT from Letta
+
+#### 1. Self-Editing Memory via Agent Tools 🔴 HIGH PRIORITY
+**Gap:** Bobo's memory extraction is passive (runs after chat). Letta agents can modify memory in real-time during conversation.
+
+**Benefit:** User corrections captured immediately; agent decides what's worth remembering in-the-moment.
+
+#### 2. Description-Driven Memory Blocks 🟡 MEDIUM PRIORITY
+**Gap:** Bobo categories have implicit meanings. Letta blocks have explicit `description` fields that guide extraction.
+
+**Benefit:** Better extraction accuracy; categories become self-documenting.
+
+#### 3. Async Memory Processing 🟡 MEDIUM PRIORITY
+**Gap:** Bobo extraction blocks chat API response. Letta fires-and-forgets to background.
+
+**Benefit:** Faster response times; non-blocking UX.
+
+### What to KEEP (Bobo Advantages)
+
+| Feature | Why Keep |
+|---------|----------|
+| **Hybrid Search (RRF)** | Catches keyword matches that pure semantic misses |
+| **Cross-Project RAG (Loop B)** | Key differentiator - enables learning across projects |
+| **Inline Citations** | Trust and transparency - Letta has none |
+| **Model-Specific Caching** | Anthropic/Gemini optimizations for cost/speed |
+| **Transparent Token Tracking** | Developer experience - know exactly what's happening |
+
+### What to SKIP from Letta
+
+| Feature | Why Skip |
+|---------|----------|
+| Subject isolation model | Bobo's cross-project is a differentiator |
+| Pure vector search | Keep hybrid RRF for better recall |
+| Opaque token management | Keep transparency |
+| Vercel AI SDK Provider wrapper | Direct SDK integration works fine |
+
+### Implementation Priority
+
+| Phase | Tasks | Effort | Timeline |
+|-------|-------|--------|----------|
+| **Phase 1** | M3 Phase 4 + description-driven extraction | 16h | This sprint |
+| **Phase 2** | Agent Memory Tools (M3.5) | 11h | Next sprint |
+| **Phase 3** | M5 Cognitive Layer | 36h | Pain-driven |
 
 ---
 
@@ -734,20 +812,213 @@ CREATE TABLE memory_entries (
 
 **Sprint:** M3-04 (Dec 15-21, 2025)
 **Status:** 📝 Planned
-**Goal:** Provenance tracking, debugging tools, and polish
+**Goal:** Provenance tracking, debugging tools, polish, AND Letta-inspired enhancements
 
-| ID | Feature | Priority | Estimate | Status |
-|----|---------|----------|----------|--------|
-| M3-26 | Memory provenance UI (show source chats) | 🟡 MEDIUM | 2h | ⏳ |
-| M3-10 | Memory debugger ("What was injected in this chat?") | 🟡 MEDIUM | 3h | ⏳ |
-| M3-9 | Conflict resolution UI (manual override vs auto-extracted) | 🔴 HIGH | 3h | ⏳ |
-| M3-27 | Token budget enforcement (500 tokens max) | 🔴 HIGH | 2h | ⏳ |
-| M3-28 | Export memory as JSON/Markdown | 🟡 MEDIUM | 2h | ⏳ |
-| M3-16 | Profile preview ("What AI sees" view) | 🟢 LOW | 1h | ⏳ |
+| ID | Feature | Priority | Estimate | Status | Source |
+|----|---------|----------|----------|--------|--------|
+| M3-27 | Token budget enforcement (500 tokens max) | 🔴 HIGH | 2h | ⏳ | Original |
+| M3-9 | Conflict resolution UI (manual override vs auto-extracted) | 🔴 HIGH | 3h | ⏳ | Original |
+| M3-31 | **Description-driven extraction guidance** | 🔴 HIGH | 3h | ⏳ | **Letta** |
+| M3-26 | Memory provenance UI (show source chats) | 🟡 MEDIUM | 2h | ⏳ | Original |
+| M3-10 | Memory debugger ("What was injected in this chat?") | 🟡 MEDIUM | 3h | ⏳ | Original |
+| M3-28 | Export memory as JSON/Markdown | 🟡 MEDIUM | 2h | ⏳ | Original |
+| M3-16 | Profile preview ("What AI sees" view) | 🟢 LOW | 1h | ⏳ | Original |
 
-**Total Estimate:** 13 hours
+**Total Estimate:** 16 hours (+3h for Letta enhancement)
 
-### 3.5 Deferred Features (Post-M3)
+#### M3-31: Description-Driven Extraction Guidance (NEW - Letta Learning)
+
+**What:** Add `extraction_guidance` field to memory categories that explicitly tells the extraction LLM what to look for and how to update each block.
+
+**Why:** Letta's labeled blocks with descriptions produce more accurate extractions because the agent knows exactly what belongs in each section.
+
+**Implementation:**
+```sql
+-- Add guidance column
+ALTER TABLE memory_entries ADD COLUMN extraction_guidance TEXT;
+
+-- Populate with category-specific guidance
+UPDATE memory_entries SET extraction_guidance = CASE category
+  WHEN 'work_context' THEN
+    'Current role, company, expertise areas, active projects. Update when user mentions job changes or new responsibilities.'
+  WHEN 'personal_context' THEN
+    'Location, family, hobbies, identity. Update when user shares personal details. Be conservative - only store what is clearly stated.'
+  WHEN 'top_of_mind' THEN
+    'Immediate priorities, current focus, urgent concerns. High decay rate - replace frequently as priorities shift.'
+  WHEN 'brief_history' THEN
+    'Past experiences grouped by recency. Append new events, consolidate old. Subcategories: recent_months, earlier, long_term.'
+  WHEN 'long_term_background' THEN
+    'Education, career history, foundational life facts. Rarely changes - only update for major life events.'
+  WHEN 'other_instructions' THEN
+    'Communication preferences, formatting requests, recurring instructions. Update when user expresses preferences.'
+END;
+```
+
+**Extraction Prompt Update:**
+```typescript
+const extractionPrompt = `
+Extract memories into these categories. Follow the guidance for each:
+
+${categories.map(c => `
+### ${c.label.toUpperCase()}
+Guidance: ${c.extraction_guidance}
+Current entries: ${c.entries.length}
+`).join('\n')}
+
+For each extraction, determine:
+1. Which category it belongs to (use guidance)
+2. Confidence level (0.9-1.0 stated, 0.7-0.8 implied, 0.5-0.6 inferred)
+3. Whether it updates, replaces, or adds to existing entries
+`;
+```
+
+**Success Criteria:**
+- [ ] All 6 categories have extraction guidance
+- [ ] Extraction prompt uses guidance dynamically
+- [ ] Extraction quality improves (fewer miscategorized entries)
+- [ ] Categories are self-documenting in database
+
+### 3.5 Phase 5: Agent Memory Tools (M3.5) 📝 PLANNED - LETTA INSPIRED
+
+**Sprint:** M3.5 (Q1 2026)
+**Status:** 📝 Planned (after M3 Phase 4)
+**Goal:** Enable agent to self-edit memory in real-time during conversations
+**Source:** Letta AI Memory SDK competitive analysis (Nov 27, 2025)
+**Rationale:** Biggest functional gap vs Letta. Passive extraction misses user corrections and in-the-moment insights.
+
+| ID | Feature | Priority | Estimate | Status | Notes |
+|----|---------|----------|----------|--------|-------|
+| M3.5-1 | `remember_fact` agent tool | 🔴 HIGH | 3h | ⏳ | Real-time memory capture |
+| M3.5-2 | `update_memory` agent tool | 🔴 HIGH | 2h | ⏳ | User corrections flow to memory |
+| M3.5-3 | `forget_memory` agent tool | 🟡 MEDIUM | 2h | ⏳ | Graceful memory deletion |
+| M3.5-4 | Async extraction pipeline | 🟡 MEDIUM | 4h | ⏳ | Non-blocking background processing |
+
+**Total Estimate:** 11 hours
+
+#### M3.5-1: `remember_fact` Agent Tool
+
+**What:** New tool in Agent SDK that allows the AI to store facts about the user during conversation.
+
+**Why:** Currently memory extraction only happens after chat ends. Agent should be able to say "I'll remember that" and actually do it.
+
+**Implementation:**
+```typescript
+// lib/agent-sdk/memory-tools.ts
+export const memoryTools = {
+  remember_fact: {
+    description: `Store an important fact about the user or their work.
+    Use this when the user shares something worth remembering long-term.
+    Be selective - only store meaningful, actionable information.`,
+    parameters: z.object({
+      category: z.enum([
+        'work_context', 'personal_context', 'top_of_mind',
+        'brief_history', 'long_term_background', 'other_instructions'
+      ]).describe('Which category this fact belongs to'),
+      content: z.string().describe('The fact to remember'),
+      confidence: z.number().min(0.5).max(1.0).describe('How certain: 1.0 = stated explicitly, 0.7 = implied'),
+    }),
+    execute: async ({ category, content, confidence }, { userId }) => {
+      const memory = await createMemory({
+        user_id: userId,
+        category,
+        content,
+        confidence,
+        source: 'agent_extracted',
+        source_chat_ids: [currentChatId],
+      });
+      return `Remembered: "${content}" in ${category}`;
+    }
+  },
+};
+```
+
+**UX Flow:**
+1. User: "By the way, I'm moving to London next month"
+2. Agent: "That's exciting! I'll remember that you're relocating to London."
+3. Agent calls `remember_fact({ category: 'personal_context', content: 'Relocating to London in [month]', confidence: 1.0 })`
+4. Memory instantly saved (not waiting for chat end)
+
+#### M3.5-2: `update_memory` Agent Tool
+
+**What:** Tool to update existing memories when user provides corrections.
+
+**Implementation:**
+```typescript
+update_memory: {
+  description: `Update an existing memory when the user provides a correction or update.`,
+  parameters: z.object({
+    memoryId: z.string().describe('ID of the memory to update'),
+    newContent: z.string().describe('Updated content'),
+    reason: z.string().optional().describe('Why the update was made'),
+  }),
+  execute: async ({ memoryId, newContent, reason }) => {
+    await updateMemory(memoryId, {
+      content: newContent,
+      updated_reason: reason,
+      confidence: 1.0 // User correction = high confidence
+    });
+    return `Memory updated successfully.`;
+  }
+}
+```
+
+#### M3.5-3: `forget_memory` Agent Tool
+
+**What:** Tool to mark memories as outdated/deleted when user indicates they're wrong.
+
+**Implementation:**
+```typescript
+forget_memory: {
+  description: `Mark a memory as outdated when the user says it's no longer accurate.`,
+  parameters: z.object({
+    memoryId: z.string().describe('ID of the memory to forget'),
+    reason: z.string().describe('Why this memory is being removed'),
+  }),
+  execute: async ({ memoryId, reason }) => {
+    await deleteMemory(memoryId); // Soft delete
+    return `Memory removed: ${reason}`;
+  }
+}
+```
+
+#### M3.5-4: Async Extraction Pipeline
+
+**What:** Move memory extraction to background job instead of blocking chat response.
+
+**Implementation:**
+```typescript
+// In /api/chat/route.ts
+export async function POST(req: Request) {
+  // ... generate response ...
+
+  // Fire-and-forget memory extraction (don't await)
+  if (shouldExtract) {
+    fetch('/api/memory/extract-background', {
+      method: 'POST',
+      body: JSON.stringify({ chatId, messages }),
+    }).catch(console.error); // Log but don't block
+  }
+
+  return response; // Return immediately
+}
+
+// New edge function: /api/memory/extract-background/route.ts
+export const runtime = 'edge';
+export const maxDuration = 60;
+
+export async function POST(req: Request) {
+  const { chatId, messages } = await req.json();
+  await extractMemories(messages);
+  return Response.json({ success: true });
+}
+```
+
+**Benefits:**
+- Response time improvement (removes extraction latency)
+- Better UX (user doesn't wait for extraction)
+- Enables longer extraction windows without blocking
+
+### 3.6 Deferred Features (Post-M3)
 
 | ID | Feature | Priority | Estimate | Status | Notes |
 |----|---------|----------|----------|--------|-------|
@@ -758,13 +1029,14 @@ CREATE TABLE memory_entries (
 
 **Note:** Original M3-1 through M3-4 (Supermemory.ai integration) were replaced with custom Gemini 2.5 Flash Lite extraction for better control and 56% lower cost.
 
-**Total M3 Core Tasks:** 28 (22 complete + 6 planned)
-**Total Estimated Effort:** 52 hours (5 sprints)
+**Total M3 Core Tasks:** 32 (22 complete + 7 Phase 4 + 4 Phase 5/M3.5)
+**Total Estimated Effort:** 79 hours (original 52h + 27h Letta enhancements)
 **Phase 1 Actual:** 4.5 hours (55% efficiency gain)
 **Phase 2 Actual:** 4 hours (75% efficiency gain)
 **Phase 3 Actual:** 16 hours (+1h over estimate)
 **Phase 3.1 Actual:** 3.5 hours (on estimate)
-**Phase 4 Remaining:** 13 hours
+**Phase 4 Remaining:** 16 hours (+3h for M3-31 Letta enhancement)
+**Phase 5 (M3.5) Remaining:** 11 hours (NEW - Agent Memory Tools)
 
 ---
 
@@ -1501,6 +1773,12 @@ const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
 | 2025-11-26 | Added Product Roadmap section with Gantt chart, velocity history, capability matrix | Claude Code |
 | 2025-11-26 | Fixed Bug 2 (SAFETY_HOOKS empty): Connected PreToolUse hook to canUseTool() | Claude Code |
 | 2025-11-26 | Updated all M4 tasks to ✅ Done with actual hours | Claude Code |
+| 2025-11-27 | **Letta SDK Analysis Integration**: Added competitive analysis section comparing Bobo vs Letta | Claude Code |
+| 2025-11-27 | Added M3-31: Description-driven extraction guidance (Letta learning) to Phase 4 | Claude Code |
+| 2025-11-27 | Added M3.5 milestone: Agent Memory Tools (4 tasks, 11h) - remember_fact, update_memory, forget_memory, async extraction | Claude Code |
+| 2025-11-27 | Updated roadmap: M4 ✅ → M3 Phase 4 → M3.5 → M5 (pain-driven) | Claude Code |
+| 2025-11-27 | Updated metrics: 89 total tasks (was 78), 27h remaining for memory enhancements | Claude Code |
+| 2025-11-27 | Documented Bobo's advantages over Letta: Hybrid search (RRF), Cross-project RAG, Citations, Token transparency | Claude Code |
 
 ---
 
@@ -1536,5 +1814,5 @@ const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
 ---
 
 **Document Maintained By:** Solo Developer (Personal Tool)
-**Next Grooming Session:** After M4 Agent SDK completion
-**Last Updated:** November 25, 2025 (Strategic Pivot)
+**Next Grooming Session:** Start of M3 Phase 4 sprint
+**Last Updated:** November 27, 2025 (Letta SDK Analysis Integration)

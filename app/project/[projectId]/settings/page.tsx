@@ -1,6 +1,6 @@
 'use client';
 
-import { BoboSidebarOptionA } from '@/components/ui/bobo-sidebar-option-a';
+import { AppSidebar, MobileHeader } from '@/components/ui/app-sidebar';
 import { useParams, useRouter } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -356,9 +356,14 @@ export default function ProjectSettingsPage() {
 
   return (
     <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading project settings...</div>}>
-      <BoboSidebarOptionA>
-        {renderContent()}
-      </BoboSidebarOptionA>
+      <AppSidebar>
+        <div className="flex min-h-svh flex-1 flex-col">
+          <MobileHeader title={`${project?.name || 'Project'} Settings`} />
+          <div className="flex-1">
+            {renderContent()}
+          </div>
+        </div>
+      </AppSidebar>
     </Suspense>
   );
 }

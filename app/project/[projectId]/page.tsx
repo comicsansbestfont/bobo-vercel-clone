@@ -2,7 +2,7 @@
 
 import { ChatInterface } from "@/components/chat/chat-interface";
 import { ProjectChatCreation } from "@/components/project/project-chat-creation";
-import { BoboSidebarOptionA } from "@/components/ui/bobo-sidebar-option-a";
+import { AppSidebar, MobileHeader } from "@/components/ui/app-sidebar";
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -121,41 +121,45 @@ export default function ProjectPage() {
 
   return (
     <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading project...</div>}>
-      <BoboSidebarOptionA>
-        <div className="m-2 flex min-h-[calc(100vh-1rem)] flex-1 flex-col rounded-2xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
-          <div className="flex flex-1 flex-col overflow-hidden">
-            {isInChatView ? (
-              // Active chat view - full height chat interface
-              <ChatInterface
-                projectId={projectId}
-                className="h-full"
-                projectName={project?.name}
-              />
-            ) : (
-              // Project overview - ChatGPT-style folder view
-              <div className="flex flex-1 flex-col overflow-y-auto">
-                {loadingOrError || (
-                  <>
-                    {/* Header Section: Title Left, Action Right */}
-                    <div className="px-6 py-8">
-                      <div className="mx-auto flex max-w-3xl items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <IconFolder className="h-6 w-6 text-neutral-500" />
-                          <h1 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
-                            {project?.name}
-                          </h1>
+      <AppSidebar>
+        <div className="flex min-h-svh flex-1 flex-col">
+          {/* Mobile Header */}
+          <MobileHeader title={isInChatView ? chats.find(c => c.id === chatId)?.title : project?.name} />
+
+          {/* Main Content */}
+          <div className="m-2 flex flex-1 flex-col rounded-2xl border border-border bg-background md:m-2">
+            <div className="flex flex-1 flex-col overflow-hidden">
+              {isInChatView ? (
+                // Active chat view - full height chat interface
+                <ChatInterface
+                  projectId={projectId}
+                  className="h-full"
+                  projectName={project?.name}
+                />
+              ) : (
+                // Project overview - ChatGPT-style folder view
+                <div className="flex flex-1 flex-col overflow-y-auto">
+                  {loadingOrError || (
+                    <>
+                      {/* Header Section: Title Left, Action Right */}
+                      <div className="px-4 py-6 md:px-6 md:py-8">
+                        <div className="mx-auto flex max-w-3xl items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <IconFolder className="h-6 w-6 text-muted-foreground" />
+                            <h1 className="text-xl md:text-2xl font-semibold">
+                              {project?.name}
+                            </h1>
+                          </div>
+                          <Link
+                            href={`/project/${projectId}/settings`}
+                            className="inline-flex items-center justify-center rounded-full border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent"
+                          >
+                            Add files
+                          </Link>
                         </div>
-                        <Link
-                          href={`/project/${projectId}/settings`}
-                          className="inline-flex items-center justify-center rounded-full border border-neutral-200 px-4 py-1.5 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
-                        >
-                          Add files
-                        </Link>
                       </div>
-                    </div>
-                    {/* Chat Input Section */}
-                    <div className="px-6 pb-6">
-                      <div className="mx-auto max-w-3xl">
+                      {/* Chat Input Section */}
+                      <div className="px-4 pb-4 md:px-6 md:pb-6">
                         <div className="mx-auto max-w-3xl">
                           <ProjectChatCreation
                             projectId={projectId}
@@ -164,31 +168,32 @@ export default function ProjectPage() {
                           />
                         </div>
                       </div>
-                    </div>
 
-                    {/* Chat List Section */}
-                    <div className="flex-1 px-6">
-                      {chats.length === 0 ? (
-                        <div className="mt-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
-                          Start a conversation to work on this project
-                        </div>
-                      ) : (
-                        <div className="mx-auto max-w-3xl">
-                          <ProjectChatList
-                            chats={chats}
-                            projectId={projectId}
-                            projects={projects}
-                            onUpdate={fetchData}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}              </div>
-            )}
+                      {/* Chat List Section */}
+                      <div className="flex-1 px-4 md:px-6">
+                        {chats.length === 0 ? (
+                          <div className="mt-8 text-center text-sm text-muted-foreground">
+                            Start a conversation to work on this project
+                          </div>
+                        ) : (
+                          <div className="mx-auto max-w-3xl">
+                            <ProjectChatList
+                              chats={chats}
+                              projectId={projectId}
+                              projects={projects}
+                              onUpdate={fetchData}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </BoboSidebarOptionA>
+      </AppSidebar>
     </Suspense>
   );
 }
