@@ -472,7 +472,7 @@ function formatChunkAsSSE(chunk: UIStreamChunk): string | null {
   switch (chunk.type) {
     case 'text':
       if (chunk.content) {
-        return `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta: chunk.content })}\n\n`;
+        return formatSseEvent({ type: 'text-delta', id: '0', delta: chunk.content });
       }
       return null;
 
@@ -480,7 +480,18 @@ function formatChunkAsSSE(chunk: UIStreamChunk): string | null {
       // Convert tool-start to formatted text with tool-specific emoji
       const toolEmoji = getToolEmoji(chunk.toolName || '');
       const toolStartText = `\n\n${toolEmoji} **${chunk.toolName}**\n`;
-      return `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta: toolStartText })}\n\n`;
+      const textEvent = formatSseEvent({ type: 'text-delta', id: '0', delta: toolStartText });
+      const dataEvent = formatSseEvent({
+        type: 'data-tool-step',
+        transient: true,
+        data: {
+          id: chunk.toolCallId || chunk.toolName || `tool-${Date.now()}`,
+          toolName: chunk.toolName,
+          status: 'active',
+          input: chunk.toolInput,
+        },
+      });
+      return textEvent + dataEvent;
     }
 
     case 'tool-result': {
@@ -505,7 +516,20 @@ function formatChunkAsSSE(chunk: UIStreamChunk): string | null {
         resultText += '\n';
       }
 
-      return `data: ${JSON.stringify({ type: 'text-delta', id: '0', delta: resultText })}\n\n`;
+      const textEvent = formatSseEvent({ type: 'text-delta', id: '0', delta: resultText });
+      const dataEvent = formatSseEvent({
+        type: 'data-tool-step',
+        transient: true,
+        data: {
+          id: chunk.toolCallId || chunk.toolName || `tool-${Date.now()}`,
+          toolName: chunk.toolName,
+          status: 'complete',
+          success: chunk.success !== false,
+          output: chunk.output,
+          duration: chunk.duration,
+        },
+      });
+      return textEvent + dataEvent;
     }
 
     case 'thinking':
@@ -524,4 +548,11 @@ function formatChunkAsSSE(chunk: UIStreamChunk): string | null {
     default:
       return null;
   }
+}
+
+/**
+ * Format a single SSE event line
+ */
+function formatSseEvent(payload: unknown): string {
+  return `data: ${JSON.stringify(payload)}\n\n`;
 }

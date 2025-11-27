@@ -4,6 +4,7 @@ import { DEFAULT_USER_ID } from '@/lib/db/client';
 import { createMemory, getUserMemories } from '@/lib/db/queries';
 import { generateContentHash } from '@/lib/memory/deduplicator';
 import { createMemorySchema } from '@/lib/schemas/memory';
+import { generateEmbedding } from '@/lib/ai/embedding';
 import { ZodError } from 'zod';
 
 export async function GET() {
@@ -23,10 +24,14 @@ export async function POST(req: NextRequest) {
     // Validate input with Zod
     const validated = createMemorySchema.parse(body);
 
+    // Generate embedding for semantic search
+    const embedding = await generateEmbedding(validated.content);
+
     const memory = await createMemory({
       ...validated,
       user_id: DEFAULT_USER_ID,
       content_hash: generateContentHash(validated.content),
+      embedding,
     });
 
     if (!memory) {

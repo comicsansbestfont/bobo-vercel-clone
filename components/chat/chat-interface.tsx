@@ -37,7 +37,7 @@ import {
   PromptInputHeader,
 } from '@/components/ai-elements/prompt-input';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import type { ComponentType } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import rehypeRaw from 'rehype-raw';
@@ -48,6 +48,17 @@ import { DefaultChatTransport } from 'ai';
 import type { Message as DBMessage, MessagePart } from '@/lib/db/types';
 
 import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon } from 'lucide-react';
+import {
+  FileTextIcon,
+  FilePlusIcon,
+  FileEditIcon,
+  TerminalIcon,
+  FolderSearchIcon,
+  SearchIcon,
+  DownloadIcon,
+  BrainIcon,
+  AlertTriangleIcon,
+} from 'lucide-react';
 
 import {
   Source,
@@ -55,6 +66,13 @@ import {
   SourcesContent,
   SourcesTrigger,
 } from '@/components/ai-elements/sources';
+
+import {
+  ChainOfThought,
+  ChainOfThoughtContent,
+  ChainOfThoughtHeader,
+  ChainOfThoughtStep,
+} from '@/components/ai-elements/chain-of-thought';
 
 import {
   Reasoning,
@@ -87,6 +105,7 @@ import { useTextStream } from '@/components/ui/response-stream';
 import { chatLogger } from '@/lib/logger';
 import { ChatHeader } from './chat-header';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { isClaudeModel } from '@/lib/agent-sdk';
 
 /**
  * Parse message content to extract thinking blocks for Reasoning component
@@ -146,6 +165,36 @@ function hasVisibleAssistantText(messages: Array<{ role: string; parts: Array<{ 
     }
   }
   return false;
+}
+
+type ToolStep = {
+  id: string;
+  toolName?: string;
+  status: 'pending' | 'active' | 'complete';
+  success?: boolean;
+  input?: Record<string, unknown>;
+  output?: string;
+  duration?: number;
+};
+
+const TOOL_ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
+  Read: FileTextIcon,
+  Write: FilePlusIcon,
+  Edit: FileEditIcon,
+  Bash: TerminalIcon,
+  Glob: FolderSearchIcon,
+  Grep: SearchIcon,
+  WebSearch: GlobeIcon,
+  WebFetch: DownloadIcon,
+  search_memory: BrainIcon,
+  remember_fact: BrainIcon,
+  update_memory: BrainIcon,
+  forget_memory: BrainIcon,
+};
+
+function getToolIcon(toolName?: string): ComponentType<{ className?: string }> {
+  if (!toolName) return FileTextIcon;
+  return TOOL_ICON_MAP[toolName] || FileTextIcon;
 }
 
 /**
@@ -306,6 +355,7 @@ export function ChatInterface({
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [toolSteps, setToolSteps] = useState<ToolStep[]>([]);
   // Initialize chatId from URL directly to avoid Next.js searchParams hydration delay
   const [chatId, setChatId] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
@@ -319,6 +369,49 @@ export function ChatInterface({
   const [chatTitle, setChatTitle] = useState<string | null>(null);
   const [chatProjectId, setChatProjectId] = useState<string | null>(projectId || null);
   const [chatProjectName, setChatProjectName] = useState<string | null>(null);
+
+  const handleToolStepData = useCallback((data: unknown) => {
+    const dataChunk = data as { type?: string; data?: Record<string, unknown> };
+    if (dataChunk?.type !== 'data-tool-step' || !dataChunk.data) {
+      return;
+    }
+
+    const payload = dataChunk.data as {
+      id?: string;
+      toolName?: string;
+      status?: ToolStep['status'];
+      success?: boolean;
+      input?: Record<string, unknown>;
+      output?: string;
+      duration?: number;
+    };
+
+    if (!payload?.id) return;
+
+    setToolSteps((prev) => {
+      const existingIndex = prev.findIndex((step) => step.id === payload.id);
+      const nextStep: ToolStep = {
+        id: payload.id,
+        toolName: payload.toolName,
+        status: payload.status || 'pending',
+        success: payload.success,
+        input: payload.input,
+        output: payload.output,
+        duration: payload.duration,
+      };
+
+      if (existingIndex === -1) {
+        return [...prev, nextStep];
+      }
+
+      const updated = [...prev];
+      updated[existingIndex] = {
+        ...updated[existingIndex],
+        ...nextStep,
+      };
+      return updated;
+    });
+  }, []);
 
   // Track which message we've auto-submitted to prevent duplicates
   const autoSubmittedMessageRef = useRef<string | null>(null);
@@ -363,6 +456,7 @@ export function ChatInterface({
         description: error.message || 'An error occurred while processing your message.',
       });
     },
+    onData: handleToolStepData,
     onFinish: () => {
       // Message finished streaming and is now in the messages array
       // Clear the previous timeout if it exists
@@ -399,6 +493,11 @@ export function ChatInterface({
     // Use history.replaceState to avoid React re-renders
     window.history.replaceState({}, '', `?${params.toString()}`);
   }, [chatId, chatIdFromUrl]);
+
+  // Reset tool steps when switching chats
+  useEffect(() => {
+    setToolSteps([]);
+  }, [chatId]);
 
   // Keep local chatId in sync with URL when navigating between chats
   useEffect(() => {
@@ -638,6 +737,9 @@ export function ChatInterface({
     justSubmittedRef.current = true;
     chatLogger.info('🚀 Message submitted - blocking history loads until persistence completes');
 
+    // Clear previous tool steps for new request
+    setToolSteps([]);
+
     // Send the message - AI SDK expects { text: string } as first parameter
     // The body in options contains custom data sent to the backend
     sendMessage(
@@ -653,6 +755,11 @@ export function ChatInterface({
     );
     // Clear input state after submission
     setInput('');
+  };
+
+  const handleRegenerate = () => {
+    setToolSteps([]);
+    regenerate();
   };
 
   // Calculate context usage
@@ -904,6 +1011,58 @@ export function ChatInterface({
 
       <Conversation className="h-full">
         <ConversationContent>
+          {isClaudeModel(model) && toolSteps.length > 0 && (
+            <div className="mb-4">
+              <ChainOfThought defaultOpen>
+                <ChainOfThoughtHeader>Agent Steps</ChainOfThoughtHeader>
+                <ChainOfThoughtContent>
+                  {toolSteps.map((step) => {
+                    const Icon = getToolIcon(step.toolName);
+                    const status: 'complete' | 'active' | 'pending' =
+                      step.status === 'active' ? 'active' : step.status === 'pending' ? 'pending' : 'complete';
+                    const isError = step.success === false;
+                    const previewInput =
+                      step.input?.command ||
+                      step.input?.file_path ||
+                      step.input?.pattern ||
+                      step.input?.query;
+                    const trimmedOutput =
+                      step.output && step.output.length > 800
+                        ? `${step.output.slice(0, 800)}…`
+                        : step.output;
+
+                    return (
+                      <ChainOfThoughtStep
+                        key={step.id}
+                        icon={Icon}
+                        label={step.toolName || 'Tool'}
+                        status={status}
+                        className={cn(isError && 'text-destructive')}
+                        description={previewInput ? String(previewInput) : undefined}
+                      >
+                        {step.duration !== undefined && (
+                          <div className="text-[11px] text-muted-foreground">
+                            {step.duration} ms
+                          </div>
+                        )}
+                        {trimmedOutput && (
+                          <pre className="text-xs text-muted-foreground whitespace-pre-wrap rounded-md bg-muted/50 p-2">
+                            {trimmedOutput}
+                          </pre>
+                        )}
+                        {isError && (
+                          <div className="flex items-center gap-1 text-xs text-destructive">
+                            <AlertTriangleIcon className="size-3" />
+                            <span>Tool reported an error</span>
+                          </div>
+                        )}
+                      </ChainOfThoughtStep>
+                    );
+                  })}
+                </ChainOfThoughtContent>
+              </ChainOfThought>
+            </div>
+          )}
           {messages.map((message) => (
             <div key={message.id}>
               {message.role === 'assistant' && message.parts.filter((part) => part.type === 'source-url').length > 0 && (
@@ -1008,7 +1167,7 @@ export function ChatInterface({
                             {message.role === 'assistant' && isLastPartOfLastMessage && j === parsedContent.length - 1 && (
                               <MessageActions>
                                 <MessageAction
-                                  onClick={() => regenerate()}
+                                  onClick={handleRegenerate}
                                   label="Retry"
                                 >
                                   <RefreshCcwIcon className="size-3" />

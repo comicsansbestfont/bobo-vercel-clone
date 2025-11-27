@@ -6,6 +6,7 @@
 
 import { query, type Options as AgentOptions } from '@anthropic-ai/claude-agent-sdk';
 import { chatLogger } from '@/lib/logger';
+import { randomUUID } from 'crypto';
 
 /**
  * UI-friendly stream chunk types
@@ -15,6 +16,7 @@ export interface UIStreamChunk {
   content?: string;
   toolName?: string;
   toolInput?: Record<string, unknown>;
+  toolCallId?: string;
   output?: string;
   duration?: number;
   success?: boolean;
@@ -43,6 +45,7 @@ export async function* streamAgentResponse(
     // Track tool execution timing
     let toolStartTime: number | null = null;
     let currentToolName: string | null = null;
+    let currentToolId: string | null = null;
 
     // Iterate over the agent's response messages
     for await (const message of agentQuery) {
@@ -104,14 +107,17 @@ export async function* streamAgentResponse(
                           (message as Record<string, unknown>).tool_name as string;
           const toolInput = (message as Record<string, unknown>).input as Record<string, unknown> ||
                            (message as Record<string, unknown>).tool_input as Record<string, unknown>;
+          const toolCallId = getToolCallId(currentToolId, message as Record<string, unknown>);
 
           toolStartTime = Date.now();
           currentToolName = toolName;
+          currentToolId = toolCallId;
 
           yield {
             type: 'tool-start',
             toolName,
             toolInput,
+            toolCallId,
           };
           break;
         }
@@ -125,6 +131,7 @@ export async function* streamAgentResponse(
           if (msg.tool_name || currentToolName) {
             // This is a tool result
             const toolName = msg.tool_name as string || currentToolName || 'unknown';
+            const toolCallId = getToolCallId(currentToolId, message as Record<string, unknown>);
             const output = extractToolOutput(message);
             const error = msg.error as string | undefined;
             const duration = toolStartTime ? Date.now() - toolStartTime : undefined;
@@ -132,6 +139,7 @@ export async function* streamAgentResponse(
             yield {
               type: 'tool-result',
               toolName,
+              toolCallId,
               output,
               duration,
               success: !error,
@@ -139,6 +147,7 @@ export async function* streamAgentResponse(
 
             toolStartTime = null;
             currentToolName = null;
+            currentToolId = null;
           } else if (typeof msg.result === 'string' && msg.result) {
             // This is the final agent response - emit as text
             // Skip if we already emitted from 'assistant' message
@@ -155,6 +164,7 @@ export async function* streamAgentResponse(
           const toolName = (message as Record<string, unknown>).tool_name as string ||
                           currentToolName ||
                           'unknown';
+          const toolCallId = getToolCallId(currentToolId, message as Record<string, unknown>);
           const output = extractToolOutput(message);
           const error = (message as Record<string, unknown>).error as string | undefined;
           const duration = toolStartTime ? Date.now() - toolStartTime : undefined;
@@ -162,6 +172,7 @@ export async function* streamAgentResponse(
           yield {
             type: 'tool-result',
             toolName,
+            toolCallId,
             output,
             duration,
             success: !error,
@@ -170,6 +181,7 @@ export async function* streamAgentResponse(
           // Reset tracking
           toolStartTime = null;
           currentToolName = null;
+          currentToolId = null;
           break;
         }
 
@@ -236,6 +248,22 @@ function extractContent(message: unknown): string | null {
   }
 
   return null;
+}
+
+/**
+ * Helper to create a stable tool call ID for streaming UI events
+ */
+function getToolCallId(
+  currentToolId: string | null,
+  message: Record<string, unknown>
+): string {
+  return (
+    (message.id as string | undefined) ||
+    (message.tool_use_id as string | undefined) ||
+    (message.tool_call_id as string | undefined) ||
+    currentToolId ||
+    randomUUID()
+  );
 }
 
 /**
