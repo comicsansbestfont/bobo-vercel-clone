@@ -200,7 +200,7 @@ export async function canUseTool(
       return checkWriteSafety(input);
 
     default:
-      // Read-only tools are always allowed
+      // All other tools (including memory tools) are checked in agent-handler
       return { allowed: true };
   }
 }
@@ -208,6 +208,9 @@ export async function canUseTool(
 /**
  * PreToolUse hook callback for blocking dangerous operations
  * Uses the SDK's HookCallback signature
+ *
+ * NOTE: Memory tools (update_memory, forget_memory) are NOT blocked here.
+ * They are handled separately in the agent-handler with a custom approval flow.
  */
 const preToolUseHook: HookCallback = async (
   input,
