@@ -427,17 +427,12 @@ export function ChatInterface({
     if (initialMessage && chatId && !isLoadingHistory && messages.length === 0 && status === 'ready') {
       chatLogger.success('✅ All conditions met - auto-submitting message');
 
-      // Decode the message (it was encoded in the URL)
-      let decodedMessage = initialMessage;
-      try {
-        decodedMessage = decodeURIComponent(initialMessage);
-      } catch (e) {
-        chatLogger.error('Failed to decode message:', e);
-      }
-      chatLogger.debug('Decoded message:', decodedMessage);
+      // URLSearchParams.get() already returns a decoded string
+      const decodedMessage = initialMessage;
+      chatLogger.debug('Initial message from URL (decoded by URLSearchParams):', decodedMessage);
 
       // Mark this message as submitted
-      autoSubmittedMessageRef.current = initialMessage;
+      autoSubmittedMessageRef.current = decodedMessage;
 
       // Mark that we just submitted a message to prevent race conditions with history loading
       justSubmittedRef.current = true;

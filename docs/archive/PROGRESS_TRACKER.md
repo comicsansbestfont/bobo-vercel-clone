@@ -1,8 +1,14 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** November 24, 2025 - Build pipeline fixes
+**Last Updated:** November 27, 2025 - URL message decoding fix
 **Current Phase:** M2 - Project Intelligence ✅ COMPLETE
 **Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ 100% (18/18 tasks)
+
+---
+
+## ✨ Latest Work (Nov 27, 2025)
+
+- 🛠️ Prevented double-decoding of auto-submitted chat messages by trusting `URLSearchParams.get()` output, preserving literal `%` sequences when launching a chat from URL params.
 
 ---
 
