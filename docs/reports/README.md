@@ -21,9 +21,39 @@ See [Sprint M2-01](../sprints/completed/sprint-m2-01.md) for full sprint details
 
 ---
 
+## Mobile & UX Enhancements
+
+### v1.3.0 - Mobile UX Sprint
+**Completed:** November 25, 2025
+- [MOBILE_OPTIMIZATION_REPORT.md](./MOBILE_OPTIMIZATION_REPORT.md) - Mobile optimization report
+
+### v1.3.1 - Sidebar UX Enhancement
+**Completed:** November 27, 2025
+- [V1-3-1_SIDEBAR_UX_ENHANCEMENT.md](./V1-3-1_SIDEBAR_UX_ENHANCEMENT.md) - Sidebar inline trigger integration
+
+### Key Achievements
+- ✅ Eliminated 48px wasted header space
+- ✅ ChatGPT-style inline navigation
+- ✅ Consistent UX across mobile and desktop
+
+---
+
+## M3 - Memory System
+
+**Phase 1 Completed:** November 24, 2025
+**Phase 2 Completed:** November 24, 2025
+**Phase 3 Completed:** November 24, 2025
+
+### Reports
+- [M3-01_TEST_REPORT.md](./M3-01_TEST_REPORT.md) - Phase 1 testing results
+- [M3-02_TEST_REPORT.md](./M3-02_TEST_REPORT.md) - Phase 2 testing results
+- [M3-03_TEST_REPORT.md](./M3-03_TEST_REPORT.md) - Phase 3 testing results
+
+---
+
 ## Future Milestones
 
-Reports for M3, M4, and M5 will be added here as they are completed.
+Reports for M4 and M5 will be added here as they are completed.
 
 ---
 

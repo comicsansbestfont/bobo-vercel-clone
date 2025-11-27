@@ -480,23 +480,11 @@ function AppSidebarContent({
   );
 }
 
-// Mobile Header Component (also shows toggle on desktop when sidebar is collapsed)
+// Legacy MobileHeader - kept for backwards compatibility but no longer renders
+// The sidebar trigger is now integrated into ChatHeader and empty states
 export function MobileHeader({ title }: { title?: string }) {
-  const { state, isMobile } = useSidebar();
-  const showToggle = isMobile || state === "collapsed";
-
-  return (
-    <header className={cn(
-      "flex h-12 items-center gap-2 border-b border-border px-4",
-      // Always show on mobile, show on desktop when sidebar is collapsed
-      !showToggle && "md:hidden"
-    )}>
-      <SidebarTrigger className="-ml-2" />
-      <span className="flex-1 truncate font-medium text-sm">
-        {title || "Bobo AI"}
-      </span>
-    </header>
-  );
+  // No longer renders - trigger is integrated into content
+  return null;
 }
 
 // Main App Sidebar Component

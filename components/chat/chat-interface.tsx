@@ -84,6 +84,7 @@ import { compressHistory } from '@/lib/memory-manager';
 import { toast } from 'sonner';
 import { chatLogger } from '@/lib/logger';
 import { ChatHeader } from './chat-header';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 
 /**
  * Parse message content to extract thinking blocks for Reasoning component
@@ -180,6 +181,9 @@ export function ChatInterface({
 }: ChatInterfaceProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { isMobile, state } = useSidebar();
+  // Show trigger on mobile OR when sidebar is collapsed on desktop
+  const showTrigger = isMobile || state === 'collapsed';
 
   const chatIdFromUrl = searchParams?.get('chatId');
 
@@ -648,9 +652,17 @@ export function ChatInterface({
     // Project variant: minimal empty state without Bobo
     if (variant === 'project') {
       return (
-        <div className={cn("flex flex-col h-full items-center justify-center p-3 md:p-6", className)}>
-          <div className="w-full max-w-3xl">
-            {promptInputElement}
+        <div className={cn("flex flex-col h-full p-3 md:p-6", className)}>
+          {/* Sidebar trigger - shown on mobile or when sidebar is collapsed on desktop */}
+          {showTrigger && (
+            <div className="mb-4">
+              <SidebarTrigger className="h-8 w-8 -ml-1" />
+            </div>
+          )}
+          <div className="flex flex-1 items-center justify-center">
+            <div className="w-full max-w-3xl">
+              {promptInputElement}
+            </div>
           </div>
         </div>
       );
@@ -658,20 +670,28 @@ export function ChatInterface({
 
     // Default variant: Show Bobo character and greeting
     return (
-      <div className={cn("flex flex-col h-full items-center justify-center p-3 md:p-6", className)}>
-        <div className="w-full max-w-2xl">
-          {/* Bobo Character and Greeting */}
-          <div className="flex flex-col items-center mb-8">
-            <img
-              src="/bobo-character.svg"
-              alt="Bobo"
-              className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2 animate-bobo-breathe dark:drop-shadow-none drop-shadow-[0_0_30px_rgba(0,0,0,0.15)]"
-            />
-            <h1 className="text-2xl md:text-3xl font-light text-foreground/80">
-              Tell Bobo Anything
-            </h1>
+      <div className={cn("flex flex-col h-full p-3 md:p-6", className)}>
+        {/* Sidebar trigger - shown on mobile or when sidebar is collapsed on desktop */}
+        {showTrigger && (
+          <div className="mb-2">
+            <SidebarTrigger className="h-8 w-8 -ml-1" />
           </div>
-          {promptInputElement}
+        )}
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-2xl">
+            {/* Bobo Character and Greeting */}
+            <div className="flex flex-col items-center mb-8">
+              <img
+                src="/bobo-character.svg"
+                alt="Bobo"
+                className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2 animate-bobo-breathe dark:drop-shadow-none drop-shadow-[0_0_30px_rgba(0,0,0,0.15)]"
+              />
+              <h1 className="text-2xl md:text-3xl font-light text-foreground/80">
+                Tell Bobo Anything
+              </h1>
+            </div>
+            {promptInputElement}
+          </div>
         </div>
       </div>
     );
@@ -713,7 +733,7 @@ export function ChatInterface({
   return (
     <div className={cn("flex flex-col h-full p-3 md:p-6", className)}>
       {/* Chat Header - only show when we have a chat with title */}
-      {chatId && chatTitle && (
+      {chatId && chatTitle ? (
         <ChatHeader
           chatId={chatId}
           title={chatTitle}
@@ -728,6 +748,13 @@ export function ChatInterface({
             setMessages([]);
           }}
         />
+      ) : (
+        /* Sidebar trigger - fallback when no ChatHeader (shown on mobile or collapsed) */
+        showTrigger && (
+          <div className="mb-3">
+            <SidebarTrigger className="h-8 w-8 -ml-1" />
+          </div>
+        )
       )}
 
       <Conversation className="h-full">

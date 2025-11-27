@@ -17,6 +17,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { RenameDialog, MoveToProjectDialog, DeleteDialog } from './chat-dialogs';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 
 interface ChatHeaderProps {
   chatId: string;
@@ -35,6 +36,9 @@ export function ChatHeader({
   onTitleChange,
   onDelete,
 }: ChatHeaderProps) {
+  const { isMobile, state } = useSidebar();
+  // Show trigger on mobile OR when sidebar is collapsed on desktop
+  const showTrigger = isMobile || state === 'collapsed';
   const [renameOpen, setRenameOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -65,6 +69,11 @@ export function ChatHeader({
     <>
       <div className="flex items-center justify-between pb-3 mb-4 border-b border-neutral-200 dark:border-neutral-700">
         <div className="flex items-center gap-1 min-w-0">
+          {/* Sidebar trigger - shown on mobile or when sidebar is collapsed on desktop */}
+          {showTrigger && (
+            <SidebarTrigger className="h-8 w-8 mr-1 -ml-1 flex-shrink-0" />
+          )}
+
           {/* Breadcrumb: Project Name */}
           {projectId && projectName && (
             <>

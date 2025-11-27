@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 27, 2025 (Letta SDK Analysis Integration)
+**Last Updated:** November 27, 2025 (v1.3.1 Sidebar UX Enhancement)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
@@ -1779,6 +1779,10 @@ const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
 | 2025-11-27 | Updated roadmap: M4 ✅ → M3 Phase 4 → M3.5 → M5 (pain-driven) | Claude Code |
 | 2025-11-27 | Updated metrics: 89 total tasks (was 78), 27h remaining for memory enhancements | Claude Code |
 | 2025-11-27 | Documented Bobo's advantages over Letta: Hybrid search (RRF), Cross-project RAG, Citations, Token transparency | Claude Code |
+| 2025-11-27 | **v1.3.1 Sidebar UX Enhancement**: Removed redundant header space, integrated toggle inline with content (ChatGPT-style pattern) | Claude Code |
+| 2025-11-27 | Sidebar trigger now shown inline with ChatHeader and empty states (mobile + desktop collapsed state) | Claude Code |
+| 2025-11-27 | Eliminated ~48px wasted header space on all devices by removing MobileHeader component | Claude Code |
+| 2025-11-27 | Updated chat-header.tsx, chat-interface.tsx, app-sidebar.tsx for consistent sidebar UX | Claude Code |
 
 ---
 
@@ -1815,4 +1819,4 @@ const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?"...
 
 **Document Maintained By:** Solo Developer (Personal Tool)
 **Next Grooming Session:** Start of M3 Phase 4 sprint
-**Last Updated:** November 27, 2025 (Letta SDK Analysis Integration)
+**Last Updated:** November 27, 2025 (v1.3.1 Sidebar UX Enhancement)
