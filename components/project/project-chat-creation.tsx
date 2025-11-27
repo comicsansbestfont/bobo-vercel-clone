@@ -88,16 +88,19 @@ export function ProjectChatCreation({
             const data = await response.json();
             const chatId = data.chat.id;
 
-            // Build URL with chatId and message params, then hard navigate
+            // Build URL with chatId and message params
+            // Use router.push for client-side navigation to avoid full page reload
+            // (which causes sidebar visual refresh)
             const params = new URLSearchParams();
             params.set('chatId', chatId);
 
             if (text) {
-                params.set('message', encodeURIComponent(text));
+                // URLSearchParams.set() already encodes, so don't double-encode
+                params.set('message', text);
             }
 
             const targetUrl = `/project/${projectId}?${params.toString()}`;
-            window.location.href = targetUrl;
+            router.push(targetUrl);
         } catch (error) {
             toast.error('Failed to start chat', {
                 description: 'Please try again.',

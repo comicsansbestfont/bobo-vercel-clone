@@ -126,6 +126,25 @@ function parseMessageContent(text: string): Array<{ type: 'text' | 'thinking'; c
   return parts;
 }
 
+/**
+ * Check if the last assistant message has visible text content
+ * Returns false if no assistant message exists or if text is empty/only whitespace
+ */
+function hasVisibleAssistantText(messages: Array<{ role: string; parts: Array<{ type: string; text?: string }> }>): boolean {
+  const lastMessage = messages.at(-1);
+  if (!lastMessage || lastMessage.role !== 'assistant') return false;
+
+  // Check if any text part has non-empty, non-thinking content
+  for (const part of lastMessage.parts) {
+    if (part.type === 'text' && part.text) {
+      // Remove thinking blocks and check if anything remains
+      const textWithoutThinking = part.text.replace(/<thinking>[\s\S]*?<\/thinking>/g, '').trim();
+      if (textWithoutThinking) return true;
+    }
+  }
+  return false;
+}
+
 const models = [
   {
     name: 'Claude Sonnet 4.5',
@@ -424,11 +443,13 @@ export function ChatInterface({
         },
       );
 
-      // Clear the message parameter from URL
-      const params = new URLSearchParams(window.location.search);
-      params.delete('message');
-      router.replace(`?${params.toString()}`, { scroll: false });
-      chatLogger.info('🧹 Cleared message parameter from URL');
+      // Clear the message parameter from URL without triggering React re-renders
+      // Using window.history.replaceState instead of router.replace to avoid
+      // re-render race conditions that cause the user message to disappear
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.delete('message');
+      window.history.replaceState({}, '', `?${urlParams.toString()}`);
+      chatLogger.info('🧹 Cleared message parameter from URL (via history.replaceState)');
     } else {
       chatLogger.warn('⏸️  Auto-submit skipped - conditions not met');
     }
@@ -613,7 +634,8 @@ export function ChatInterface({
   }
 
   // Empty state: Centered input layout with greeting
-  if (messages.length === 0 && !isLoadingHistory) {
+  // Don't show empty state if a message is being sent (status is submitted/streaming)
+  if (messages.length === 0 && !isLoadingHistory && status !== 'submitted' && status !== 'streaming') {
     // Project variant: minimal empty state without Bobo
     if (variant === 'project') {
       return (
@@ -852,7 +874,13 @@ export function ChatInterface({
               )}
             </div>
           ))}
-          {status === 'submitted' && <Loader />}
+          {/* Show "Thinking" during submitted OR during streaming with no visible text yet */}
+          {(status === 'submitted' || (status === 'streaming' && !hasVisibleAssistantText(messages))) && (
+            <Reasoning isStreaming={true} className="w-full">
+              <ReasoningTrigger />
+              <ReasoningContent>{''}</ReasoningContent>
+            </Reasoning>
+          )}
           {error && (
             <Message from="assistant">
               <MessageContent>
