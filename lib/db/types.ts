@@ -114,7 +114,7 @@ export type MemoryEntry = {
   content: string;
   summary: string | null;
   confidence: number;
-  source_type: 'manual' | 'extracted' | 'suggested';
+  source_type: 'manual' | 'extracted' | 'suggested' | 'agent_tool';
   source_chat_ids: string[];
   source_project_ids: string[];
   source_message_count: number;
@@ -124,6 +124,11 @@ export type MemoryEntry = {
   last_mentioned: string;
   created_at: string;
   content_hash: string;
+  // M3.5: New fields for agent tools
+  embedding?: number[] | string;
+  is_active: boolean;
+  deleted_reason?: string | null;
+  deleted_at?: string | null;
 };
 
 export type MemoryConsolidationLog = {
@@ -198,11 +203,15 @@ export type UserProfileInsert = Omit<UserProfile, 'id' | 'created_at' | 'updated
 
 export type MemoryEntryInsert = Omit<
   MemoryEntry,
-  'id' | 'created_at' | 'last_updated' | 'last_mentioned'
+  'id' | 'created_at' | 'last_updated' | 'last_mentioned' | 'is_active' | 'deleted_reason' | 'deleted_at'
 > & {
   id?: string;
   last_updated?: string;
   last_mentioned?: string;
+  // M3.5: These fields have database defaults
+  is_active?: boolean;
+  deleted_reason?: string | null;
+  deleted_at?: string | null;
 };
 
 export type MemoryConsolidationLogInsert = Omit<MemoryConsolidationLog, 'id' | 'created_at'> & {
@@ -490,6 +499,42 @@ export type Database = {
           content: string;
           similarity: number;
           created_at: string;
+        }[];
+      };
+      // M3.5: Memory agent tool functions
+      hybrid_memory_search: {
+        Args: {
+          query_embedding: number[];
+          query_text: string;
+          match_count?: number;
+          vector_weight?: number;
+          text_weight?: number;
+          p_user_id?: string;
+          p_category?: string;
+        };
+        Returns: {
+          id: string;
+          category: string;
+          content: string;
+          confidence: number;
+          last_updated: string;
+          similarity: number;
+        }[];
+      };
+      find_memories_by_embedding: {
+        Args: {
+          query_embedding: number[];
+          similarity_threshold?: number;
+          p_user_id?: string;
+          match_count?: number;
+        };
+        Returns: {
+          id: string;
+          category: string;
+          content: string;
+          confidence: number;
+          source_type: string;
+          similarity: number;
         }[];
       };
     };

@@ -60,18 +60,19 @@ function getTokenCount(parts: MessagePart[]): number {
 }
 
 /**
- * Trigger background memory extraction (M3)
+ * Trigger background memory extraction (M3.5-4)
+ * Fire-and-forget async extraction that doesn't block chat responses
  */
 function triggerMemoryExtraction(chatId: string) {
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
   const host = process.env.VERCEL_URL || 'localhost:3000';
-  const url = `${protocol}://${host}/api/memory/extract`;
+  const url = `${protocol}://${host}/api/memory/extract-background`;
 
   fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId }),
-  }).catch(err => chatLogger.error('Failed to queue extraction:', err));
+    body: JSON.stringify({ chatId }),
+  }).catch(err => chatLogger.error('[Agent] Background extraction failed:', err));
 }
 
 export interface AgentModeRequest {

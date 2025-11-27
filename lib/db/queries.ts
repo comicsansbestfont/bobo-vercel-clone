@@ -968,6 +968,162 @@ export async function getAllUsersWithMemories(): Promise<{ id: string }[]> {
 }
 
 
+// ============================================================================
+// M3.5: MEMORY AGENT TOOL QUERIES
+// ============================================================================
+
+/**
+ * Find semantically similar memories using vector search
+ * Used for deduplication before creating new memories via agent tools
+ */
+export async function findSimilarMemoriesQuery(
+  embedding: number[],
+  threshold: number = 0.85,
+  userId: string = DEFAULT_USER_ID
+): Promise<{
+  id: string;
+  category: string;
+  content: string;
+  confidence: number;
+  source_type: string;
+  similarity: number;
+}[]> {
+  const { data, error } = await supabase.rpc('find_memories_by_embedding', {
+    query_embedding: embedding,
+    similarity_threshold: threshold,
+    p_user_id: userId,
+    match_count: 5,
+  });
+
+  if (error) {
+    dbLogger.error('findSimilarMemoriesQuery RPC error:', error);
+    throw error;
+  }
+
+  return data || [];
+}
+
+/**
+ * Hybrid search for memories (combines vector + text search)
+ * Used by search_memory agent tool
+ */
+export async function hybridMemorySearch(
+  embedding: number[],
+  queryText: string,
+  limit: number = 5,
+  category?: string,
+  userId: string = DEFAULT_USER_ID
+): Promise<{
+  id: string;
+  category: string;
+  content: string;
+  confidence: number;
+  last_updated: string;
+  similarity: number;
+}[]> {
+  const { data, error } = await supabase.rpc('hybrid_memory_search', {
+    query_embedding: embedding,
+    query_text: queryText,
+    match_count: limit,
+    vector_weight: 0.7,
+    text_weight: 0.3,
+    p_user_id: userId,
+    p_category: category ?? undefined,
+  });
+
+  if (error) {
+    dbLogger.error('hybridMemorySearch RPC error:', error);
+    throw error;
+  }
+
+  return data || [];
+}
+
+/**
+ * Soft delete a memory (sets is_active = false)
+ * Used by forget_memory agent tool
+ */
+export async function softDeleteMemory(
+  memoryId: string,
+  reason: string
+): Promise<boolean> {
+  const { error } = await supabase
+    .from('memory_entries')
+    .update({
+      is_active: false,
+      deleted_reason: reason,
+      deleted_at: new Date().toISOString(),
+    })
+    .eq('id', memoryId)
+    .eq('user_id', DEFAULT_USER_ID);
+
+  if (error) {
+    dbLogger.error('softDeleteMemory error:', error);
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Get a memory by ID (for agent tools)
+ * Returns null if not found or not active
+ */
+export async function getMemoryById(
+  memoryId: string
+): Promise<import('./types').MemoryEntry | null> {
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .select('*')
+    .eq('id', memoryId)
+    .eq('user_id', DEFAULT_USER_ID)
+    .eq('is_active', true)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') return null; // Not found
+    dbLogger.error('getMemoryById error:', error);
+    return null;
+  }
+
+  return data;
+}
+
+/**
+ * Update a memory entry (for agent tools)
+ * Used by update_memory agent tool for user corrections
+ */
+export async function updateMemoryEntry(
+  memoryId: string,
+  updates: {
+    content: string;
+    confidence?: number;
+    updated_reason?: string;
+  }
+): Promise<void> {
+  const { error } = await supabase
+    .from('memory_entries')
+    .update({
+      content: updates.content,
+      confidence: updates.confidence || 1.0,
+      // Note: The schema may not have 'updated_reason' - we store reason in a generic way
+      // or could add it to the schema later. For now, we update the core fields.
+      last_updated: new Date().toISOString(),
+    })
+    .eq('id', memoryId)
+    .eq('user_id', DEFAULT_USER_ID)
+    .eq('is_active', true);
+
+  if (error) {
+    dbLogger.error('updateMemoryEntry error:', error);
+    throw error;
+  }
+}
+
+// ============================================================================
+// GLOBAL CONTEXT SEARCH (M2)
+// ============================================================================
+
 /**
  * Hybrid search for global context
  */

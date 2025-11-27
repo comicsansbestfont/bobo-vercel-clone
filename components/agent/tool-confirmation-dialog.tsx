@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 import { FilePreview } from './file-preview';
-import { AlertTriangleIcon, FileEditIcon, FilePlusIcon, TerminalIcon } from 'lucide-react';
+import { MemoryUpdatePreview } from './memory-update-preview';
+import { AlertTriangleIcon, BrainIcon, FileEditIcon, FilePlusIcon, TerminalIcon, TrashIcon } from 'lucide-react';
 
 export interface ToolConfirmationProps {
   isOpen: boolean;
@@ -94,6 +95,18 @@ function getConfirmationContent(toolName: string): {
         description: 'The agent wants to run a shell command. Review carefully before approving.',
         icon: TerminalIcon,
       };
+    case 'update_memory':
+      return {
+        title: 'Update Memory',
+        description: 'The agent wants to modify an existing memory entry.',
+        icon: BrainIcon,
+      };
+    case 'forget_memory':
+      return {
+        title: 'Delete Memory',
+        description: 'The agent wants to remove a memory entry. This action cannot be undone.',
+        icon: TrashIcon,
+      };
     default:
       return {
         title: 'Confirm Action',
@@ -159,6 +172,30 @@ function ToolPreview({
               Timeout: {String(input.timeout)}ms
             </p>
           )}
+        </div>
+      );
+
+    case 'update_memory':
+      return (
+        <MemoryUpdatePreview
+          oldContent={String(input.oldContent || 'Unknown')}
+          newContent={String(input.newContent || 'Unknown')}
+          category={String(input.category || 'Unknown')}
+        />
+      );
+
+    case 'forget_memory':
+      return (
+        <div className="space-y-2 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+          <div className="text-sm font-medium text-destructive">
+            Deleting memory from: {String(input.category || 'Unknown')}
+          </div>
+          <div className="text-sm text-foreground">
+            "{String(input.content || 'Unknown')}"
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Reason: {String(input.reason || 'No reason provided')}
+          </div>
         </div>
       );
 
