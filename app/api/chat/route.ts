@@ -1,5 +1,7 @@
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
-import { handleAgentMode, isClaudeModel } from '@/lib/agent-sdk';
+
+// Chat API requires Node.js runtime for Claude Agent SDK (uses fs, child_process, etc.)
+export const runtime = 'nodejs';
 
 type ChatCompletionChoiceDelta =
   | string
@@ -263,17 +265,6 @@ export async function POST(req: Request) {
         JSON.stringify({ error: 'Model is required' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
-    }
-
-    // Always route Claude models through the Agent SDK
-    // This provides consistent behavior with memory, project context, and agent capabilities
-    if (isClaudeModel(model)) {
-      return handleAgentMode({
-        messages,
-        model,
-        chatId: providedChatId,
-        projectId,
-      });
     }
 
     // Check if API key is configured

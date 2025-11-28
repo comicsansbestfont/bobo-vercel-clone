@@ -180,15 +180,57 @@ Context limits stored in `MODEL_CONTEXT_LIMITS` map in `lib/context-tracker.ts`
 
 ---
 
+## 🚨 CRITICAL KNOWLEDGE - Embedding Blocker (Nov 28, 2025)
+
+**DISCOVERED:** REST API `/app/api/memory/entries` endpoint was NOT generating embeddings for memory entries.
+
+**Impact:** search_memory feature is 100% non-functional (requires embeddings for hybrid search)
+
+**What was found:**
+- ❌ 49/49 existing memory entries have 0% embedding coverage
+- ❌ REST API missing embedding generation (only agent tool path had it)
+- ✅ Code fix APPLIED: Added `generateEmbedding()` call to POST handler (lines 7, 28, 34)
+- ⏳ Testing BLOCKED by pre-existing Claude Agent SDK build error (child_process import)
+- ⏳ Backfill script READY: `/scripts/backfill-memory-embeddings.ts`
+
+**Code Changed:** `/app/api/memory/entries/route.ts`
+```typescript
+// ADDED: Line 7
+import { generateEmbedding } from '@/lib/ai/embedding';
+
+// ADDED: Line 28
+const embedding = await generateEmbedding(validated.content);
+
+// ADDED: Line 34 (in createMemory call)
+embedding,
+```
+
+**Next Steps for Senior Engineer:**
+1. Fix Claude Agent SDK build error (30-60 min) - `child_process` import issue
+2. Verify REST API embedding generation works (10 min)
+3. Run backfill script: `npx tsx scripts/backfill-memory-embeddings.ts` (20-30 min)
+4. Test search_memory end-to-end (15-20 min)
+5. Re-evaluate ship decision based on verification
+
+**Documentation:**
+- Full analysis: `/docs/sprints/active/sprint-m35-02-BLOCKER-UPDATE.md`
+- Backlog update: `/docs/PRODUCT_BACKLOG.md` (section "CRITICAL POST-SHIP BLOCKERS")
+- Progress tracker: `/docs/archive/PROGRESS_TRACKER.md`
+
+**Current Build Status:** 🔴 BROKEN - Claude Agent SDK error prevents app loading
+
+---
+
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router)
 - **React**: v19.2.0
 - **AI SDK**: Vercel AI SDK (@ai-sdk/react, @ai-sdk/openai)
 - **Database**: Supabase (PostgreSQL with pgvector extension)
-- **Vector Search**: pgvector for semantic similarity, tsvector for full-text
+- **Vector Search**: pgvector for semantic similarity (via `lib/ai/embedding.ts`), tsvector for full-text
 - **UI**: Radix UI primitives + shadcn/ui + Tailwind CSS v4
 - **Animation**: Motion (Framer Motion)
 - **Code Highlighting**: Shiki
 - **Markdown**: streamdown (with rehype-raw for HTML in citations)
 - **Token Counting**: gpt-tokenizer
 - **Validation**: Zod v4
+- **Agent SDK**: Anthropic Claude Agent SDK (M4 - Agent Mode)

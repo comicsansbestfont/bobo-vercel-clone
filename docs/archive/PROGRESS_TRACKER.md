@@ -1,12 +1,44 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** November 28, 2025 - Mobile header regression fix
-**Current Phase:** M2 - Project Intelligence ✅ COMPLETE
-**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ 100% (18/18 tasks)
+**Last Updated:** November 29, 2025 - Build & Memory API fixes
+**Current Phase:** M3.5 - Agent Memory Tools (IN PROGRESS - SHIP DECISION REVOKED)
+**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ | M4 ✅ | M3.5 🚨 BLOCKER
 
 ---
 
-## ✨ Latest Work (Nov 28, 2025)
+## ✨ Latest Work (Nov 29, 2025)
+
+- ✅ Fixed Next.js build failures by switching `npm run build` to `next build --webpack` and removing all Node-only dependencies from Edge/client paths (crypto/fs/child_process).
+- ✅ Made memory APIs type-safe with `createMemory()` by adding missing fields and aligning `source_type` enums (`suggested` vs `passive`).
+- ✅ Moved Streamdown file rendering into a client-only component to avoid server runtime issues while keeping the file viewer page fully functional.
+
+---
+
+## 🚨 CRITICAL UPDATE (Nov 28, 2025 Evening)
+
+**BLOCKER DISCOVERED:** During comprehensive E2E testing, found that REST API `/app/api/memory/entries` was NOT generating embeddings for new memory entries. Impact: **search_memory feature is 100% non-functional** (requires embeddings for hybrid search).
+
+**Severity:** 🚨 **P0 CRITICAL** - Breaks core feature, ship decision revoked
+
+**What we found:**
+- ❌ 49/49 existing memory entries have 0% embedding coverage
+- ❌ REST API missing embedding generation (only agent tool path had it)
+- ✅ Code fix applied (5 lines added to API route)
+- ⏳ Testing blocked by pre-existing Claude Agent SDK build error
+- ⏳ Backfill script ready (`scripts/backfill-memory-embeddings.ts`)
+
+**Next Steps:**
+1. Senior engineer fixes Claude Agent SDK build error (30-60 min) - ASSIGNED
+2. Verify REST API embedding generation works (10 min)
+3. Run embedding backfill script (20-30 min)
+4. End-to-end test search functionality (15-20 min)
+5. Re-evaluate ship decision based on verification
+
+**Detailed Analysis:** See `/docs/sprints/active/sprint-m35-02-BLOCKER-UPDATE.md`
+
+---
+
+## ✨ Latest Work (Nov 28, 2025 - Earlier)
 
 - 🐛 Restored `MobileHeader` rendering so memory/settings/project pages regain a sidebar toggle; kept chat views on the inline trigger path to avoid duplicate headers.
 

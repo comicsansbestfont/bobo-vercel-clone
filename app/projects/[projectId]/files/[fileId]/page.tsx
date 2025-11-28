@@ -9,7 +9,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft, FileText, Calendar, Weight } from 'lucide-react';
 import { getFile, getProject } from '@/lib/db';
-import { Streamdown } from 'streamdown';
+import { FileContent } from '@/components/files/file-content';
 
 interface FilePageProps {
   params: Promise<{
@@ -92,7 +92,7 @@ export default async function FilePage({ params }: FilePageProps) {
 
       {/* File content */}
       <article className="prose prose-gray dark:prose-invert max-w-none">
-        <Streamdown>{file.content_text}</Streamdown>
+        <FileContent content={file.content_text} />
       </article>
     </div>
   );

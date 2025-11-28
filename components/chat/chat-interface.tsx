@@ -59,6 +59,7 @@ import {
   BrainIcon,
   AlertTriangleIcon,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 import {
   Source,
@@ -105,7 +106,7 @@ import { useTextStream } from '@/components/ui/response-stream';
 import { chatLogger } from '@/lib/logger';
 import { ChatHeader } from './chat-header';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
-import { isClaudeModel } from '@/lib/agent-sdk';
+import { isClaudeModel } from '@/lib/agent-sdk/utils';
 
 /**
  * Parse message content to extract thinking blocks for Reasoning component
@@ -177,7 +178,7 @@ type ToolStep = {
   duration?: number;
 };
 
-const TOOL_ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
+const TOOL_ICON_MAP: Record<string, LucideIcon> = {
   Read: FileTextIcon,
   Write: FilePlusIcon,
   Edit: FileEditIcon,
@@ -192,7 +193,7 @@ const TOOL_ICON_MAP: Record<string, ComponentType<{ className?: string }>> = {
   forget_memory: BrainIcon,
 };
 
-function getToolIcon(toolName?: string): ComponentType<{ className?: string }> {
+function getToolIcon(toolName?: string): LucideIcon {
   if (!toolName) return FileTextIcon;
   return TOOL_ICON_MAP[toolName] || FileTextIcon;
 }
@@ -391,7 +392,8 @@ export function ChatInterface({
     setToolSteps((prev) => {
       const existingIndex = prev.findIndex((step) => step.id === payload.id);
       const nextStep: ToolStep = {
-        id: payload.id,
+        // payload.id is guaranteed by the guard above
+        id: payload.id as string,
         toolName: payload.toolName,
         status: payload.status || 'pending',
         success: payload.success,

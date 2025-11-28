@@ -1169,7 +1169,32 @@ Following pragmatic CTO reasoning, we shipped M3.5 as MVP with known gaps. The 7
 | M3.5-9 | Unit tests for memory tools (80% coverage) | 🟡 MEDIUM | 4h | 📝 Deferred | API integration tests passing at 81.8%. Unit tests improve maintainability but not blocking for MVP. |
 | M3.5-10 | Performance optimization (memory retrieval <500ms) | 🟢 LOW | 2h | 📝 Deferred | Current: 2.1s for 48 records. Target: <500ms. Not user-blocking for MVP scale. |
 
-**Total Deferred Effort:** 9.5-10.5 hours
+---
+
+### 🚨 CRITICAL POST-SHIP BLOCKERS (November 28, 2025)
+
+**BLOCKER DISCOVERED DURING E2E TESTING:** REST API was NOT generating embeddings for memory entries. Search feature is 100% non-functional.
+
+| ID | Feature | Priority | Status | Estimate | Critical? |
+|----|---------|----------|--------|----------|-----------|
+| **M3.5-BLOCKER-1** | **Fix: Add embedding generation to REST API POST endpoint** | 🔴 **CRITICAL** | ✅ **CODE FIXED** | 5 min code | **P0 - SHIP BLOCKER** |
+| **M3.5-BLOCKER-2** | **Fix: Claude Agent SDK build error (child_process import)** | 🔴 **CRITICAL** | ⏳ **ASSIGNED** | 30-60 min | **P0 - BLOCKS TESTING** |
+| **M3.5-BLOCKER-3** | **Backfill: Generate embeddings for 49 existing memory entries** | 🔴 **CRITICAL** | ⏳ **SCRIPT READY** | 20-30 min | **P0 - BLOCKS SEARCH** |
+| **M3.5-BLOCKER-4** | **Test: Verify REST API embedding generation & search functionality** | 🔴 **CRITICAL** | ⏳ **BLOCKED** | 20-30 min | **P0 - VERIFY SHIP** |
+
+**What Happened:**
+- API tests passed 81.8% but didn't verify embeddings were actually stored in database
+- REST API missing embedding generation (only agent tool path had it)
+- 49 existing entries have 0% embedding coverage
+- search_memory feature is completely broken (requires embeddings for hybrid search)
+- Discovered during comprehensive database validation layer of E2E testing
+
+**Ship Status:** 🚨 **REVOKED** - Requires re-evaluation after blocker fixes
+
+**See:** `/docs/sprints/active/sprint-m35-02-BLOCKER-UPDATE.md` for full investigation and recovery plan
+
+**Total Deferred Effort (Original):** 9.5-10.5 hours
+**Total Critical Blocker Effort:** ~2-2.5 hours (once build fixed)
 
 **Why This Decision Was Right:**
 1. **User value first:** 2 of 4 tools work perfectly (50% coverage), better than 0%

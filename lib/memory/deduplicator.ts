@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 import { MemoryEntry, MemoryCategory } from '@/lib/db/types';
 import { createMemory } from '@/lib/db/queries';
@@ -15,11 +14,23 @@ export type ExtractedFact = {
   reasoning: string;
 };
 
+/**
+ * Generate a deterministic content hash for deduplication.
+ *
+ * Uses a lightweight FNV-1a 32-bit hash implemented in pure TypeScript so it
+ * works in both Node.js and Edge runtimes without relying on Node core modules.
+ */
 export const generateContentHash = (content: string): string => {
-  return crypto
-    .createHash('sha256')
-    .update(content.toLowerCase().trim())
-    .digest('hex');
+  const normalized = content.toLowerCase().trim();
+  let hash = 0x811c9dc5; // FNV-1a 32-bit offset basis
+
+  for (let i = 0; i < normalized.length; i += 1) {
+    hash ^= normalized.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193); // FNV-1a 32-bit prime
+  }
+
+  // Convert to unsigned 32-bit hex string
+  return (hash >>> 0).toString(16).padStart(8, '0');
 };
 
 export async function findExactDuplicate(

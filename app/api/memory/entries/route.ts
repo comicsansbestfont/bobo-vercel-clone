@@ -1,6 +1,5 @@
 import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
-import { DEFAULT_USER_ID } from '@/lib/db/client';
 import { createMemory, getUserMemories } from '@/lib/db/queries';
 import { generateContentHash } from '@/lib/memory/deduplicator';
 import { createMemorySchema } from '@/lib/schemas/memory';
@@ -29,7 +28,13 @@ export async function POST(req: NextRequest) {
 
     const memory = await createMemory({
       ...validated,
-      user_id: DEFAULT_USER_ID,
+      subcategory: null,
+      summary: null,
+      source_chat_ids: [],
+      source_project_ids: [],
+      source_message_count: 1,
+      time_period: 'current',
+      relevance_score: 1.0,
       content_hash: generateContentHash(validated.content),
       embedding,
     });

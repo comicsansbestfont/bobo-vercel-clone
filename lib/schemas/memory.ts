@@ -17,7 +17,7 @@ export const createMemorySchema = z.object({
     .max(1)
     .optional()
     .default(0.8),
-  source_type: z.enum(['manual', 'agent_tool', 'passive', 'extracted'])
+  source_type: z.enum(['manual', 'agent_tool', 'suggested', 'extracted'])
     .optional()
     .default('manual'),
 });
