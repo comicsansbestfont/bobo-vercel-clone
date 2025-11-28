@@ -492,9 +492,9 @@ export function ChatInterface({
     const params = new URLSearchParams(window.location.search);
     params.set('chatId', newChatId);
 
-    // Use history.replaceState to avoid React re-renders
-    window.history.replaceState({}, '', `?${params.toString()}`);
-  }, [chatId, chatIdFromUrl]);
+    // Use Next.js router to properly update URL and searchParams
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }, [chatId, chatIdFromUrl, router]);
 
   // Reset tool steps when switching chats
   useEffect(() => {
