@@ -421,6 +421,8 @@ export function ChatInterface({
   // Track if we just submitted a message to prevent history loading before DB persistence
   const justSubmittedRef = useRef(false);
   const persistenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Track when we're auto-generating a chatId to prevent the sync effect from clearing it
+  const isAutoGeneratingChatIdRef = useRef(false);
 
   const { messages, sendMessage, status, regenerate, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({
@@ -478,12 +480,19 @@ export function ChatInterface({
   useEffect(() => {
     // Skip if we already have a chatId (from URL or previous generation)
     if (chatId || chatIdFromUrl) {
+      // Clear the flag once URL is synced
+      if (chatIdFromUrl && isAutoGeneratingChatIdRef.current) {
+        isAutoGeneratingChatIdRef.current = false;
+      }
       return;
     }
 
     // Generate a new chatId and update URL
     const newChatId = crypto.randomUUID();
     chatLogger.info('[Chat] Auto-generating chatId:', newChatId);
+
+    // Mark that we're auto-generating to prevent the sync effect from clearing
+    isAutoGeneratingChatIdRef.current = true;
 
     // Update state
     setChatId(newChatId);
@@ -504,7 +513,12 @@ export function ChatInterface({
   // Keep local chatId in sync with URL when navigating between chats
   useEffect(() => {
     // Handle navigation away from a chat (chatId cleared)
+    // BUT skip if we're auto-generating a chatId (URL hasn't synced yet)
     if (!chatIdFromUrl && chatId) {
+      if (isAutoGeneratingChatIdRef.current) {
+        chatLogger.info('⏭️ Skipping chat close - auto-generating chatId in progress');
+        return;
+      }
       chatLogger.info('🔁 Chat closed, clearing state');
       setChatId(null);
       setMessages([]);
