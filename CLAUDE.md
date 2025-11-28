@@ -180,44 +180,56 @@ Context limits stored in `MODEL_CONTEXT_LIMITS` map in `lib/context-tracker.ts`
 
 ---
 
-## 🚨 CRITICAL KNOWLEDGE - Embedding Blocker (Nov 28, 2025)
+## ✅ Embedding Blocker RESOLVED (Nov 29, 2025)
 
-**DISCOVERED:** REST API `/app/api/memory/entries` endpoint was NOT generating embeddings for memory entries.
+**STATUS:** ✅ **FULLY RESOLVED** - All blockers cleared, 100% ship ready
 
-**Impact:** search_memory feature is 100% non-functional (requires embeddings for hybrid search)
+### What Was Fixed
 
-**What was found:**
-- ❌ 49/49 existing memory entries have 0% embedding coverage
-- ❌ REST API missing embedding generation (only agent tool path had it)
-- ✅ Code fix APPLIED: Added `generateEmbedding()` call to POST handler (lines 7, 28, 34)
-- ⏳ Testing BLOCKED by pre-existing Claude Agent SDK build error (child_process import)
-- ⏳ Backfill script READY: `/scripts/backfill-memory-embeddings.ts`
+1. **Claude Agent SDK Build Error** (Nov 29)
+   - **Problem:** Node.js modules (`child_process`, `fs`) imported in client bundle via barrel exports
+   - **Fix:** Separated `lib/agent-sdk/index.ts` (client-safe) from `lib/agent-sdk/server.ts` (server-only)
+   - **Result:** App builds and loads successfully
 
-**Code Changed:** `/app/api/memory/entries/route.ts`
-```typescript
-// ADDED: Line 7
-import { generateEmbedding } from '@/lib/ai/embedding';
+2. **REST API Embedding Generation** (Nov 28)
+   - **File:** `/app/api/memory/entries/route.ts`
+   - **Fix:** Added `generateEmbedding()` call in POST handler
+   - **Result:** New memory entries get embeddings automatically
 
-// ADDED: Line 28
-const embedding = await generateEmbedding(validated.content);
+3. **Embedding Backfill** (Nov 29)
+   - **Created:** `/app/api/memory/backfill/route.ts` - API endpoint for backfill
+   - **Executed:** `curl -X POST http://localhost:3000/api/memory/backfill`
+   - **Result:** 49/49 existing entries backfilled (100% coverage)
 
-// ADDED: Line 34 (in createMemory call)
-embedding,
+### Verification Results
+
+| Component | Status | Details |
+|-----------|--------|---------|
+| Build | ✅ Working | App loads, HTTP 200 |
+| REST API | ✅ Working | New entries get embeddings |
+| Embedding Coverage | ✅ 100% | 50/50 entries have embeddings |
+| Text Search (FTS) | ✅ Working | tsvector queries return results |
+| Vector Search | ✅ Working | Cosine similarity returns correct scores |
+| search_memory | ✅ Functional | Hybrid search (70% vector + 30% BM25) works |
+
+### Architecture Pattern (Client/Server Separation)
+
+```
+lib/agent-sdk/
+├── index.ts      # Client-safe exports (utils, UI helpers, emojis)
+└── server.ts     # Server-only exports (Agent SDK, safety hooks, tools)
 ```
 
-**Next Steps for Senior Engineer:**
-1. Fix Claude Agent SDK build error (30-60 min) - `child_process` import issue
-2. Verify REST API embedding generation works (10 min)
-3. Run backfill script: `npx tsx scripts/backfill-memory-embeddings.ts` (20-30 min)
-4. Test search_memory end-to-end (15-20 min)
-5. Re-evaluate ship decision based on verification
+**Import Guidelines:**
+- Client components: `import { ... } from '@/lib/agent-sdk'`
+- Server components/API routes: `import { ... } from '@/lib/agent-sdk/server'`
 
-**Documentation:**
-- Full analysis: `/docs/sprints/active/sprint-m35-02-BLOCKER-UPDATE.md`
-- Backlog update: `/docs/PRODUCT_BACKLOG.md` (section "CRITICAL POST-SHIP BLOCKERS")
-- Progress tracker: `/docs/archive/PROGRESS_TRACKER.md`
+### Key Files
+- `lib/agent-sdk/index.ts` - Client-safe exports only
+- `lib/agent-sdk/server.ts` - Server-only exports (created Nov 29)
+- `app/api/memory/backfill/route.ts` - Backfill endpoint (created Nov 29)
 
-**Current Build Status:** 🔴 BROKEN - Claude Agent SDK error prevents app loading
+**Current Build Status:** ✅ WORKING - All features functional
 
 ---
 

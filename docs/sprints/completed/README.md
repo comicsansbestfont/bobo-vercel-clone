@@ -54,16 +54,21 @@ These are NOT archived with the sprint because they may be useful for future sim
 
 ## Sprint Archive
 
-| Sprint | Milestone | Duration | Tasks | Folder |
-|--------|-----------|----------|-------|--------|
-| M3-03 | Memory CRUD | Nov 24 | 7 | `M3-03/` |
-| M3-02 | Gemini Extraction | Nov 24 | 12 | `M3-02/` |
-| M3-01 | Profile System | Nov 24 | 4 | `M3-01/` |
-| M2-01 | Double-Loop RAG | Jan 15-23 | 18 | `M2-01/` |
-| V1-02 | E2E Tests | Nov 16-22 | 10 | `V1-02/` |
-| V1-01 | Persistence | Nov 1-15 | 6 | `V1-01/` |
+| Sprint | Milestone | Duration | Tasks | Status | Folder |
+|--------|-----------|----------|-------|--------|--------|
+| **M35-02** | Agent Memory (Quality) | Nov 28-29 | 8 | ✅ 100% Ship Ready | `sprint-m35-02.md` |
+| **M35-01** | Agent Memory (Impl) | Nov 27-28 | 7 | ✅ Complete | `sprint-m35-01.md` |
+| **M4-01** | Agent Mode Foundation | Nov 26-27 | 5 | ✅ Complete | `sprint-m4-01.md` |
+| M3-03 | Memory CRUD | Nov 24 | 7 | ✅ Complete | `sprint-m3-03.md` |
+| M3-02 | Gemini Extraction | Nov 24 | 12 | ✅ Complete | `sprint-m3-02.md` |
+| M3-01 | Profile System | Nov 24 | 4 | ✅ Complete | `sprint-m3-01.md` |
+| M2-01 | Double-Loop RAG | Jan 15-23 | 18 | ✅ Complete | `sprint-m2-01.md` |
+| V1-02 | E2E Tests | Nov 16-22 | 10 | ✅ Complete | `sprint-v1-02.md` |
+| V1-01 | Persistence | Nov 1-15 | 6 | ✅ Complete | `sprint-v1-01.md` |
 
-**Note:** Older sprints (M3-03 and earlier) may not yet have the new folder structure with testing/ and reports/ subfolders. They will be reorganized as new sprints complete.
+**Last Updated:** November 29, 2025
+
+**Note:** M3.5 milestone (Agent Memory Tools) fully completed on Nov 29, 2025 after resolving all embedding blockers.
 
 ---
 

@@ -1,12 +1,30 @@
-# Sprint M3.5-02 - Critical Embedding Blocker Update
+# Sprint M3.5-02 - Embedding Blocker Update
 
-**Date:** November 28, 2025 (Evening)
-**Status:** 🚨 **CRITICAL P0 BLOCKER DISCOVERED**
-**Impact:** search_memory feature is 100% non-functional
+**Date:** November 28-29, 2025
+**Status:** ✅ **RESOLVED** (All Blockers Fixed)
+**Impact:** search_memory feature now 100% functional
 
 ---
 
-## Executive Summary
+## ✅ Resolution Summary (Nov 29, 2025)
+
+All blockers discovered on Nov 28 have been **fully resolved**:
+
+| Blocker | Status | Resolution |
+|---------|--------|------------|
+| Build Error (Claude Agent SDK) | ✅ Fixed | Separated client/server exports in lib/agent-sdk/ |
+| REST API Embedding Generation | ✅ Fixed | Added generateEmbedding() call to POST handler |
+| Embedding Backfill | ✅ Complete | 50/50 entries (100% coverage via API endpoint) |
+| search_memory Functionality | ✅ Verified | Hybrid search returning results successfully |
+
+**Final Metrics:**
+- Embedding Coverage: 0% → **100%** (50/50 entries)
+- Ship Status: REVOKED (35%) → **READY TO SHIP (100%)**
+- Build Status: ❌ Broken → **✅ Passing**
+
+---
+
+## Original Problem (Nov 28)
 
 During comprehensive E2E testing with database validation, a **critical P0 blocker** was discovered: **REST API endpoint was NOT generating embeddings for memory entries**.
 

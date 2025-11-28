@@ -1,8 +1,8 @@
 # Bobo AI Chatbot - Comprehensive Project Brief
 
-**Version:** 3.0
-**Last Updated:** November 25, 2025
-**Status:** Personal productivity tool | M1-M2 Complete | M3 79% | Agent SDK Next
+**Version:** 3.1
+**Last Updated:** November 29, 2025
+**Status:** Personal productivity tool | M1-M4 ✅ Complete | M3.5 ✅ Complete | Ship Ready
 
 ---
 
@@ -89,7 +89,7 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 
 **Personal Tool Principle:** "Let pain guide priorities." Build features when you feel their absence, not speculatively.
 
-### Current State (v1.3.0 - Personal Tool MVP)
+### Current State (v1.4.0 - Agent Memory Complete)
 
 ✅ **Completed:**
 - Streaming chat interface with markdown/code support
@@ -100,20 +100,20 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 - Full persistence layer (Supabase PostgreSQL + pgvector)
 - ChatGPT-style collapsible sidebar
 - Double-Loop RAG architecture (M2 complete)
-- Hierarchical memory extraction system (M3 79% complete)
+- Hierarchical memory extraction system (M3 Phases 1-3 complete)
 - Mobile-first responsive design (v1.3.0)
 - Bobo identity/personality system
-
-🎯 **Next Priority: Agent SDK (M4)**
-- Claude Agent SDK integration
-- Built-in tools: Read, Write, Edit, Bash, Glob, Grep
-- Agent mode toggle in UI
-- Tool execution streaming and display
-- User confirmation for sensitive operations
-- Integration with existing memory/context systems
+- **Claude Agent SDK integration (M4 complete)**
+- **Built-in tools: Read, Write, Edit, Bash, Glob, Grep**
+- **Agent mode toggle in UI with tool confirmation**
+- **Agent Memory Tools (M3.5 complete):**
+  - remember_fact - Real-time memory capture during conversations
+  - search_memory - Hybrid search (70% vector + 30% BM25)
+  - update_memory/forget_memory - Backend complete (UI deferred)
+  - 100% embedding coverage (50/50 entries backfilled)
 
 📝 **Deferred (Pain-Driven):**
-- M3 Phase 4: Memory polish features (provenance, debugger, export)
+- M3 Phase 4: Memory polish features (provenance, debugger, export, UI dialogs)
 - M5: Knowledge graph & living docs
 - Future: Multi-user features (if SaaS pivot)
 
@@ -153,11 +153,11 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 - ✅ AI response includes sources with inline citations [1], [2]
 - ✅ Context tracking accounts for injected knowledge
 
-### Milestone 3: Global Memory 🚧
+### Milestone 3: Global Memory ✅
 
 **Goal:** AI remembers user preferences and facts across all projects.
 
-**Status:** 🚧 79% Complete (Phase 4 deferred)
+**Status:** ✅ Phases 1-3 Complete (Phase 4 deferred for pain-driven prioritization)
 
 **Deliverables:**
 - ✅ User profile system (bio, background, preferences, technical context)
@@ -173,11 +173,30 @@ This keeps the roadmap grounded in lived experience: every phase exists to solve
 - ✅ Facts from conversations inform future responses
 - ✅ User can view and edit memories
 
-### Milestone 4: Agent SDK 🎯
+### Milestone 3.5: Agent Memory Tools ✅
+
+**Goal:** Enable agent to self-edit memory in real-time during conversations.
+
+**Status:** ✅ Complete (Nov 29, 2025)
+
+**Deliverables:**
+- ✅ remember_fact tool - Real-time memory capture
+- ✅ search_memory tool - Hybrid search (70% vector + 30% BM25)
+- ✅ update_memory/forget_memory - Backend complete
+- ✅ Embedding backfill - 100% coverage (50/50 entries)
+- ✅ Build error fix - Client/server module separation
+- 📝 UI confirmation dialogs (deferred)
+
+**Success Criteria:**
+- ✅ Agent can store facts during conversation ("I'll remember that" actually works)
+- ✅ Agent can search memories for context
+- ✅ All memory entries have embeddings for hybrid search
+
+### Milestone 4: Agent SDK ✅
 
 **Goal:** Transform Bobo into an agentic assistant using Claude Agent SDK.
 
-**Status:** 🎯 Current Priority
+**Status:** ✅ Complete
 
 **Architecture:**
 ```
@@ -192,20 +211,21 @@ Both modes share:
 ```
 
 **Deliverables:**
-- Claude Agent SDK integration
-- Built-in tools: Read, Write, Edit, Bash, Glob, Grep
-- Agent mode toggle in UI
-- Tool execution streaming and display
-- User confirmation for sensitive operations (writes, deletes, bash)
-- PreToolUse safety hooks
-- Integration with existing memory/context systems
+- ✅ Claude Agent SDK integration
+- ✅ Built-in tools: Read, Write, Edit, Bash, Glob, Grep
+- ✅ Agent mode toggle in UI
+- ✅ Tool execution streaming and display
+- ✅ User confirmation for sensitive operations (writes, deletes, bash)
+- ✅ PreToolUse safety hooks
+- ✅ Integration with existing memory/context systems
+- ✅ Client/server module separation (lib/agent-sdk/server.ts)
 
 **Success Criteria:**
-- Can toggle between Chat Mode and Agent Mode
-- Agent can read/search project files
-- Agent can create/edit files (with confirmation)
-- Agent has access to user memory and project context
-- Tool execution visible in real-time
+- ✅ Can toggle between Chat Mode and Agent Mode
+- ✅ Agent can read/search project files
+- ✅ Agent can create/edit files (with confirmation)
+- ✅ Agent has access to user memory and project context
+- ✅ Tool execution visible in real-time
 
 ### Milestone 5: Cognitive Layer (Deferred)
 
@@ -654,14 +674,17 @@ messages
 ## 10. Development Timeline
 
 ### Completed
-- ✅ Phase 1: Persistence Foundation (M1)
-- ✅ Phase 2: Project Intelligence (M2)
-- 🚧 Phase 3: User Memory (M3) - 79%
+- ✅ Phase 1: Persistence Foundation (M1) - Nov 2025
+- ✅ Phase 2: Project Intelligence (M2) - Jan 2025
+- ✅ Phase 3: User Memory (M3 Phases 1-3) - Nov 2025
+- ✅ Phase 3.5: Agent Memory Tools (M3.5) - Nov 29, 2025
+- ✅ Phase 4: Agent SDK Integration (M4) - Nov 2025
 
 ### Current
-- 🎯 Phase 4: Agent SDK Integration
+- 🎉 **Ship Ready** - All core features complete, no blockers
 
 ### Future (Pain-Driven)
+- 📝 M3 Phase 4: Memory polish - when provenance/debugging feels needed
 - 📝 Cognitive Layer (M5) - when cross-project querying feels limited
 - 📝 SaaS Features - if pivot decision made after dogfooding
 

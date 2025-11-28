@@ -1,12 +1,55 @@
 # Bobo AI Chatbot - Progress Tracker
 
-**Last Updated:** November 29, 2025 - Build & Memory API fixes
-**Current Phase:** M3.5 - Agent Memory Tools (IN PROGRESS - SHIP DECISION REVOKED)
-**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ | M4 ✅ | M3.5 🚨 BLOCKER
+**Last Updated:** November 29, 2025 - ✅ ALL BLOCKERS RESOLVED
+**Current Phase:** M3.5 - Agent Memory Tools ✅ COMPLETE (100% Ship Ready)
+**Overall Completion:** V1 ✅ | V1.1 ✅ | M2 ✅ | M4 ✅ | M3.5 ✅
 
 ---
 
-## ✨ Latest Work (Nov 29, 2025)
+## ✨ Latest Work (Nov 29, 2025 - BLOCKER RESOLUTION SESSION)
+
+### Critical Blocker Resolution ✅
+
+**All P0 blockers from Nov 28 have been fully resolved:**
+
+1. **Claude Agent SDK Build Error** ✅ FIXED
+   - **Problem:** Node.js modules (`child_process`, `fs`) imported in client bundle
+   - **Root Cause:** Barrel exports in `lib/agent-sdk/index.ts` pulling server-only code
+   - **Fix:** Created separate `lib/agent-sdk/server.ts` for server-only exports
+   - **Files Modified:**
+     - `lib/agent-sdk/index.ts` - Now exports only client-safe utilities
+     - `lib/agent-sdk/server.ts` - New file with server-only exports
+   - **Result:** App builds and loads successfully (HTTP 200)
+
+2. **REST API Embedding Generation** ✅ VERIFIED
+   - **Test:** Created memory entry via POST `/api/memory/entries`
+   - **Result:** Response includes `embedding` array (1536 dimensions)
+   - **Verification:** New entries now automatically get embeddings
+
+3. **Embedding Backfill** ✅ COMPLETED
+   - **Created:** `/app/api/memory/backfill/route.ts` - API endpoint that runs in Next.js server context
+   - **Executed:** `curl -X POST http://localhost:3000/api/memory/backfill`
+   - **Result:** 49/49 entries backfilled successfully
+   - **Final Coverage:** 50/50 entries with embeddings (100%)
+
+4. **Search Functionality** ✅ VERIFIED
+   - **Text Search (FTS):** Tested with "CorePlan" query - returns correct results
+   - **Vector Search:** Tested similarity - exact match returns 1.0, related entries 0.45-0.53
+   - **Hybrid Search:** Both components working correctly
+
+### Ship Decision Update
+
+| Metric | Before (Nov 28) | After (Nov 29) | Change |
+|--------|-----------------|----------------|--------|
+| Embedding Coverage | 0% (0/49) | **100% (50/50)** | +100% |
+| Build Status | 🔴 BROKEN | ✅ Working | Fixed |
+| REST API Embeddings | ❌ Missing | ✅ Working | Fixed |
+| search_memory | ❌ Non-functional | ✅ Working | Fixed |
+| Ship Status | REVOKED (35%) | **READY TO SHIP (100%)** | Full recovery |
+
+---
+
+## ✨ Previous Work (Nov 29, 2025 - Earlier)
 
 - ✅ Fixed Next.js build failures by switching `npm run build` to `next build --webpack` and removing all Node-only dependencies from Edge/client paths (crypto/fs/child_process).
 - ✅ Made memory APIs type-safe with `createMemory()` by adding missing fields and aligning `source_type` enums (`suggested` vs `passive`).
@@ -14,27 +57,19 @@
 
 ---
 
-## 🚨 CRITICAL UPDATE (Nov 28, 2025 Evening)
+## ✅ RESOLVED: Embedding Blocker (Nov 28-29, 2025)
 
-**BLOCKER DISCOVERED:** During comprehensive E2E testing, found that REST API `/app/api/memory/entries` was NOT generating embeddings for new memory entries. Impact: **search_memory feature is 100% non-functional** (requires embeddings for hybrid search).
+**Original Issue:** REST API `/app/api/memory/entries` was NOT generating embeddings.
 
-**Severity:** 🚨 **P0 CRITICAL** - Breaks core feature, ship decision revoked
+**Resolution Summary:**
+- ✅ Build error fixed (client/server module separation)
+- ✅ REST API embedding generation verified working
+- ✅ 49 existing entries backfilled via `/api/memory/backfill`
+- ✅ Text search (FTS) verified working
+- ✅ Vector similarity search verified working
+- ✅ Ship decision restored to 100% ready
 
-**What we found:**
-- ❌ 49/49 existing memory entries have 0% embedding coverage
-- ❌ REST API missing embedding generation (only agent tool path had it)
-- ✅ Code fix applied (5 lines added to API route)
-- ⏳ Testing blocked by pre-existing Claude Agent SDK build error
-- ⏳ Backfill script ready (`scripts/backfill-memory-embeddings.ts`)
-
-**Next Steps:**
-1. Senior engineer fixes Claude Agent SDK build error (30-60 min) - ASSIGNED
-2. Verify REST API embedding generation works (10 min)
-3. Run embedding backfill script (20-30 min)
-4. End-to-end test search functionality (15-20 min)
-5. Re-evaluate ship decision based on verification
-
-**Detailed Analysis:** See `/docs/sprints/active/sprint-m35-02-BLOCKER-UPDATE.md`
+**Documentation:** See `/docs/sprints/completed/sprint-m35-02-BLOCKER-RESOLVED.md`
 
 ---
 
@@ -70,13 +105,19 @@
 [████████████████████████████████████] 100% V1 Complete (QA Passed)
 [████████████████████████████████████] 100% V1.1 Complete (Bug Fixes)
 [████████████████████████████████████] 100% M2 Complete (Double-Loop + Citations)
+[████████████████████████████████████] 100% M3 Phases 1-3 Complete (Memory System)
+[████████████████████████████████████] 100% M4 Complete (Claude Agent SDK)
+[████████████████████████████████████] 100% M3.5 Complete (Agent Memory Tools)
 
-✅ Milestone 0 (MVP Core)        - 100% - SHIPPED
-✅ Milestone 1 (Persistence)     - 100% - SHIPPED
-✅ V1.1 (Bug Fixes & Polish)     - 100% - SHIPPED
-✅ Milestone 2 (Double-Loop)     - 100% - SHIPPED
-📝 Milestone 3 (User Profile)    - 0%   - PLANNED
-📝 Milestone 4 (Production)      - 0%   - PLANNED
+✅ Milestone 0 (MVP Core)         - 100% - SHIPPED
+✅ Milestone 1 (Persistence)      - 100% - SHIPPED
+✅ V1.1 (Bug Fixes & Polish)      - 100% - SHIPPED
+✅ Milestone 2 (Double-Loop)      - 100% - SHIPPED
+✅ Milestone 3 Phases 1-3         - 100% - SHIPPED (Memory UI, Extraction)
+✅ Milestone 4 (Agent SDK)        - 100% - SHIPPED (Claude Tools, Safety Hooks)
+✅ Milestone 3.5 (Agent Memory)   - 100% - SHIPPED (remember_fact, search_memory, backfill)
+📝 Milestone 3 Phase 4 (Polish)   - 0%   - PLANNED (Provenance, Debugger)
+📝 Milestone 5 (Cognitive)        - 0%   - DEFERRED (Pain-Driven)
 ```
 
 ---

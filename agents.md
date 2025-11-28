@@ -651,9 +651,45 @@ When committing changes, update this file if you:
 
 ---
 
-**Last Updated**: 2024-11-21  
-**Document Version**: 1.0  
-**Project Version**: 0.1.0 (Unreleased)
+**Last Updated**: 2025-11-29
+**Document Version**: 2.0
+**Project Version**: 1.4.0 (Ship Ready)
+
+---
+
+## Recent Critical Updates (Nov 29, 2025)
+
+### Embedding Blocker Resolution ✅
+
+All critical blockers have been resolved:
+
+1. **Claude Agent SDK Build Error** - Fixed by separating client/server exports
+   - `lib/agent-sdk/index.ts` - Client-safe only (utils, UI helpers)
+   - `lib/agent-sdk/server.ts` - Server-only (Agent SDK, safety hooks)
+
+2. **Embedding Backfill** - 100% coverage achieved (50/50 entries)
+   - Created `/app/api/memory/backfill/route.ts`
+   - Runs within Next.js server context for OIDC token access
+
+3. **Search Functionality** - Fully operational
+   - Text search (FTS) working
+   - Vector similarity search working
+   - Hybrid search (70% vector + 30% BM25) working
+
+### Import Guidelines for Agent SDK
+
+```typescript
+// Client components (components/*, app/**/page.tsx with 'use client')
+import { isClaudeModel, TOOL_EMOJIS } from '@/lib/agent-sdk';
+
+// Server components and API routes
+import { handleAgentMode, SAFETY_HOOKS } from '@/lib/agent-sdk/server';
+```
+
+### Key Files Created/Modified (Nov 29)
+- `lib/agent-sdk/server.ts` - NEW: Server-only exports
+- `lib/agent-sdk/index.ts` - MODIFIED: Client-safe exports only
+- `app/api/memory/backfill/route.ts` - NEW: Embedding backfill endpoint
 
 **Reminder**: This file must be reviewed and updated with every commit that changes architecture, workflows, or adds new patterns. Treat it as a living document that evolves with the codebase.
 

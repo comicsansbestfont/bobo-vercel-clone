@@ -43,9 +43,14 @@ Handover documents (execution guides) are NOT stored in sprint folders. They liv
 
 | Sprint | Status | Plan | Handover |
 |--------|--------|------|----------|
-| [M35-01](M35-01/sprint-m35-01.md) | ✅ Completed (awaiting archival) | [Plan](M35-01/sprint-m35-01.md) | [Handover](../handover/HANDOVER_M35-01.md) |
-| [M35-02](M35-02/sprint-m35-02.md) | 🟡 In Progress | [Plan](M35-02/sprint-m35-02.md) | [Handover](../handover/HANDOVER_M35-02.md) |
-| [M4-01](M4-01/sprint-m4-01.md) | 🟢 Ready | [Plan](M4-01/sprint-m4-01.md) | [Handover](../handover/HANDOVER_M4-01.md) |
+| None | All M3.5 sprints complete | - | - |
+
+**Note:** M3.5 milestone fully complete as of November 29, 2025. All sprint files moved to `completed/` folder.
+
+### Recently Completed (Awaiting Next Sprint Planning)
+- M35-01: Agent Memory Tools Implementation - ✅ Complete
+- M35-02: Quality Hardening & Gap Fixes - ✅ Complete (100% Ship Ready)
+- M4-01: Agent Mode Foundation - ✅ Complete
 
 ---
 
