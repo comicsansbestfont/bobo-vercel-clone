@@ -1,18 +1,23 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** November 29, 2025 (Sprint M3.5 ✅ COMPLETE)
+**Last Updated:** December 1, 2025 (M3.6 Cognitive Memory Roadmap Added)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 1, 2025 Update:** 🧠 **M3.6 COGNITIVE MEMORY ROADMAP INTEGRATED**
+> - Extracted 23 new requirements from brain-building research (neuroscience-inspired memory)
+> - Added 9 audit items improving existing backlog definitions
+> - Created 5-sprint sequence for systematic implementation (~100-120h total)
+> - Key additions: temporal decay (Ebbinghaus), Hebbian reinforcement, memory graph, consolidation
+> - Source: `/docs/COGNITIVE_MEMORY_REQUIREMENTS.md`
 
 > **November 29, 2025 Update:** ✅ **ALL CRITICAL BLOCKERS RESOLVED**
 > - Fixed Claude Agent SDK build error (client/server module separation)
 > - Backfilled 49/49 existing memory entries with embeddings (100% coverage)
 > - Verified search_memory hybrid search working (text + vector)
 > - Ship status restored from REVOKED (35%) → **READY TO SHIP (100%)**
-
-> **November 27, 2025 Update:** Integrated learnings from [Letta AI Memory SDK](https://github.com/letta-ai/ai-memory-sdk) competitive analysis. Key additions: Agent Memory Tools (self-editing memory), description-driven extraction, async memory processing.
 
 > **Sprint M3.5 Summary:** Agent mode (M4) can now self-edit memory. remember_fact and search_memory tools fully functional. Update/forget tools work but missing UI confirmation dialogs (deferred). BETA banner deployed for user expectations.
 
@@ -24,14 +29,14 @@
 
 | Metric | Value |
 |--------|-------|
-| **Milestones Complete** | 5 of 6 core (M1, M2, M3 P1-3, M3.5, M4) |
-| **Tasks Complete** | 74 of 89 (83%) |
+| **Milestones Complete** | 5 of 7 core (M1, M2, M3 P1-3, M3.5, M4) |
+| **Tasks Complete** | 74 of 121 (61%) |
 | **Hours Invested** | ~70 hours actual |
-| **Hours Remaining** | ~17 hours (M3 Phase 4 only) |
+| **Hours Remaining** | ~120 hours (M3.6: 100h, M3 Phase 4: 17h) |
 | **Build Status** | ✅ Passing |
-| **Current Phase** | **M3.5 ✅ COMPLETE** → M3 Phase 4 (when pain-driven) |
+| **Current Phase** | **M3.5 ✅ COMPLETE** → M3.6 Cognitive Memory (Dec 2025) |
 
-*M3.5 completed Nov 29, 2025. All critical blockers (embedding backfill, build error) resolved. Ship-ready at 100%.*
+*Dec 1, 2025: M3.6 Cognitive Memory roadmap integrated from brain-building research. 23 new requirements + 9 audit items = ~100-120h across 5 sprints.*
 
 ### Gantt Chart - Timeline View
 
@@ -63,8 +68,15 @@ MOBILE v1.3.0       ░░░░░░░░░░░░░░░░░░░░
 M4: AGENT SDK       ░░░░░░░░░░░░░░░░░░░░░░██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
   Sprint 01 (10)                          ██ Nov 26 ✅ 10h (Day 1!)
 
+M3.6: COGNITIVE MEM ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████████████░░░░░░░░
+  Sprint 1 (7)                                              ████ Dec 2025 📝 NEXT
+  Sprint 2 (4)                                                  ████ Jan 2026
+  Sprint 3 (8)                                                      ████
+  Sprint 4 (8)                                                          ████
+  Sprint 5 (5)                                                              ████
+
 M5: COGNITIVE       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-  (8 tasks)                                           📝 Deferred (Pain-Driven)
+  (8 tasks)                                           📝 Deferred (After M3.6)
 
 FUTURE (SaaS)       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
   (20 tasks)                                          📝 Not Planned
@@ -81,10 +93,11 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3: Memory (P1-3)** | ✅ Complete | 22/22 | 51h | 28h | 182% | Hierarchical memory, Memory UI, UX polish |
 | **M3.5: Agent Memory** | ✅ Complete | 7/7 | 28h | 12h | 233% | remember_fact, search_memory, embedding backfill |
 | **M4: Agent SDK** | ✅ Complete | 10/10 | 25.5h | 10h | 255% | Claude SDK, tools, safety hooks, streaming |
-| **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (pain-driven) |
+| **M3.6: Cognitive Memory** | 📝 **NEXT** | 0/32 | 100h | - | - | Temporal decay, Hebbian, graph, consolidation |
+| **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (after M3.6) |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
-*M3.5 completed Nov 29. All blockers resolved. Ship status at 100%.*
+*Dec 1, 2025: M3.6 Cognitive Memory integrated from brain-building research. 32 tasks across 5 sprints.*
 
 ### Sprint Velocity History
 
@@ -156,16 +169,37 @@ TOTALS        │  84   │ 120h    │  84h   │  -30%    │ 100% ✅
 │  ├─ ✅ Embedding backfill (100% coverage)
 │  └─ ✅ Build error fix (client/server separation)
 │
-NEXT (When Pain-Driven)
-├─ M3 Phase 4: Memory polish (17h est)
-│  ├─ Memory provenance UI
-│  ├─ Memory debugger
-│  ├─ Conflict resolution
-│  ├─ Token budget enforcement
-│  ├─ Description-driven extraction (Letta learning)
-│  └─ update_memory/forget_memory UI dialogs
+📝 NEXT: M3.6 Cognitive Memory (100h est, 5 sprints)
+├─ Sprint 1: Cognitive Foundation (12-15h) ← START HERE
+│  ├─ REQ-001: Temporal columns (last_accessed, access_count)
+│  ├─ REQ-009: Enhanced search with Ebbinghaus decay
+│  ├─ REQ-010: Update access metrics function
+│  ├─ REQ-013: Hebbian reinforcement (strengthen duplicates)
+│  ├─ REQ-014: Context-aware search (conversation context)
+│  └─ REQ-023: API updates for new fields
 │
-LATER (When Pain-Driven)
+├─ Sprint 2: Memory Safety (8-10h)
+│  ├─ AUDIT-006: Confirmation dialogs (update/forget)
+│  └─ AUDIT-001: Token budget enforcement (500 tokens)
+│
+├─ Sprint 3: Memory Graph Foundation (12-15h)
+│  ├─ REQ-007: memory_relationships table
+│  ├─ REQ-011: Spreading activation search
+│  ├─ REQ-012: Build edges function
+│  └─ REQ-003/004/008: Memory type + bi-temporal columns
+│
+├─ Sprint 4: Consolidation (15-20h)
+│  ├─ REQ-017: Consolidation cron job
+│  ├─ REQ-018: Consolidation logging table
+│  └─ REQ-019: Verification layer (hallucination prevention)
+│
+└─ Sprint 5: M3 Phase 4 Completion (15h)
+   ├─ AUDIT-002: Conflict resolution UI
+   ├─ AUDIT-003: Memory debugger
+   ├─ AUDIT-004: Provenance UI
+   └─ AUDIT-005: Description-driven extraction
+│
+LATER (After M3.6)
 ├─ M5: Cognitive Layer (36h est)
 │  ├─ Living documentation
 │  ├─ Hierarchical summaries
@@ -178,15 +212,19 @@ MAYBE (If SaaS Pivot)
    └─ Usage analytics
 ```
 
+> **Source:** All M3.6 requirements extracted from `/docs/COGNITIVE_MEMORY_REQUIREMENTS.md`
+> **Research:** Neuroscience-inspired memory (Ebbinghaus forgetting curve, Hebbian learning, CLS theory)
+
 ---
 
 ## 📊 Backlog Priority Matrix
 
 ```
-Agent SDK (M4) ✅ → M3.5 (agent memory) ✅ → M3 Phase 4 (polish) → M5 (cognitive) → Future (if SaaS)
-                   ─────────────────────
-                   ✅ COMPLETED (Nov 29, 2025)
-                   All critical blockers resolved. Ship-ready at 100%.
+Agent SDK (M4) ✅ → M3.5 ✅ → M3.6 (cognitive memory) → M3 Phase 4 → M5 → Future
+                           ────────────────────────
+                           📝 NEXT (Dec 2025 - Mar 2026)
+                           100h across 5 sprints
+                           Neuroscience-inspired memory architecture
 ```
 
 ---
@@ -1332,9 +1370,198 @@ Both modes share:
 
 ---
 
+## 🧠 MILESTONE 3.6: Cognitive Memory System (Neuroscience-Inspired)
+
+**Status:** 📝 NEXT
+**Target Start:** December 2025
+**Target End:** March 2026
+**Total Tasks:** 32 (23 new requirements + 9 audit items)
+**Total Effort:** ~100-120 hours across 5 sprints
+**Focus:** Transform Bobo's memory from simple key-value storage to a neuroscience-inspired cognitive system
+**Source:** Comprehensive requirements extracted from `/docs/COGNITIVE_MEMORY_REQUIREMENTS.md`
+**Research Basis:** Ebbinghaus forgetting curve, Hebbian learning, CLS (Complementary Learning Systems) theory, spreading activation
+
+### Why M3.6 Now?
+
+1. **Brain-building research gap** - Extensive research in `/docs/brain-building/` was never translated into actionable backlog items
+2. **Current memory is passive** - Memories don't decay, strengthen, or relate to each other
+3. **No temporal dynamics** - 1-year-old memory weighted same as yesterday's
+4. **No associative network** - Can't traverse related concepts
+5. **Foundation ready** - M3/M3.5 provides basic memory infrastructure to build upon
+
+### Architecture Overview
+
+```
+Current Memory (M3.5)          →    Cognitive Memory (M3.6)
+─────────────────────────────────────────────────────────────
+Simple key-value storage       →    Temporal decay (Ebbinghaus)
+Duplicate rejection            →    Hebbian reinforcement
+Isolated memories              →    Memory graph (relationships)
+Static confidence              →    Dynamic importance + salience
+No consolidation               →    Sleep-inspired consolidation
+Same results every query       →    Context-aware search
+```
+
+### Sprint 1: Cognitive Foundation (12-15h) ← START HERE
+
+**Goal:** Add temporal dynamics and smarter search. Recent memories should rank higher. Duplicates should strengthen existing rather than reject.
+
+| ID | Feature | Priority | Estimate | Status | Source |
+|----|---------|----------|----------|--------|--------|
+| M3.6-001 | Add `last_accessed`, `access_count` columns | 🔴 P0 | 1h | ⏳ | REQ-001 |
+| M3.6-002 | Create `enhanced_memory_search` function with temporal decay | 🔴 P0 | 3h | ⏳ | REQ-009 |
+| M3.6-003 | Create `update_memory_access` function | 🔴 P0 | 1h | ⏳ | REQ-010 |
+| M3.6-004 | Implement Hebbian reinforcement in `remember_fact` | 🔴 P0 | 2h | ⏳ | REQ-013 |
+| M3.6-005 | Implement context-aware search in `search_memory` | 🔴 P0 | 4h | ⏳ | REQ-014 |
+| M3.6-006 | Update Memory API for new fields | 🔴 P0 | 2h | ⏳ | REQ-023 |
+| M3.6-007 | Testing buffer (25% allocation) | 🔴 HIGH | 2h | ⏳ | Sprint rule |
+
+**Sprint 1 Total:** 15h
+
+**Definition of Done:**
+- [ ] Recent memories rank higher than old ones (Ebbinghaus decay)
+- [ ] Frequently accessed memories get priority (access_count)
+- [ ] Duplicate inputs strengthen existing memories (Hebbian)
+- [ ] Search results influenced by conversation context
+- [ ] API accepts new fields (importance, memory_type)
+- [ ] All tests passing
+
+### Sprint 2: Memory Safety (8-10h)
+
+**Goal:** Add user protection for destructive operations. Enforce token budget to prevent context overflow.
+
+| ID | Feature | Priority | Estimate | Status | Source |
+|----|---------|----------|----------|--------|--------|
+| M3.6-008 | Confirmation dialogs for update_memory/forget_memory | 🔴 HIGH | 4h | ⏳ | AUDIT-006 |
+| M3.6-009 | Token budget enforcement (500 tokens max) | 🔴 HIGH | 4h | ⏳ | AUDIT-001 |
+| M3.6-010 | Testing buffer | 🔴 HIGH | 2h | ⏳ | Sprint rule |
+
+**Sprint 2 Total:** 10h
+
+**Definition of Done:**
+- [ ] `update_memory` triggers modal showing before/after diff
+- [ ] `forget_memory` triggers red destructive confirmation modal
+- [ ] Total injected memory never exceeds 500 tokens
+- [ ] Truncation follows priority hierarchy (work > top_of_mind > personal > brief > long_term > other)
+- [ ] Memory UI shows "X/500 tokens used"
+
+### Sprint 3: Memory Graph Foundation (12-15h)
+
+**Goal:** Add relationships between memories. Enable spreading activation search.
+
+| ID | Feature | Priority | Estimate | Status | Source |
+|----|---------|----------|----------|--------|--------|
+| M3.6-011 | Create `memory_relationships` table | 🔴 P1 | 2h | ⏳ | REQ-007 |
+| M3.6-012 | Create `build_memory_edges` function | 🔴 P1 | 2h | ⏳ | REQ-012 |
+| M3.6-013 | Create `spreading_activation_search` function | 🔴 P1 | 3h | ⏳ | REQ-011 |
+| M3.6-014 | Add `memory_type` column (episodic/semantic/consolidated) | 🔴 P1 | 1h | ⏳ | REQ-003 |
+| M3.6-015 | Add `episode_context` JSONB column | 🔴 P1 | 1h | ⏳ | REQ-004 |
+| M3.6-016 | Add bi-temporal columns (valid_from, valid_to, superseded_by) | 🔴 P1 | 2h | ⏳ | REQ-008 |
+| M3.6-017 | Add `importance` column | 🟡 P2 | 1h | ⏳ | REQ-002 |
+| M3.6-018 | Testing buffer | 🔴 HIGH | 3h | ⏳ | Sprint rule |
+
+**Sprint 3 Total:** 15h
+
+**Definition of Done:**
+- [ ] Memories can be linked with relationship types (similar, elaborates, contradicts, temporal_sequence)
+- [ ] New memories auto-build edges to similar existing memories
+- [ ] Spreading activation finds related concepts (1-hop neighbors)
+- [ ] Episodic vs semantic memories distinguishable
+- [ ] Contradictions tracked via bi-temporal model
+
+### Sprint 4: Consolidation System (15-20h)
+
+**Goal:** Implement "sleep-like" memory consolidation. Cluster, synthesize, and prune memories.
+
+| ID | Feature | Priority | Estimate | Status | Source |
+|----|---------|----------|----------|--------|--------|
+| M3.6-019 | Create `memory_consolidation_logs` table | 🔴 P1 | 1h | ⏳ | REQ-018 |
+| M3.6-020 | Implement consolidation job (cluster → synthesize → prune) | 🔴 P1 | 10h | ⏳ | REQ-017 |
+| M3.6-021 | Add verification layer (prevent hallucination) | 🔴 P0 | 8h | ⏳ | REQ-019 |
+| M3.6-022 | Add `consolidated_from` UUID[] column | 🔴 P1 | 0.5h | ⏳ | REQ-005 |
+| M3.6-023 | Update `source_type` constraint for 'consolidated' | 🔴 P1 | 0.5h | ⏳ | REQ-006 |
+| M3.6-024 | Testing buffer | 🔴 HIGH | 3h | ⏳ | Sprint rule |
+
+**Sprint 4 Total:** 23h (may split into 2 sprints)
+
+**Definition of Done:**
+- [ ] Nightly cron job runs consolidation
+- [ ] Similar memories (>0.75 similarity) clustered
+- [ ] Clusters synthesized into single consolidated memory
+- [ ] Original memories soft-deleted, traceable via `consolidated_from`
+- [ ] All consolidated memories go through verification (different model)
+- [ ] Stale memories (90+ days, 0 access, low confidence) flagged for review
+- [ ] Consolidation logged for audit
+
+### Sprint 5: M3 Phase 4 Completion + Production Hardening (15-20h)
+
+**Goal:** Complete remaining M3 Phase 4 items with improved definitions. Add production safety.
+
+| ID | Feature | Priority | Estimate | Status | Source |
+|----|---------|----------|----------|--------|--------|
+| M3.6-025 | Conflict resolution UI | 🔴 HIGH | 5h | ⏳ | AUDIT-002 |
+| M3.6-026 | Memory debugger ("What was injected?") | 🟡 MED | 5h | ⏳ | AUDIT-003 |
+| M3.6-027 | Memory provenance UI | 🟡 MED | 3h | ⏳ | AUDIT-004 |
+| M3.6-028 | Description-driven extraction | 🟡 MED | 4h | ⏳ | AUDIT-005 |
+| M3.6-029 | Latency budget enforcement (<2s retrieval) | 🔴 P0 | 4h | ⏳ | REQ-020 |
+| M3.6-030 | Pruning safety guards | 🔴 P1 | 2h | ⏳ | REQ-021 |
+| M3.6-031 | Graph explosion prevention (entity resolution) | 🔴 P1 | 4h | ⏳ | REQ-022 |
+| M3.6-032 | Testing buffer | 🔴 HIGH | 3h | ⏳ | Sprint rule |
+
+**Sprint 5 Total:** 30h (may split into 2 sprints)
+
+**Definition of Done:**
+- [ ] Conflict modal shows side-by-side comparison (manual vs auto)
+- [ ] Memory debugger panel shows 3 sections (Profile, Memories, Project Context)
+- [ ] Each memory shows clickable source chat link
+- [ ] All 6 categories have `extraction_guidance` populated
+- [ ] Memory retrieval completes in <2s (with graceful degradation)
+- [ ] Pruning runs in log-only mode first (no auto-delete)
+- [ ] Duplicate entities merged before node creation
+
+### M3.6 Success Criteria
+
+- [ ] Memory system feels "alive" - recent interactions influence retrieval
+- [ ] Repetition strengthens memories (Hebbian learning)
+- [ ] Related concepts surface together (spreading activation)
+- [ ] Old unused memories naturally fade (temporal decay)
+- [ ] Memory doesn't grow unbounded (consolidation + pruning)
+- [ ] No hallucinated facts in consolidated memories (verification layer)
+- [ ] User has visibility into what AI "knows" (debugger)
+- [ ] Destructive operations require confirmation (safety)
+
+### Critical Warnings (from PDF Research Reviews)
+
+> ⚠️ **DO NOT:**
+> 1. Use large context windows as memory substitute ("Lost in the Middle" phenomenon)
+> 2. Use MemGPT self-editing loop for real-time chat (2.6s+ latency unacceptable)
+> 3. Hard-delete during consolidation (always soft-delete/archive)
+> 4. Let pruning run without safety guards (log candidates first)
+> 5. Skip verification for consolidated memories (hallucination risk)
+
+### Files to Create/Modify
+
+**New Files:**
+- `supabase/migrations/YYYYMMDD_cognitive_memory_schema.sql`
+- `lib/brain/index.ts` - Public API
+- `lib/brain/config.ts` - Configuration constants
+- `lib/brain/hippocampus/remember.ts` - Hebbian reinforcement
+- `lib/brain/hippocampus/retrieve.ts` - Context-aware search
+- `lib/brain/hippocampus/graph.ts` - Relationship management
+- `lib/brain/neocortex/consolidation.ts` - Sleep-like consolidation
+- `app/api/cron/consolidate/route.ts` - Nightly cron endpoint
+
+**Modified Files:**
+- `lib/agent-sdk/memory-tools.ts` - Tool updates
+- `lib/db/queries.ts` - New RPC calls
+- `app/api/memory/entries/route.ts` - Schema validation
+- `components/memory/*` - UI updates
+
+---
+
 ## 🧭 MILESTONE 5: Cognitive Layer & Living Documentation (Deferred)
 
-**Status:** 📝 Deferred (Pain-Driven)
+**Status:** 📝 Deferred (After M3.6)
 **Target:** When cross-project querying feels limited
 **Trigger:** "Implement when frustrated by its absence"
 **Focus:** Turn Bobo into a true "Memory Palace" with project living docs, hierarchical summaries, and a lightweight knowledge graph.
