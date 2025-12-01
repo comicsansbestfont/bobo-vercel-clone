@@ -22,10 +22,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Bobo AI - Your AI Assistant",
   description: "Intelligent AI assistant with context-aware memory and multi-modal capabilities",
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "Bobo AI",
+  },
+  icons: {
+    icon: "/icons/icon-192x192.svg",
+    apple: "/icons/icon-192x192.svg",
   },
 };
 
