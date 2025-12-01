@@ -9,7 +9,7 @@
 import { z } from 'zod';
 import { generateEmbedding } from '@/lib/ai/embedding';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
-import { createMemory, getMemoryById, updateMemoryEntry, softDeleteMemory } from '@/lib/db/queries';
+import { createMemory, getMemoryById, updateMemoryEntry, softDeleteMemory, updateMemoryAccess } from '@/lib/db/queries';
 import { memoryLogger } from '@/lib/logger';
 import type { MemoryCategory } from '@/lib/db/types';
 import crypto from 'crypto';
@@ -182,6 +182,14 @@ Returns up to 10 matching memories sorted by relevance.`,
             `[${i + 1}] ${m.category}: "${m.content}" (id: ${m.id})`
         )
         .join('\n');
+
+      // M3.6-02: Fire-and-forget access tracking
+      // Extract IDs and update metrics asynchronously (don't await)
+      const memoryIds = (memories as MemorySearchResult[]).map(m => m.id);
+      updateMemoryAccess(memoryIds).catch(() => {
+        // Errors already logged inside updateMemoryAccess
+        // This catch prevents unhandled promise rejection
+      });
 
       memoryLogger.info(
         `[search_memory] Found ${memories.length} memories`

@@ -1213,3 +1213,53 @@ export async function searchProjectMessages(
     created_at: row.created_at,
   }));
 }
+
+// ============================================================================
+// M3.6-02: ACCESS TRACKING
+// ============================================================================
+
+/**
+ * Update access metrics for retrieved memories
+ *
+ * This is called after search_memory returns results.
+ * It's fire-and-forget - failures are logged but never throw.
+ *
+ * Updates:
+ * - access_count: incremented by 1
+ * - last_accessed: set to NOW()
+ * - last_mentioned: set to NOW() (fixes dead code from original schema)
+ *
+ * @param memoryIds - Array of memory UUIDs that were retrieved
+ */
+export async function updateMemoryAccess(memoryIds: string[]): Promise<void> {
+  // Guard: empty array = no-op
+  if (!memoryIds || memoryIds.length === 0) {
+    return;
+  }
+
+  try {
+    const { error } = await supabase.rpc('update_memory_access', {
+      p_memory_ids: memoryIds,
+    });
+
+    if (error) {
+      // Log but don't throw - access tracking should never break search
+      dbLogger.warn('[updateMemoryAccess] RPC failed (non-fatal):', {
+        error: error.message,
+        memoryIds,
+      });
+      return;
+    }
+
+    dbLogger.debug('[updateMemoryAccess] Updated access metrics:', {
+      count: memoryIds.length,
+      memoryIds,
+    });
+  } catch (error) {
+    // Catch-all: absolutely never throw
+    dbLogger.warn('[updateMemoryAccess] Unexpected error (non-fatal):', {
+      error: error instanceof Error ? error.message : String(error),
+      memoryIds,
+    });
+  }
+}

@@ -129,6 +129,9 @@ export type MemoryEntry = {
   is_active: boolean;
   deleted_reason?: string | null;
   deleted_at?: string | null;
+  // M3.6-01: Access tracking fields
+  last_accessed: string | null;
+  access_count: number;
 };
 
 export type MemoryConsolidationLog = {
@@ -203,7 +206,7 @@ export type UserProfileInsert = Omit<UserProfile, 'id' | 'created_at' | 'updated
 
 export type MemoryEntryInsert = Omit<
   MemoryEntry,
-  'id' | 'created_at' | 'last_updated' | 'last_mentioned' | 'is_active' | 'deleted_reason' | 'deleted_at'
+  'id' | 'created_at' | 'last_updated' | 'last_mentioned' | 'is_active' | 'deleted_reason' | 'deleted_at' | 'last_accessed' | 'access_count'
 > & {
   id?: string;
   last_updated?: string;
@@ -212,6 +215,9 @@ export type MemoryEntryInsert = Omit<
   is_active?: boolean;
   deleted_reason?: string | null;
   deleted_at?: string | null;
+  // M3.6-01: Access tracking fields have database defaults
+  last_accessed?: string | null;
+  access_count?: number;
 };
 
 export type MemoryConsolidationLogInsert = Omit<MemoryConsolidationLog, 'id' | 'created_at'> & {
@@ -536,6 +542,13 @@ export type Database = {
           source_type: string;
           similarity: number;
         }[];
+      };
+      // M3.6-02: Access tracking RPC
+      update_memory_access: {
+        Args: {
+          p_memory_ids: string[];
+        };
+        Returns: void;
       };
     };
     Enums: Record<string, never>;
