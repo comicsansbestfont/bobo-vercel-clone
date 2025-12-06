@@ -132,6 +132,8 @@ export type MemoryEntry = {
   // M3.6-01: Access tracking fields
   last_accessed: string | null;
   access_count: number;
+  // M3.6-02: Salience weighting
+  importance: number;
 };
 
 export type MemoryConsolidationLog = {
@@ -206,7 +208,7 @@ export type UserProfileInsert = Omit<UserProfile, 'id' | 'created_at' | 'updated
 
 export type MemoryEntryInsert = Omit<
   MemoryEntry,
-  'id' | 'created_at' | 'last_updated' | 'last_mentioned' | 'is_active' | 'deleted_reason' | 'deleted_at' | 'last_accessed' | 'access_count'
+  'id' | 'created_at' | 'last_updated' | 'last_mentioned' | 'is_active' | 'deleted_reason' | 'deleted_at' | 'last_accessed' | 'access_count' | 'importance'
 > & {
   id?: string;
   last_updated?: string;
@@ -218,6 +220,8 @@ export type MemoryEntryInsert = Omit<
   // M3.6-01: Access tracking fields have database defaults
   last_accessed?: string | null;
   access_count?: number;
+  // M3.6-02: Importance has database default (0.5)
+  importance?: number;
 };
 
 export type MemoryConsolidationLogInsert = Omit<MemoryConsolidationLog, 'id' | 'created_at'> & {
@@ -543,12 +547,44 @@ export type Database = {
           similarity: number;
         }[];
       };
-      // M3.6-02: Access tracking RPC
+      // M3.6-01: Access tracking RPC
       update_memory_access: {
         Args: {
           p_memory_ids: string[];
         };
         Returns: void;
+      };
+      // M3.6-02: Enhanced memory search with temporal weighting
+      enhanced_memory_search: {
+        Args: {
+          query_embedding: number[];
+          query_text: string;
+          match_count?: number;
+          vector_weight?: number;
+          text_weight?: number;
+          recency_weight?: number;
+          frequency_weight?: number;
+          confidence_weight?: number;
+          recency_half_life_days?: number;
+          min_vector_similarity?: number;
+          p_user_id?: string;
+          p_category?: string;
+        };
+        Returns: {
+          id: string;
+          category: string;
+          content: string;
+          confidence: number;
+          source_type: string;
+          last_accessed: string | null;
+          access_count: number;
+          importance: number;
+          vector_score: number;
+          text_score: number;
+          recency_score: number;
+          frequency_score: number;
+          combined_score: number;
+        }[];
       };
     };
     Enums: Record<string, never>;

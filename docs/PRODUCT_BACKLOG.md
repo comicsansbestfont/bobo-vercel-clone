@@ -1,10 +1,17 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 1, 2025 (M3.6 Cognitive Memory Roadmap Added)
+**Last Updated:** December 6, 2025 (M3.6-02 Enhanced Search + Bulk API Complete)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 6, 2025 Update:** 🧠 **M3.6-02 ENHANCED SEARCH + BULK API COMPLETE**
+> - `enhanced_memory_search` RPC deployed with 5-component temporal weighting (45% vector, 15% text, 20% recency, 10% frequency, 10% confidence)
+> - `importance` column added with category-based defaults (red flags=0.9, instructions=0.85, history=0.7)
+> - Bulk seeding API created (`POST /api/memory/bulk`) with deduplication and backdating support
+> - 45-day half-life for Ebbinghaus recency decay
+> - 22 deal/client memories seeded with embeddings (100% coverage)
 
 > **December 1, 2025 Update:** 🧠 **M3.6 COGNITIVE MEMORY ROADMAP INTEGRATED**
 > - Extracted 23 new requirements from brain-building research (neuroscience-inspired memory)
@@ -30,13 +37,13 @@
 | Metric | Value |
 |--------|-------|
 | **Milestones Complete** | 5 of 7 core (M1, M2, M3 P1-3, M3.5, M4) |
-| **Tasks Complete** | 74 of 121 (61%) |
-| **Hours Invested** | ~70 hours actual |
-| **Hours Remaining** | ~120 hours (M3.6: 100h, M3 Phase 4: 17h) |
+| **Tasks Complete** | 78 of 125 (62%) |
+| **Hours Invested** | ~76 hours actual |
+| **Hours Remaining** | ~114 hours (M3.6: 94h, M3 Phase 4: 17h) |
 | **Build Status** | ✅ Passing |
-| **Current Phase** | **M3.5 ✅ COMPLETE** → M3.6 Cognitive Memory (Dec 2025) |
+| **Current Phase** | **M3.6 Cognitive Memory 🟡 IN PROGRESS** (Sprint 1 partial) |
 
-*Dec 1, 2025: M3.6 Cognitive Memory roadmap integrated from brain-building research. 23 new requirements + 9 audit items = ~100-120h across 5 sprints.*
+*Dec 6, 2025: M3.6 Sprint 1 partial - enhanced_memory_search + bulk API complete (4 tasks done). 28 remaining across 5 sprints.*
 
 ### Gantt Chart - Timeline View
 
@@ -93,7 +100,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3: Memory (P1-3)** | ✅ Complete | 22/22 | 51h | 28h | 182% | Hierarchical memory, Memory UI, UX polish |
 | **M3.5: Agent Memory** | ✅ Complete | 7/7 | 28h | 12h | 233% | remember_fact, search_memory, embedding backfill |
 | **M4: Agent SDK** | ✅ Complete | 10/10 | 25.5h | 10h | 255% | Claude SDK, tools, safety hooks, streaming |
-| **M3.6: Cognitive Memory** | 📝 **NEXT** | 0/32 | 100h | - | - | Temporal decay, Hebbian, graph, consolidation |
+| **M3.6: Cognitive Memory** | 🟡 **IN PROGRESS** | 4/32 | 100h | 6h | 167% | Temporal decay, Hebbian, graph, consolidation |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (after M3.6) |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -113,8 +120,9 @@ M3-03         │   7   │   15    │   16   │   +7%    │ ✅
 M3-03.1       │   7   │  3.5    │  3.5   │    0%    │ ✅
 Mobile v1.3.0 │  10   │    4    │    4   │    0%    │ ✅
 M4-01         │  10   │ 25.5    │   10   │  -61%    │ ✅
+M3.6-01       │   5   │   9     │    6   │  -33%    │ 🟡 (partial)
 ──────────────┼───────┼─────────┼────────┼──────────┼────────
-TOTALS        │  84   │ 120h    │  84h   │  -30%    │ 100% ✅
+TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
 ```
 
 **Average Velocity:** 30% faster than estimated
@@ -149,6 +157,10 @@ TOTALS        │  84   │ 120h    │  84h   │  -30%    │ 100% ✅
 | **Agent Memory Tools** | ✅ Live | M3.5 | remember_fact, search_memory (update/forget backend only) |
 | **Embedding Backfill** | ✅ Live | M3.5 | 100% coverage (50/50 entries) |
 | **Hybrid Memory Search** | ✅ Live | M3.5 | 70% vector + 30% BM25 text search |
+| **Enhanced Memory Search** | ✅ Live | M3.6 | 5-component temporal weighting (vector/text/recency/freq/confidence) |
+| **Importance Weighting** | ✅ Live | M3.6 | Category-based salience (red flags=0.9) |
+| **Recency Decay** | ✅ Live | M3.6 | Ebbinghaus curve with 45-day half-life |
+| **Bulk Memory Seeding** | ✅ Live | M3.6 | `/api/memory/bulk` with deduplication |
 | **Memory Provenance** | 📝 Planned | M3-04 | Source chat tracking |
 | **Memory Debugger** | 📝 Planned | M3-04 | "What was injected?" view |
 | **Description-Driven Extraction** | 📝 Planned | M3-04 | Letta-inspired guidance fields |
@@ -169,14 +181,15 @@ TOTALS        │  84   │ 120h    │  84h   │  -30%    │ 100% ✅
 │  ├─ ✅ Embedding backfill (100% coverage)
 │  └─ ✅ Build error fix (client/server separation)
 │
-📝 NEXT: M3.6 Cognitive Memory (100h est, 5 sprints)
-├─ Sprint 1: Cognitive Foundation (12-15h) ← START HERE
-│  ├─ REQ-001: Temporal columns (last_accessed, access_count)
-│  ├─ REQ-009: Enhanced search with Ebbinghaus decay
-│  ├─ REQ-010: Update access metrics function
-│  ├─ REQ-013: Hebbian reinforcement (strengthen duplicates)
-│  ├─ REQ-014: Context-aware search (conversation context)
-│  └─ REQ-023: API updates for new fields
+🟡 IN PROGRESS: M3.6 Cognitive Memory (94h remaining, 5 sprints)
+├─ Sprint 1: Cognitive Foundation (9h remaining) ← IN PROGRESS
+│  ├─ ✅ REQ-001: Temporal columns (last_accessed, access_count) - Done Dec 4
+│  ├─ ✅ REQ-009: Enhanced search with Ebbinghaus decay - Done Dec 6
+│  ├─ ✅ REQ-010: Update access metrics function - Done Dec 4
+│  ├─ ⏳ REQ-013: Hebbian reinforcement (strengthen duplicates)
+│  ├─ ⏳ REQ-014: Context-aware search (conversation context)
+│  ├─ ✅ REQ-023: API updates for new fields + Bulk API - Done Dec 6
+│  └─ ✅ REQ-002: Importance column - Done Dec 6 (pulled from Sprint 3)
 │
 ├─ Sprint 2: Memory Safety (8-10h)
 │  ├─ AUDIT-006: Confirmation dialogs (update/forget)
@@ -1402,29 +1415,37 @@ No consolidation               →    Sleep-inspired consolidation
 Same results every query       →    Context-aware search
 ```
 
-### Sprint 1: Cognitive Foundation (12-15h) ← START HERE
+### Sprint 1: Cognitive Foundation (12-15h) ← IN PROGRESS
 
 **Goal:** Add temporal dynamics and smarter search. Recent memories should rank higher. Duplicates should strengthen existing rather than reject.
 
 | ID | Feature | Priority | Estimate | Status | Source |
 |----|---------|----------|----------|--------|--------|
-| M3.6-001 | Add `last_accessed`, `access_count` columns | 🔴 P0 | 1h | ⏳ | REQ-001 |
-| M3.6-002 | Create `enhanced_memory_search` function with temporal decay | 🔴 P0 | 3h | ⏳ | REQ-009 |
-| M3.6-003 | Create `update_memory_access` function | 🔴 P0 | 1h | ⏳ | REQ-010 |
+| M3.6-001 | Add `last_accessed`, `access_count` columns | 🔴 P0 | 1h | ✅ Done (Dec 4) | REQ-001 |
+| M3.6-002 | Create `enhanced_memory_search` function with temporal decay | 🔴 P0 | 3h | ✅ Done (Dec 6) | REQ-009 |
+| M3.6-003 | Create `update_memory_access` function | 🔴 P0 | 1h | ✅ Done (Dec 4) | REQ-010 |
 | M3.6-004 | Implement Hebbian reinforcement in `remember_fact` | 🔴 P0 | 2h | ⏳ | REQ-013 |
 | M3.6-005 | Implement context-aware search in `search_memory` | 🔴 P0 | 4h | ⏳ | REQ-014 |
-| M3.6-006 | Update Memory API for new fields | 🔴 P0 | 2h | ⏳ | REQ-023 |
-| M3.6-007 | Testing buffer (25% allocation) | 🔴 HIGH | 2h | ⏳ | Sprint rule |
+| M3.6-006 | Update Memory API for new fields + Bulk API | 🔴 P0 | 2h | ✅ Done (Dec 6) | REQ-023 |
+| M3.6-007 | Testing buffer (25% allocation) | 🔴 HIGH | 2h | ✅ Done (Dec 6) | Sprint rule |
 
-**Sprint 1 Total:** 15h
+**Sprint 1 Progress:** 4/7 tasks complete (~6h actual)
+
+**Dec 6, 2025 Deliverables:**
+- ✅ `enhanced_memory_search` RPC with 5-component weighting (45% vector, 15% text, 20% recency, 10% freq, 10% confidence)
+- ✅ `importance` column added with category defaults (0.9 red flags, 0.85 instructions, 0.75 background, 0.7 history, 0.5 work)
+- ✅ 45-day half-life for Ebbinghaus recency decay
+- ✅ Bulk seeding API (`POST /api/memory/bulk`) with deduplication (0.85 threshold), backdating, sequential embedding
+- ✅ 22 deal/client memories seeded with embeddings and importance values
+- ✅ Migration: `20251206031627_enhanced_memory_search`
 
 **Definition of Done:**
-- [ ] Recent memories rank higher than old ones (Ebbinghaus decay)
-- [ ] Frequently accessed memories get priority (access_count)
+- [x] Recent memories rank higher than old ones (Ebbinghaus decay) ✅
+- [x] Frequently accessed memories get priority (access_count) ✅
 - [ ] Duplicate inputs strengthen existing memories (Hebbian)
 - [ ] Search results influenced by conversation context
-- [ ] API accepts new fields (importance, memory_type)
-- [ ] All tests passing
+- [x] API accepts new fields (importance, memory_type) ✅
+- [x] All tests passing ✅
 
 ### Sprint 2: Memory Safety (8-10h)
 
@@ -1457,7 +1478,7 @@ Same results every query       →    Context-aware search
 | M3.6-014 | Add `memory_type` column (episodic/semantic/consolidated) | 🔴 P1 | 1h | ⏳ | REQ-003 |
 | M3.6-015 | Add `episode_context` JSONB column | 🔴 P1 | 1h | ⏳ | REQ-004 |
 | M3.6-016 | Add bi-temporal columns (valid_from, valid_to, superseded_by) | 🔴 P1 | 2h | ⏳ | REQ-008 |
-| M3.6-017 | Add `importance` column | 🟡 P2 | 1h | ⏳ | REQ-002 |
+| M3.6-017 | Add `importance` column | 🟡 P2 | 1h | ✅ Done (Dec 6) | REQ-002 |
 | M3.6-018 | Testing buffer | 🔴 HIGH | 3h | ⏳ | Sprint rule |
 
 **Sprint 3 Total:** 15h
