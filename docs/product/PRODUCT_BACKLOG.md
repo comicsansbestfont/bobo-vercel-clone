@@ -225,7 +225,17 @@ TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
    ├─ AUDIT-004: Provenance UI
    └─ AUDIT-005: Description-driven extraction
 │
-LATER (After M3.6)
+📝 PLANNED: M3.7 Repository Consolidation (20h, 1 sprint)
+├─ NOW Phase: Advisory Core (20h) ← NEXT AFTER M3.6
+│  ├─ Directory structure (advisory/deals, advisory/clients)
+│  ├─ File migration from Blog Migration repo
+│  ├─ Build-time indexing script (scripts/index-advisory.ts)
+│  ├─ search_advisory agent tool
+│  ├─ Database migration (search_advisory_files RPC)
+│  ├─ Package.json updates (prebuild hook)
+│  └─ Validation tests (6 success queries)
+│
+LATER (After M3.7)
 ├─ M5: Cognitive Layer (36h est)
 │  ├─ Living documentation
 │  ├─ Hierarchical summaries
@@ -1593,9 +1603,133 @@ Same results every query       →    Context-aware search
 
 ---
 
+## 📂 MILESTONE 3.7: Repository Consolidation (Advisory Core)
+
+**Status:** 📝 Planned
+**Target:** December 2025
+**Trigger:** Dogfooding validation revealed memories insufficient for advisory work
+**Focus:** Consolidate Blog Migration repository into Bobo for unified "Second Brain" with full file access
+**Architecture Note:** See `docs/product-vision/REPOSITORY_CONSOLIDATION_ROADMAP.md` for comprehensive implementation plan
+
+### Strategic Context
+
+**Problem:** Two-repository architecture creates friction:
+- Cold start every conversation (no advisory context)
+- Manual file selection required
+- No cross-repository search
+- Workflow fragmentation between Claude Code (files) and Bobo (chat)
+
+**Solution:** Consolidate Blog Migration into Bobo:
+- Files in Git (version controlled, editable via Claude Code)
+- Files indexed to Supabase at build time (searchable via RAG)
+- Agent Mode can access both memories AND files
+- Single source of truth, single workflow
+
+**Validation Finding (Dec 6, 2025):** Testing with 22 seeded memories showed that memories provide high-level context, but users need granular file access for real work (e.g., "What was my last email to Mikaela?" requires actual Communications Log).
+
+### M3.7 NOW Phase: Advisory Core (20h, 15 tasks)
+
+| ID | Task | Priority | Estimate | Status |
+|----|------|----------|----------|--------|
+| **M3.7-01** | Create directory structure (advisory/deals, advisory/clients) | 🔴 HIGH | 0.5h | ⏳ |
+| **M3.7-02** | Move Deals/ folder from Blog Migration (~50 files, ~2MB) | 🔴 HIGH | 1h | ⏳ |
+| **M3.7-03** | Move Clients/ folder from Blog Migration (~20 files, ~1MB) | 🔴 HIGH | 0.5h | ⏳ |
+| **M3.7-04** | Create `scripts/index-advisory.ts` - Build-time indexing script | 🔴 HIGH | 4h | ⏳ |
+| **M3.7-05** | Implement metadata extraction (entity_type, entity_name, file_type) | 🔴 HIGH | 2h | ⏳ |
+| **M3.7-06** | Create `lib/agent-sdk/advisory-tools.ts` - search_advisory tool | 🔴 HIGH | 3h | ⏳ |
+| **M3.7-07** | Database migration: search_advisory_files RPC function | 🔴 HIGH | 2h | ⏳ |
+| **M3.7-08** | Add hybrid search logic (70% vector + 30% text for advisory) | 🟡 MEDIUM | 2h | ⏳ |
+| **M3.7-09** | Update package.json: Add "index-advisory" and "prebuild" scripts | 🔴 HIGH | 0.5h | ⏳ |
+| **M3.7-10** | Create advisory project in Supabase (project_id: 'advisory-knowledge-base') | 🟡 MEDIUM | 0.5h | ⏳ |
+| **M3.7-11** | Run initial indexing: npm run index-advisory | 🔴 HIGH | 1h | ⏳ |
+| **M3.7-12** | Verify embeddings generated for all advisory files | 🔴 HIGH | 0.5h | ⏳ |
+| **M3.7-13** | Test search_advisory tool in Agent Mode | 🔴 HIGH | 1h | ⏳ |
+| **M3.7-14** | Run validation queries (6 success criteria) | 🔴 HIGH | 1h | ⏳ |
+| **M3.7-15** | Document advisory workflow in CLAUDE.md | 🟡 MEDIUM | 0.5h | ⏳ |
+
+**Total Estimate:** 20 hours
+
+### Validation Queries (Success Criteria)
+
+After implementation, verify these queries work in Agent Mode:
+
+| Query | Expected Behavior |
+|-------|-------------------|
+| "Brief me on MyTab" | Returns master-doc summary, recent activity, red flags |
+| "What was my last email to Mikaela?" | Finds Communications Log in MyTab master-doc |
+| "What deals have red flags?" | Searches Strategic Observations across all deals |
+| "Prep me for SwiftCheckin call" | Returns client profile + recent touchpoints |
+| "What's the valuation range for ArcheloLab?" | Finds Valuation Snapshot section |
+| "Show me the Dec 2 meeting notes for MyTab" | Returns specific meeting file |
+
+### Definition of Done
+
+- [ ] advisory/deals/ and advisory/clients/ exist in Bobo repo
+- [ ] ~70 files migrated from Blog Migration (Deals + Clients)
+- [ ] scripts/index-advisory.ts successfully indexes all files
+- [ ] All files have embeddings in Supabase files table
+- [ ] search_advisory tool available in Agent Mode
+- [ ] search_advisory_files RPC function deployed
+- [ ] npm run prebuild automatically re-indexes on build
+- [ ] All 6 validation queries return accurate results
+- [ ] No build errors (dev and production)
+- [ ] CLAUDE.md updated with advisory workflow guidance
+
+### Files to Create/Modify
+
+**New Files:**
+- `advisory/deals/_TEMPLATE/` - Deal templates and SOPs
+- `advisory/clients/_TEMPLATE/` - Client templates and SOPs
+- `advisory/deals/[deal-name]/master-doc.md` - Individual deal files
+- `advisory/clients/[client-name]/client-profile.md` - Individual client files
+- `scripts/index-advisory.ts` - Build-time indexing script
+- `lib/agent-sdk/advisory-tools.ts` - search_advisory tool
+- `supabase/migrations/[timestamp]_advisory_search_function.sql` - RPC function
+
+**Modified Files:**
+- `package.json` - Add index-advisory and prebuild scripts
+- `lib/agent-sdk/server.ts` - Register advisory tools
+- `CLAUDE.md` - Add advisory workflow documentation
+
+### Future Phases (NEXT, LATER)
+
+**NEXT Phase (Week 2-3):** Content System
+- Move Content-Workspace/ (~30 files)
+- Move 02_Workbench/ (~50 files)
+- Extend indexing for content-specific metadata
+- Add search_content tool
+
+**LATER Phase (Week 4+):** Full Knowledge Base
+- Move 01_Inspiration/ (493 blog posts)
+- Move 04_Reference/ (~100 files)
+- Implement chunking for large corpus
+- Port document processor utilities
+
+### Benefits
+
+| Benefit | Description |
+|---------|-------------|
+| **Single Source of Truth** | All knowledge in one Git repository |
+| **Unified Search** | One RAG system (Supabase pgvector) searches everything |
+| **No Sync Required** | Files ARE the source, indexed at build time |
+| **Same Workflow** | Claude Code edits files in Bobo repo (identical UX) |
+| **Production Access** | Vercel deployment includes all files |
+| **Version Control** | Git history for all advisory + content files |
+
+### Risks and Mitigations
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Indexing fails on large files | Medium | Medium | Add chunking, skip files > 100KB |
+| Search returns irrelevant results | Medium | High | Tune similarity threshold, add filters |
+| Build time increases significantly | Low | Medium | Parallelize indexing, cache embeddings |
+| Vercel deployment size limit | Low | High | Exclude large files, use external storage |
+
+---
+
 ## 🧭 MILESTONE 5: Cognitive Layer & Living Documentation (Deferred)
 
-**Status:** 📝 Deferred (After M3.6)
+**Status:** 📝 Deferred (After M3.7)
 **Target:** When cross-project querying feels limited
 **Trigger:** "Implement when frustrated by its absence"
 **Focus:** Turn Bobo into a true "Memory Palace" with project living docs, hierarchical summaries, and a lightweight knowledge graph.
