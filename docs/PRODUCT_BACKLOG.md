@@ -1,12 +1,18 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 6, 2025 (M3.6-02 Enhanced Search + Bulk API Complete)
+**Last Updated:** December 6, 2025 (M3.6-02 + M3.7 Repository Consolidation Strategy)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
 
-> **December 6, 2025 Update:** 🧠 **M3.6-02 ENHANCED SEARCH + BULK API COMPLETE**
+> **December 6, 2025 Update (PM):** 📂 **M3.7 REPOSITORY CONSOLIDATION PLANNED**
+> - Strategic decision: Consolidate Blog Migration into Bobo (vs MCP/sync)
+> - NOW phase: Move Deals/ + Clients/ (~70 files) with build-time indexing
+> - Created comprehensive roadmap: `docs/product-vision/REPOSITORY_CONSOLIDATION_ROADMAP.md`
+> - Dogfooding validation revealed memories insufficient → need full file access
+
+> **December 6, 2025 Update (AM):** 🧠 **M3.6-02 ENHANCED SEARCH + BULK API COMPLETE**
 > - `enhanced_memory_search` RPC deployed with 5-component temporal weighting (45% vector, 15% text, 20% recency, 10% frequency, 10% confidence)
 > - `importance` column added with category-based defaults (red flags=0.9, instructions=0.85, history=0.7)
 > - Bulk seeding API created (`POST /api/memory/bulk`) with deduplication and backdating support
@@ -36,10 +42,10 @@
 
 | Metric | Value |
 |--------|-------|
-| **Milestones Complete** | 5 of 7 core (M1, M2, M3 P1-3, M3.5, M4) |
-| **Tasks Complete** | 78 of 125 (62%) |
+| **Milestones Complete** | 5 of 8 core (M1, M2, M3 P1-3, M3.5, M4) |
+| **Tasks Complete** | 78 of 140 (56%) |
 | **Hours Invested** | ~76 hours actual |
-| **Hours Remaining** | ~114 hours (M3.6: 94h, M3 Phase 4: 17h) |
+| **Hours Remaining** | ~134 hours (M3.6: 94h, M3.7: 20h, M3 Phase 4: 17h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **M3.6 Cognitive Memory 🟡 IN PROGRESS** (Sprint 1 partial) |
 
@@ -82,8 +88,11 @@ M3.6: COGNITIVE MEM ░░░░░░░░░░░░░░░░░░░░
   Sprint 4 (8)                                                          ████
   Sprint 5 (5)                                                              ████
 
+M3.7: REPO CONSOL   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████████░
+  NOW Phase (15)                                                        ████ Dec 2025 📝 PLANNED
+
 M5: COGNITIVE       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-  (8 tasks)                                           📝 Deferred (After M3.6)
+  (8 tasks)                                           📝 Deferred (After M3.7)
 
 FUTURE (SaaS)       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
   (20 tasks)                                          📝 Not Planned
@@ -101,7 +110,8 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.5: Agent Memory** | ✅ Complete | 7/7 | 28h | 12h | 233% | remember_fact, search_memory, embedding backfill |
 | **M4: Agent SDK** | ✅ Complete | 10/10 | 25.5h | 10h | 255% | Claude SDK, tools, safety hooks, streaming |
 | **M3.6: Cognitive Memory** | 🟡 **IN PROGRESS** | 4/32 | 100h | 6h | 167% | Temporal decay, Hebbian, graph, consolidation |
-| **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (after M3.6) |
+| **M3.7: Repo Consolidation** | 📝 Planned | 0/15 | 20h | - | - | Advisory file access, build-time indexing, search_advisory tool |
+| **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (after M3.7) |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
 *Dec 1, 2025: M3.6 Cognitive Memory integrated from brain-building research. 32 tasks across 5 sprints.*
@@ -161,6 +171,9 @@ TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
 | **Importance Weighting** | ✅ Live | M3.6 | Category-based salience (red flags=0.9) |
 | **Recency Decay** | ✅ Live | M3.6 | Ebbinghaus curve with 45-day half-life |
 | **Bulk Memory Seeding** | ✅ Live | M3.6 | `/api/memory/bulk` with deduplication |
+| **Advisory File Access** | 📝 Planned | M3.7 | Deals/ + Clients/ in Git with RAG indexing |
+| **Build-time Indexing** | 📝 Planned | M3.7 | Auto-index advisory files to Supabase on build |
+| **Repository Consolidation** | 📝 Planned | M3.7 | Blog Migration → Bobo unified workspace |
 | **Memory Provenance** | 📝 Planned | M3-04 | Source chat tracking |
 | **Memory Debugger** | 📝 Planned | M3-04 | "What was injected?" view |
 | **Description-Driven Extraction** | 📝 Planned | M3-04 | Letta-inspired guidance fields |
