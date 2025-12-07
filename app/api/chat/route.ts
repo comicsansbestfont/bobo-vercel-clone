@@ -1,6 +1,13 @@
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
 
-// Chat API requires Node.js runtime for Claude Agent SDK (uses fs, child_process, etc.)
+// M3.9: Claude SDK imports
+import { getClaudeClient, getClaudeModelId } from '@/lib/ai/claude-client';
+import { convertToClaudeMessages, buildToolResultMessage, buildAssistantToolUseMessage } from '@/lib/ai/claude-message-converter';
+import { createClaudeUIStream, type StreamResult } from '@/lib/ai/claude-stream-transformer';
+import { advisoryTools, executeAdvisoryTool } from '@/lib/ai/claude-advisory-tools';
+import type { MessageParam, ContentBlock, ToolUseBlock, TextBlock } from '@anthropic-ai/sdk/resources/messages';
+
+// Chat API requires Node.js runtime for Claude SDK (uses fs, etc.)
 export const runtime = 'nodejs';
 
 type ChatCompletionChoiceDelta =
@@ -929,6 +936,296 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
       });
     }
 
+    // ==========================================================================
+    // M3.9: Claude SDK Chat with Tool Use
+    // ==========================================================================
+    const isClaudeModel = model?.startsWith('anthropic/');
+
+    if (isClaudeModel && !webSearch) {
+      // Use Claude SDK directly for Claude models (with tool support)
+      chatLogger.info('[Claude SDK] Using native Claude SDK for model:', model);
+
+      const client = getClaudeClient();
+      const { messages: claudeMessages } = convertToClaudeMessages(validatedMessages);
+
+      // Agentic loop: Execute tools and continue until no more tool use
+      const MAX_TOOL_ITERATIONS = 5;
+      let currentMessages: MessageParam[] = claudeMessages;
+      let allTextContent = '';
+      let totalInputTokens = 0;
+      let totalOutputTokens = 0;
+
+      // Create transform stream for SSE response
+      const transform = new TransformStream<Uint8Array, Uint8Array>();
+      const writer = transform.writable.getWriter();
+      const encoder = new TextEncoder();
+
+      // Helper to write SSE event
+      const writeSSE = (event: object) => {
+        writer.write(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+      };
+
+      // Start streaming response immediately
+      const responsePromise = (async () => {
+        try {
+          writeSSE({ type: 'start' });
+          writeSSE({ type: 'start-step' });
+          let textBlockStarted = false;
+
+          for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
+            chatLogger.debug(`[Claude SDK] Iteration ${iteration + 1}/${MAX_TOOL_ITERATIONS}`);
+
+            // Call Claude API with streaming
+            const stream = client.messages.stream({
+              model: getClaudeModelId(model),
+              max_tokens: 8192,
+              system: systemPrompt,
+              messages: currentMessages,
+              tools: advisoryTools,
+            });
+
+            // Process the stream
+            let iterationText = '';
+            const toolUseBlocks: Array<{ id: string; name: string; input: Record<string, unknown> }> = [];
+            let currentToolUse: { id: string; name: string; inputJson: string } | null = null;
+            let stopReason: string | null = null;
+
+            for await (const event of stream) {
+              switch (event.type) {
+                case 'message_start':
+                  if (event.message?.usage) {
+                    totalInputTokens += event.message.usage.input_tokens;
+                  }
+                  break;
+
+                case 'content_block_start':
+                  if (event.content_block.type === 'text') {
+                    if (!textBlockStarted) {
+                      writeSSE({ type: 'text-start', id: '0' });
+                      textBlockStarted = true;
+                    }
+                  } else if (event.content_block.type === 'tool_use') {
+                    const tb = event.content_block as ToolUseBlock;
+                    currentToolUse = { id: tb.id, name: tb.name, inputJson: '' };
+                    writeSSE({ type: 'tool-start', toolCallId: tb.id, toolName: tb.name });
+                  }
+                  break;
+
+                case 'content_block_delta':
+                  if (event.delta.type === 'text_delta') {
+                    const text = event.delta.text;
+                    iterationText += text;
+                    writeSSE({ type: 'text-delta', id: '0', delta: text });
+                  } else if (event.delta.type === 'input_json_delta' && currentToolUse) {
+                    currentToolUse.inputJson += event.delta.partial_json;
+                  }
+                  break;
+
+                case 'content_block_stop':
+                  if (currentToolUse) {
+                    try {
+                      const input = currentToolUse.inputJson ? JSON.parse(currentToolUse.inputJson) : {};
+                      toolUseBlocks.push({ id: currentToolUse.id, name: currentToolUse.name, input });
+                      writeSSE({
+                        type: 'tool-ready',
+                        toolCallId: currentToolUse.id,
+                        toolName: currentToolUse.name,
+                        input,
+                      });
+                    } catch (e) {
+                      chatLogger.error('Failed to parse tool input:', e);
+                    }
+                    currentToolUse = null;
+                  }
+                  break;
+
+                case 'message_delta':
+                  if (event.delta?.stop_reason) {
+                    stopReason = event.delta.stop_reason;
+                  }
+                  if (event.usage?.output_tokens) {
+                    totalOutputTokens += event.usage.output_tokens;
+                  }
+                  break;
+              }
+            }
+
+            allTextContent += iterationText;
+
+            // If no tools were called, we're done
+            if (toolUseBlocks.length === 0 || stopReason === 'end_turn') {
+              chatLogger.info('[Claude SDK] No more tool calls, finishing');
+              break;
+            }
+
+            // Execute tools and continue
+            chatLogger.info(`[Claude SDK] Executing ${toolUseBlocks.length} tool(s)`);
+
+            // Build assistant message with tool_use blocks for conversation history
+            const assistantContent: ContentBlock[] = [];
+            if (iterationText) {
+              assistantContent.push({ type: 'text', text: iterationText } as TextBlock);
+            }
+            for (const tu of toolUseBlocks) {
+              assistantContent.push({
+                type: 'tool_use',
+                id: tu.id,
+                name: tu.name,
+                input: tu.input,
+              } as ToolUseBlock);
+            }
+
+            currentMessages.push({ role: 'assistant', content: assistantContent });
+
+            // Execute tools in parallel
+            const toolResults = await Promise.all(
+              toolUseBlocks.map(async (tu) => {
+                const result = await executeAdvisoryTool(tu.name, tu.input);
+                writeSSE({
+                  type: 'tool-result',
+                  toolCallId: tu.id,
+                  result: JSON.parse(result).success ? 'success' : 'error',
+                });
+                return { tool_use_id: tu.id, content: result };
+              })
+            );
+
+            // Add tool results as user message
+            currentMessages.push({
+              role: 'user',
+              content: toolResults.map((r) => ({
+                type: 'tool_result' as const,
+                tool_use_id: r.tool_use_id,
+                content: r.content,
+              })),
+            });
+          }
+
+          // End streaming
+          if (allTextContent) {
+            writeSSE({ type: 'text-end', id: '0' });
+          }
+          writeSSE({ type: 'finish-step' });
+          writeSSE({ type: 'finish', finishReason: 'stop' });
+          writer.write(encoder.encode('data: [DONE]\n\n'));
+
+          // Return collected data for persistence
+          return {
+            text: allTextContent,
+            inputTokens: totalInputTokens,
+            outputTokens: totalOutputTokens,
+          };
+        } catch (error) {
+          chatLogger.error('[Claude SDK] Stream error:', error);
+          writeSSE({ type: 'error', error: error instanceof Error ? error.message : 'Unknown error' });
+          throw error;
+        } finally {
+          writer.close();
+        }
+      })();
+
+      // Handle persistence after streaming completes (fire and forget)
+      responsePromise
+        .then(async ({ text, inputTokens, outputTokens }) => {
+          try {
+            // Save user message
+            const lastUserMessage = messages[messages.length - 1];
+            if (lastUserMessage && lastUserMessage.role === 'user') {
+              const userMessageParts = (lastUserMessage.parts || []) as MessagePart[];
+              const userMsg = await createMessage({
+                chat_id: activeChatId!,
+                role: 'user',
+                content: { parts: userMessageParts },
+                token_count: getTokenCount(userMessageParts),
+              });
+
+              if (userMsg) {
+                const userText = userMessageParts.filter(p => p.type === 'text').map(p => p.text).join(' ');
+                if (userText) {
+                  embedAndSaveMessage(userMsg.id, userText).catch((err) => chatLogger.error('Failed to embed user message:', err));
+                }
+              }
+
+              const firstTextPart = userMessageParts.find(p => p.type === 'text');
+              if (firstTextPart?.text) {
+                await updateChatTitleFromMessage(activeChatId!, firstTextPart.text);
+              }
+            }
+
+            // Track sources and insert inline citations
+            let finalText = text;
+            const allCitations: Citation[] = [];
+
+            if (projectContext && projectContext.files.length > 0) {
+              const projectCitations = trackProjectSources(text, projectContext, projectName);
+              allCitations.push(...projectCitations);
+            }
+
+            if (projectChatResults.length > 0 && activeProjectId) {
+              const conversationCitations = trackProjectConversations(
+                projectChatResults,
+                activeProjectId,
+                projectName,
+                allCitations.length + 1
+              );
+              allCitations.push(...conversationCitations);
+            }
+
+            if (searchResults.length > 0) {
+              const projectNamesMap = await getProjectNamesForSearchResults(searchResults);
+              const globalCitations = await trackGlobalSources(
+                searchResults,
+                projectNamesMap,
+                allCitations.length + 1
+              );
+              allCitations.push(...globalCitations);
+            }
+
+            if (allCitations.length > 0) {
+              const citationResult = insertInlineCitations(text, allCitations);
+              finalText = citationResult.text;
+            }
+
+            const assistantParts: MessagePart[] = [{ type: 'text', text: finalText }];
+            if (allCitations.length > 0) {
+              const sourceParts = citationsToMessageParts(allCitations);
+              assistantParts.push(...sourceParts);
+            }
+
+            const assistantMsg = await createMessage({
+              chat_id: activeChatId!,
+              role: 'assistant',
+              content: { parts: assistantParts },
+              token_count: inputTokens + outputTokens || getTokenCount(assistantParts),
+            });
+
+            if (assistantMsg) {
+              embedAndSaveMessage(assistantMsg.id, text).catch((err) => chatLogger.error('Failed to embed assistant message:', err));
+            }
+
+            await updateChat(activeChatId!, { last_message_at: new Date().toISOString() });
+            compressConversationIfNeeded(activeChatId!).catch((err) => chatLogger.error('Background compression error:', err));
+            triggerMemoryExtraction(activeChatId!);
+          } catch (error) {
+            chatLogger.error('[Claude SDK] Failed to persist messages:', error);
+          }
+        })
+        .catch((err) => chatLogger.error('[Claude SDK] Response promise error:', err));
+
+      // Return streaming response immediately
+      return new Response(transform.readable, {
+        headers: {
+          'Content-Type': 'text/event-stream; charset=utf-8',
+          'Cache-Control': 'no-cache, no-transform',
+          Connection: 'keep-alive',
+          'X-Chat-Id': activeChatId || '',
+        },
+      });
+    }
+
+    // ==========================================================================
+    // Fallback: Use Vercel AI SDK for non-Claude models or web search
+    // ==========================================================================
     const result = streamText({
       model: getModel(webSearch ? 'perplexity/sonar' : model),
       messages: modelMessages,
