@@ -1,18 +1,26 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 7, 2025 (M3.6 Sprint 1 Complete + M3.8 Auto Tool Selection)
+**Last Updated:** December 7, 2025 (M3.7 Complete + M3.8 Ready)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
 
-> **December 7, 2025 Update:** 🧠 **M3.6 SPRINT 1 COMPLETE + M3.8 AUTO TOOL SELECTION**
+> **December 7, 2025 Update (PM):** 🗂️ **M3.7 REPOSITORY CONSOLIDATION COMPLETE + DATABASE CLEANED**
+> - M3.7 Sprint complete: 11/11 tasks done in 3.9h (70% faster than estimate)
+> - 43 advisory files indexed (deals: MyTab, ArcheloLab, ControlShiftAI, Talvin, Tandm, SwiftCheckin + clients)
+> - `search_advisory` tool operational with hybrid search
+> - M3.8 Auto Tool Selection: Intent classifier + pre-flight knowledge search
+> - **Database cleaned for serious dogfooding** - all test data removed, fresh start
+> - **M3.8 Advisory Project Integration ready to start** - project-per-deal system
+> - Created `docs/architecture/BRAIN_ARCHITECTURE.md` - comprehensive memory/context diagram
+
+> **December 7, 2025 Update (AM):** 🧠 **M3.6 SPRINT 1 COMPLETE**
 > - M3.6 Sprint 1 (Cognitive Foundation): 7/7 tasks complete
 > - REQ-013: Hebbian reinforcement - duplicates now strengthen existing memories
 > - REQ-014: Context-aware search - conversation context influences retrieval
-> - M3.8: Pre-flight knowledge search - auto-detects intent and injects advisory files + memories
+> - Pre-flight knowledge search - auto-detects intent and injects advisory files + memories
 > - Intent classifier with pattern matching for advisory/memory/hybrid queries
-> - **Dogfooding ready** - all cognitive memory foundations deployed
 
 > **December 6, 2025 Update (PM):** 📂 **M3.7 REPOSITORY CONSOLIDATION PLANNED**
 > - Strategic decision: Consolidate Blog Migration into Bobo (vs MCP/sync)
@@ -50,14 +58,14 @@
 
 | Metric | Value |
 |--------|-------|
-| **Milestones Complete** | 5 of 8 core (M1, M2, M3 P1-3, M3.5, M4) |
-| **Tasks Complete** | 78 of 140 (56%) |
-| **Hours Invested** | ~76 hours actual |
-| **Hours Remaining** | ~119 hours (M3.6: 79h, M3.7: 20h, M3 Phase 4: 17h) |
+| **Milestones Complete** | 8 of 10 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8) |
+| **Tasks Complete** | 115 of 160 (72%) |
+| **Hours Invested** | ~110 hours actual |
+| **Hours Remaining** | ~80 hours (M3.6: 64h, M3.9: 15h future) |
 | **Build Status** | ✅ Passing |
-| **Current Phase** | **M3.6 Cognitive Memory 🟡 IN PROGRESS** (Sprint 1 complete) |
+| **Current Phase** | **DOGFOODING 🐕** |
 
-*Dec 7, 2025: M3.6 Sprint 1 complete - all 7 tasks done including Hebbian reinforcement and context-aware search. 25 tasks remaining across 4 sprints.*
+*Dec 7, 2025: M3.8 complete (19 tasks). Full advisory project system operational. Database cleaned. Serious dogfooding begins.*
 
 ### Gantt Chart - Timeline View
 
@@ -117,9 +125,11 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3: Memory (P1-3)** | ✅ Complete | 22/22 | 51h | 28h | 182% | Hierarchical memory, Memory UI, UX polish |
 | **M3.5: Agent Memory** | ✅ Complete | 7/7 | 28h | 12h | 233% | remember_fact, search_memory, embedding backfill |
 | **M4: Agent SDK** | ✅ Complete | 10/10 | 25.5h | 10h | 255% | Claude SDK, tools, safety hooks, streaming |
-| **M3.6: Cognitive Memory** | 🟡 **IN PROGRESS** | 7/32 | 100h | 15h | 167% | Sprint 1 complete. Temporal decay, Hebbian, context-aware search |
-| **M3.7: Repo Consolidation** | 📝 Planned | 0/15 | 20h | - | - | Advisory file access, build-time indexing, search_advisory tool |
-| **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (after M3.7) |
+| **M3.6: Cognitive Memory** | 🟡 **IN PROGRESS** | 7/32 | 100h | 15h | 167% | Sprint 1 complete. Sprints 2-5 remaining |
+| **M3.7: Repo Consolidation** | ✅ Complete | 11/11 | 13h | 3.9h | 333% | 43 advisory files, search_advisory tool, auto tool selection |
+| **M3.8: Advisory Projects** | ✅ Complete | 19/19 | 16h | ~8h | 200% | Project-per-deal, file-reference mode, AI summaries |
+| **M3.9: Advisory-Memory Integration** | 📝 Planned | 0/8 | 15h | - | - | Bidirectional advisory↔memory linking |
+| **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
 *Dec 1, 2025: M3.6 Cognitive Memory integrated from cognitive memory research. 32 tasks across 5 sprints.*
@@ -138,9 +148,11 @@ M3-03         │   7   │   15    │   16   │   +7%    │ ✅
 M3-03.1       │   7   │  3.5    │  3.5   │    0%    │ ✅
 Mobile v1.3.0 │  10   │    4    │    4   │    0%    │ ✅
 M4-01         │  10   │ 25.5    │   10   │  -61%    │ ✅
-M3.6-01       │   7   │  15     │   15   │    0%    │ ✅ Complete
+M3.6-01       │   7   │  15     │    9   │  -40%    │ ✅ Complete
+M3.7-01       │  11   │  13     │  3.9   │  -70%    │ ✅ Complete
+M3.8-01       │  19   │  16     │   ~8   │  -50%    │ ✅ Complete
 ──────────────┼───────┼─────────┼────────┼──────────┼────────
-TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
+TOTALS        │ 126   │ 173h    │ 111h   │  -36%    │ 72% ✅
 ```
 
 **Average Velocity:** 30% faster than estimated
@@ -181,11 +193,16 @@ TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
 | **Bulk Memory Seeding** | ✅ Live | M3.6 | `/api/memory/bulk` with deduplication |
 | **Hebbian Reinforcement** | ✅ Live | M3.6 | Duplicate mentions strengthen existing memories |
 | **Context-Aware Search** | ✅ Live | M3.6 | Conversation context influences memory retrieval |
-| **Auto Tool Selection** | ✅ Live | M3.8 | Intent classification + pre-flight knowledge search |
-| **Advisory File Search** | ✅ Live | M3.7 | 43 deal/client files indexed with embeddings |
-| **Advisory File Access** | 📝 Planned | M3.7 | Deals/ + Clients/ in Git with RAG indexing |
-| **Build-time Indexing** | 📝 Planned | M3.7 | Auto-index advisory files to Supabase on build |
-| **Repository Consolidation** | 📝 Planned | M3.7 | Blog Migration → Bobo unified workspace |
+| **Auto Tool Selection** | ✅ Live | M3.7 | Intent classification + pre-flight knowledge search |
+| **Advisory File Search** | ✅ Live | M3.7 | 43 deal/client files with hybrid search |
+| **Advisory File Access** | ✅ Live | M3.7 | Deals/ + Clients/ in advisory/ folder |
+| **Manual Indexing** | ✅ Live | M3.7 | `npm run index-advisory` for embeddings |
+| **Repository Consolidation** | ✅ Live | M3.7 | Blog Migration consolidated into Bobo |
+| **Project-per-Deal** | ✅ Live | M3.8 | Each deal/client gets dedicated project |
+| **File-Reference Mode** | ✅ Live | M3.8 | Projects read from advisory/ folder (always current) |
+| **AI Deal Summaries** | ✅ Live | M3.8 | Auto-generated custom_instructions from master docs |
+| **Entity Type Badges** | ✅ Live | M3.8 | Deal/Client/Personal project classification |
+| **Advisory-Memory Link** | 📝 Planned | M3.9 | Bidirectional relationship between files and memories |
 | **Memory Provenance** | 📝 Planned | M3-04 | Source chat tracking |
 | **Memory Debugger** | 📝 Planned | M3-04 | "What was injected?" view |
 | **Description-Driven Extraction** | 📝 Planned | M3-04 | Letta-inspired guidance fields |
@@ -237,27 +254,37 @@ TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
    ├─ AUDIT-004: Provenance UI
    └─ AUDIT-005: Description-driven extraction
 │
-📝 PLANNED: M3.7 Repository Consolidation (20h, 1 sprint)
-├─ NOW Phase: Advisory Core (20h) ← NEXT AFTER M3.6
-│  ├─ Directory structure (advisory/deals, advisory/clients)
-│  ├─ File migration from Blog Migration repo
-│  ├─ Build-time indexing script (scripts/index-advisory.ts)
-│  ├─ search_advisory agent tool
-│  ├─ Database migration (search_advisory_files RPC)
-│  ├─ Package.json updates (prebuild hook)
-│  └─ Validation tests (6 success queries)
+✅ COMPLETE: M3.7 Repository Consolidation (Dec 7)
+├─ 11/11 tasks in 3.9h (70% faster than estimate)
+├─ 43 advisory files indexed with embeddings
+├─ search_advisory tool + intent classifier
+└─ Pre-flight knowledge search operational
 │
-LATER (After M3.7)
-├─ M5: Cognitive Layer (36h est)
-│  ├─ Living documentation
-│  ├─ Hierarchical summaries
-│  └─ Knowledge graph
+✅ COMPLETE: M3.8 Advisory Project Integration (Dec 7)
+├─ 19/19 tasks complete
+├─ Project-per-deal system operational
+├─ File-reference mode (reads from disk, always current)
+├─ AI-generated deal summaries as custom_instructions
+└─ Entity type badges in project list
+│
+🐕 DOGFOODING PHASE (Dec 7+)
+├─ Database cleaned, fresh start
+├─ All advisory infrastructure operational
+├─ Cognitive memory foundations (M3.6 Sprint 1) active
+└─ Validating real-world usage before friends testing
+│
+📝 PLANNED: M3.9 Advisory-Memory Integration (15h)
+├─ Close the loop between advisory files and cognitive memory
+├─ Memory entries track source advisory file
+├─ Cross-reference: "See MyTab master doc for details"
+└─ Learnings from chats suggest advisory updates
+│
+LATER (After Dogfooding)
+├─ M3.6 Sprints 2-5: Memory Safety, Graph, Consolidation
+├─ M5: Cognitive Layer (Living docs, knowledge graph)
 │
 MAYBE (If SaaS Pivot)
 └─ Future: Production features
-   ├─ OAuth authentication
-   ├─ Team workspaces
-   └─ Usage analytics
 ```
 
 > **Source:** All M3.6 requirements extracted from `/docs/COGNITIVE_MEMORY_REQUIREMENTS.md`
@@ -1639,27 +1666,104 @@ Same results every query       →    Context-aware search
 
 **Validation Finding (Dec 6, 2025):** Testing with 22 seeded memories showed that memories provide high-level context, but users need granular file access for real work (e.g., "What was my last email to Mikaela?" requires actual Communications Log).
 
-### M3.7 NOW Phase: Advisory Core (20h, 15 tasks)
+### M3.7 NOW Phase: Advisory Core ✅ COMPLETE (Dec 7, 2025)
+
+| ID | Task | Priority | Estimate | Actual | Status |
+|----|------|----------|----------|--------|--------|
+| **M3.7-01** | Create directory structure (advisory/deals, advisory/clients) | 🔴 HIGH | 1.5h | 0.5h | ✅ |
+| **M3.7-02** | Database migration - search RPC | 🔴 HIGH | 1.5h | 0.5h | ✅ |
+| **M3.7-03** | TypeScript type definitions | 🔴 HIGH | 0.5h | 0.25h | ✅ |
+| **M3.7-04** | Build indexing script | 🔴 HIGH | 2.5h | 0.5h | ✅ |
+| **M3.7-05** | Package.json integration | 🔴 HIGH | 0.5h | 0.1h | ✅ |
+| **M3.7-06** | Create advisory tools module | 🔴 HIGH | 2h | 0.5h | ✅ |
+| **M3.7-07** | Register tool in configuration | 🔴 HIGH | 1h | 0.25h | ✅ |
+| **M3.7-08** | Verification script | 🟡 MEDIUM | 1h | 0.25h | ✅ |
+| **M3.7-09** | Indexing + validation | 🔴 HIGH | 1.5h | 0.5h | ✅ |
+| **M3.7-10** | Update CLAUDE.md | 🟡 MEDIUM | 0.5h | 0.25h | ✅ |
+| **M3.7-11** | Sprint completion docs | 🟡 MEDIUM | 0.5h | 0.25h | ✅ |
+
+**Estimated:** 13h | **Actual:** 3.9h | **Variance:** -70% (3.3x faster)
+
+**Key Outcomes:**
+- 43 advisory files indexed (deals + clients)
+- 100% embedding coverage
+- `search_advisory` tool operational
+- Intent classifier + pre-flight knowledge search (M3.8 extension)
+
+---
+
+### M3.8 Advisory Project Integration ✅ COMPLETE (Dec 7, 2025)
 
 | ID | Task | Priority | Estimate | Status |
 |----|------|----------|----------|--------|
-| **M3.7-01** | Create directory structure (advisory/deals, advisory/clients) | 🔴 HIGH | 0.5h | ⏳ |
-| **M3.7-02** | Move Deals/ folder from Blog Migration (~50 files, ~2MB) | 🔴 HIGH | 1h | ⏳ |
-| **M3.7-03** | Move Clients/ folder from Blog Migration (~20 files, ~1MB) | 🔴 HIGH | 0.5h | ⏳ |
-| **M3.7-04** | Create `scripts/index-advisory.ts` - Build-time indexing script | 🔴 HIGH | 4h | ⏳ |
-| **M3.7-05** | Implement metadata extraction (entity_type, entity_name, file_type) | 🔴 HIGH | 2h | ⏳ |
-| **M3.7-06** | Create `lib/agent-sdk/advisory-tools.ts` - search_advisory tool | 🔴 HIGH | 3h | ⏳ |
-| **M3.7-07** | Database migration: search_advisory_files RPC function | 🔴 HIGH | 2h | ⏳ |
-| **M3.7-08** | Add hybrid search logic (70% vector + 30% text for advisory) | 🟡 MEDIUM | 2h | ⏳ |
-| **M3.7-09** | Update package.json: Add "index-advisory" and "prebuild" scripts | 🔴 HIGH | 0.5h | ⏳ |
-| **M3.7-10** | Create advisory project in Supabase (project_id: 'advisory-knowledge-base') | 🟡 MEDIUM | 0.5h | ⏳ |
-| **M3.7-11** | Run initial indexing: npm run index-advisory | 🔴 HIGH | 1h | ⏳ |
-| **M3.7-12** | Verify embeddings generated for all advisory files | 🔴 HIGH | 0.5h | ⏳ |
-| **M3.7-13** | Test search_advisory tool in Agent Mode | 🔴 HIGH | 1h | ⏳ |
-| **M3.7-14** | Run validation queries (6 success criteria) | 🔴 HIGH | 1h | ⏳ |
-| **M3.7-15** | Document advisory workflow in CLAUDE.md | 🟡 MEDIUM | 0.5h | ⏳ |
+| **M3.8-01** | Create migration: add entity_type, advisory_folder_path | 🔴 HIGH | 0.5h | ✅ |
+| **M3.8-02** | Update lib/db/types.ts with EntityType | 🔴 HIGH | 0.5h | ✅ |
+| **M3.8-03** | Update lib/db/queries.ts with new functions | 🔴 HIGH | 0.5h | ✅ |
+| **M3.8-04** | Install gray-matter dependency | 🟡 MEDIUM | 0.5h | ✅ |
+| **M3.8-05** | Create lib/advisory/file-reader.ts | 🔴 HIGH | 1.5h | ✅ |
+| **M3.8-06** | Create lib/advisory/summarizer.ts | 🔴 HIGH | 1h | ✅ |
+| **M3.8-07** | Test file reading with MyTab | 🟡 MEDIUM | 0.5h | ✅ |
+| **M3.8-08** | Create /api/advisory/available | 🔴 HIGH | 0.5h | ✅ |
+| **M3.8-09** | Create /api/advisory/import | 🔴 HIGH | 1h | ✅ |
+| **M3.8-10** | Create /api/advisory/bulk-import | 🔴 HIGH | 0.5h | ✅ |
+| **M3.8-11** | Create /api/advisory/refresh/[projectId] | 🟡 MEDIUM | 0.5h | ✅ |
+| **M3.8-12** | Update /api/projects/[id] for new fields | 🟡 MEDIUM | 0.5h | ✅ |
+| **M3.8-13** | Modify context-manager.ts for advisory | 🔴 HIGH | 1h | ✅ |
+| **M3.8-14** | Create bulk-import.tsx component | 🔴 HIGH | 1.5h | ✅ |
+| **M3.8-15** | Create import-wizard.tsx component | 🟡 MEDIUM | 1.5h | ✅ |
+| **M3.8-16** | Add "Import Advisory" button to project creation | 🟡 MEDIUM | 0.5h | ✅ |
+| **M3.8-17** | Add entity type badges to project list | 🟡 MEDIUM | 0.5h | ✅ |
+| **M3.8-18** | Bulk import all 6 deals, verify context | 🔴 HIGH | 0.5h | ✅ |
+| **M3.8-19** | Update CLAUDE.md with docs | 🟡 MEDIUM | 0.5h | ✅ |
 
-**Total Estimate:** 20 hours
+**Estimated:** 16h | **Actual:** ~8h | **Variance:** -50% (2x faster)
+
+**Key Outcomes:**
+- Project-per-deal system operational
+- File-reference mode reads directly from disk (always current)
+- AI-generated summaries as custom_instructions
+- Entity type badges (Deal/Client/Personal)
+- Bulk import + individual import wizard
+
+---
+
+### M3.9 Advisory-Memory Integration 📝 PLANNED
+
+**Goal:** Close the loop between advisory files and cognitive memory - bidirectional relationship
+
+| ID | Task | Priority | Estimate | Status |
+|----|------|----------|----------|--------|
+| **M3.9-01** | Add `source_advisory_path` column to memory_entries | 🔴 HIGH | 1h | ⏳ |
+| **M3.9-02** | Auto-extract key facts from advisory master docs → memory | 🔴 HIGH | 3h | ⏳ |
+| **M3.9-03** | Link extracted memories to source advisory file | 🔴 HIGH | 2h | ⏳ |
+| **M3.9-04** | When memory recalled, include "See [file] for details" | 🟡 MEDIUM | 2h | ⏳ |
+| **M3.9-05** | Cross-reference chat discussions with advisory content | 🟡 MEDIUM | 2h | ⏳ |
+| **M3.9-06** | Track which advisory sections were discussed | 🟡 MEDIUM | 2h | ⏳ |
+| **M3.9-07** | Suggest advisory file updates from chat learnings | 🟢 LOW | 2h | ⏳ |
+| **M3.9-08** | Memory deduplication with advisory content awareness | 🟡 MEDIUM | 1h | ⏳ |
+
+**Total Estimate:** 15 hours
+
+**Why This Matters:**
+Currently advisory files and cognitive memory are isolated:
+- Advisory files → Context (one-way)
+- Chat → Memory (one-way)
+- Advisory ↔ Memory: **NO CONNECTION**
+
+This milestone closes the loop:
+- Facts from advisory files become trackable memories
+- Memories know their source ("this came from MyTab master doc")
+- Chat learnings can suggest advisory file updates
+- No duplicate context (advisory content vs extracted memories)
+
+**Definition of Done:**
+- [ ] Memory entries have optional `source_advisory_path` field
+- [ ] Auto-extraction populates memories from master docs
+- [ ] Memory search results include advisory source links
+- [ ] Deduplication considers advisory content
+- [ ] Chat insights flag potential advisory updates
+
+**Total Estimate:** 15 hours
 
 ### Validation Queries (Success Criteria)
 
