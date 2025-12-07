@@ -183,7 +183,8 @@ export function MoveToProjectDialog({
       const res = await fetch('/api/projects');
       if (res.ok) {
         const data = await res.json();
-        setProjects(data);
+        // API returns { projects: [...], count: n }
+        setProjects(data.projects || []);
       }
     } catch (error) {
       // Silently fail - projects dropdown will just be empty
