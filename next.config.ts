@@ -22,24 +22,26 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['streamdown'],
-    /**
-     * Reduce Vercel Serverless function size by excluding
-     * heavy, non-runtime directories from output file tracing.
-     *
-     * This prevents `.next/cache`, `.git`, large docs and test
-     * artifacts from being bundled into API functions
-     * like `/api/advisory/*` and `/api/projects/[id]/context`.
-     */
-    outputFileTracingExcludes: {
-      '*': [
-        '.next/cache/**',
-        '.git/**',
-        'docs/**',
-        'playwright-report/**',
-        'test-results/**',
-        'tests/**',
-      ],
-    },
+  },
+  /**
+   * Reduce Vercel Serverless function size by excluding
+   * heavy, non-runtime directories from output file tracing.
+   *
+   * This prevents `.next/cache`, `.git`, large docs and test
+   * artifacts from being bundled into API functions
+   * like `/api/advisory/*` and `/api/projects/[id]/context`.
+   *
+   * Note: Moved from experimental in Next.js 16
+   */
+  outputFileTracingExcludes: {
+    '*': [
+      '.next/cache/**',
+      '.git/**',
+      'docs/**',
+      'playwright-report/**',
+      'test-results/**',
+      'tests/**',
+    ],
   },
   async rewrites() {
     return [
