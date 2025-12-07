@@ -4,7 +4,7 @@
 **Milestone:** M3.7 - Repository Consolidation
 **Goal:** Enable Bobo to search advisory files (Deals/Clients) via Agent Mode
 **Capacity:** 14 hours (0.7x velocity multiplier applied)
-**Execution Guide:** [HANDOVER_M37-01.md](../handover/HANDOVER_M37-01.md)
+**Execution Guide:** [HANDOVER_M37-01.md](../../handover/HANDOVER_M37-01.md)
 
 ---
 
@@ -117,7 +117,32 @@
 ### Next Sprint Actions
 - [ ] Complete live Agent Mode testing of all 6 validation queries
 - [ ] Consider chunking for large files instead of truncation
-- [ ] Add advisory search to Agent Mode system prompt
+- [x] Add advisory search to Agent Mode system prompt → **Solved via M3.8**
+
+---
+
+## M3.8 Extension: Auto Tool Selection (Dec 7)
+
+During dogfooding, discovered that agent wasn't using `search_advisory` tool. Implemented pre-flight knowledge search:
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Intent classifier (`intent-classifier.ts`) | ✅ | Pattern-based advisory/memory/hybrid detection |
+| Knowledge search (`knowledge-search.ts`) | ✅ | Pre-flight search combining advisory + memory |
+| Agent handler integration | ✅ | Auto-inject context into system prompt |
+
+**How it works:**
+1. User query analyzed for intent (e.g., "Brief me on MyTab" → advisory)
+2. Entity extraction (company names, people, doc types)
+3. Parallel search of advisory files + memories
+4. Results injected into agent context BEFORE response
+
+**Files created:**
+- `lib/agent-sdk/intent-classifier.ts`
+- `lib/agent-sdk/knowledge-search.ts`
+
+**Files modified:**
+- `lib/agent-sdk/agent-handler.ts` (import + call searchKnowledge)
 
 ---
 
@@ -142,6 +167,7 @@
 - [x] ~70 advisory files in `advisory/` directory (43 actual)
 - [x] 100% files indexed with embeddings
 - [x] `search_advisory` tool functional in Agent Mode
+- [x] Auto tool selection via M3.8 pre-flight search
 - [ ] 5/6 validation queries pass (pending live test)
 - [x] No regression in existing memory tools
 - [x] Build passes
@@ -151,10 +177,10 @@
 
 ## Links
 
-- **Execution Guide:** [HANDOVER_M37-01.md](../handover/HANDOVER_M37-01.md)
+- **Execution Guide:** [HANDOVER_M37-01.md](../../handover/HANDOVER_M37-01.md)
 - **Backlog:** [PRODUCT_BACKLOG.md](../../../product/PRODUCT_BACKLOG.md)
 - **Roadmap:** [REPOSITORY_CONSOLIDATION.md](../../../product/roadmaps/REPOSITORY_CONSOLIDATION.md)
-- **Previous:** [sprint-m36-02.md](../completed/sprint-m36-02.md)
+- **Previous:** [sprint-m36-02.md](../sprint-m36-02.md)
 
 ---
 
@@ -167,5 +193,6 @@
 ---
 
 **Created:** December 7, 2025
-**Status:** ✅ Complete (Implementation)
-**Updated:** December 7, 2025
+**Status:** ✅ COMPLETE
+**Completed:** December 7, 2025
+**Moved to completed:** December 7, 2025
