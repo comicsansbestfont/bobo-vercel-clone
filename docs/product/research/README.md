@@ -1,21 +1,23 @@
-# Brain Building - Research & Context Repository
+# Cognitive Memory Research
 
 **Strategic Goal:** Build a proprietary "Second Brain" architecture (The Cognitive Core) to serve as the IP moat for future AI-Native products.
 
 **Core Philosophy:** "Pragmatic Neuroscience" - Implementing biological memory principles using standard engineering technologies.
 
+> **Note:** This folder contains foundational research. For implementation requirements, see [COGNITIVE_MEMORY.md](../roadmaps/COGNITIVE_MEMORY.md).
+
 ---
 
 ## 📚 1. Research Documents
 
-### 1.1 [Project Brief: The Cognitive Core](PROJECT_BRIEF_COGNITIVE_CORE.md)
+### 1.1 [Project Brief: The Cognitive Core](COGNITIVE_CORE_BRIEF.md)
 **Status:** ✅ Approved Baseline
 **Summary:** The master execution plan. Defines the "Build vs. Buy" verdict (BUILD), the strategic moat, and the 3-phase implementation roadmap:
 1.  **Phase 1 (The Pulse):** Temporal Decay & Hebbian Reinforcement (Immediate).
 2.  **Phase 2 (The Sleep):** Background Consolidation & Synthesis (Medium Term).
 3.  **Phase 3 (The Graph):** Associative Linking & Spreading Activation (Long Term).
 
-### 1.2 [Neuroscience Analysis](MEMORY-SYSTEM-NEUROSCIENCE-ANALYSIS%20(1).md)
+### 1.2 [Neuroscience Analysis](NEUROSCIENCE_ANALYSIS.md)
 **Status:** Foundational Research
 **Summary:** Deep dive into biological memory systems and their computational analogues.
 *   **Key Insight:** Current LLMs are "Hippocampal" (Fast/Episodic) but lack a "Neocortex" (Slow/Semantic).
@@ -25,13 +27,13 @@
     *   No consolidation (Sleep cycles).
     *   Context-blind retrieval.
 
-### 1.3 [ChatGPT Deep Research Review](ChatGPT%20Deep%20Resaerch%20Review-%20High-Level%20Logic%20and%20Validity%20of%20the%20Proposed%20Memory%20System.pdf)
+### 1.3 [ChatGPT Validation Review](ChatGPT-Validation-Review.pdf)
 **Status:** Validation Report
 **Summary:** Validates the "Neuro-Spec" as architecturally sound.
 *   **Key Recommendation:** Supports the "Custom Build" approach. Emphasizes that buying off-the-shelf components (like Mem0) weakens the long-term IP moat.
 *   **Warning:** "Don't over-engineer." Suggests implementing complex features (like GraphRAG) only after the basics (Decay/Reinforcement) are proven.
 
-### 1.4 Gemini Deep Research Review
+### 1.4 [Gemini Research Review](Gemini-Research-Review.pdf)
 **Status:** Alternative Perspective (Rejected)
 **Summary:** Suggested using off-the-shelf tools (Zep, Mem0) for speed.
 *   **Rejection Rationale:** While faster to ship, this approach fails the "Moat" test. If the core value proposition is the *structure* of the brain, outsourcing it creates a dependency and removes the ability to tune the cognitive architecture.
@@ -44,15 +46,15 @@
 
 ---
 
-## 🛠️ 2. Existing Project Context
+## 🛠️ 2. Related Product Documents
 
-### 2.1 [Product Backlog](PRODUCT_BACKLOG.md)
-**Current Status:** M3.5 (Agent Memory Tools) is active.
+### 2.1 [Product Backlog](../PRODUCT_BACKLOG.md)
+**Current Status:** M3.6 (Cognitive Memory) is active.
 **Integration:**
-*   The "Brain Building" project replaces/extends the original "M3 Phase 4" and "M5" milestones.
+*   The "Cognitive Core" research replaces/extends the original "M3 Phase 4" and "M5" milestones.
 *   **Immediate Action:** Modifying M3.5 deliverables (`remember_fact`, `search_memory`) to include Phase 1 Neuro-features (Decay, Reinforcement).
 
-### 2.2 [Project Brief (Original)](PROJECT_BRIEF.md)
+### 2.2 [Platform Brief](../PLATFORM_BRIEF.md)
 **Context:** Defines "Bobo" as a personal internal tool with high ambitions.
 **Evolution:** The "Cognitive Core" project elevates Bobo from a "Chatbot with a Database" to a "Cognitive Agent with a Lifecycle."
 

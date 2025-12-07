@@ -9,7 +9,7 @@
 import { z } from 'zod';
 import { generateEmbedding } from '@/lib/ai/embedding';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
-import { createMemory, getMemoryById, updateMemoryEntry, softDeleteMemory } from '@/lib/db/queries';
+import { createMemory, getMemoryById, updateMemoryEntry, softDeleteMemory, updateMemoryAccess } from '@/lib/db/queries';
 import { memoryLogger } from '@/lib/logger';
 import type { MemoryCategory } from '@/lib/db/types';
 import crypto from 'crypto';
@@ -25,13 +25,22 @@ export type MemoryToolResult = {
   data?: Record<string, unknown>;
 };
 
+// M3.6-02: Enhanced search result with all score components
 export type MemorySearchResult = {
   id: string;
   category: string;
   content: string;
   confidence: number;
-  last_updated: string;
-  similarity: number;
+  source_type: string;
+  last_accessed: string | null;
+  access_count: number;
+  importance: number;
+  // Score components for transparency/debugging
+  vector_score: number;
+  text_score: number;
+  recency_score: number;
+  frequency_score: number;
+  combined_score: number;
 };
 
 export type SimilarMemory = {
@@ -151,15 +160,23 @@ Returns up to 10 matching memories sorted by relevance.`,
       // Generate embedding for semantic search
       const embedding = await generateEmbedding(query);
 
-      // Call hybrid search RPC
+      // M3.6-02: Call enhanced search RPC with temporal weighting (REQ-009)
       const { data: memories, error } = await supabase.rpc(
-        'hybrid_memory_search',
+        'enhanced_memory_search',
         {
           query_embedding: embedding,
           query_text: query,
           match_count: limit,
-          vector_weight: 0.7,
-          text_weight: 0.3,
+          // REQ-009 temporal weighting (sum = 1.0)
+          vector_weight: 0.45,
+          text_weight: 0.15,
+          recency_weight: 0.20,
+          frequency_weight: 0.10,
+          confidence_weight: 0.10,
+          // Tuning parameters
+          recency_half_life_days: 45.0,
+          min_vector_similarity: 0.3,
+          // Filters
           p_user_id: DEFAULT_USER_ID,
           p_category: category ?? undefined,
         }
@@ -182,6 +199,14 @@ Returns up to 10 matching memories sorted by relevance.`,
             `[${i + 1}] ${m.category}: "${m.content}" (id: ${m.id})`
         )
         .join('\n');
+
+      // M3.6-02: Fire-and-forget access tracking
+      // Extract IDs and update metrics asynchronously (don't await)
+      const memoryIds = (memories as MemorySearchResult[]).map(m => m.id);
+      updateMemoryAccess(memoryIds).catch(() => {
+        // Errors already logged inside updateMemoryAccess
+        // This catch prevents unhandled promise rejection
+      });
 
       memoryLogger.info(
         `[search_memory] Found ${memories.length} memories`

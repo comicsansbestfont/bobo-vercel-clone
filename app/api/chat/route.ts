@@ -303,11 +303,26 @@ export async function POST(req: Request) {
       activeChatId = newChat.id;
     }
 
-    // Fetch custom instructions from project if chat belongs to one
+    // PARALLELIZED: Fetch chat, user profile, and memories concurrently
+    // These are independent queries that don't depend on each other
     let customInstructions = '';
     let activeProjectId = projectId;
+    let userProfileContext = '';
+    let userMemoryContext = '';
 
-    const chat = await getChat(activeChatId);
+    const [chat, profile, memories] = await Promise.all([
+      getChat(activeChatId),
+      getUserProfile().catch(err => {
+        chatLogger.error('Failed to load user profile:', err);
+        return null;
+      }),
+      getUserMemories({ relevance_threshold: 0.2, limit: 50 }).catch(err => {
+        chatLogger.error('Failed to fetch user memories:', err);
+        return [];
+      }),
+    ]);
+
+    // Process chat result - get project if chat has one
     if (chat && chat.project_id) {
       activeProjectId = chat.project_id;
       const project = await getProject(chat.project_id);
@@ -316,71 +331,58 @@ export async function POST(req: Request) {
       }
     }
 
-    // Fetch user profile (M3)
-    let userProfileContext = '';
-    try {
-      const profile = await getUserProfile();
-      if (profile) {
-        const parts = [];
-        if (profile.bio) parts.push(`BIO:\n${profile.bio}`);
-        if (profile.background) parts.push(`BACKGROUND & EXPERTISE:\n${profile.background}`);
-        if (profile.preferences) parts.push(`PREFERENCES:\n${profile.preferences}`);
-        if (profile.technical_context) parts.push(`TECHNICAL CONTEXT:\n${profile.technical_context}`);
+    // Process user profile result
+    if (profile) {
+      const parts = [];
+      if (profile.bio) parts.push(`BIO:\n${profile.bio}`);
+      if (profile.background) parts.push(`BACKGROUND & EXPERTISE:\n${profile.background}`);
+      if (profile.preferences) parts.push(`PREFERENCES:\n${profile.preferences}`);
+      if (profile.technical_context) parts.push(`TECHNICAL CONTEXT:\n${profile.technical_context}`);
 
-        if (parts.length > 0) {
-          userProfileContext = `\n\n### ABOUT THE USER\n${parts.join('\n\n')}`;
-        }
+      if (parts.length > 0) {
+        userProfileContext = `\n\n### ABOUT THE USER\n${parts.join('\n\n')}`;
       }
-    } catch (err) {
-      chatLogger.error('Failed to load user profile:', err);
     }
 
-    // Fetch automatic memories (M3-02)
-    let userMemoryContext = '';
-    try {
-      const memories = await getUserMemories({ relevance_threshold: 0.2, limit: 50 });
+    // Process memories result
+    if (memories.length > 0) {
+      const sections: Record<string, string[]> = {
+        work_context: [],
+        personal_context: [],
+        top_of_mind: [],
+        brief_history: [],
+        long_term_background: [],
+        other_instructions: [],
+      };
 
-      if (memories.length > 0) {
-        const sections: Record<string, string[]> = {
-          work_context: [],
-          personal_context: [],
-          top_of_mind: [],
-          brief_history: [],
-          long_term_background: [],
-          other_instructions: [],
-        };
-
-        // Group by category
-        for (const memory of memories) {
-          sections[memory.category].push(`- ${memory.content}`);
-        }
-
-        const parts: string[] = [];
-        if (sections.work_context.length > 0) {
-          parts.push(`WORK CONTEXT:\n${sections.work_context.slice(0, 5).join('\n')}`);
-        }
-        if (sections.personal_context.length > 0) {
-          parts.push(`PERSONAL CONTEXT:\n${sections.personal_context.slice(0, 5).join('\n')}`);
-        }
-        if (sections.top_of_mind.length > 0) {
-          parts.push(`TOP OF MIND:\n${sections.top_of_mind.slice(0, 5).join('\n')}`);
-        }
-        if (sections.brief_history.length > 0) {
-          parts.push(`BRIEF HISTORY:\n${sections.brief_history.slice(0, 5).join('\n')}`);
-        }
-        if (sections.long_term_background.length > 0) {
-          parts.push(`BACKGROUND:\n${sections.long_term_background.slice(0, 5).join('\n')}`);
-        }
-        if (sections.other_instructions.length > 0) {
-          parts.push(`PREFERENCES:\n${sections.other_instructions.slice(0, 5).join('\n')}`);
-        }
-
-        if (parts.length > 0) {
-          userMemoryContext = `\n\n### USER MEMORY (Automatic)\n${parts.join('\n\n')}`;
-        }
+      // Group by category
+      for (const memory of memories) {
+        sections[memory.category].push(`- ${memory.content}`);
       }
-    } catch (err) {
-      chatLogger.error('Failed to fetch user memories:', err);
+
+      const parts: string[] = [];
+      if (sections.work_context.length > 0) {
+        parts.push(`WORK CONTEXT:\n${sections.work_context.slice(0, 5).join('\n')}`);
+      }
+      if (sections.personal_context.length > 0) {
+        parts.push(`PERSONAL CONTEXT:\n${sections.personal_context.slice(0, 5).join('\n')}`);
+      }
+      if (sections.top_of_mind.length > 0) {
+        parts.push(`TOP OF MIND:\n${sections.top_of_mind.slice(0, 5).join('\n')}`);
+      }
+      if (sections.brief_history.length > 0) {
+        parts.push(`BRIEF HISTORY:\n${sections.brief_history.slice(0, 5).join('\n')}`);
+      }
+      if (sections.long_term_background.length > 0) {
+        parts.push(`BACKGROUND:\n${sections.long_term_background.slice(0, 5).join('\n')}`);
+      }
+      if (sections.other_instructions.length > 0) {
+        parts.push(`PREFERENCES:\n${sections.other_instructions.slice(0, 5).join('\n')}`);
+      }
+
+      if (parts.length > 0) {
+        userMemoryContext = `\n\n### USER MEMORY (Automatic)\n${parts.join('\n\n')}`;
+      }
     }
 
     // Bobo Identity - only activated when user asks "who is Bobo?" or similar
@@ -402,26 +404,13 @@ Feel free to adapt this naturally based on context. For all other questions, jus
     // Inject User Profile and Memories (M3)
     systemPrompt += userProfileContext + userMemoryContext;
 
-    // Store context for source tracking later
+    // PARALLELIZED: Project context + embedding generation run concurrently
+    // These are independent operations that don't depend on each other
     let projectContext: ProjectContext | null = null;
     let projectName = '';
-
-    if (activeProjectId) {
-      try {
-        projectContext = await getProjectContext(activeProjectId);
-        const prepared = prepareSystemPrompt(systemPrompt, projectContext, model);
-        systemPrompt = prepared.system;
-
-        // Get project name for citations
-        const project = await getProject(activeProjectId);
-        projectName = project?.name || 'Current Project';
-      } catch (err) {
-        chatLogger.error('Failed to load project context:', err);
-      }
-    }
-
-    // Generate query embedding once for all searches
     let queryEmbedding: number[] | null = null;
+
+    // Extract user text for embedding
     const lastUserMessage = messages[messages.length - 1];
     let userText = '';
     if (lastUserMessage && Array.isArray(lastUserMessage.parts)) {
@@ -431,34 +420,83 @@ Feel free to adapt this naturally based on context. For all other questions, jus
         .join(' ');
     }
 
-    if (userText) {
-      try {
-        queryEmbedding = await generateEmbedding(userText);
-      } catch (err) {
-        chatLogger.error('Failed to generate query embedding:', err);
-      }
+    // Run project context loading and embedding generation in parallel
+    const [projectContextResult, embeddingResult] = await Promise.all([
+      // Project context loading
+      activeProjectId
+        ? getProjectContext(activeProjectId)
+            .then(async (ctx) => {
+              const project = await getProject(activeProjectId);
+              return { context: ctx, name: project?.name || 'Current Project' };
+            })
+            .catch(err => {
+              chatLogger.error('Failed to load project context:', err);
+              return null;
+            })
+        : Promise.resolve(null),
+      // Embedding generation
+      userText
+        ? generateEmbedding(userText).catch(err => {
+            chatLogger.error('Failed to generate query embedding:', err);
+            return null;
+          })
+        : Promise.resolve(null),
+    ]);
+
+    // Process project context result
+    if (projectContextResult) {
+      projectContext = projectContextResult.context;
+      projectName = projectContextResult.name;
+      const prepared = prepareSystemPrompt(systemPrompt, projectContext, model);
+      systemPrompt = prepared.system;
     }
 
-    // Intra-Project Chat Context (NEW)
-    // Search for relevant messages from sibling chats within the same project
-    let projectChatContext = '';
+    // Store embedding result
+    queryEmbedding = embeddingResult;
+
+    // PARALLELIZED: Run both search operations concurrently
+    // They both depend on embedding but are independent of each other
     let projectChatResults: ProjectMessageSearchResult[] = [];
-    if (queryEmbedding && activeProjectId) {
-      try {
-        projectChatResults = await searchProjectMessages(
-          activeProjectId,
-          activeChatId || null,
+    let searchResults: SearchResult[] = [];
+
+    if (queryEmbedding) {
+      const [projectSearchResult, globalSearchResult] = await Promise.all([
+        // Intra-project search
+        activeProjectId
+          ? searchProjectMessages(
+              activeProjectId,
+              activeChatId || null,
+              queryEmbedding,
+              0.25,
+              5
+            ).catch(err => {
+              chatLogger.error('Intra-project search failed:', err);
+              return [];
+            })
+          : Promise.resolve([]),
+        // Global hybrid search
+        hybridSearch(
           queryEmbedding,
-          0.25, // Lower threshold for better recall
-          5     // Top 5 results
-        );
+          0.25,
+          5,
+          activeProjectId || '00000000-0000-0000-0000-000000000000'
+        ).catch(err => {
+          chatLogger.error('Hybrid search failed:', err);
+          return [];
+        }),
+      ]);
 
-        if (projectChatResults.length > 0) {
-          const snippets = projectChatResults
-            .map(r => `[${r.chat_title}]: ${r.content}`)
-            .join('\n');
+      projectChatResults = projectSearchResult;
+      searchResults = globalSearchResult;
+    }
 
-          projectChatContext = `
+    // Process intra-project chat context
+    if (projectChatResults.length > 0) {
+      const snippets = projectChatResults
+        .map(r => `[${r.chat_title}]: ${r.content}`)
+        .join('\n');
+
+      const projectChatContext = `
 ### RELATED CONVERSATIONS IN THIS PROJECT
 The following are relevant excerpts from your OTHER conversations in this project.
 <project_conversations>
@@ -466,34 +504,18 @@ ${snippets}
 </project_conversations>
 INSTRUCTION: Use these to maintain continuity across conversations in this project.
 `;
-          systemPrompt += projectChatContext;
-        }
-      } catch (err) {
-        chatLogger.error('Intra-project search failed:', err);
-      }
+      systemPrompt += projectChatContext;
     }
 
-    // Hybrid Search (Loop B)
-    // Search for relevant global context from other projects
-    let globalContext = '';
-    let searchResults: SearchResult[] = [];
-    if (queryEmbedding) {
-      try {
-        searchResults = await hybridSearch(
-          queryEmbedding,
-          0.25, // Lower threshold for better recall (was 0.6)
-          5,    // Top 5 results
-          activeProjectId || '00000000-0000-0000-0000-000000000000' // Empty UUID if no project
-        );
+    // Process global search context
+    if (searchResults.length > 0) {
+      const globalSnippets = searchResults
+        .filter((r: SearchResult) => r.source_type === 'global')
+        .map((r: SearchResult) => `- ${r.content}`)
+        .join('\n');
 
-        if (searchResults.length > 0) {
-          const globalSnippets = searchResults
-            .filter((r: SearchResult) => r.source_type === 'global')
-            .map((r: SearchResult) => `- ${r.content}`)
-            .join('\n');
-
-          if (globalSnippets) {
-            globalContext = `
+      if (globalSnippets) {
+        const globalContext = `
 ### RELEVANT MEMORY & ASSOCIATIONS (Inspiration)
 The following information is from your PAST WORK in other projects.
 <global_context>
@@ -504,12 +526,7 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 - If the user is writing content, look here for connecting ideas.
 - WARNING: Do NOT use names, specific IDs, or confidential data points from this section unless explicitly asked to cross-reference.
 `;
-            // Append to system prompt
-            systemPrompt += `\n\n${globalContext}`;
-          }
-        }
-      } catch (err) {
-        chatLogger.error('Hybrid search failed:', err);
+        systemPrompt += `\n\n${globalContext}`;
       }
     }
 
