@@ -8,6 +8,7 @@ import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { Project, ChatWithProject, ProjectWithStats } from "@/lib/db/types";
 import { ProjectChatList } from "@/components/project/project-chat-list";
+import { ProjectContext } from "@/components/project/project-context";
 import { IconFolder } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -160,6 +161,17 @@ export default function ProjectPage() {
                           </Link>
                         </div>
                       </div>
+
+                      {/* Project Context Section */}
+                      <div className="px-4 pb-4 md:px-6">
+                        <div className="mx-auto max-w-3xl">
+                          <ProjectContext
+                            project={project!}
+                            onUpdate={(updatedProject) => setProject(updatedProject)}
+                          />
+                        </div>
+                      </div>
+
                       {/* Chat Input Section */}
                       <div className="px-4 pb-4 md:px-6 md:pb-6">
                         <div className="mx-auto max-w-3xl">
