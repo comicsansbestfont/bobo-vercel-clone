@@ -1,10 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "functions": {
-    "app/api/advisory/**": {
-      "excludeFiles": "{.next/cache/**,.git/**,docs/**,playwright-report/**,test-results/**,tests/**}"
-    }
-  },
+  "functions": {},
   "crons": [
     {
       "path": "/api/cron/consolidate-memories",
