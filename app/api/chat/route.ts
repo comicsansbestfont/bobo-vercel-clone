@@ -280,9 +280,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // If no chatId provided, create new chat
+    // Ensure chat exists in database - create if not found
     let activeChatId = providedChatId;
-    if (!activeChatId) {
+    let chatExists = false;
+
+    if (activeChatId) {
+      // Check if the provided chatId exists in the database
+      const existingChat = await getChat(activeChatId);
+      chatExists = existingChat !== null;
+    }
+
+    // Create new chat if no chatId provided OR if provided chatId doesn't exist
+    if (!activeChatId || !chatExists) {
       const newChat = await createChat({
         title: 'New Chat',
         model: model,
@@ -301,6 +310,7 @@ export async function POST(req: Request) {
       }
 
       activeChatId = newChat.id;
+      chatExists = true;
     }
 
     // PARALLELIZED: Fetch chat, user profile, and memories concurrently
