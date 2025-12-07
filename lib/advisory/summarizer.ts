@@ -2,13 +2,13 @@
  * Advisory Summarizer
  *
  * Generates AI summaries from master docs for project instructions.
- * Uses gpt-4o-mini for cost efficiency.
+ * Uses Gemini Flash via AI Gateway for cost efficiency.
  *
  * M38: Advisory Project Integration
  */
 
 import { generateText } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
+import { getModel } from '@/lib/ai/models';
 import type { AdvisoryFile } from './file-reader';
 
 const SUMMARY_PROMPT = `You are analyzing an advisory master document. Generate a concise project briefing that captures:
@@ -29,14 +29,9 @@ export async function generateSummary(
   masterDoc: AdvisoryFile,
   entityType: 'deal' | 'client'
 ): Promise<string> {
-  const openai = createOpenAI({
-    apiKey: process.env.AI_GATEWAY_API_KEY || process.env.OPENAI_API_KEY,
-    baseURL: process.env.AI_GATEWAY_BASE_URL || 'https://api.openai.com/v1',
-  });
-
   try {
     const { text } = await generateText({
-      model: openai('gpt-4o-mini'),
+      model: getModel('google/gemini-2.0-flash'),
       system: SUMMARY_PROMPT,
       prompt: `Entity Type: ${entityType}
 Company: ${masterDoc.frontmatter.company || 'Unknown'}
