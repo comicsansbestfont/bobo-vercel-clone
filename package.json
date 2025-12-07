@@ -11,7 +11,9 @@
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "index-advisory": "npx tsx scripts/index-advisory.ts",
+    "verify-advisory": "npx tsx scripts/verify-advisory-indexing.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.71",
@@ -48,6 +50,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "embla-carousel-react": "^8.6.0",
+    "glob": "^10.5.0",
     "gpt-tokenizer": "^3.4.0",
     "jotai": "^2.15.1",
     "lucide-react": "^0.554.0",

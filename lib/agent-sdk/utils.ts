@@ -44,6 +44,8 @@ export const AUTO_APPROVED_TOOLS = [
   // M3.5 memory tools - safe operations
   'search_memory',   // Read-only
   'remember_fact',   // Additive only, easily undone
+  // M3.7 advisory tools - safe operations
+  'search_advisory', // Read-only
 ];
 
 /**
@@ -70,6 +72,8 @@ export const TOOL_DESCRIPTIONS: Record<string, string> = {
   remember_fact: 'Store a new memory',
   update_memory: 'Update existing memory (requires confirmation)',
   forget_memory: 'Delete memory (requires confirmation)',
+  // M3.7 advisory tools
+  search_advisory: 'Search advisory files (deals, clients, meetings)',
 };
 
 /**
@@ -89,6 +93,8 @@ export const TOOL_ICONS: Record<string, string> = {
   remember_fact: 'brain',
   update_memory: 'brain',
   forget_memory: 'brain',
+  // M3.7 advisory tools
+  search_advisory: 'briefcase',
 };
 
 /**
@@ -108,6 +114,8 @@ export const TOOL_EMOJIS: Record<string, string> = {
   remember_fact: '🧠',
   update_memory: '🧠',
   forget_memory: '🧠',
+  // M3.7 advisory tools
+  search_advisory: '📂',
 };
 
 /**

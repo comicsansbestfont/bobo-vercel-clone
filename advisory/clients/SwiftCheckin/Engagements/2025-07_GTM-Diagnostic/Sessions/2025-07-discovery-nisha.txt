@@ -1,0 +1,286 @@
+nisha.george@dibasys.com | 00:00
+Hey, Sachee, thanks.
+Sachee Perera | 00:00
+He sache hey, how are you?
+nisha.george@dibasys.com | 00:04
+How are you?
+Sachee Perera | 00:05
+I'm good.
+nisha.george@dibasys.com | 00:06
+Yeah, good to see you again.
+Sachee Perera | 00:09
+Yes, for sure.
+nisha.george@dibasys.com | 00:11
+Yeah, yes.
+Sachee Perera | 00:12
+I don't have a double screen, so I'm like, [Laughter] I need to get a portable screen. CA when I'm working, I like to have multiple screens on. That's I'm when I'm doing a lot of different jumping between lots of different things, so but I think I might do that over the weekend.
+nisha.george@dibasys.com | 00:27
+Thanks. Yeah, time is flying so fast, or too.
+Sachee Perera | 00:31
+How's. is it just
+How's the week going? I can't believe it's the end of the week now.
+nisha.george@dibasys.com | 00:39
+It's like, yeah, it's going so quick, but we feel like we are moving the dots, so yeah, pretty happy about it.
+Sachee Perera | 00:48
+Good. Yeah, I just wanted to... So I've only caught up with Sandy the day and just listening to all the calls and everything and catching up with Jav right after this one.
+nisha.george@dibasys.com | 01:02
+Yeah, alright, cool.
+Sachee Perera | 01:04
+Yeah, I'm keen to really find out about...
+Yeah, what areas of the business are you touching? What are you seeing? What do you think I should be looking for? Where should I be going into? From your perspective.
+nisha.george@dibasys.com | 01:25
+So first of all, I would say, wherever there is a gap, I just jump in and then... But, yeah, I predominantly look after the admin and HR and mostly in India because our team, the number of team members are more in India.
+But setting that for the Australian team in the future as well, just sitting at the systems. I oversee accounts. We've got external outsourced teams both in India and in Australia for accounts, so I supervise that. As I said, admin and HR, I try to bring up the systems. Then I do... I am a part of the business decision-making and then customer documentation that is...
+That is actually a recent post that I've taken over. Then funding as well. Because Bonnie alone, his time is not really enough to go forward. So I do help with... So when whatever Bonnie is not able to take over, I just take over and then I do a bit of market analysis and competitor analysis. Even though we've got a marketing team, sometimes I find their idea or perception sometimes doesn't match with the product itself.
+So I try to do a little bit so that we can give more understanding to them in terms of where the product really goes. I sit with the tech team or the product team as a layman.
+When I give commands, they understand it as a common man in terms of UI and UX. Then, yeah, it looks like it's a bit everywhere if you ask me. Which area am I? Constant writing? There is no specific answer for that, but it's just an overview of everything, and if something needs in-depth attention, I put my head around and then I do that, actually.
+In terms of the audit, if you want to take a look, the customer documentation and customer onboarding are the parts that I would say.
+Currently, myself, Bonnie, and Sandy, we both are actually giving the inputs as the opportunity comes.
+Sachee Perera | 04:00
+One.
+nisha.george@dibasys.com | 04:05
+So example, if it's for Andrew and the Slack group that we're currently working on with the trials,
+we just do the steps on the go like whatever they want. And then the tweak, and then that makes us the base so that it can serve for the future purpose. So, things like that. So, it's just in a very rudimentary stage.
+Yeah, picking up on the go.
+Sachee Perera | 04:30
+Cool. Sandy said you had done some competitor analysis. Before, do you have, like, a Google sheet? Sorry, an Excel sheet or a word document? On the findings.
+nisha.george@dibasys.com | 04:44
+Yeah, I've started with that, but the thing is, I couldn't complete that. I'm extremely sorry about it. It's in my top of the head. Everything is in my top of the head, and I get a chance to really put it in.
+So, what happened was initially, the marketing did that Comet. So even when you talk with J, they've got detailed sheets in the world drive with the competitive analysis.
+But when I went through it, I felt like it could be much more deeper because initially, the days, and now as well, I do a lot of research where we are up to and who our real competitors are. Then, because we understood we handle a bit of everything, we handle a bit of project management, we handle a bit of field operations, we handle a bit of safety, we do a bit of course management.
+Sachee Perera | 05:37
+H yeah.
+nisha.george@dibasys.com | 05:39
+So we got the pillars for everything. For each area, we got different competitors. For example, for the time sheets, we got Deputy and we got Asana, so. But they're in different RPMs or different Ics they're focusing on.
+So, I started to put it in the Excel sheet, but it is not complete. I will definitely.
+Sachee Perera | 06:06
+I if you even if you have, like, an unfinished version.
+nisha.george@dibasys.com | 06:07
+Yeah.
+Sachee Perera | 06:09
+Like, all I'm all I want to do is to try and get onboard it as fast as possible.
+nisha.george@dibasys.com | 06:13
+Yes.
+Sachee Perera | 06:17
+So if you have anything, don't worry about it not being fit, whatever, share it as it is. I think that would be really good. I have a couple of questions if that's okay in terms of... From where you're sitting, can you explain Swift check-in to me? Just like what the product is, what's the pitch?
+nisha.george@dibasys.com | 06:48
+Okay. St check in. So I would like to know, what, like, are you as a customer or are you a potential customer or a.
+Sachee Perera | 07:01
+I'm a potential customer and I just want to get... Yeah, and you're trying to explain Swift check-in. Explain it as if I'm a customer or someone who's... Like you're talking to fundraising people in fundraising, right?
+So when... Ask you what is Swift? Check-in? How do you explain?
+nisha.george@dibasys.com | 07:20
+Alrighty. So, I'm sorry, I'm not prepared for this, but I would say Swift check-in is actually construction operation management software, and with the main key focus areas in timesheets, scheduling, job posting, and budget management.
+So.
+Sachee Perera | 07:46
+Cool.
+nisha.george@dibasys.com | 07:46
+So that's what I called for, so check in.
+Sachee Perera | 07:49
+And what are the main problems Swift check-in solves for Lozer?
+nisha.george@dibasys.com | 07:55
+Okay, so st checkke in. Ideally helps it. It's ideal for, the folks or the groups or industries who are really struggling with managing the laborers, their check in and check out like the signing and sign offs. It really matters in terms of lab costing.
+So it really S chan helps to, SE chicken helps with the, prevents the manual entry of the Excel sheets. Helps with, labor costing, labor hours. Yes, yeah, I'm so sorry.
+Sachee Perera | 08:39
+Okay.
+nisha.george@dibasys.com | 08:41
+Yeah, I know that it is not an ideal answer, but yeah, I'm... yeah.
+Sachee Perera | 08:47
+Look, there's no right or wrong answers. I'm trying to extract what's in your head as quickly as possible.
+nisha.george@dibasys.com | 08:53
+Alright. So if it is a customer then I have to actually really think, you know, because I have never come across. But as such, just overall, if I would say. So SOF Chicken really helps with the digital check ins.
+For example, if the industry is not. Or the. If your team members or if there is no system in place for the check ins, sif check can help with the digitalizing the check in and checkouts, which ultimately helps.
+Sachee Perera | 09:21
+1.
+nisha.george@dibasys.com | 09:22
+As I said earlier, hours really matter because if there is one or two extra, then that means money is leaking from the accounts or from the organization.
+So, Shift Check really helps to prevent those leaks with the scheduling part. It helps with putting projects in time and in place, preventing project overruns. Yes, no.
+Sachee Perera | 09:57
+CO Now, just coming back to the competitive analysis. Based on the team's work that the marketing team has done and the work that you have done, what sets the unique value proposition of Shift Check compared to Deputy, the other ones, just like the top ones that come to your mind.
+nisha.george@dibasys.com | 10:25
+Okay, so, I would say with the Deputy first. So with the Deputy, it's a generalized one. That's the main. So, it is. It is it's a times sheet software, but it is it doesn't completely fit under construction. It can be fit air new everywhere, but when it comes to Swift check in, it is really construction and construction trade associated specific.
+Sachee Perera | 10:51
+Y11.
+nisha.george@dibasys.com | 10:51
+So that's the first thing I would say when comparing to Deputy. Then, the second one is, it's really intuitive and user-friendly. So I have used Deputy, but I found it looks simple, but it is the user experience with Shift Check. Check in when compared to Deputy is much better.
+That's what I can say. With Deputy, you aren't able to do a job costing or labor hours costing, definitely can be exported, but with Swift Check-in, the budget management and the job posting can be done in a single platform.
+So these are three single unique selling propositions when compared to Deputy and Asana. I would say, yeah, it's such a super poor software, but what I would say is it's really costly.
+Then it is mainly built for the builders or the general contractors, but it can help with the subcontractors as well. But with Swift Check-in, we got the subcontractors specifically in mind. We got part of it for the builders and general contractors,
+but with Swift Check-in, it's more focusing on the subcontractors and trade-specific, and then more intuitive than Asana. In terms of cost, I have her, like, assigns monthly or yearly subscription is like it's overkilling.
+But with Swift Check-in, it's really affordable and friendly.
+Sachee Perera | 12:40
+Cool, and so you mentioned subcontractor, right? And the main builder, so, Current Group, they would be a specialty subcontractor, right?
+nisha.george@dibasys.com | 12:48
+Yes. Yeah, S-SLAO or Y- yeah.
+Sachee Perera | 12:53
+Silco would be a principal contractor or like S-LCA, not S-LCA. [Laughter].
+nisha.george@dibasys.com | 13:06
+I feel like CO is a subcontractor, and then another subcontractor using subcontractors underneath.
+Sachee Perera | 13:14
+YP Cool. And, from where you're sitting, you're saying we're not looking at the main contractor or the principal contractor and the general contractor, that's not the type.
+nisha.george@dibasys.com | 13:27
+The thing. Yes. So from. So where the product is as the product is going and when we are trying to put like when we are trying to find the ideal, you know, the product market fit. What we found is this, from the customer demos we've done recently. The BONY has run recently.
+So, who are the subcontractors or the trades? We go, "They are interested." We felt like it was actually helping them eliminate their pain points. So, that's how we came to the conclusion that it will be more for the subcontractors. It doesn't say it can't fit the general contractors. No, it can fit the general contractors.
+But I think that the complete product use will be... It will be more ideal for the subcontractors. That's what we are getting into. We haven't completed that hypothesis yet, but we are nearly there. I would say 80 to 90%. We are there.
+But it doesn't say that it doesn't fit the other way around. It doesn't say that it doesn't fit the general contractors or the builders. But I felt like they would be into more commercial ones, and they would need much more features or things like that. I don't know. These are just our assumptions.
+But yeah, we haven't come across those kinds of builders or general contractors in the demos.
+Sachee Perera | 15:02
+Yeah, you mentioned, the help sorry, the customer onboarding documente and things.
+nisha.george@dibasys.com | 15:10
+Yes.
+Sachee Perera | 15:12
+Have you developed this after the trials from Silio and the current group, or is this... What have you developed that from?
+And what are the lessons from doing that?
+nisha.george@dibasys.com | 15:24
+So alright, so initially we had tech documentation, and then we modified the tech recommendation to customer documentation. We full-fledged it as a part of it. Then what we identified was that the product was completely evolving, and the leads that were coming and their needs were actually different.
+So whatever efforts we had taken at that point in time, we felt like it was becoming a waste. So. And that's what the first learning is. So we just stock that customer documentation initially.
+Then we thought it will develop as we go, so that as I said, we'll have a base which matches the product ICP and then further. With that purpose in mind, we are building students.
+So, I have completed all the app-side documentation for the current group, and then we have dialed a WordPress, the front-end team has dialed a WordPress. If she can help, and then we are in the process of putting those in the WordPress. I can actually give the access.
+So it's just the basic. We have started it like two weeks ago. I can actually share the access with you so that you can go through and give comments on whether you can see whether we are going the right way. You can just direct us.
+So this is just the app side, and then from the SAS side. So what our plan is, we are putting it into three groups: for subcontractors, contractors, or for admin uses. Then app uses, you know, three blocks, and then whatever documentation pertaining to app uses goes in there.
+We are nearly completing that segment, and then now we are actually putting our heads into the SAS documentation, getting help from the tech team because they have been doing more developments and more changes recently.
+So what happens is they do it, and then I tweak it for the customers and then put it in the sub. The sub can help website, not website, the press.
+Sachee Perera | 17:34
+Yeah. And do you get to speak to the customers directly yourself as well? Or is that mostlyw.
+nisha.george@dibasys.com | 17:42
+So it's only Bonnie, and Bonnie is actually transferring all the knowledge. Then, based on that, I'm actually tweaking the things, putting customers in mind.
+If I'm a customer, like, how would I...? It's like that. But in the future, the plan is that as we're getting more demos and things like that, Bonnie has asked me to sit with them, sit within, and then just to identify and understand things straight from the customer.
+So I haven't faced the customers yet, but it's in the pipeline.
+Sachee Perera | 18:16
+Okay, understood. What do you think? What do you think? Okay, I have two questions. So what do you think is stopping us from converting these demos to sales? I know we had...
+Yeah. What do you think? Is the main reason? The main blocker for sales.
+nisha.george@dibasys.com | 18:45
+We've been asking these questions all the time, pondering about it as well. So from my understanding, we feel like the message to the audience has to be really clear, who we are really serving.
+Then with their pain points. So that's what the first thing that I can say. The message has to be a little bit more clear. When you say... So if you're targeting one ICP, what are the ads going to be? It has to be specific as to be really specific.
+Then these are the two things that we have to put our heads into. Then reduce the friction with customer engagement, for example, on the website itself. I think we have to do a real audit of whether we are conveying the message and with our potential customers, are they able to approach it frictionless?
+That's the second thing. The third thing is, for a second, sorry. These are the two main blockers that I can see at this point.
+Sachee Perera | 20:07
+Okay, yep, I think that's a valid point around the messaging and the ICP. Sorry, I'm trying my best to get an understanding of the construction landscape.
+nisha.george@dibasys.com | 20:09
+At this point? Yeah.
+Sachee Perera | 20:22
+Right. So we have the builders, the main builders, and then there are the subcontractors that then have their SaaS, right?
+nisha.george@dibasys.com | 20:31
+No.
+Sachee Perera | 20:32
+There's are electrical subcontractors and there are plumbers. There are the fit-outs and all of that.
+So, what niche or which segments in the construction subcontractors do you think we should be focusing on.
+nisha.george@dibasys.com | 20:52
+So when we say "subcontractors," we still have subcontractors in the US markets who have got the turnoff for the general contractors, big subcontracting companies.
+So we are not aiming at them at this point. We are aiming at the small and medium businesses. So that means, one, I would say, five to more than five employees. More than five employees, subcontractors, whatever trades come under electrical, plumbing, landscaping, Edgeworks, roofing, and the list goes on and on.
+Then there are the fit-outs, so these are the main ones, but whatever the SIMPRO ICP is, they are most in the field service, like the field management.
+Sachee Perera | 21:39
+Y.
+nisha.george@dibasys.com | 21:50
+But if, you know, we can actually serve all those subcontractors, we can serve six.
+Sachee Perera | 21:58
+So if we are going up against SIMPRO or Fergus, which is a competitor and Tradify, right? If it's the same customer segment, what have you found or what have you seen and what have you heard or what's your intuition or the gut telling you around the differentiation between Fergus and SIMPRO, forget Procore.
+I think that's not relevant to us. Yeah.
+nisha.george@dibasys.com | 22:31
+Yeah. Yeah. So to be honest, this the competitor SIMPRO has actually we came to know that really recent. But before that, we have been thinking as our competitors like I'll pass, Assignar, I'll pass, Asana, Roomix, Neo Intelligence and you know, the like those platforms.
+But in the recent when we started with Yellow Pages and the buyer and solely the simp pro SIMPRO has come up. But even though... So actually JF has actually put those competitors upfront in the competitor analysis just to get the traffic.
+But until we had enough validation that Simpro is a competitor, I haven't actually really used Simpro or Fergus or Tedify by myself.
+Sachee Perera | 23:26
+Yes.
+nisha.george@dibasys.com | 23:27
+So I am unable to actually give that answer right now. I still have to dig deep into it with Simpro, but with... Yeah, and then with Azina run from Mix.
+So when I'm going through... Yeah, I haven't actually gone through that product as such, just from what's on their website and from the images that we can see and in the product tools and the guides that are on the website and from other software platforms like software advice and.
+Sachee Perera | 23:43
+6?
+Yes.
+nisha.george@dibasys.com | 23:58
+And just giving through going through the reviews. And then that's how like I developed the understanding.
+Sachee Perera | 24:04
+Four.
+nisha.george@dibasys.com | 24:04
+I came to know that we still have many features in our Andro Mix shares, but they are a bit more... They're in the industry for the past ten years.
+It's more developed, it's in-depth. For example, in Timesheets itself, it's actually really in-depth. We are getting there. We are not saying we are actually... We're getting there, but it might take time.
+For example, with Azina, we got inspections, we got permits, we got... That is specific for the builders. Then the bill passed the same like on top of the sign-ons and sign-offs. The toolbox... The toolkits, permit... A bit of safety and more of the compliance part.
+Yeah, more features in there. So yeah, we are getting there. I'm not sure whether I was able to answer the question that you have asked. But to be honest, at this stage, I am unable to comment on SIMPRO and Focus Centerfy.
+Sachee Perera | 25:02
+That's cool. I just want to quickly jump into the staffing because of the HR side. Sorry, my laptop. Let me put stuff on low power. Sandy, I know a little bit about it. It's Kabita, right?
+How did you find Kabita? Did you go through an agency, or yeah? How did you start her?
+nisha.george@dibasys.com | 25:34
+So. So we're actually sourcing, you know, we got an office in India. And then how resources like we hire through LinkedIn. So everything is actually LinkedIn, linked in job ats.
+Sachee Perera | 25:48
+Yes.
+nisha.george@dibasys.com | 25:49
+And we saw and then we interviewed the right candidate for what we feel is the right candidate for us according to the needs.
+Sachee Perera | 25:57
+One.
+nisha.george@dibasys.com | 25:57
+So especially when we work in Australia, we need someone with international experience.
+So we make sure that they have international experience. Yes, that's how we manage and that's how we found Kabita through LinkedIn.
+Sachee Perera | 26:10
+Sure.
+nisha.george@dibasys.com | 26:13
+And you know, in India, there are versions and then we go through it. We take international experience, but previously we tried with one of the external agencies, but it wasn't actually much helpful.
+Sachee Perera | 26:28
+One.
+nisha.george@dibasys.com | 26:32
+So, yeah, we tried the other way.
+Sachee Perera | 26:35
+And she an employee or a contractor?
+nisha.george@dibasys.com | 26:38
+She's an employee?
+Sachee Perera | 26:39
+Boy cool. Alright, so I want to ask you about how you found them. The customer onboarding the competitor analysis document is kind of what I think the main thing is, but yeah, I think that's a nice little intro to it sounds like you're doing a lot and everything, which is which means you have a good pulse on where the business is, which is good to know.
+nisha.george@dibasys.com | 26:56
+Yes.
+Sachee Perera | 27:14
+Yeah, very good.
+nisha.george@dibasys.com | 27:14
+Y yes. So yeah, anything else I would do you want from my side like I think have shared whatever I can with my within my knowledge.
+Sachee Perera | 27:27
+Yeah.
+nisha.george@dibasys.com | 27:27
+Yup.
+Sachee Perera | 27:29
+I wanted to talk a little bit about the fundraising and all that, but I think we can leave that for now. I want to get the basics out of the way around the product and things first.
+I think that's enough for me today. I'll catch up with you next week for more things.
+nisha.george@dibasys.com | 27:44
+Yeah alright. I got another question for you.
+I know you have just started, but how do you feel about the ride with the Swift check-in? How is it going.
+Sachee Perera | 27:58
+Yeah, I've been going through and listening to lots of calls. Going through the different HubSpot and all this.
+I think there are some very quick wins we can get. Very easy ones, but there's a bigger challenge around the competitor, the product differentiation with the competition.
+nisha.george@dibasys.com | 28:22
+YP just add it is there with a unique selling point that you mean yeah or.
+Sachee Perera | 28:24
+Yeah, and what do we focus on?
+Because there's a lot that's happening and... Yeah, look, it's still very early days, but because there are lots of different subcontractor types, each one's going to be a little bit different.
+nisha.george@dibasys.com | 28:39
+Eight.
+Sachee Perera | 28:44
+And it's like, where do we start and what do we do now? What do we do next? We do later. What do we say no to? Even though it looks really good and even though it sounds really good that we should do it now, what are the things that we should say no to? What are the things we should stop doing?
+And what are the things that we should start doing? That's what I'm trying to get a better understanding of.
+nisha.george@dibasys.com | 29:10
+Understanding him.
+Sachee Perera | 29:11
+I think it was only yesterday. Today I've got the full opportunity to get unblocked and listen to calls and do all of that.
+So, I'm feeling quite good about getting an understanding on it. But I can see some very easy wins that we can have, especially on the sales side, to get more conversations and to get more demos. Yeah.
+nisha.george@dibasys.com | 29:40
+Yeah alright, that's great to know actually.
+Sachee Perera | 29:43
+One.
+nisha.george@dibasys.com | 29:44
+Yeah. And really looking forward to your comments at the end.
+And just the roadmap. Like we are really. We're really looking forward to it.
+Sachee Perera | 29:52
+I think by the end of this week, I'll have a relatively decent idea. So, it'll be more refining it and having more sessions with you guys and putting together here are here's what I've found or here's what I think or his.
+Yeah, it's not going to be a final one, but we'll progressively build it as we go.
+nisha.george@dibasys.com | 30:17
+Yeah, that sounds great.
+Sachee Perera | 30:18
+Yeah.
+nisha.george@dibasys.com | 30:19
+Yeah, okay, thank you so much, Sachee. And, yeah, I'll try to share that. Do you want the link to the customer documentation and other things as well? The marketing side as well.
+Sachee Perera | 30:34
+If you have it all in one place. Yeah, true, but the one that I'm going to look at this week is the competitor and all of that.
+nisha.george@dibasys.com | 30:37
+YP.
+Sachee Perera | 30:46
+Yeah.
+nisha.george@dibasys.com | 30:47
+Yeah alright, got you. Okay, do you want to continue? Yup, thank you so much, AI, and have a great evening.
+Sachee Perera | 30:53
+Thank you. Have a good day. See you.

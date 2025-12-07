@@ -1,0 +1,671 @@
+admin@mytabinfo.com | 01:13
+Hi. Sachee, how are you?
+Sachee Perera | 01:15
+Mikela. Hey, good morning.
+admin@mytabinfo.com | 01:20
+Good morning, how are you.
+Sachee Perera | 01:22
+Good, nice to meet you.
+admin@mytabinfo.com | 01:25
+Nice to meet you all. Thank you for taking the time to meet with me, I really appreciate it.
+Sachee Perera | 01:30
+I'm super keen to find out more. I'm not sure if we've met maybe in the past, because I'm just curious. Have you been going to the West Tech fests
+and things like that.
+admin@mytabinfo.com | 01:44
+Yes. So I believe we had a very brief meeting a couple of years ago at West Techfest. I think that's when we were first starting out. I believe it was one of the Wilson Casada, I believe he was part of the Perth Angels. He had seen what we were doing and how we were bootstrapping my tab and trying to build a hospitality up.
+Sachee Perera | 02:01
+One?
+admin@mytabinfo.com | 02:07
+And asked us to be a keynote speaker, or it would have been a couple of years ago and we're just starting out.
+Sachee Perera | 02:09
+Yeah.
+admin@mytabinfo.com | 02:12
+So we were able to run through what the prototype looked like and how we were planning and testing and things like that.
+Sachee Perera | 02:12
+Yeah.
+admin@mytabinfo.com | 02:20
+And So since then, we've just been really refining and honing our product with bootstrapping until this point. So basically, what we have is, or what might have consisted of, is native iOS and Android apps. We have a web-based management portal for venues, and then we have a cloud backend as well through AWS, so it's the package that we have currently.
+But, yeah.
+Sachee Perera | 02:46
+So like sure, cool.
+admin@mytabinfo.com | 02:47
+How would you like to start this to the meeting? I've got all of my notes written down just in case I so I don't miss anything, but. Yeah, no worries.
+Sachee Perera | 02:54
+Well firstly, congrats on all the success so far, right? Strapping and getting to where you are in a market as such is not an easy feat. I've been in hospital tech multiple times, and I know the level of hustle we need to have.
+So congrats on all of that. Really, I'm super duper curious, though. Roger profer to BTB well Marketplace SAS ponder. Please tell me this story. I'm super keen to know and find out.
+admin@mytabinfo.com | 03:29
+So my sister, Eli and I, we were competitive surfers on the World Qualifying Series Surfing Tour.
+Our founding journey with my tab, we were self-funded predominantly. We did have some sponsors that helped and the event winnings, but we supplemented our income through working extensively in hospitality.
+Sachee Perera | 03:39
+He.
+admin@mytabinfo.com | 03:46
+So I've got over a decade of hospitality experience, working in basically every hospital job you could imagine. Same with Eliza. We had moved to Sydney to practice surfing in smaller, mushier waves to prepare for the comps because in WA, there's lot more power in the surf and things like that, and just to be closer to sponsors and all of that.
+So we're working at a venue called Manly Wharf Bar on the wharf in Manly. It was a high-capacity bar back when it was still open. I remember we were walking home from work. It was probably 02:00 am in the morning. We're walking back to our apartment, and we're just talking about how busy it is, how we are losing our voice, asking for customer orders. Just all the issues that bar staff usually face in high-capacity bars and how awesome it would be if, as staff, we were able to receive the order and just notify that customer when they're ready. It would just improve the efficiency for us at the back of the bar exponentially.
+It was just a general discussion around that while we were still competing, and we decided to flesh it out. We had no tech experience. We were sitting down with pieces of paper, hand-drawing out screens, and just working out the exact flow, what that would look like and how it would integrate quickly within hospitality.
+Obviously, the point of sale systems and things like that. So, we saved up, paid for our initial first prototype at the end of 2019, and then 2020 happened, and COVID completely changed the landscape.
+I know there was an emerging trend with Mr. Young, removing food envy, and all of those things, and me and you just starting out. It was a convenient thing for online ordering,
+but I feel like, obviously, with COVID, it changed from a convenience to a necessity. We saw that with our prototype that this was the direction we should probably be going. It just universally seemed like a big sign for us to really transition out of the competitive surfing arena and really follow what we believed was going to be a really big product for us.
+So, obviously, not having very much experience in tech, we've had to do a lot of self-research, all of those things.
+Sachee Perera | 05:55
+He.
+admin@mytabinfo.com | 06:02
+We've have a very small team of devs. We have one backend, one dev, DevOps, one iOS, and one Android.
+We've worked with them really closely since the beginning of my time, so we have a really great working relationship with them. Eliza and I taught ourselves how to use UI tools like Sigma.
+So, we, to keep costs down, taught ourselves how to use Sigma. So we would develop all the front-end screens and then take them to our devs, and we'd have an open conversation and dialog about what was needed, how that would work.
+Then, we'd work in sprints to manage our finances and make sure that we were hitting those milestones as we were developing the product.
+Sachee Perera | 06:36
+No.
+admin@mytabinfo.com | 06:43
+But that's the transition. We were just competing. Had supplementary income through working in hospitality. Saw a gap in the market and decided to dive headfirst in and figure it out as we went.
+Sachee Perera | 06:56
+Cool. Look, I think you're on the right track, right? The number of founders I speak to that have somehow raised some money and they're just blowing it on hiring people and not... They're romanticized by running a team rather than building.
+Right? But I think you're on the right track there.
+admin@mytabinfo.com | 07:15
+Yes.
+Sachee Perera | 07:16
+So I have a whole bunch of questions I want to ask you. You said you had a bunch of notes prepared and everything just off the top of your head.
+What are you hoping to get out of the catch-up today?
+What prompted you to reach out to me.
+admin@mytabinfo.com | 07:33
+Yep, I guess. So, there are a couple of things I'm hoping to get out of this meeting with you today. The first one is that we've bootstrapped, obviously, until this point, and we're manually onboarding venues. I do feel like that is a major bottleneck for us in terms of scaling. There are a couple of things. The first one is our payment structure and how we receive payments. We've tried to position ourselves as a more cost-effective
+premium product to try and get into that. The niche of the hospitality and tech industry just to get in the door. But I have seen with other competitors.
+So you're looking at maybe Locke or even be that's just starting to push through with advertising. They're really advertising commission-free subscription-based models for recurring revenue. That's something that Ellis and I were looking at.
+But because we are still quite small and we've just finished this go-to-market pilot with this data, I guess we have concerns about updating our pricing structure. What would be the best pricing structure to try and help facilitate that recurring revenue so that we have that data for that?
+Then, I guess we've learned how we can scale systematically as opposed to the manual scaling. I guess that's our biggest bottleneck that we're finding. We have obviously a small budget, a very small budget in terms of marketing things because we had utilized most of our money to reinvest into the company and our own savings and things.
+So I guess if you have seen founders at our stage where we have income, but it's not enough, I would say to hire on marketing specialists. I've gotten some quotes, and the base quotes are starting at $6,000 a month, and it's just not feasible for us currently at this stage.
+It's obviously something we'd love to look at later down the track, but I guess what your tips or feedback would be on that and then I guess just the capital raising side, what to look out for. What do founders at our stage? What mistakes do we make as founders at our stage?
+And I guess how do we navigate this process of now being ready to scale? How do we do that if that makes sense?
+Sachee Perera | 09:58
+Cool, alright, very good. How many vendors do you have at the moment?
+admin@mytabinfo.com | 10:03
+So currently, we have 21 gathered.
+Sachee Perera | 10:05
+21 and they're in Perth or just regional like regional WA as well.
+admin@mytabinfo.com | 10:11
+So we do have... We probably have about 30 to 40% in Perth and then 40 to 50% down south across the Dunsborough area.
+We started in the regional WA just to give us a very closed ecosystem. So that when issues were arising, we had we were able to kind of keep it contained. And now that we've really polished the product, we're ready to kind of scale out and make sure that it's kind of like a seamless rollout.
+Sachee Perera | 10:30
+Yeah, understood. And you mentioned in your LinkedIn message I think 2.6 as a process. So are you doing a clip on that, or is it purely just a subscription-based pricing model?
+admin@mytabinfo.com | 10:51
+So. So how we do that with the capturing is it's commission-based. So we have two income streams. One is through the customer, so the customer orders and the other one is through the venues.
+We have three tiers for the venues. The first tier is completely free to use. We don't charge a venue commission fee for the venue, it's just an iPad.
+Sachee Perera | 11:15
+M yeah.
+admin@mytabinfo.com | 11:16
+They do cover Stripe payment processing fees, and so that's their own fee.
+So they have their iPad that has the app. They're able to just do that, and that really works for the mom and dad. You know, food trucks, fish and chip shops, things like that. We've found a lot of our small family-based venues really take on to that. For the customer side, from $0 to $10, we charge a flat fee of 29 cents, and then from $10 onwards, it's a 2.9% nominal surcharge on top.
+We're seeing really high customer averages. So just even with the case example for PECO Scarborough. So there's a small, non-licensed takeaway sushi joint in Earth. They've processed over $216,000 in customers' sales over my tab. The average customer spend for sushi is $44.50.
+The top customer lifetime spend, they've had a customer that spent $2,387 over 128 orders. 49% of their customers have ordered over 10 times, 11% have ordered greater than 10 times, and over 70% have opted into venue SMS and email marketing through my tab.
+So we've got a lot of traction through the customer side. And then if I could circle back to the venue as well, we have wireless docket printing through as and docket printers. That incurs a 1% commission fee from MyTab.
+Then we have point-of-sale integration through Doshi. Doshi charges an $89 a month subscription fee to venues, and then we just charge an extra one. Well, it's flexible, but typically it's a 1.5% for MyTab.
+But we have created a dynamic flow to help negotiate down. So with some of our venues, we just have a 1% commission fee for that as well.
+Sachee Perera | 12:59
+Sure and would have been you. Have you and someone like Mister Young or me and you at the same time. Or are they like kind of direct competitors?
+admin@mytabinfo.com | 13:09
+See, it's hard to... I think typically we could coexist. I would say, I think Mr. Young or you... Sorry, what? Sorry, I'm just going to turn this on, silent it up with emails. We I think technically we could coexist because I feel like what me and you strength is dine-in ordering for paper purpose.
+So you scan the QR code and you place it. Their whole marketing strategy was that they weren't an app, and so you could just scan a QR code. Although I will say that it was a very tactical marketing employee because you still have to enter the same details that you'd have to enter when downloading an app. Is what you do with the web-based portal. What MyTab does is we enable streamline. We streamline convenience for customers.
+So we're more about the habitual repeated ordering for customers that go to their favorite local venue to have their morning coffees, their lunch breaks. In order to do that, once you've signed down, once you've signed up MyTab, you don't ever have to find another QR code to scan it or reenter personal details ever again.
+It's just like a one-time sign-in, one and done. And what we've really noticed is that really drives that repeated ordering for customers, the habitual ordering for those customers that are regulars or even the incremental ordering through the shared customer base of those venues. Having a digital storefront on my tab.
+So, I think in terms of us, I feel like our strength is, and this is, I guess, 100% to do with customer perception. But our strength would definitely lie in, I guess, the takeaway ordering without having to spend any additional income on changing customer perception of having to download an app at dine-in restaurants.
+Sachee Perera | 14:47
+Yes.
+admin@mytabinfo.com | 14:47
+Whereas I feel like our new strength lies in savvy marketing. The Dine Inside where you know you're tapping the QR code on the table.
+We do notice that there's a lot of venues as well that may not have a lot of table space, but they have open space for sitting on the grass and watching musicians and things like that.
+Typically, with wineries, they'll have rolling grass areas where customers will sit down and enjoy musicians and things like that, but there aren't that many tables. Our app works perfectly.
+Sachee Perera | 15:18
+H.
+admin@mytabinfo.com | 15:19
+Those kinds of situations where they don't have a QR code that they can scan, but they've just got the app they're able to download, place the order, not have to worry about the queues, all of that sort of thing as well.
+Sachee Perera | 15:28
+Yeah, it's almost a bit tacky nowadays when you go in and see a QR code. I mean, it depends on if it's a fine dining kind of establishment.
+admin@mytabinfo.com | 15:38
+I agree.
+Sachee Perera | 15:38
+I'm getting a bit of a better understanding now, because that was what my first question is like, what's the difference between, you know, not mesta on me a new and new plan.
+So I want to look back to your comments around scaling. When you say scaling, you're talking about the acquisition of restaurants or venues or the acquisition of consumers or book?
+admin@mytabinfo.com | 16:06
+Okay, so I'm talking about the acquisition of venues because our acquisition of customers once we secure a venue is exponential.
+So I mean, we've had 40,000 customer downloads and it's just once. Once we're in a venue, we've had zero marketing budget.
+Sachee Perera | 16:22
+Y.
+admin@mytabinfo.com | 16:22
+So what we do is we work with the venue. We put our deep links for downloading the apps on their websites, in their social media pages, in their Google Business. We do provide some in-venue marketing if they would like that.
+However, most venues are very keen just to have it on their Instagram, Facebook, and Google Business, and the traction that we gain from that is just insane. Once we've got a venue, the customers are there.
+It's just about trying to break into that market. Obviously, just even looking at the data, City seeks.
+Sachee Perera | 16:55
+Yeah. Yeah.
+admin@mytabinfo.com | 16:59
+So I was just reviewing Restaurant and Catering Australia, and they estimate that about 90% of Australia's hospitality businesses are small owner-operators like small businesses who are employing 19 people or less.
+So the SME market within hospitality is obviously the backbone of the hospitality industry.
+Sachee Perera | 17:15
+Y yeah.
+admin@mytabinfo.com | 17:15
+And where we're trying to target. However, I have noticed on the flip side of that is that with the small venue owners, they don't have a lot of tech literacy.
+So they are resistant to change without... The actual time it takes to onboard them is three to four meetings. They're able to then see it if they've got a friend who's got a venue that then sees it.
+Sachee Perera | 17:36
+Yeah. Yeah.
+admin@mytabinfo.com | 17:40
+That's how they kind of build and establish that trust. But once they're on it, they love it. They're really happy with it. But just breaking into that barrier of being able to convince them that this isn't a ploy.
+These are the actual... This is the cost of what it is. We are being completely transparent with pricing and this is how it works.
+Sachee Perera | 17:56
+No.
+admin@mytabinfo.com | 18:00
+All of that sort of thing. So, yeah, yes, and I will say that my sister, Eliza, is very confident.
+Sachee Perera | 18:01
+Yeah. And you're doing the convincing yourself.
+admin@mytabinfo.com | 18:11
+She's very customer-centric, very customer-focused. She's definitely a closer. I would say I feel like I definitely have more of the creative side, working with building the application, working with the devs, that kind of communication skills.
+Sachee Perera | 18:16
+Yeah.
+admin@mytabinfo.com | 18:26
+So it isn't... I wouldn't say it's one of my strengths, but it's something that I'm obviously working hard on to make sure that I do come across as confident and that they understand everything for the app and everything like that.
+But yeah, I will say it's not one of my strengths, but it's something that I have worked on. The venue, I have onboarded successfully, onboarded venues as well.
+Sachee Perera | 18:49
+Yeah, the typical hospital owners... I think for... I remember for Chef's Burger Joint, the fried chicken and burger joint called Chimmec. I'm not sure.
+admin@mytabinfo.com | 19:02
+I see.
+Sachee Perera | 19:03
+I think to get them onto Uber Eats when we were initially launching, I did everything short of just twisting Roger's arm back then, and then they became the top performer on the platform.
+admin@mytabinfo.com | 19:10
+Yeah. Honestly.
+Sachee Perera | 19:15
+Yeah. But once you get them there, yours.
+Right. I think it's a heavy relationship-based, your standard typical sales tactics that work in the hospital industry.
+admin@mytabinfo.com | 19:26
+9I would say the.
+Sachee Perera | 19:29
+Okay, so I'm trying to get my head around. So, when you say scaling, it typically comes down to one of the three things: is it the top of the funnel, is it the leads?
+The pathway to have the conversations with your venues, or is it a conversion? Is it a conversion problem? Right. So, where do you feel is the biggest problem for you right now?
+admin@mytabinfo.com | 19:56
+The top of the funnel, probably in terms of even getting in front of the right people to have the conversation. I think short of us driving to the venue and just kind of jumping scaring them, being like, hey.
+Sachee Perera | 20:05
+Three?
+admin@mytabinfo.com | 20:10
+Because you send an email, and there are so many spam emails that you get, you call, and you're reaching, and a casual worker who doesn't really care too much about the business. So, they're just there to serve pizzas or do that for the day.
+Sachee Perera | 20:22
+Yeah.
+admin@mytabinfo.com | 20:23
+So not following you, they're not forwarding your call on. The venue managers are notoriously extremely busy, so I try either to stop by just before opening or just before closing because they're always super busy. We you know, if we're serving customers, leave your email or leave your business card, or I'll give you my email and I'll circle back, and you never hear from them.
+So, it's I guess it's just about that initial point of contact, making sure that we're in front of the right people. I think once we establish a relationship with the venue owners, the conversion has been quite... It has been quite easier.
+It's just about getting in front of them and getting them to just stop what they're doing and take a second to actually process what we're saying if that makes sense.
+Sachee Perera | 21:11
+Okay, cool. So tell me, how are you currently running sales or this stop of the funnel right now? Walk me through the process.
+admin@mytabinfo.com | 21:21
+So what we do is both of us have a Google Excel spreadsheet and we basically have been going suburb to suburb, sending emails, calling, and having whether or not we do the follow-up for them just as data in the spreadsheet of that.
+But it's basically emails. I'll then go on to... I'll try to hit them in three areas. I'll do emails, I'll do social media. So Instagram. I'll like a few of their posts, do an Instagram DM, and then I'll call the venue if there is a mobile phone number. I try to make sure that I do research on all of my venues.
+So if possible, I'll try to find the venue manager's name or the owner's name. So when I'm directing the emails, I'm directing it to the correct person and that it's not just a generic email, it's personalized to them. With the emails, we've refined the email to try to offer as much of a value as possible while still speaking to how it would tailor specifically to their venue.
+But yeah, it's mainly phone calls, emails, and door-to-door. But being in Perth as well, the saturation of venues per kilometer is crazy, especially through Perth and everything like that. Perth is quite a sprawled-out city.
+I would say that the door-to-door is not as... Yeah, it's very time-intensive, and the return is minimal unless you've already got a warm introduction with that venue owner and they're expecting you.
+Sachee Perera | 22:48
+Most people would jump off the cliff than going and door-knocking into a restaurant. So, big up, congrats. [Laughter].
+admin@mytabinfo.com | 22:55
+Yeah, we're willing to put the work in honestly. I have gotten very used to being rejected. It's been great. It's... Yeah, it's... Look, we will do it like we do.
+But I would like to work smarter than harder at this point.
+Sachee Perera | 23:11
+Yeah, sure.
+admin@mytabinfo.com | 23:12
+I think we've got the data and the statistics behind us to show that there is benefit here. But yes.
+Sachee Perera | 23:18
+And the biggest objection that you're currently getting right now? So you're doing all this outreach? Is it connecting with the owners or the managers, or is it more like, "Hey, I don't need you.
+admin@mytabinfo.com | 23:35
+I think it's trying to... I think the biggest part of it is probably the connection in terms of just breaking through the noise of everything else that's out there.
+Because I think that venue owners get hounded every single day by things that can improve the business.
+Sachee Perera | 23:47
+Yes.
+admin@mytabinfo.com | 23:49
+And they see us as is when they first see us without being out to see the product. It's just another company probably with their handout being like, "Okay, so what? These guys are going to be charging me XYZ, and I've already got to deal with this and this." We're coming into the summer period, so it gets put on the back burner.
+I think it's about connecting with them and breaking through the noise. I think it's hard because I feel like in order to do that, most of the time, venue owners would be in order to be onboarded seamlessly.
+It's something that a venue owner needs to be looking for, not what you're approaching a venue owner with. If that makes sense. So it's like... But I just... We haven't done any kind of social media ads, any of that sort of thing because we... It's not something that, as small business owners, Eliza and I, we have a lot of strengths. Marketing is not one of those strengths.
+It's been a lot of product development and refinement, venue retention, customer success with customer service, all that sort of stuff. We excel at it, but yeah, just trying to make that initial connection with those venue owners to get them on board is our biggest struggle point.
+Sachee Perera | 25:03
+Sure. I'm just going through your website right now. I think there is a definite clarity of positioning that you can work on because,
+as you said, you're bombarded with emails and now hospital tech, there's so much, right? They're trying to understand what Makayla is trying to sell to me and why should I care? So, I don't know what your emails are affected by, but on your website, I see
+the venue that customers remember, start, run, and go. Your venue on my tab. But how can we get more specific? So, how can you own a position that no one else does? What is the one and only thing that you do that is going to be the biggest value-add for them?
+That's the most painful that others are not doing because it doesn't need to sound like marketing. It doesn't need to sound like marketing content, right? How can it be super direct, plain English, as to what you do?
+admin@mytabinfo.com | 26:13
+Yeah.
+Sachee Perera | 26:14
+Maybe there's a positioning sprint or positioning work you can do. When you manager this, I'm just about to jump into service. What is it? What do you want? You say that, and they're like,
+"Okay, call Makayla." So, yeah, right now, what is the like?
+admin@mytabinfo.com | 26:33
+Okay. So we just need like a statement straightway to like kind of hook like a hook statement.
+Sachee Perera | 26:44
+What do you guys actually do that is valuable to the restaurant?
+admin@mytabinfo.com | 26:52
+So we drive. I mean, this is just where am I've got we've I've got it written down as like a thing.
+Sachee Perera | 26:59
+Sorry, I'm putting on this fire.
+admin@mytabinfo.com | 27:00
+[Laughter] No, it's okay. It's hard because I know this in my core, but then having to explain it to someone is hard.
+It's difficult for me when I'm.
+Sachee Perera | 27:11
+Two.
+admin@mytabinfo.com | 27:11
+Yeah, it's yeah, unless I'm like a hundred percent. I've, like. Read. Like. Written everything. Like.
+Sachee Perera | 27:16
+Yes.
+admin@mytabinfo.com | 27:16
+To the point where I like, race SP like race bake something that I've written down parrot fashion, it's hard for me to explain to you the value and that's I think that like I feel like that is a problem in and of itself.
+Like, for me, I like when you ask me that, I'm like, even though I know like what value we bring.
+Sachee Perera | 27:34
+H.
+admin@mytabinfo.com | 27:36
+But basically, we're a huge revenue driver for businesses. With my tab, we provide a digital storefront for them as an app, and that creates great like cross customer engagement.
+So you'll see VE customers that'll order at the local Cafe Duns for a coffee, but then they'll go toropers fish and chips and they'll order fishing chips for dinner. So there's that cross customer engagement as well that our competitors don't really provide. Besides, I mean, like our competitors being me and you hungry Lo.
+So skip kind of does with the fact that they have the list of other venues. We operate as a business performance tool. So with our web based management system for venues, we have segmented customer data that's broken down into their birthdays, their top customer spends the current active customers in order so that venues are able to review their customer data and their behavioral data spending patterns, all that sort of thing.
+And offer tailored discounts to customers to maybe reengage customers that haven't ordered from their venue in a period of time. Things like that. I guess it's obvious: the convenience and driving habitual ordering through my tab in terms of streamlining venue service.
+So, a lot of our smaller SME venues are taking phone calls and things like that. With grocers, fish and chips, they've ended up just putting a voice mail being like, "Hey, we're busy, download my tab and place an order through the app if you guys are looking for it."
+They've got a couple of venue posters and stuff like that as well. That helps those smaller venues who have the busiest periods or have to have a staff member managing the phones because they're getting those automated orders straight through that they're able to make and then notify those customers when they're ready. We obviously being a visual digital menu helps with customer upsells and spends, but we do upsells on the app as well.
+So, with venues, they're able to link categories, and the app will complement that. It'll provide complementary meal items to what a customer is already ordering, which helps drive an upsell and drive the overall customer spend and just... I mean, the convenience of having a "you're able to just open it once you've downloaded it, place the order." We've got order again features where my tab remembers the customer's previous orders.
+So, you're able to order in two apps. We've got Apple and Google Pay integration. We've got all of these things that just make the ordering experience seamless and easy for customers.
+I guess, as well, being right now, I think what our venues have really loved is that because we're locally based, they're not waiting for offshore support as well, which will potentially change once we scale and have to outsource support and all that sort of things.
+But it's mainly just refining the business practices, driving revenue and repeat ordering, and providing a business performance tool that venues can review and see what their customers are doing and how they're spending and all of those sorts of things as well.
+Sachee Perera | 30:46
+Okay. It was good to hear that from the right because there's a lot of value that you provide, and we just need to articulate it in a way that's short and go, what do we say now versus what do we not say now?
+How can we bring it later?
+admin@mytabinfo.com | 31:05
+Yeah.
+Sachee Perera | 31:05
+Like good framework that I use most of the time is, "What is it that we do? How do we do it, and what does it mean to you?" Unlike other solutions, we are X right now. I'll email that to you.
+It's just a very basic, simple positioning statement that fills in the blanks, and it'll force you to go, "All right, how do I position myself?" We need to apply multiple lenses to that, the size of the venue, where it is, and all of those things.
+I know we are at time.
+admin@mytabinfo.com | 31:52
+Yes.
+Sachee Perera | 31:53
+Do you? I'm happy to enter another 10-15 minutes, depending on your calendar. Yeah, are you right for happy to enter. You know, another 10-15 minutes, depending on your calendar. Yeah, are you right for happy to enter. You know, another 10-15 minutes, depending on time.
+admin@mytabinfo.com | 32:03
+Yeah, I allowed myself a little bit of time in between things.
+Sachee Perera | 32:07
+So.
+admin@mytabinfo.com | 32:07
+So that's a problem at all. Thank you. Yeah, honestly, thank you for kind of sitting here and having a chat with me, because it's. I just. I feel like we have all of this data and we just need to find a way to refine it so that the venues can see value in it.
+Because we even with like our go to market pilot, we had, let's have a look here. We had PECO. So they've got two stores, one in Dunsborough and one in Scarborough. They increased their ordering their overall ordering spend by 10% with WI Tab, and they increased their online order sales by 20% compared to Order up, which was their previous ordering partner that they were utilizing and Pea Pizza, which is one of our Dunsborough Venuus. They've got a minimum or they've got an average customer spend of $61, which is insane.
+Then they generated an additional $65,000 in their first seven months of onboarding. That's an additional 13% revenue just with utilizing my Taub. So we've got this data, and it's like, "How do we convince venues that we're actually here to help know?
+Sachee Perera | 33:12
+Okay, sure, okay, cool. Yeah, I think it's quite clear that there's a lot of opportunity because you're delivering value. We just need to extract out of you what your ARR or MRR is currently. What's your recurring revenue? What's your ARR annual recurring revenue or monthly recurring revenue?
+admin@mytabinfo.com | 33:37
+Sorry.
+Sachee Perera | 33:42
+Currently.
+admin@mytabinfo.com | 33:43
+Yep. So it's quite modest. Because we don't have, I guess, a subscription-based model, it is difficult to measure. But on average, right now, we're seeing it at about $2,000 a month.
+Sachee Perera | 33:55
+Y 2000.
+admin@mytabinfo.com | 33:57
+So it's very it is a very modest revenue right now. And well, that it doesn't quite reflect, I guess, the traction that we're seeing, if that makes sense.
+Sachee Perera | 34:07
+Sure, yeah, I'm familiar with it.
+admin@mytabinfo.com | 34:07
+And that's kind of, I guess, another disconnect.
+Sachee Perera | 34:14
+Yeah, that's a bit low if you're at 2.6. So maybe there are some refinements we can do to the pricing model. Have you... How are you funding the business right now? Or what's your cash
+like?
+admin@mytabinfo.com | 34:32
+So Alaza and I funded through our savings. Then there have been a couple of times where we've topped up certain sprints and things like that through our savings pile and then my Taub income. Then we've been awarded the West Australian Innovation Booster grants through the WA government, which assisted the last couple of years in building the development of this central management system.
+Sachee Perera | 34:51
+Yes.
+admin@mytabinfo.com | 34:56
+The management portal and our little advertising portal that we have in the advertising feature that we have in my Taub as well, that's just about to go to pilot at the start of next year.
+Sachee Perera | 35:08
+Yeah, I think that's a clever model. Yeah, it's like, how can we increase the basket size for Right?
+admin@mytabinfo.com | 35:16
+Yeah.
+Sachee Perera | 35:16
+So what's your burn rate at the moment for you, like for the business? What's the monthly expense currently, and do you have six months or twelve months of runway.
+admin@mytabinfo.com | 35:20
+So the burn rate are you talk for venues or customers.
+That's have a. Let me just pull this back up again.
+Sachee Perera | 35:42
+Because I know you're capital efficient. It's just like... Because you're.
+admin@mytabinfo.com | 35:46
+Yeah, no, that's where we are.
+Sachee Perera | 35:48
+You're. You're looking to raise a million. So if you raise a million, how many months of runway.
+And to the current rate can you sustain? And like.
+admin@mytabinfo.com | 36:03
+Yes. So right now, I would say that we're with our dev team, we've only just... So the next month is when we're updating our payment structure with the devs. We were originally doing it hourly. This we actually had a really great system with the devs previously, but now we've decided to go more on a retainer.
+So they would quote certain sprints, and then we would pay for the block of that sprint, and then they would do this. The thing we've got, let me just see the burn, right? I feel like we.
+Sachee Perera | 36:38
+You don't need to give me an example. Is it.
+admin@mytabinfo.com | 36:40
+Yeah, no. So, obviously, in the first couple of years, I think we were like -32, and it went to -21. Then, I think last year, to 2025, we were down -3,495 dollars and 3 cents for our profit and loss statement.
+Sachee Perera | 36:57
+Okay?
+admin@mytabinfo.com | 36:58
+So we're very efficient with where we're spending the money. We just don't have a lot of money that we have access to if that makes sense. So, when it's not like we're chewing through $150,000 a year and all these sorts of things, we've really, truly refined to do and we do as much of the work as possible, the founders.
+So that's why we've been able to keep it as lean as possible with just Eliza and me as the two employees that we don't take wages right now. We've kept it very late.
+Sachee Perera | 37:31
+Okay, that's good. So, let's go into your raising, and you said you have a goal to raise a million dollars and to exercise the 650 guns. What kind of conversations have you had with DCS and angels about this already, or where are you at?
+admin@mytabinfo.com | 37:57
+Sorry, it cut out a little bit. Could you please repeat.
+Sachee Perera | 38:00
+Apologies? Where are you at with your fundraising? Are you talking to any angels? Are you talking to any DCS? Yeah.
+admin@mytabinfo.com | 38:10
+So we actually do have a pitch on next Wednesday, the 19th, with Purpose Ventures. We haven't... This is our first... This is my first initial outreach as well.
+So, we've provided them with a bit of a pitch so they can see what's going on. I have broken down and done quite a bit of research on the million-dollar raising just to see where we would allocate that. Obviously, as a founder and as a startup, I know that
+all of the things that I've been reading, it's like whatever you plan, just know that it's probably going to be wrong. But I was averaging that based on marketing expenses and all that would be required for...
+I think it was a cost per acquisition for customers of $900 to $1,100 per venue. And I'm not sure. I was basing that on a global industry standard from some of the US metrics that I'd seen through research.
+From some of the data statistics, I would assume that it's probably going to start off quite a bit higher than that, but it was just an average that I was able to use and deduct just to try and create some metrics around what it is that we probably need over a twelve-month period to kind of build that.
+So it was looking at, "Let's have a look."
+I think, let me just have a quick look here. Sorry for the one million capital deployment, we're looking at marketing and marketing partnerships and referrals for about $650,000. It was to drive acquisition by a data-led SEO, geo-targeted meta ads, UGC content, referral partnerships.
+So we're looking at getting a CC efficiency of not between $900 to $100. Product and data enhancements. We'd allowed $100,000 for that. That was just to enhance UX, optimize our infrastructure, expand automation to streamline onboarding and self-service venue support at scale. We're looking at founder salaries of $150 just for Eliza and I, $7,058 just to give us full-time. Just so that we're able to focus on just the onboarding and to do the general operations and the customer service and all that sort of thing.
+And then operations and contingency. We'd allowed $150 for the ongoing as infrastructure costs, dosing integration, essential site like SS, SAS tools, insurance, light venue support, contracting. So I've gone through and looked at what our ideal fee structure would look like for all of those sorts of things, and I've broken it down quite comprehensively.
+But yes, that's what we were looking at. I think, realistically, we'd need at least that for a twelve- to eighteen-month runway to try to generate that scale.
+Sachee Perera | 41:02
+Okay, understood. Because, from 12 venues. So from 21 venues to 650 in twelve months, your SaaS it's very ambiguous.
+admin@mytabinfo.com | 41:16
+It's very ambitious. Very.
+Sachee Perera | 41:21
+So 06:50 -21 divided by twelve, you're looking at 5252 bands a month or something, right?
+admin@mytabinfo.com | 41:22
+Yeah.
+Sachee Perera | 41:33
+52 bands a month, and that's averaged out. But let's say you get the 101 million dollars in the bank today. We're not going to put 52 in the next month because that will be a ramp-up, right? It'll be like, we need to hire a salesperson. We need to put the processes together.
+What's that ramp-up? It is very ambitious. Is what I'm thinking right now, unless you have a definite plan to get there, how can you... How did you put it? You said you did the numbers right. How did you forecast that?
+admin@mytabinfo.com | 42:18
+So we, with the... It was basically I did the numbers for the cost per acquisition, the customer acquisition costs. We've done a bit of research on sales onboarding companies that we could offshore, things like that. In terms of how their average costs are for hiring, like for hiring and all those sorts of things to help assist with onboarding the venues and all of that sort of stuff that you're looking at. It's probably not [Laughter] okay.
+Sachee Perera | 42:49
+No, you've built a baby, right?
+admin@mytabinfo.com | 42:50
+What? What? Would? Y okay.
+Sachee Perera | 42:57
+If you offshore this, it's going to be chaos. So, don't offshore it. My honest thing is, don't offshore it. We need to build a capability internally.
+Yeah, do the data up until you get to this certain scale, right? Your processes are there. You have a good brand. You've got everything down. Offshore [Laughter] and just like your success has been really hands-on. How can we... We can't... Yeah, don't go to the complete opposite right now. Yeah, okay.
+admin@mytabinfo.com | 43:12
+Do not offshore.
+Okay, that's good. Yeah, I think the thing is that Eliza and I are willing to work... We are willing to put the work in to onboard these venues for both of us.
+If we were the ones onboarding... If it means that we're onboarding, if we're working and there's a purpose behind it, that purpose is onboarding those venues, then that is something that we're happy to take on. I just don't know if.
+Sachee Perera | 44:03
+25250.
+admin@mytabinfo.com | 44:05
+25.
+So 25 venues a month, what does that look like? If it's onboarding, it takes us on average... Yeah, but if we split it between us, that's because we're very efficient.
+Sachee Perera | 44:14
+Yeah.
+admin@mytabinfo.com | 44:19
+[Laughter] We do work, and we know our backend systems back to front, inside out.
+Sachee Perera | 44:20
+Okay.
+admin@mytabinfo.com | 44:25
+So to build the menus, all of those things, we offer complementary menu building. Those things we get, we were able to smash that out very quickly.
+Sachee Perera | 44:35
+And what's the how long does it take from a, for you to sell to a venue at Demono? Like, let's say you've reached out to Drone at John's Cafe and he said, hey. Yep.
+Okay. I would love to have a look from that point. To getting them to sign a contract. Or onboarding them. What's the time?
+admin@mytabinfo.com | 45:01
+Typically depending on how active the venue is in terms of their willingness to listen and all that sort of stuff, if we've got a quite an active venue, it's typically one to maybe two weeks maximum because they'll take some time to review the general agreement. The general agreement's quite straightforward, but they will take some time to review it, sign it, and get it back to us. I can have them. To be honest, if they sign it, I could have them up and running in less than 24 hours.
+Because I'll sit there until 2 am in the morning building out their menu.
+Sachee Perera | 45:30
+Zero eight.
+admin@mytabinfo.com | 45:31
+So the typical average time from when a venue says yes to us getting them onboarded is, I would say, if they're active and they read the two-page venue general agreement, it takes three to five days. If they're a little bit longer, it takes about a week and a half.
+If it's a point of sale integration, it sometimes depends on the DOSI partnerships and having to go through the process of that point of sale accepting the integration request. Sometimes, that can blow out to about two and a half to three weeks.
+But that really depends on how active their point of sale system is with assisting us. So, for example, LightSpeed, all of them, instantly accept. Then you've got point of sales like Epos Now and Olio that are very closed off in their ecosystems. They've already partnered with me and you, and the Venu itself needs to say, "Hey, we genuinely want to onboard with my tab."
+So, you need to allow this integration, if that makes sense. So, that's where that kind of works in that sense as well.
+Sachee Perera | 46:33
+Okay. Alright, so then, for the raising side, the BCS or investors want to know, "Can you actually do it? Do you have the capability to actually get to your 650 or not?"
+That's what they'll be looking for, obviously. You already know this, so you have a meeting with Derek next, is it this Wednesday or next Wednesday?
+admin@mytabinfo.com | 47:04
+It's the 19th.
+Sachee Perera | 47:06
+Okay, so nine days from now.
+admin@mytabinfo.com | 47:07
+So next Wednesday.
+Sachee Perera | 47:08
+Okay. And have you pitched to any.
+admin@mytabinfo.com | 47:09
+Yeah, no, these are our first.
+Sachee Perera | 47:10
+Anyone else? At the moment? Or is he being the first?
+admin@mytabinfo.com | 47:16
+This is our first because I think we've gotten to a point now where I can see this, we can see the value in this, and we are positioned to scale.
+Sachee Perera | 47:24
+Yes.
+admin@mytabinfo.com | 47:27
+We just need some assistance to assist us in scaling because we've built everything. We've done the work to get it to this point where it's market-validated.
+It's showing great traction in the venues that we do have. And so that's a bit of a tipping point for me because I was like, "It's not sustainable for us to keep walking to venues, driving to venues, calling venues." We need some assistance to help us scale?
+Sachee Perera | 47:49
+Yeah. So, okay, so it's clear to me that you need to do some work on your positioning as just an easy win. It's a super easy win. You don't need to go update the website.
+admin@mytabinfo.com | 48:01
+Yes.
+Sachee Perera | 48:03
+So anything is just to help you with your page. Maybe that will help you refine your pitch when you're talking to investors, right? You do need to go to market strategy. That can make your 650 vs. Defendable or adjust that accordingly. I don't want to give you too much right now. I need to digest this a little bit, so maybe I'll put it into an email for you with a link later on, but I think the easiest win is that initial positioning.
+I'll send you a very slight easy framework you can follow, but I think what you're currently doing, being found-led, that's super duper awesome. Derek will give you some really passionate feedback. He doesn't hold back, so which is really good. Have you reached out to other angels in the or.
+admin@mytabinfo.com | 49:11
+Not at this point. At this point, I reached out to Purpose. Then I was like, "You know what? I probably need some mentorships." Then I backtracked, and that was before I had scheduled it. That's before they had gotten back.
+I was like, "Before I do this, I think I might be jumping the gun here because we are the first-time founders." I mean, we do take a measure twice, cut once approach with our business, especially being funded.
+Sachee Perera | 49:37
+Y yeah.
+admin@mytabinfo.com | 49:40
+So we aren't serial entrepreneurs for that exact reason because we want our first venture to be our best, and we have worked very diligently to try to ensure that.
+Sachee Perera | 49:48
+Yeah, so.
+admin@mytabinfo.com | 49:50
+But the same time, we have a lot of room to grow and to learn.
+That's why I wanted to try to organize this meeting, just to see what your thoughts were. I knew 650 was pretty ambitious when I did it, but I was like, "You know what? If we've got a good marketing strategy that is able to onboard, Eliza and I do not sleep.
+Sachee Perera | 50:04
+Yeah, and okay, so right now, the majority of your venues are coming on board because you're going out to them, right?
+admin@mytabinfo.com | 50:14
+So we will make sure that it happens.
+Sachee Perera | 50:24
+They're not coming inbounds at all.
+admin@mytabinfo.com | 50:26
+That's correct.
+Sachee Perera | 50:27
+Okay. so it's you'll still need to be a salesman. You still need to be sales. Leb, right? Marketing is not a marketing. Leb stage in your business right now, you can't just activate Google ads or Facebook ads and you won't be able to turn that around overnight. There's going to be a transitionary period.
+However, in terms of the REAT generation, have you considered a referral program to your current venues? Because you said you have a really good relationship with them and the users are engaged? Have we done a referral program for the venue saying, "Hey, if you refer us to a business, we'll give you one month for free or something"? Then something similar for the customers. The 40,000 odd downloads. Have you considered anything like that?
+admin@mytabinfo.com | 51:27
+So we have done customer referral programs in terms of... Can't see your venue that you'd like? Please, provide this. I'll show you, actually, very quickly. I do have... I did record the flow versus the venue and stuff. I wasn't sure if you would be interested in it.
+That's why I recorded it. But it basically has the very bottom where the customer scrolls, and it just says, "Don't see a venue you like? Enter the details." Yeah, and we do get quite a few customers that mention venues that they like. Then we reach out to them.
+Unless we're driving to that venue, like if we send them through an email 100%, there's absolutely no chance of being responded to. It's if we give them a call or we walk into that venue and have a conversation with them, but just generate that breaking through the noise, basically, of what I was talking about at the very beginning where they're just like, "Okay, cool.
+Sachee Perera | 52:06
+[Laughter].
+Yeah.
+admin@mytabinfo.com | 52:20
+Like, one of our customers did that. But I don't know.
+I don't know if they even believe it. When we're like, "Hey, there's a customer that has referred you to us." You know, blah, all this know.
+Sachee Perera | 52:35
+And what about leveraging your relationships with the venues? Are you asking for referrals from them?
+admin@mytabinfo.com | 52:42
+We haven't done that yet, but that is definitely something that I'm going to look into doing today. Definitely. That's at the minute you said that, I was like, "Yeah, we should definitely be doing that."
+So I'm definitely going to do that today.
+Sachee Perera | 52:55
+Yeah, cool, awesome. I know I've been asking you so many questions. I apologize. I'm just going to shut up and... Yeah, but I think the most obvious thing is it's just that positioning thing.
+admin@mytabinfo.com | 53:02
+No, honestly, I love it. It's great. I feel like we're sponges. Eliza and I are sponges. If you have advice, we will take it on board. It's something we want to make sure that our business is following best practices. We've done all of those sorts of things.
+We're open to learning and we're open to hearing feedback from people who have experience in this space. So, if you have any feedback, I don't care how harsh it is, how critical it is, I promise you, we can take it. Yeah, I really, genuinely appreciate the feedback and
+any advice that you have.
+Sachee Perera | 53:45
+You clearly have a lot of value that you're providing, but how can you typically make it obvious as to... This is where my CB is,
+the.
+admin@mytabinfo.com | 53:54
+Yes.
+Sachee Perera | 53:54
+That's the quickest ring we can have. The referral activation from your venues because all of these people, they all talk and... Path is really smart. So that's there. If we can activate the referrals, especially with the relationships...
+That's the next advice I'll give to you.
+admin@mytabinfo.com | 54:20
+Yes.
+Sachee Perera | 54:21
+A million dollars, I feel like, is a bit too high to be asking right now.
+admin@mytabinfo.com | 54:27
+Okay.
+Sachee Perera | 54:28
+For where you are at the business because you're going.
+admin@mytabinfo.com | 54:31
+Two.
+Sachee Perera | 54:32
+Because I think you need to have a...
+If you're going through it. It's almost like you need a process around first to establish, okay, this is here, are the... My sister, you and your sister built the foundations to go. It's not just you and your sister anymore. Now we have a team, and we go to the market space. We've proved that up.
+Okay, now let's go with a bigger raise because we have divided Cas, and yes, so I think those are the three tips or bits of feedback while I've got you.
+admin@mytabinfo.com | 54:57
+Okay.
+Sachee Perera | 55:09
+One of the things that I did at both Sidekicker and Blubrits was really just getting in with AWA going to those events. Australian hotels, no, you're not in the hotels business, but the restaurants and catering associations.
+If you join those associations or just go to those events and just be in front of them, that would be... I heavily leveraged those relationships to drive activation. In the Restaurants and Catering Association.
+admin@mytabinfo.com | 55:43
+Okay, yes.
+Sachee Perera | 55:44
+I've been out of hospitality for five years, but I'm assuming it's still the same. In the Restaurants and Catering Association and AHAWA. If you say you're West Australian and base start up, you're going up against the blo up.
+They'll work at you, and in some instances, rightfully as well.
+admin@mytabinfo.com | 56:08
+Okay, perfect, yeah.
+Sachee Perera | 56:12
+Don't go out of your way to do it. Just have a look at it. Yeah. So if you were to get another partner that you can use.
+admin@mytabinfo.com | 56:23
+And how did you introduce yourself then if you went to those kinds of things? Are they open to having you just tap them on the shoulder and be like, "Hi, I just thought I'd introduce myself." Or is there a strategy that you would employ to introduce yourself to these venues?
+Sachee Perera | 56:38
+For venues or the associations.
+admin@mytabinfo.com | 56:43
+The venues once you're in, if you go to the event.
+Sachee Perera | 56:48
+Yeah, it's just like just, you know, it's. Yeah, it's like you're at the pub, so you're like, "What did you do?
+admin@mytabinfo.com | 56:55
+Yeah, that works.
+Sachee Perera | 56:55
+[Laughter] I think the best strategy is to be human and be normal, right?
+admin@mytabinfo.com | 56:57
+I wasn't sure if that was a strategy, [Laughter] no. Good.
+Sachee Perera | 57:07
+Like you can smell a sales pitch from a mile away. And, yeah, it's.
+admin@mytabinfo.com | 57:11
+Yeah, yes, okay.
+Sachee Perera | 57:13
+It doesn't work. Well, it doesn't work for me, and some people are really salesy. That's not me, and the approach I've taken for my businesses is just to be you.
+Yeah, so what kind of... So I said I'll shut up. So what do you... What else do you want to know from me today? Shoot me.
+admin@mytabinfo.com | 57:41
+I guess my biggest... I guess one of the biggest drivers for not looking at doing precinct capital raising or anything like that at the very beginning was just the...
+I've tried to do as much research by myself as possible, but I feel like it's been a bit fear-based on what would happen once other people are at the table of our business. I guess what is your advice? What have you seen with founders at our stage where it's gone terribly wrong?
+What are the red flags that we need to look out for if we are going to move forward with investment or any of those sorts of things? What would you recommend to protect ourselves or what we should be looking out for to make sure that we're making the best decisions for our business based on what we've done so far?
+Sachee Perera | 58:33
+Right now, it's you, and it's just throwing the cap table. You don't have anyone else you own percent.
+admin@mytabinfo.com | 58:39
+No one else.
+Sachee Perera | 58:39
+Okay, look, with the investors when I'm going to raise myself. There were so many different investors, and you just need to find the best working relationship. A lot of them will want... Some of them are very... Or you are just another number and here's the money. Off you go. Or bet bigger results.
+Alberts figure you just need someone who is kind of hands-on but not really going to overpower you. It's making those decisions like they should be your advisors as opposed to tracking the ticker.
+I think you will find out who the best investors are by having just a chance. You have to start here first in terms of protecting the business.
+admin@mytabinfo.com | 59:31
+Okay.
+Sachee Perera | 59:39
+I think you don't have anything to worry about right now. You own 100% of it. I wouldn't give too much And.
+admin@mytabinfo.com | 59:47
+What would you mean by that? What do you think is like an appropriate amount to kind of give away for the first capital race?
+Sachee Perera | 59:53
+Because right now, because you're at two KAR and Mr. Per month, and you're going for a $1 million, that's a huge risk for anyone to put in, for ABC or an investor to put in. Right?
+So we need to derisk that as much as possible. If you're asking for one million, have you done what the valuation would look like right now? I get to applic.
+admin@mytabinfo.com | 01:00:24
+Yes. So that's another thing. How would you go about valuing the business when considering that when it comes to, let's just say acquisition or sales, obviously, the recurring revenue is such a huge driver in figuring out the value for sale?
+But then when you look at it, I know it's a completely different market and the appetite for investing was completely different through 2021 to what it is now. But you look at even Mr. Young when they were doing their pre-seed valuation.
+I think they were valuing themselves at $5 million before they even... I think they hadn't even... They're burning through like $30,000 a month in fees and things like that. Then they raised a $5 or $10 million funding round before they were even...
+Then I mean, I think the total amount of funding that the Grace has is $189 million before they merged or when they merged with me and you. So I'm like, "How do you value your business when you see competitors securing seed rounds that high?" I don't know if... When it was just a concept almost, it wasn't even out there. Whereas we've got runs on the board and we've done this slowly and more intentionally, and I don't know if it's shot us in the foot a little bit because we have a business model where we've been very lean. We don't have these crazy recorded losses. The only debt that might have owed was to us as the founders.
+Obviously, we're okay with that. There is this huge potential for scale. So it's hard for me to figure out how we're supposed to value ourselves based on just investing because it's not just the recurring revenue that's the driving point for value.
+It's the market.
+Sachee Perera | 01:02:16
+Yeah.
+admin@mytabinfo.com | 01:02:18
+And $89.7 billion hospitality market for 2025 with IBIS World statistics at the moment. So, it's a big addressable market at the moment. It's just... Yeah, how do we go about valuing ourselves then in that space?
+Sachee Perera | 01:02:33
+I think the traditional valuations are at multiples of the AR, but it's too small for us to use a model like that to value ourselves. It's like it's a bit of an unknown at the moment, right?
+So if you add two KAMRs, that's like what, that's $24,000 AR. A typical multiple would be five to six times right. If you were to say, "We're going to sell it." Let's say ten times, so that's a $200,000 to $350,000 valuation, and you're asking for a million dollars.
+That's a huge ask. I say we're giving way more. Which is why I suggested bringing down their number for now. Until we get to the next stage, let me digest this a little bit more and maybe we can tap on this particular topic of the valuation. I'll send you some info for you to review.
+In terms of IA, I rebuilt a successful business, right? Probably a little bit. You probably should have considered raising it a little bit earlier, but you can't change that. If anything, we've now approved what works and what doesn't. Where was I going?
+Sorry, sometimes, yeah, I... Yeah, and in terms of someone you're giving away part of the business, I wouldn't worry too much because you want 100% of it right now, right?
+admin@mytabinfo.com | 01:04:09
+No, that's okay. Just the valuation in terms of figuring out how to value it?
+Sachee Perera | 01:04:23
+So would you have 100% of a smaller total figure, or would you rather 80%, 70%, or 60%?
+Right. So, yeah, would you want a bigger piece of a smaller pie or a smaller pie of a bigger piece or whatever?
+admin@mytabinfo.com | 01:04:42
+Yeah.
+Sachee Perera | 01:04:42
+Whatever. Sorry, yeah, whatever you say. So, just to summarize the positioning, I'll send you a little snippet for you to look at in terms of referrals.
+I think you should go and start that now.
+admin@mytabinfo.com | 01:05:02
+I'm doing that today.
+Sachee Perera | 01:05:02
+Like do that yesterday, right?
+admin@mytabinfo.com | 01:05:02
+[Laughter].
+Sachee Perera | 01:05:07
+Potentially investigate like the HAWA. And, apologies.
+admin@mytabinfo.com | 01:05:12
+Sorry, you just cut out.
+Sachee Perera | 01:05:14
+I'm. actually in Bali at the moment, so the internet's a bit rough.
+admin@mytabinfo.com | 01:05:18
+Yeah, no worries, no problems.
+Sachee Perera | 01:05:21
+Investigate the restaurants and catering, and he said that way, don't spend money on those to investigate them for now.
+Sorry, can you hear me?
+admin@mytabinfo.com | 01:05:39
+Yep. Sorry, you just.
+Sachee Perera | 01:05:40
+Yeah.
+admin@mytabinfo.com | 01:05:41
+I got, investigate the restaurants and catering associations and the WA associations. And then something about spending money.
+They just cut out and it said spent.
+Sachee Perera | 01:05:48
+Don't spend any money on them for now. Just be conscious of them and know who they are if you haven't already. In terms of the investors, you will know who you want to partner with once you start talking about it again. I can't give you anything right now because I don't know enough about your business, but maybe I'll end it there.
+Yeah, so that's what's in my head right now, based on our conversation today.
+admin@mytabinfo.com | 01:06:24
+Okay, perfect.
+Sachee Perera | 01:06:26
+Yeah, what would you... Yeah, anything else? What were you expecting to get out of today and have we got there? Or is there anything else you it?
+admin@mytabinfo.com | 01:06:40
+No, I think that... Yeah, I guess the main thing that I was looking for was some guidance on addressing the bottleneck that we're experiencing right now.
+I think that obviously, generating venue referral programs in whatever capacity that looks like. I'll do some research and see what we can do to generate some value for the venues to want to do an active referral program.
+I guess, yeah, capital raising that. It's just very ugly. Bet. And I'm just trying to wrap my head around what that is like and what that looks like. But I do agree that what I've put out there is ambitious, for sure.
+If you know of any other angel investors that you've worked with previously that you'd be happy to give a warm introduction to so that I can at least show them what we're working on if it's something that they might have an appetite for, that would be amazing.
+But yeah, mainly just trying to work through that bottleneck to generate some more healthy recurring revenue right now. But I think you'll mention as well about the price positioning, and how we could fix that. I do have a little bit of concerns about that because I'm worried if we start testing things, we're going to lose venues.
+We're at such a small venue percentage at the moment that I don't want us to lose venues. And I feel like it works.
+Sachee Perera | 01:08:12
+Yeah.
+admin@mytabinfo.com | 01:08:14
+As for right now. So I don't know whether it's to saturate a bit more of the market and do what Zero does.
+They've literally saturated and they're like, "Look, we're offering up prices, and you don't really have a choice but to move forward with that." Or, "Yes, I don't know.
+Sachee Perera | 01:08:27
+Y.
+admin@mytabinfo.com | 01:08:27
+We'll have a look at what we can do to try to generate a little bit more recurring revenue.
+But that's my biggest fear, just losing venues or not being onboard venues because it's already difficult as it is, with the way that we're going.
+Sachee Perera | 01:08:37
+Yeah, that is definitely a reasonable way to do it. Yes, and I share your concern. Okay, cool.
+admin@mytabinfo.com | 01:08:51
+2.
+Sachee Perera | 01:08:51
+Maybe we can... If you want to chat again later on, we can if you have more questions or anything, please feel free. I am.
+So I've left my previous business and now I'm thinking about what I'm going to do. I've realized that I've done this three or four times now. There are some really cool West as startups that I can help support.
+admin@mytabinfo.com | 01:09:16
+Yes.
+Sachee Perera | 01:09:18
+I'm thinking, if you want to work together in an advisory capacity or anything like that, I'll definitely be interested. I'm definitely interested.
+I think there's a cool story you guys have from the process to hospit tech. Cor. And it gives me an opportunity to go back into hospital as well, which is something I love.
+admin@mytabinfo.com | 01:09:39
+Yes.
+Sachee Perera | 01:09:44
+I've always been a hospital boy.
+And I think... Yeah, just hearing what you guys are doing is really cool. Yeah.
+admin@mytabinfo.com | 01:09:55
+Yeah. No, that sounds... It cut out a little bit, but I think I got the gist of it. But yeah, as where like OOP, sorry, can you hear me?
+Sachee Perera | 01:10:02
+I can hear you. Yep.
+admin@mytabinfo.com | 01:10:05
+Okay, perfect. Yeah, no, I think that sounds great.
+So you wait on the email and, yeah, no, I'd definitely like to explore some sort of... We are so new at this and so honestly, tea, to have some level of mentorship would be very, extremely helpful for us.
+Sachee Perera | 01:10:22
+H.
+admin@mytabinfo.com | 01:10:25
+And want to build a successful business, we want to have something that is amazing and incredible, and we know that it can get there. But we just recognize that we need some mentorship and guidance and things like that, so, yeah, that would be great.
+Sachee Perera | 01:10:43
+Yeah, cool, awesome. All right, I'll let you go and yeah, let's chat again here.
+admin@mytabinfo.com | 01:10:50
+Yes. All right, thank you so much, and, yes, sorry for going overtime. [Laughter] We're way over time.
+Sachee Perera | 01:10:53
+No, that's all right, no worries. Hey, congrats on all the work that you guys have done, it's super impressive.
+admin@mytabinfo.com | 01:10:55
+But thank you so much.
+Sachee Perera | 01:11:01
+Yeah. Keep it Up.
+admin@mytabinfo.com | 01:11:02
+Thank you. Thank you.
+So bye.

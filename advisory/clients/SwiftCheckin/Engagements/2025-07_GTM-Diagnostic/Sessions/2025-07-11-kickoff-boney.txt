@@ -1,0 +1,904 @@
+Sachee Perera | 00:35
+Hello, good afternoon, how are you guys?
+boney.mylady@swiftcheckin.com.au | 00:38
+Good afternoon.
+Sachee Perera | 00:46
+Are you all ready? Are you all packed and ready to go, bunny?
+boney.mylady@swiftcheckin.com.au | 00:51
+No, I usually take only my laptop and just one pair of strass, that's it.
+[Laughter] I traveled, yeah, I'm a fan of traveling like that, so yeah.
+Sachee Perera | 01:09
+Okay, very good. How are you? [Laughter] Yeah, I'm terrible.
+nisha.george@dibasys.com | 01:13
+I'm good actually. Yeah, and backing Bo, this conversation. Traveling light is really hard for me, to be honest. Yes.
+Sachee Perera | 01:25
+Sometimes I travel really light and I don't pack enough and I take a very small bag. Sometimes I don't know if I'm coming to Sydney or somewhere cold. I pack all my jumpers because in my head, it's like freezing,
+but when I go somewhere warm, I take maybe two pairs of shorts and a couple of shirts. That's it, [Laughter].
+boney.mylady@swiftcheckin.com.au | 01:49
+Yeah, as we always have, there's an argument regarding that you should travel light. I used to say you should love light, and Nai said, "Nah, you should be enough to cover everything.
+Sachee Perera | 02:04
+Yeah, very good.
+boney.mylady@swiftcheckin.com.au | 02:05
+[Laughter].
+Sachee Perera | 02:09
+Awesome. Guys, I'm excited to kick off today and get started. I'm still yet to send you the mutual NDA. I have a one-way NDA, but I know I have a mutual two-way NDA, which I'll try to find and send through today, if that's Y.
+boney.mylady@swiftcheckin.com.au | 02:31
+Yeah, that's fine. Yeah, I'll wait for it. Alright. So what I'm going to do is this session. What I'm planning to do is I'll give you an idea of how the product has evolved so far.
+So that you'll get an understanding of what happened then, how the sales and marketing team came into place. And then finally, I will go through the results. So how many customers were given the demo to, and whether they have gone forward with us or not, all those things will be discussed during this meeting.
+I think that's pretty much going to consume the whole one hour for today. So the reason why I thought I would start with the product evolution is so that you'll get a better understanding of when we pivoted and why we pivoted.
+We did do pivots so far and why we did it. Maybe then you will get an understanding of whether it might be a quick one or whether it might be a reasonable one. All those things you can read through when I tell the story.
+If you've got any questions, meanwhile, just feel free to raise them at that point of time. Okay, so we started this in 2023. At that time, I had a co-founder. He came up with a problem in your Southwar, managing their contractors' movements across multiple TAFEs.
+So that's where St. Chicken has been started.
+Sachee Perera | 04:30
+H.
+boney.mylady@swiftcheckin.com.au | 04:30
+All right. So they had five campuses. And the contractors worked throughout the day and night in these campuses. And they have no idea what time they started or what time they went off. They used the old good old pen and paper, write it down.
+That's how they were managing this. Then, in one of their cleaning contracts, they found out, with the help of eight facility coordinators, there was a mismatch between the number of hours and the number of people they had contacted versus the actual ones.
+So they did an audit for three months, and they found out a huge discrepancy. That's why that company had to refer 1.3 million back to TAFE. So that's when Sen was bored. Okay, then as the first round, we... We sold our house and opened an office in India. I started calling by myself initially as my project, and then gradually I started giving these things to the team in India.
+Now, by November 2023, what they've told us was to give us a proof of concept. So they're going to pay us for that, and we have provided the quotation. Then they'll get into the mental list, and then from there, they can expand that to multiple cameras across New South Wales.
+After five to six months, we have catered for three to four months of development to do this project. During this time, we will keep on updating these things. But we didn't get a purchase order because it was taking a bit long to get into the mental list.
+So we kept on doing the paperwork and discussions. We're going on all those things. Meanwhile, I took my trust part and then went forward with the development. That's when we started developing this.
+After developing a significant amount, maybe three to four months of development with a small team, when we started contacting them back, there were two: there was a regional head and another person, the facility head of these three or four campuses. They got transferred. The position has been transferred.
+We couldn't go further with that conversation. Then we had the first pivot. We thought, okay, where is the next best place we can put this software? That's when we started the auto integration.
+Our software was much stronger. Our software is much stronger. Radio was the time sheets. So we thought, okay, we will go integrate with Autodesk. Then the time sheet spot can be done with a small team. We started integrating that. We thought we had a person in internal contact with others at USK. He referred us to a couple of people in US, and then we got into that integration partnership program and started integrating that. That's what happened. It took us probably... We thought that it's going to finish in three months, but it took us more than that.
+Then finally we completed the Auto skin integration. By that time, Koor had left the company as he couldn't see the result and it was taking too much time for all the things. So he was like a part-time after that commitment.
+Then we tried to raise friends and family around and keep trying for some more time at the Auto client. Then we did our first event conducted along with one of the Auto resellers, and we got only one lead that got up to the most stage. That was not a... It was a very niche event.
+But again, looking back, that was a failure as well. Okay, then we started those... One successfully went with that for a couple of months. The sales cycle of Auto clients was too high, which I don't think the startup can wait for that long.
+That's when we hired a person in for marketing and tried to raise funds. Continued raising funds through friends and families so that we can hire a person in sales. At the same time, I have gotten and interviewed more contractors and owners in the construction industry to understand the process and start expanding the product with friends and family around then.
+Sachee Perera | 10:20
+At the same time, we closed contracts in the construction and infrastructure and understand across.
+boney.mylady@swiftcheckin.com.au | 10:32
+Now by 2024, we hired an external sales agency
+to run the calling and emailing while we are doing these developments in scheduling and expanding the time sheets. All those things that you have seen so far.
+Sachee Perera | 10:47
+See. Seems to decide to other day to go.
+boney.mylady@swiftcheckin.com.au | 10:50
+We started doing all those things. Hired a consultant, which is what I shared with you the other day regarding the consultant thing.
+So to go after bigger companies. So to high-value tickets where he can go into... And then a Coman group that was an informed lead that came in. I will speak more about all the clients during the end of this session and on February five.
+Sachee Perera | 11:20
+25.
+boney.mylady@swiftcheckin.com.au | 11:20
+You've probably failed MR with sales agency and consultancy experiment started looking for sales calls for.
+Sachee Perera | 11:25
+Start looking for sales. I think that's.
+boney.mylady@swiftcheckin.com.au | 11:27
+I think that's when we started meeting Yochi. Then April. Yeah, April, Sandy and discover the Appointment Cetera joined, and then the condom writer joined us. Well, initially we didn't have any system for sales.
+So we started putting the CRM dial pad and all those things in place, and then we started making those scores and core emails and all the marketing campaigns. St at Kickov and June 2025. Full operations for full operation solutions for say trades have been changed to concentrate only on construction time sheet and scheduling.
+Sachee Perera | 12:21
+Scheduling because we saing is not very conc.
+boney.mylady@swiftcheckin.com.au | 12:21
+Because we understood that somewhere that messaging is not going really well. And now we are doing the core courses and then this landing page experiments, that's what we are doing right now. So bit of what we do for sales.
+So before that, did you get any cost sales? So you can see that we have pre-bugged two times. And why are you happy with that?
+Sachee Perera | 12:53
+Yeah, no, that's a good, concise overview.
+I will have some questions, but let's finish this first. And I'll come back to.
+boney.mylady@swiftcheckin.com.au | 13:07
+Okay. Right now, regarding the sales effort that we are doing right now is we got an appointment set up who is doing the landing pages calls and Apollo lead calls. Okay. So that's what the appointment center is doing, sales manager is doing. He's much more doing the account-based marketing.
+So he's finding out the buyer, who is researching, scheduling, and time sheets in the construction industry within the construction industry and visitors.
+Sachee Perera | 13:49
+In the industry. In the construction industries. And the visitors really is coming to.
+boney.mylady@swiftcheckin.com.au | 13:53
+Who is coming to our website? Who belongs to the construction or wider construction? UMBLA marketing?
+Sachee Perera | 14:02
+Marketing.
+boney.mylady@swiftcheckin.com.au | 14:02
+We are doing this landing page experiments.
+Sachee Perera | 14:03
+We are doing this expely in the future videos.
+boney.mylady@swiftcheckin.com.au | 14:06
+And then they started creating the feature-related videos blocks that we are doing three per week LinkedIn posts and daily for Bony and SSE and.
+Sachee Perera | 14:12
+Things I've been doing to design.
+boney.mylady@swiftcheckin.com.au | 14:23
+And then I think we started with the Google ads as well.
+Sachee Perera | 14:30
+Okay, alright, so that's all pretty new.
+nisha.george@dibasys.com | 14:30
+And Ready Tats.
+boney.mylady@swiftcheckin.com.au | 14:32
+Yeah. Google Ads and Ready Tats are the play ads that we are doing.
+Sachee Perera | 14:44
+If I can go back to your. So you started off as a contractor management solution for TAFE specifically. And was that specifically geared towards cleaners or any like when you did that trial or that when you find that 1.3 million dollar discrepancy was that specifically from a cleaning company or did was it kind of you PO contract.
+boney.mylady@swiftcheckin.com.au | 14:55
+Yes.
+It was for the full TA of all the contractors. But this 1.3 million thing was specifically for the cleaners. So the proposal there would... Okay. The discussion that we had was the proof of concept is going to be deployed across all the cleaners in five canvases in SNY.
+Sachee Perera | 15:31
+The discussion as to consent is going to be redeployed because all the CS in Right could you have...
+So I'm. I'm just testing here. So you tried Tafe? Were there other similar businesses you could approach with that same story? "Hey, we found a 1.3 in the schooling or other TAFs or other universities and things. Or was that too hard?
+boney.mylady@swiftcheckin.com.au | 16:08
+No, look, we one looking back, we should have done that, but we haven't done any of those things.
+One reason that I can think of is we thought that would be a very smooth process because the problem was very clear there. It took them three months of eight employees consecutively tracking their time.
+So they write it down separately on each shift and track down this. I believe sixty cleaning staff across these campuses consolidated everything.
+Sachee Perera | 16:53
+Yeah, th this is exactly what core plan did for drilling contractors.
+boney.mylady@swiftcheckin.com.au | 16:54
+That's how they got this money Back.
+Sachee Perera | 17:03
+It was the invoiced versus actual, so that's a very big problem, right?
+boney.mylady@swiftcheckin.com.au | 17:08
+No.
+Sachee Perera | 17:11
+For the client.
+So the tafe and the contractor. So. So which is interesting. And now you've, you pivoted to construction, the construction industry. And now what made you prefer to the construction industry specifically like in November.
+boney.mylady@swiftcheckin.com.au | 17:34
+Okay, alright, so at that point... Okay, I'll tell you two sides of the story. At that point, we were desperate to have some client.
+The co-founder we had at that time, he had... So he'd been presenting this to you, and you've been talking to different people about this.
+Sachee Perera | 18:04
+You can like more presents then and I was wondering I wanted us to of how is common for off and.
+boney.mylady@swiftcheckin.com.au | 18:10
+And there was one guy in Auto who is a friend of a common friend of ours.
+Then he told me that, "Okay, we are looking for... I've been getting a lot of requests from companies, which is similar to your platform, which AutoDesk didn't have. So do you want to solve that part? Then it's going to be a good idea that you can do that.
+Sachee Perera | 18:37
+Understood okay that makes sense alright cool. And so since Novemb so that's from November twenty twenty three and you were focusing on trades since then. Time sheets and yep, I like.
+boney.mylady@swiftcheckin.com.au | 18:50
+Look, yes, we are specifically looking for time sheets and integrating those time sheets to our platform.
+Sachee Perera | 19:01
+Okay, yeah.
+boney.mylady@swiftcheckin.com.au | 19:01
+And our Water didn't have the time sheet, and then we put that time sheet part and integrated their main part,
+the cost management side and the project management side. They have been integrated.
+Sachee Perera | 19:12
+The management side to.
+boney.mylady@swiftcheckin.com.au | 19:16
+And we have to do a bit of tweaking to change the product in a way so that it's going to align with the Autodesk management side our Water didn't have the time sheet, and then we put that time sheet part and integrated their main part, the cost management side and the project management side. They have been management side we have to do a bit of tweaking to change the product in a way so that it's going to align with the Autodesk CAS.
+Sorry, we put forward this cost management, the budgeting side and the project scheduling side, and then integrated those parts and gave back the time sheet data to Autodesk as part of the performance tracking or in their BFOR.
+Sachee Perera | 19:57
+Cool. So a lot of those workflows that you have came from the Autodesk integration work and the requirements from... Is that right? Then what about.
+boney.mylady@swiftcheckin.com.au | 20:10
+It's a bit of both. So, yeah, for some of them, the compliance-related things, all those things came from TAF because all those things were their requirement.
+Sachee Perera | 20:12
+Okay. That its claims it some more than 16. Which is to jos all thes.
+boney.mylady@swiftcheckin.com.au | 20:25
+We already had jobs and job related things which are related to Auto Desk sorry, which is related to TA as well, because the plan was to sing all the jobs from their platform to us and then from here to manage the contractor movements.
+And that's what the plans with the tape was. The cost management side came from specifically the budget side, and it came from the Autodesk integration.
+Sachee Perera | 20:55
+Okay, cool, good. That I was wondering how. Yeah, because your software had, like, lots of different things, parts of the webflow, so I was curious to see how did you come across building those?
+boney.mylady@swiftcheckin.com.au | 21:06
+Y.
+Sachee Perera | 21:14
+That gives me more Clarity.
+boney.mylady@swiftcheckin.com.au | 21:17
+Yeah, because I just want to give this clarity to you so that you will get when we go to that GTM or when we do the when we do the audit of the GDM that we are doing right now.
+Sachee Perera | 21:18
+Yeah.
+boney.mylady@swiftcheckin.com.au | 21:33
+So you will have a better understanding of it. Okay, whether this aligns more with this group or the other group or whatever the way that we should go forward with then, yeah, sorry, keep going and asking a question, yes.
+Sachee Perera | 21:43
+Yes.
+No. I think those were the key questions. I have some based on the very last things that you covered around the most recent experiments and stuff.
+But if you have other things to mention, that would be good.
+boney.mylady@swiftcheckin.com.au | 22:17
+Yeah, then the okay, that's so well spoken a little bit about that pivot. So pivot two was more in July. We went for a combined event. It was more for airport and airport-related contractors.
+Okay. So how we ended up there was we got a connection through LinkedIn who was an Autodesk reseller, and that reseller told us, "We are going into an event as you start, and we can go for a very discounted price for these events."
+Then we joined. It was our first event as well. We were not sure how the event was going to go, and we conducted it together as part of this, but unfortunately, there was only one lead that came that.
+Sachee Perera | 23:17
+Trans lead.
+boney.mylady@swiftcheckin.com.au | 23:27
+So there were two leads, one, but only one that even went into a demo change and all those things.
+Sachee Perera | 23:39
+So why are you calling this pivot? Why would.
+boney.mylady@swiftcheckin.com.au | 23:42
+No, this is not a payer. I'm giving a background of how we did that in September. We when we were.
+Sachee Perera | 23:50
+I'm the.
+boney.mylady@swiftcheckin.com.au | 23:52
+So when we gone into that, the more understood what their things are.
+Sachee Perera | 23:52
+So. I need to. That the more.
+boney.mylady@swiftcheckin.com.au | 23:58
+And then we realized that the sales cycle of Autodesk is too long. So it's typically six months to two years. That's what the sales cycle is from the initial discussion. Then I'll just go in and interview more contractors and owners in the construction industry to understand the process and start expanding the product with friends and family around.
+So then we decided that, okay, we will better go with small to medium businesses within the construction industry where we can make use of these.
+nisha.george@dibasys.com | 24:35
+I'm sorry to interrupt. I'm sorry, but I'm... For example, just during the airport, we came to know that if only this Auto... So it was an India-based company, and they were actually trying to integrate with Auto, trying to buy Auto, and they were actually having multiple discussions.
+Then we understood that it's going to take nearly six months to one year to convert the Interter company to accept the Auto. So our chance is very less. For example, then we understood that if we are going with just... If we're just only focusing on Auto clients, then the Auto platform has to be accepted first.
+Then we have to... But we were thinking the other way because what we were told was there were many subcontractors who are currently using Autodesk wanted timesheets. And so that was... And then they're really desperate in doing that.
+So that's what the information we got from the Auto and Auto representative. And that's why the integration happened so quickly because they said the timesheet part is so important. And we are considered, as you know, a valuable decoration by Auto as well, because they don't have a Timesheet part.
+But later we understood that even though we got a Timesheet, Auto clients are using the Auto platform in a different way. Each client has got different Timesheet requirements as well.
+So if we have got one, it doesn't fit into all of them as well.
+We had a few companies that came.
+So they wanted... Some wanted just the very basic Timesheet, while a few wanted the extra deputies and things like that.
+So we were like, "Okay, this is not a standard Timesheet for Auto." Then we understood the fact that it's not going to work. Then we had to be independent. We have to do an independent solution.
+When we talk to the INT to fit out company as part of the Auto discussion, we came to know that clients are actually facing issues by using multiple platforms. So even if they are buying Auto, they have to pay for apps on top of it, they have to pay for pros on top of it, and they have to pay for us ORS on top of it.
+Sachee Perera | 26:51
+Yes.
+nisha.george@dibasys.com | 26:51
+So we thought there was a value there, and that's why we have right now what we have. We'll try to give it as a complete solution. That's what we thought. So that we will enter the market as an independent solution so that people don't have to use multiple solutions, but just one solution on a platform.
+So that's why we called it a second pivot. Even though we have got pillars of many modules. For example, we've got Timesheets and scheduling, which is actually complete for us, but other things are actually the pillars, the budget and things like that. We are actually building small by small.
+And then yeah, that's all it is up to. Thank you, Bonnie, thanks for letting me speak.
+boney.mylady@swiftcheckin.com.au | 27:36
+Yeah, that's fine. Yeah, I think you explained it, but he was very good. Yeah, so that's why we called it the second payor.
+Sachee Perera | 27:42
+Yeah, okay, that makes sense. Understood.
+boney.mylady@swiftcheckin.com.au | 27:47
+Yeah.
+Sachee Perera | 27:48
+Okay, pivot one was, okay, let's focus on the construction industry using AutoDesk as a go-to-market partner for distribution.
+boney.mylady@swiftcheckin.com.au | 27:48
+So? Yeah, that makes sense. The second period.
+Sachee Perera | 28:01
+We get Autodesk, and they help distribute us.
+Then pivot two was no, okay, the Autodesk clients are not a fit because they're all... Yeah, okay. Then you decided to go fully so SMB and SME, so is the Autodesk integration still live and working.
+boney.mylady@swiftcheckin.com.au | 28:20
+It is, yes.
+Sachee Perera | 28:20
+And that partnership is still active. Okay. Is There.
+boney.mylady@swiftcheckin.com.au | 28:24
+And we got this. It's a good thing to bring it up last week or the week before. A big company from the US, I think they got 8,500 employees across the world worldwide. They came through what USI, but since then we've been trying to get in touch with that person. She's based in Texas, I believe, but it didn't go any further.
+Sachee Perera | 28:55
+Sure.
+boney.mylady@swiftcheckin.com.au | 28:56
+They are not even responding.
+So we just want to know what the requirement is.
+Sachee Perera | 29:04
+Yes.
+boney.mylady@swiftcheckin.com.au | 29:04
+We couldn't even... So Jeremy is our AutoDesk contact, and he forwarded that to us. Okay, this is what it is, and then it didn't go.
+Sachee Perera | 29:20
+Okay.
+nisha.george@dibasys.com | 29:20
+So we've got apps too. Has got the marketplace and they have got an app store as well. And our app is actually highlighted there. We came to know that the lead actually has seen the app and then conducted the partnership. The auditors partnership member contacted us like that's how it happened.
+But there was no further step proceeded based on that.
+Sachee Perera | 29:43
+Cool, okay, very good. It's good to know that the relationship is still active, so should that be something that we can reactivate or focus on? All right, so September 24th. We interviewed a whole bunch of customers. We decided to go with S&B and SME. What's the pipeline looking like right now in terms of total commerce? Your ha.
+boney.mylady@swiftcheckin.com.au | 30:15
+Okay, alright. Due to this effort, the sales agency effort, we got a few in. Of course, it was a December time as well, but we got one client out of it which I went and met in person to understand what he is doing, how much, what are the things that we can migrate fully to this full business solution as we proposed. He's currently using one software for timesheet, the other one for cost management, some Excel sheets for project management, and then the calendar. The calendar?
+Sachee Perera | 31:04
+So who did that? The Customer.
+nisha.george@dibasys.com | 31:07
+It is from a landscape landscaping company.
+boney.mylady@swiftcheckin.com.au | 31:14
+Zealand Zealand Engineering as landscaping, I believe, yeah, as New Zealand landscaping, and they are doing the landscaping for councils.
+Sachee Perera | 31:16
+Ostland.
+Yeah. And sorry, I may have forgotten this, but is that one of the two trials or is this just before.
+boney.mylady@swiftcheckin.com.au | 31:35
+Before that, this is the one that has got that progress claim.
+Sachee Perera | 31:36
+Okay. So this is.
+boney.mylady@swiftcheckin.com.au | 31:40
+So he finally told us that. Okay, we later. So we I liked your product, but if they can't do the progress claim, we're not going to migrate, okay?
+It's more like a migration. Okay.
+nisha.george@dibasys.com | 32:01
+So yeah, so with the sales activity external agency calling, so this client actually reached out to us, not reached out to us. The demo was supposed to be given around December timeframe, but during the holidays it was actually shifted across to nearly five months.
+Then Bonnie had a series of talks. Then we came to know that he's using Deputy, he's using Workbench, he's using Excel, Shapes, and he's using two other things. Then we said, "Okay, we can actually manage a few of it, but with the pro because we are lacking progress claims and it is actually itself a big entity." We thought, "No, we are not going to develop any further." We'll concentrate on sales and marketing with what we have currently.
+So it is actually in whole... We can still proceed if you get a progress claim with us, but it's just still on hold. So that's the first one based on the delete that is based on it. This is apart from what we have like the two talking clients that we have got right now.
+Sachee Perera | 33:00
+Okay. And so the sales agency that you engaged. When you said an agency and a consultant, are these two different?
+nisha.george@dibasys.com | 33:12
+Yes, they are two different actually. So, because we were pretty... Not sure. Like if you're hiring someone like how it is... And then we thought we need someone experienced but not to fit in within our budget.
+We thought to experiment to do experiments at a time. So we have hired a sales consultant, just to help with the enterprise clients because we need to know the product market fit at that time.
+So where our solutions fit in, whether the enterprise solutions are actually enterprise companies are actually happy to accept us or whether small and medium builders are actually going to get more worthy of a solution.
+So we just need to see which one is actually doing better. So that's the reason why we have hired both of them. And then the sales consultant were initially actually talking to like many enterprise clients.
+But he didn't that that's what the conversation we had the other day. He didn't do his part. He said he seemed like he's doing many things, but, I don't know, we trusted that it didn't go as it was supposed to be.
+And on the other hand, with the agencies, they TED to do call calling only based on the time sheets. We had few demos. We had few demos, but. Sorry. We have few, bookings, but most of them were actually no shows.
+And then we found, like the collaboration with the external agencies, like, really ineffective, just based on the fact that, the appointments are not, like, not currently set. The meeting links were not, you know, sent. We were not informed even though they said like they have booked. It was not actually seen in our calendar.
+So it was like it wasn't actually really going well. So we thought like we would definitely need an internal person to consolidate and to move it forward. Yes. And but the other fact is that the external agency told that the time sheet party is actually gaining momentum even though it was like a December no, but December time with so many absentee or leaves and so those things like those things but so that gave us the conference like.
+Okay. If you're having, you know, the if you're having the internal team, then we will be able to have, you know, more demos or more, conversions if we build our own teams. So that's the reason why we put a stop to both of them on FB in Feb.
+So it was only that experiments went only like nearly three months like three to four months. I would say, yeah, so that yeah, that is up to effect.
+boney.mylady@swiftcheckin.com.au | 35:50
+2020 5-3 months. I would say, and just to add what Nisha said, the consultant was given the task of seeing whether the contractor management is going to be helpful for similar to the question that you have asked if it's a big, medium, or big enterprise, if this contractor management thing is going to work for them or not.
+So that's why the assignment was given to the consultant, and for the salesperson. So the sales agency was more for the construction time sheet. We were in a position where we had to decide: which one should we go forward with, this one or the other one?
+That's when we hired two different people, and it was only very limited hours, I would say, but we just wanted to try and see how that was going to go.
+Sachee Perera | 36:53
+Okay, and now you have Sandy and Kabita, they're both your internal staff members. They're not from an agency, right?
+boney.mylady@swiftcheckin.com.au | 37:04
+Yes, they both are currently in India.
+Sachee Perera | 37:05
+Okay. And Kabita is in India. Or.
+boney.mylady@swiftcheckin.com.au | 37:11
+But Sandy was in Australia from 2015 onwards for the last ten years. For the last two or three months, he is in India. And I was calling to... She was working for Water for New Zealand, calling to New Zealand customers.
+Sachee Perera | 37:36
+And a content writer as well.
+boney.mylady@swiftcheckin.com.au | 37:40
+Yeah, he's... So there is currently only me, Nisha, and Sandy, who is from the Australian background. Most of the people are from India.
+Sachee Perera | 37:56
+2.
+nisha.george@dibasys.com | 37:56
+Yeah, can I take over, Bonnie? Is that alright? Hello, is that okay? Yeah, I got it. I jotted a few things in here so I thought it'd be easy if I explained. So regarding the team, I would say we got CEOs, Bonnie and no co-founders as such, as we said the co-founder who has slept.
+Then we got a CFO, his name is Jubish, and he's actually in Australia. He's currently in Australia. He's a part of the team and works part-time, not full, but just advisory and part-time.
+We got a sales manager. We got Sandy, as Bonnie said, he's from... He was in Australia and then currently he's in India. We got a marketing manager as well. He's based in Bangalore. I'm not sure whether he's from Bangalore and he's based in India as well. He's actually working on all the things from India.
+With the office, we've got two offices. One is in Australia, that's in Sydney, and then India. So that is in Kerala. I'm not sure whether you are aware of Kerala. So that is in the southern state of India. That's where we hail from.
+So we got a physical office in India as well. Then we got the product engineering team. All the product engineering teams are actually under Bonnie. And then consulted by Bonnie, not a consultant. Bonnie is actually taking care of all the product engineering teams and everything.
+So they're actually in the Indian office. I'm right now along with them. Then we got the front and we got the backend. We got the content writer, he's actually working from home in India itself.
+We got the support staff as well, and then productive. So that's what regarding the team. With the tools that we use right now for the collaboration, we use Zoho for the Indian team and for the Australian team, who works? We use MS Office, and then we got the other collaboration tools, Jira for the product development.
+So just the product development team uses Jira, and then all other products are as we know, the CRMs. We got HubSpot, we got the dialer, and then we use this other software like fewer software to coordinate everything.
+Sachee Perera | 40:19
+Okay, very good. So there is... And how big is your product and engineering team?
+nisha.george@dibasys.com | 40:27
+So we got four frontend and developers, including the team lead as well. We got four backend developers, including the team lead as well. We got one content writer.
+And we got one support. Yeah, we got one content writer and this front-end team, they are good in like, you know, designing as well. So they do the designing part as well.
+Sachee Perera | 40:46
+Okay, and some of the work so going back, thanks for that Intel.
+boney.mylady@swiftcheckin.com.au | 40:47
+So do they do all the marketing material?
+nisha.george@dibasys.com | 40:50
+Yes. No, it's like they so whenever we require, they come to the marketing team. Sorry, marketing sprints. And then yeah, that's how we work.
+Sachee Perera | 41:06
+It's good to get a lay of the land. So there's... So since you did since April, you've had internal sales activity happening.
+And then prior to that, you had the external agency as well. Was the external agency using HubSpot and your dial pad and all those systems or a black hole?
+boney.mylady@swiftcheckin.com.au | 41:29
+No, yeah, it's a big black hole. That's where the temp mistake that we have done because that's when we... It's not because we didn't even though we got really very little demos.
+Sachee Perera | 41:37
+Okay.
+boney.mylady@swiftcheckin.com.au | 41:47
+The other reason was we are not getting clarified on what are the rejection messages that we are getting. They are getting whether they need it or they don't need it, whether they're using a competitor or not a competitor.
+Sachee Perera | 41:57
+Okay.
+boney.mylady@swiftcheckin.com.au | 42:05
+All those messages were not communicated back to us.
+Sachee Perera | 42:10
+No.
+boney.mylady@swiftcheckin.com.au | 42:11
+All we usually get as a report is this is, we have conducted X number of companies through email and X number of through phone. This is the conversion rate. This is what.
+Sachee Perera | 42:27
+Yeah, it's a bit useless because you don't know if they're actually calling or not.
+boney.mylady@swiftcheckin.com.au | 42:35
+Absolutely that. But we see it as a good thing because that's where we've gone and found HubSpot, a dial pad, all those things that we put in place so that the team.
+Sachee Perera | 42:42
+Yeah.
+boney.mylady@swiftcheckin.com.au | 42:51
+That's the first thing that Sandy did when he came in. When I talked to him about all these problems, he went and did this CRM thing, had a dial pad thing, and we got all the calls being recorded through our system.
+Sachee Perera | 43:09
+Okay, so I have two questions.
+boney.mylady@swiftcheckin.com.au | 43:09
+So.
+Sachee Perera | 43:13
+The first question is: you've gone through the full journey, right? You've spent your last night writing this out. Both of you have probably been talking about this while going through this whole journey so far.
+What are the things that you can see right now? What bubbled up into your head? Any new findings or new revelations that popped up that you're excited about, or concerns or questions?
+What has come to your mind since writing this down, and even at this very point in our conversation today? What's the most obvious thing that you Fe.
+boney.mylady@swiftcheckin.com.au | 43:55
+You go.
+nisha.george@dibasys.com | 43:56
+Fa [Laughter] Okay, so to answer that question, we always review ourselves. We always see where we are up to. So, I'm really open to say that we really understood what our limitations are, but we want to go forward, and we really pushed all the time.
+So, going back, we criticize a lot ourselves, each other, and as a business as well most of the time. We thought we would have actually gone as an independent simple check-in and check-out solution immediately after tape. That was the first thing that we could have done.
+But we were not sure that itself had actually the potential to itself had to actually gone. So that's a thing that we're thinking about it. It would have done that. But we never regret it on that because we believe in our vision, and we want to expand as a company. We learn from our mistakes.
+The main thing that keeps us motivated is that we never gave up. We just pushed ourselves. We try to find the right people all the time. We try to seek things, and we wish we wanted to get there.
+So that's the main thing. That's it. Then, thank God we are getting. We believe that we are getting the right people, all right? People when the time is required. Then this many, so going through all this, sometimes I think, "My God, should we have gone this way?"
+But it's okay, that's how we learn.
+Sachee Perera | 45:49
+H yeah.
+nisha.george@dibasys.com | 45:50
+And yeah, that's how we go. That's how we go. Yeah, I think that that's it. I don't know whether I... So the question is, whether you meant to get an answer like that or not, I'm not sure what you mean, but yeah, this is what the ultimate feeling after writing or after going through this journey.
+Sachee Perera | 46:07
+Cool. Thank you, Nisha. That's helpful and Bo.
+nisha.george@dibasys.com | 46:08
+Yeah.
+boney.mylady@swiftcheckin.com.au | 46:14
+So regarding the.
+Sachee Perera | 46:24
+A cliffhanger. [Laughter] I think he dropped out.
+boney.mylady@swiftcheckin.com.au | 46:33
+Get 20, [Laughter] sorry, I'm missing you all in between, so I was asking such a question, I will ask a question back.
+Sachee Perera | 46:36
+The suspense is killing me. [Laughter].
+boney.mylady@swiftcheckin.com.au | 46:47
+So what do you want to hear? Okay, looking back, what are the stupid things that we had done?
+Sachee Perera | 46:55
+But not so much the stupid things. I find going through and explaining, being on the other side, during those conversations, I would have had these really good ideas or not ideas.
+boney.mylady@swiftcheckin.com.au | 46:56
+He said.
+Sachee Perera | 47:10
+Key epiphanies that pop into my head.
+Like. This is what I should tell the other person. But sometimes because I don't want to.
+boney.mylady@swiftcheckin.com.au | 47:20
+[Laughter] No, we don't do that. Said I will be... I will be very open with you in terms of things that we have done. So first thing I would say is let me do with the knowledge that I have right now if I reset everything and start today, I would have gone with the very first thing that we have done, which is with the TAF and the question that you have asked.
+Sachee Perera | 47:42
+Yp.
+boney.mylady@swiftcheckin.com.au | 47:55
+Okay. Did you go and find out another TAF? TAF who and all of them said no to you? Is that... Did you try in that way? But somewhere on those two pivots, I still feel that we pivoted too early or we gave up too early.
+That's what I think. Maybe it's our own limiting belief that has contributed to that. Okay, just for check-in and check-out. There won't be any use case at all. But then later we realized that Honeywell is doing only with that check-in and check-out. Honeywell is doing very good. There's a signsign.com product that Honeywell has acquired from a small startup.
+So that's one thing that I would say. The other good part that we're seeing is somewhere we are getting the right people at the right time. God, Universe, whatever that you call it, is giving us the right people at the right times to take us to where our ultimate goal that we have set for is.
+Sachee Perera | 49:20
+Yes.
+boney.mylady@swiftcheckin.com.au | 49:22
+So somewhere it's guiding us to that part. That's what we feel.
+Sachee Perera | 49:27
+Okay, that's good. Look, it's important to review and retro and really challenge yourself and contest your assumptions and then force justification against the principles that we have.
+I think that's important. So, look, I'm glad to hear those answers, so thank you. I know it's not easy, especially when someone drops a question like that to you. My next question is now that from April.
+So that April, June, halfway through July. Sandy's been on the phone talking to your enterprise customers. Keit has been writing appointments, doing appointments, and then you're just doing some landing page experiments. What are the biggest learnings so far that you feel?
+Yeah. What are the biggest learnings in the last three months on that market?
+boney.mylady@swiftcheckin.com.au | 50:20
+So pretty much mid of April, that's when Sandy started. Keit started a week or two weeks ago, early April, but it was after Sandy came in. He bought all these dial pads and all those software in place, which took us close to two or three weeks to get the dial pads sorted out. We were trying out two or three different software. TED Dial Pad started making the calls from 19th of May, and that's when we actively started making those calls from that point. I believe we
+let me bring that thing up.
+Sachee Perera | 51:07
+Capita.
+boney.mylady@swiftcheckin.com.au | 51:09
+I will share this detailed thing with you, correct?
+Sachee Perera | 51:15
+Yeah. I'll be going into those calls and reviewing them. Like the as crossing that C.
+boney.mylady@swiftcheckin.com.au | 51:21
+Correct. But I just want to give you an overview, okay? This is the last campaign that we have done against project tech means. Perth, Melbourne, Sydney were the three areas that we tried.
+So we had 100 to 235 accounts altogether. 801 contacts were they? So this is where it's all sitting IBR or not connected. Gatekeeper. Rejected. At this, this is what the status is, and I will give you the... I will share this Excel sheet with you and then you can go into detail.
+So we are since May, we are recording how many calls that you have made, how many of them canceled, what's the average call duration, what's a positive sentiment, negative sentiment. And then all the notes have been written over here of what our biggest learning thing is that we have done in these cases. We thought that we can give it as a full solution.
+But then people are more responding to one specific area within our software, like if you tell TimeSheet about only time sheets. Then they started listening to it. So for the first two to three weeks of calls, we decided from mid-June, from 19th of May to 5th of June.
+Sachee Perera | 53:00
+As plenty of messages with the students in that complete with solution for the trans.
+boney.mylady@swiftcheckin.com.au | 53:05
+We will keep telling that it is a complete business solution for trades within the construction industry.
+But now we are talking only about time sheets and scheduling, and all the landing pages are related to either time sheets or scheduling with different sets of pain points. Within time sheets, there will be two different pain points. Within scheduling, there will be three different pain points, and we are putting these pain points as an ad in REIT and then diverting those customers back to our platform so that.
+nisha.george@dibasys.com | 53:51
+It's majorly like the website. SAS is a complete solution. But when we do the campaigns in marketing and sales, all the core coding scripts, everything is based on time sheets and scheduling.
+Sachee Perera | 53:59
+En is based on territory sexually emas are reach.
+nisha.george@dibasys.com | 54:02
+Emails are based on time sheets and scheduling, and we are ready, TED?
+Sachee Perera | 54:05
+The second thing is just to explain some qualities and not like [Laughter] a construction management construction site management doesn't say that.
+nisha.george@dibasys.com | 54:06
+Google everything is just explains all those not as like a contractor management, not like a construction management or construction site management. It doesn't say that, it just says timesheets.
+Sal and all the campaigns and all the sales and marketing efforts are based on that.
+But the website says it is a complete solution. So those who come to the website, they got everything in there. Then we got the LA landing MIS we are creating as well, just for time sheet scheduling and based when we do the other ones, we will do the other landing pages.
+Sachee Perera | 54:34
+Okay.
+boney.mylady@swiftcheckin.com.au | 54:35
+The other mistake that we've done is we were even though we are tracking the website, we are not tracking the visitors who are coming to our website, which we started from June 22nd when we started with the time sheet and scheduling. From there, this is what the results are.
+Sachee Perera | 54:43
+Web cooperate your website to be done. So be starting with H.
+boney.mylady@swiftcheckin.com.au | 55:01
+So on a daily basis we are getting around 121, this is the maximum. So somewhere around 56 visitors are coming to your website on a daily basis. This is time sheet. Landing page is getting 39, 37.98% and scheduling is getting 33.09% of the landing pages.
+Sachee Perera | 55:25
+Definitely.
+boney.mylady@swiftcheckin.com.au | 55:28
+1.
+here you can see the pain point scheduling last minute and scheduling allocation.
+Sachee Perera | 55:36
+Are you using something like Hotjar or PostHog on the Webb?
+boney.mylady@swiftcheckin.com.au | 55:42
+We are using Clarity from Microsoft. Do I understand the user behaviors visit, visitor, website, visitor tracking we are doing?
+Sachee Perera | 55:48
+Yeah.
+boney.mylady@swiftcheckin.com.au | 55:52
+We are trying out three different software. We got Analytics, Google Analytics, we got Fathom AI and then we got Instantly and Fathom AI is giving us much more clarity on what it is.
+Sachee Perera | 56:07
+So yeah, I would, like Google Analytics is good, but I would install post hog ABS factors before.
+boney.mylady@swiftcheckin.com.au | 56:10
+And at the same time we are using HubSpot as well to try and find out the buyer and then visitor he.
+Sachee Perera | 56:26
+But post hog, it will. You'll be able to slice and dice it. It's like Google Analytics, but you'll get the... What do you call it? The on-page behavior. Where are people clicking and doing all of that? It's a little bit like Clarity, but I think it's a... Well, based on preference, PostHog is a little bit easier to use than Clarity as well.
+But hey, it does the same thing. What's important is if it's resonating well, is the messaging resonating? What's... Are the other people clicking on the right things? Probably not really relevant right now, but as we scale, we'll want to look at those. Who's right marketing? Sorry, I didn't... But
+Okay.
+nisha.george@dibasys.com | 57:22
+His name is... He is the one who is based in India. I said like terminal seminars.
+Sachee Perera | 57:26
+And not the content writer. That's someone else, isn't it?
+nisha.george@dibasys.com | 57:30
+Yes. Yep. So he joined the organ. He joined us since August 24th. It is going to be a year. But I should say that we haven't been actually actively using Microsoft Clarity or all these things until Bonnie mentioned it on June 22nd because we were constantly revamping the website and doing some ads and then things like that.
+So, yeah, that is a limitation. That's something we would have done that we were not aware of that we should have actually informed them. Yeah.
+Sachee Perera | 58:12
+That's cool. And in terms of what you mentioned, in those sales report master.el, you had a number of accounts and the number of accounts and contacts. Those are the number of accounts and contacts from that are already in CRM. Or is that okay?
+boney.mylady@swiftcheckin.com.au | 58:40
+So what we are doing right now is for calling, we are keeping an Excel sheet only.
+Sachee Perera | 58:43
+We are giving an associ qualy if.
+boney.mylady@swiftcheckin.com.au | 58:46
+If they are interested, that's when we get it entered into Terra. So if they are interested, they will get into CRM if they are not, they will keep those details in an Excel sheet.
+But for Sandy, what he's doing is who are coming to our website within our CP? He's contacting directly them with through email and phone calls and who are showing a buyer intent. So we are tracking the buyer intent through HubSpot and then whoever searching for time sheets or scheduling within our ICP that we are. We put the hypothesis as he is contacting them as so.
+Sachee Perera | 59:35
+So you have Sandy's account list in HubSpot, and then the appointment setter account list is in an Excel sheet. Okay, list cool. And Kabita, Kabita right, Kabita is in Excel.
+Alright, cool. And both of the calls and meetings are recorded in the dial pad or Fireflies or are they? You had to go into two separate things.
+boney.mylady@swiftcheckin.com.au | 01:00:14
+Now got all the calls have been recorded in the dial pad meetings in the last one month.
+Sachee Perera | 01:00:21
+Yep.
+boney.mylady@swiftcheckin.com.au | 01:00:25
+I believe we got only those two clients that we are talking about regarding that trial.
+Sachee Perera | 01:00:37
+Yeah. Okay.
+boney.mylady@swiftcheckin.com.au | 01:00:38
+Okay. Now probably before that, I will take you down to the clients that we have discussed so far. Okay? July 2024 television shop fitters. They were a 14 million dollar company based on airport.
+Sachee Perera | 01:00:55
+So not tech?
+boney.mylady@swiftcheckin.com.au | 01:00:57
+They were came through that event as part of what industry resellers, and we already spoken about why we didn't go forward with it.
+So India fit out. There was another company that came in, but after initial conversation, they didn't even go further. Like they didn't even come for the demo. E Commarine Group. That's when they came through a website. The safety officer came through our website. They were specifically looking for the contractor management, sorry, contractor movement to be tracked and they are from a shipbuilding company based in Perth. Terra Firma.
+Yeah. This is something that came through the call. They were calling that done by that external agency. But we, through the discovery call, understood that they were using sign-on-site. Then the project manager himself told us that we were not looking for something that would be changed any soon. Bryant Construction is something that I came through with the consultant person, and he wanted the reason that he didn't go for it. They didn't even come for an AA demo. The reason why they didn't come for the demo is what the consultant said: there is a transition happening from the business giving from one generation to the next generation.
+Who are the technology consultants? That's been used by the dads. Dad, the son doesn't want to use any of them. That's the reason why they couldn't go further. Osland Group is the one that I was talking about, the progress claim, Aqua Metro, they again came through the Autless partnership. They are still open. They haven't gone further. The last conversation that I had was that
+they got what they needed, which was the timesheet, and they were trialing the Autodesk. They came from Procore. They're going to Autodesk, and they're filing the Autodesk, but they're not getting a chance to completely try it out.
+So the last conversation that I had was that they bought a one-year license from Autodesk. They're trying it on a small project, but this person needs too much depth into the timesheet part. Like after, they have to do the what is it, overtime then?
+Sachee Perera | 01:04:03
+To do the what is is.
+boney.mylady@swiftcheckin.com.au | 01:04:07
+Overtime 1.5x, overtime 2x, Saturday, Sunday, all times. Then all those things were not ready on March 2025mmki.
+Sachee Perera | 01:04:21
+Yeah, so just coming back to Aqua Metro, why did they want to leave Procore? Why did they.
+boney.mylady@swiftcheckin.com.au | 01:04:23
+Yeah. Electric again. They K sorry.
+Sachee Perera | 01:04:32
+Yeah. If, they're going f.
+boney.mylady@swiftcheckin.com.au | 01:04:35
+They haven't shared that part yet, but it came through the Autodesk sales team because they're looking for sheets.
+Sachee Perera | 01:04:43
+Okay.
+boney.mylady@swiftcheckin.com.au | 01:04:46
+They're tiling the Autodesk part, but they haven't clearly explained why they want to vote on MKI again. The product manager is... They were more interested in the budget of our software management.
+But again, we are doing the budget only for the labor and labor-related costs.
+Sachee Perera | 01:05:11
+2?
+boney.mylady@swiftcheckin.com.au | 01:05:11
+So he won the full budget like the materials, labor, subcontracting, and everything.
+Sachee Perera | 01:05:17
+Yeah.
+boney.mylady@swiftcheckin.com.au | 01:05:18
+Y then there came the Midway Private Limited.
+It's again it's a two 250000000 dollar company that came through our website.
+Sachee Perera | 01:05:25
+$50 million Company?
+boney.mylady@swiftcheckin.com.au | 01:05:29
+So they are more looking for that check-in checker. But their requirement was much more specific in terms of they need to live track their subcontractors.
+Sachee Perera | 01:05:44
+He?
+boney.mylady@swiftcheckin.com.au | 01:05:45
+And. So our system was more checking the coordinates. Only when they try to check in and check out, they want to keep like what U what Uber is doing, they want to do that.
+Sachee Perera | 01:05:56
+Correct?
+boney.mylady@swiftcheckin.com.au | 01:06:01
+So keep on tracking them throughout the day.
+We thought that it's too specific to what they're doing. So that didn't go further. But that was again passed through our website as a board. Now, the current group is the one that we are talking about, and Slico is the... These two guys are that we are trialing the product right now.
+Sachee Perera | 01:06:29
+Yeah.
+boney.mylady@swiftcheckin.com.au | 01:06:30
+So our current group is an LT company within the construction industry, and Slico is more like an interior fit-out company within the construction. Slico wants their subcontractors to be managed through our platform. Current Group wanted their employees. They're currently running fully on Access Sheet, so they want their employees' time to be tracked and scheduled.
+It's pretty much the full software that we are applying to. They have that capability of doing and filing the full software in Current group.
+Sachee Perera | 01:07:07
+And which one is the one that you're supposed to call today? Is it current or group? Okay y have.
+boney.mylady@swiftcheckin.com.au | 01:07:14
+I told them. I told them not to call, but I want such. I told them, take a post today. I want you to get in and give a good direction because I don't want to lose them in whatever way that we want to.
+Sachee Perera | 01:07:22
+You.
+Sure. So as in to set the next appointment or and not I and.
+boney.mylady@swiftcheckin.com.au | 01:07:37
+The next appointment, you asked me if you...
+So, there were a few questions that we asked. I just want to get all those three. Yeah, just sort of give these things to you. Then, we can decide if we need to call, then we will call it today before the close of business.
+Otherwise, yeah, I just want to make sure that we are not losing that client.
+Sachee Perera | 01:08:11
+Sure. Okay, I think if they're expecting a call from you today, we should call them today.
+I know I gave you a bunch of notes. So, is it... That's called calling them? Or is it Sandy.
+boney.mylady@swiftcheckin.com.au | 01:08:26
+Look, usually for the last couple of weeks, I've been calling them because I'm the one who used to go to their office and come back. But for the last two weeks, as I said before, they are pushing back.
+This person is pushing back due to these financial things. Yeah.
+Sachee Perera | 01:08:48
+Okay, I think in these early days, right, till we get initial traction. Yes, you know, Sandy, and all of us, we'll be supporting. I think you being in front of these customers to establish that relationship is really.
+boney.mylady@swiftcheckin.com.au | 01:09:07
+Y.
+Sachee Perera | 01:09:09
+So I would... Yeah, I would highly recommend that you... You be the one that establishes that relationship with that key contact as the founder and CEO because they're outside of the product, they're thinking, "Can I trust these guys? Who are they? Can I look them in the eye?"
+And know that they're gonna do the right thing. So I think it's important you do that.
+boney.mylady@swiftcheckin.com.au | 01:09:34
+Yeah, sure. Yeah, I've been trying to for the last two, three weeks. I've been trying to go back to their office, sit with him again and try to do it, but it's been a constant pushback. Then I thought, whether... Something else that might be the reason. Yeah.
+Sachee Perera | 01:10:03
+Cool. So maybe before we wrap up today, we can look at... Not right now. Unless you have other things you share. I have a couple of other questions, but, before you wrap up today, if we have a run sheet for that call, I'm happy to...
+We don't need to overcomplicate it. Just one or two questions is enough for that very quick call for us to do.
+boney.mylady@swiftcheckin.com.au | 01:10:28
+Okay.
+Sachee Perera | 01:10:29
+Okay.
+boney.mylady@swiftcheckin.com.au | 01:10:29
+Yeah, I she a questions, should, from the last discussion that we had, should we get the directors to be involved in that meeting as well?
+So you asked me to go through that question last time we asked, right?
+Sachee Perera | 01:10:49
+Yeah, so, again, you don't need to get all of the questions answered. It's just you test the waters, test the temperature, right? You establish two things: is this person serious, and is he going to progress? Is he a champion?
+The thing is, if he is a champion, what does he need in order to progress the deal, right? What do we need for that?
+boney.mylady@swiftcheckin.com.au | 01:11:24
+Yeah, according to Policeia.
+Sachee Perera | 01:11:24
+So the first question... So, those are the two... If we talk about how he can test that, it's using the tone if he is really engaging or not and all of that. We had a bunch of questions that day we wrote down. Do you have them in front of you?
+boney.mylady@swiftcheckin.com.au | 01:11:46
+Yes, I got that in front of me. So, the questions that we were supposed to ask were in the next meeting that we are applying to have. Should we inform the directors as well to close meetings? Whether that the champion has got any concerns about the product which is holding him back to go forward with the next year.
+Sachee Perera | 01:12:17
+Yep.
+boney.mylady@swiftcheckin.com.au | 01:12:17
+If there is a concern, what are their main concerns?
+Sachee Perera | 01:12:21
+Yep.
+boney.mylady@swiftcheckin.com.au | 01:12:22
+And if the directors are thinking... What do the directors think about this product? What do we need to do to convince those characters?
+Sachee Perera | 01:12:38
+Okay, cool, very good. How do you feel about those questions, asking those questions?
+boney.mylady@swiftcheckin.com.au | 01:12:47
+Yeah. I can go and ask them.
+Sachee Perera | 01:12:50
+Yeah, I think, if you just keep it really casual, like, "Hey, what's his name?
+boney.mylady@swiftcheckin.com.au | 01:12:50
+That's.
+Sachee Perera | 01:12:57
+John Andrew, yeah, if you just keep it really casual, right? "Hey, Andrew, I'm calling you on Friday as promised, for a catch up next week, really keen to get started on a potential implementation. Should we be getting the directors involved in the call for next week?
+That's the first thing. Okay, cool. What's the feedback so far? Are there any concerns in the business about the product or any further questions that we need to clarify in the next meeting? If they just want to get him to talk a little bit, that's it.
+boney.mylady@swiftcheckin.com.au | 01:13:43
+Correct. Yeah.
+Sachee Perera | 01:13:45
+And you'll finish the conversation yourself, right? All you need to do is to get the buy-in. Are we going to get directors involved? What are the things you want me to showcase?
+boney.mylady@swiftcheckin.com.au | 01:13:58
+Yes.
+Sachee Perera | 01:13:58
+And if he starts, like, getting, like, pushing back. I would just be more direct and be like, hey, Andrew, sounds like there may be some sort of concerns. I'm happy to, you know, obviously see what those concerns might be, what's in the back of your mind if there's a lot of pushback and keep it up as that.
+boney.mylady@swiftcheckin.com.au | 01:14:20
+Yeah, sure.
+Sachee Perera | 01:14:25
+Yeah, but there's no... You should be fine. Let's see. Whether he delays back another week, only the 11th of July. So lots of people are still trying to finish their books, right? It's still early days, so I wouldn't be concerned if he pushes back for another
+So.
+boney.mylady@swiftcheckin.com.au | 01:14:51
+Yeah, okay, yeah, probably I think.
+Sachee Perera | 01:14:51
+You'll be fine.
+boney.mylady@swiftcheckin.com.au | 01:14:58
+Yeah, that's pretty much it, Sandy. Sorry, Sachee, for what we have done so far. What are the things that we have about the clients' discussions that we had? Do you have any questions?
+Sachee Perera | 01:15:14
+I'm. keen to dive in and go through the reporting and the calls and really get a better understanding of where you're at and do those things I mentioned in the email. Where can I find your client?
+Like, do you have any client demos recorded with or not?
+boney.mylady@swiftcheckin.com.au | 01:15:36
+I can show you the recording. Because even though we went... I went and sat with a handro in his office. We recorded that full thing in seven.
+Sachee Perera | 01:15:51
+Yeah. If you're sharing this sheet master list, if you or in a separate note, if you just add those links, then I can click for any of those meetings and really see how you deliver the demos yourself, right?
+What are the parts in the calls that people get excited about? All of those key moments would be good to understand.
+boney.mylady@swiftcheckin.com.au | 01:16:17
+No.
+Sachee Perera | 01:16:21
+Understand that? Yeah. And are all of these leads? These in CRM as well, or is this just your.
+boney.mylady@swiftcheckin.com.au | 01:16:32
+All of them are in Seattle. Yes, we haven't put any deal or any value to it, but...
+Yeah, but all of them are in CRM, yes, with all the calls that have been made, I put the notes. Whenever I make a call, I put the notes there.
+Sachee Perera | 01:16:53
+Good.
+boney.mylady@swiftcheckin.com.au | 01:16:55
+Yeah, emails. Now Sandy is sending all those emails directly from HubSpot.
+So yeah, I think all those things are there within the platform.
+Sachee Perera | 01:17:05
+Cool.
+So if you can get me access to HubSpot, your dial pad and HubSpot dial pad, those the account lists from Capita and Sandy's list.
+boney.mylady@swiftcheckin.com.au | 01:17:19
+Yes.
+Sachee Perera | 01:17:24
+I think that's a good starting point. Along with your client demos. For me to get my head around the current activities so far.
+I'll jump into the marketing stuff a little bit later, but just getting this key stuff first, I think is my fourth point of call.
+boney.mylady@swiftcheckin.com.au | 01:17:45
+Sure. So you want course access to the course demos and Hubsport.
+Sachee Perera | 01:17:50
+Yep. So HubSpot calls the demos, the lists, Sandy's lists and Covet's lists, or where I can find them.
+boney.mylady@swiftcheckin.com.au | 01:18:05
+Sure, yeah, we are using Apollo as well, yes.
+Sachee Perera | 01:18:06
+And you said you're using Apollo as well, right? Okay, maybe access to that would be good too.
+nisha.george@dibasys.com | 01:18:19
+Can I ask a question? Is it all right? I know it's the time has exceeded, but this is just an open question, okay?
+Sachee Perera | 01:18:24
+That's right.
+nisha.george@dibasys.com | 01:18:30
+So we can feel really free to answer this question.
+Sachee Perera | 01:18:33
+No.
+nisha.george@dibasys.com | 01:18:34
+Can can be really truthful as well.
+You can say what you want to say, you can say from the bottom of your heart. We never know. So the question is this one. So what do you feel after going through our
+we?
+boney.mylady@swiftcheckin.com.au | 01:18:51
+What do you feel like?
+nisha.george@dibasys.com | 01:18:53
+What is it?
+Sachee Perera | 01:18:55
+I think it's... I don't think I've ever heard of anyone going and having an idea and then going, "Boom, product-market fit." It's never a consistent straight road. You're going to have... For every two steps you take forward, right? Or for every step you take forward, you'll take two steps back. Then you'll go back and forth, back and forth.
+So I think finding that initial traction is the key thing. I think you, because you've gone from this pivot and that pivot one into pivot two, it's helping you find your niche. I think you're getting there. Now we just need to double down on what that, what that niche is, even further, and focus on that one or two key market segments.
+I think you guys have done a good job of. Of really narrowing down as the years have gone. And learning throughout that process. So, which is really good. It's not like you're jumping from one industry to the next.
+It's a continuous journey of refinement, which is great, which is where you want to go, right? The good thing is you have the Autodesk partnership live. I think once we get to this next stage of getting this initial traction, you'll be able to...
+Yeah, I think that's really a very valuable thing you guys did, and it sounds like you learned a lot about traction in the cre and everything so far.
+nisha.george@dibasys.com | 01:20:41
+Yes.
+Sachee Perera | 01:20:46
+So, which is great. The only thing I would have probably delayed it is foundered sales, which is what's going to get you into your product-market fit, right?
+Doing the work around the marketing and getting the sales people is important, but I think, Bonnie, if we can get you back in the driver's seat and in front of these customers as much as possible,
+I think that's what's going to help add some rocket fuel into getting Sandy and Kabita up and running.
+boney.mylady@swiftcheckin.com.au | 01:21:30
+Yeah, I just want to add that on all the demos. I'm still presenting the demo.
+Sachee Perera | 01:21:42
+Okay? Yup.
+boney.mylady@swiftcheckin.com.au | 01:21:42
+I'm still. I'm still the one that's going to the client's office as soon as the.
+Sachee Perera | 01:21:46
+Yes.
+boney.mylady@swiftcheckin.com.au | 01:21:48
+I think where I got the problem is. So, say, for example, if someone is pushing back, I'm still thinking that.
+Okay, whether they need the product or they don't need the product or.
+Sachee Perera | 01:22:04
+He.
+boney.mylady@swiftcheckin.com.au | 01:22:05
+So you can clearly see from our history that lack of sales experience is very clear in many of those cases or going deep into those areas.
+Say, for example, I'm still asking every day. I'm asking myself on a daily basis, how many current groups will there be? Because that's when the full product can be used. Whether we should... If you look at the visitors who are coming to your website,
+it's from a lot of industries, but some of them we can see that there are use cases, but I'm still... When the sales team says there are not enough leads, is that the right thing? I don't know. Is that the look, how can we find out? Hundred current groups. Current groups who are still using Excel sheets, calendars, or all those things. Or how can we find out where we should call? Dig deep into it.
+So, it might be some resistance from people who are already using some system. If you can find out someone who is very primitive in the space, using Excel sheets and all those things, that would be the easiest or fastest way.
+That's what I'm thinking Y.
+Sachee Perera | 01:23:52
+Yeah. So I think that's why I'm really keen to understand the size of your market, right? That's why I want the lists. This is important. You think current groups are your ideal customer, from the product that you have built to their requirements, you think that's a perfect fit, or what? Regardless of whether they buy or not,
+maybe let me ask this in another way. The product that you have built that you have right now, do you feel like it's perfect for current groups?
+boney.mylady@swiftcheckin.com.au | 01:24:35
+Yes. That's what I think because, when we talk about Time Sheet, I can see the excitement in his face.
+Sachee Perera | 01:24:45
+I can see inside of the space. I believe you can see it in front of the video that we're doing, a really close race.
+boney.mylady@swiftcheckin.com.au | 01:24:48
+You could see that from the video that we are doing from the Andros space. Okay, you can do that.
+Sachee Perera | 01:24:53
+You can do that video and that and you can and indely it to then the second meeting Thanksgiving for the but the same with the they would not like we have not culate the moment that we by scheduling part to protect the very effective of Inc.
+boney.mylady@swiftcheckin.com.au | 01:24:53
+Okay, you can do that then you can... Okay, and you can directly export that to Myo. Well, good. Then I then on the second meeting, directed came in and when we presented to them all the time sheet part, they were not that keen.
+Like we have gone quickly the moment that we get into the scheduling part. Then they started asking more questions related to the Gantt chart. Okay, good, then you got a schedule.
+Sachee Perera | 01:25:28
+Tech can only on my side that when that was it doesn't get those type issues and when the small st it looks like and what you see what we can do deeping figures of sp yeah you see I we complete something yes that would be okay that's interesting that's really good to know.
+boney.mylady@swiftcheckin.com.au | 01:25:29
+Alright, so that's when they were interested, but again, it was a bit of connection issues. They were in a small laptop screen, it looks like.
+So those things I would be able to see. But coming back to your question, they need I believe they can make use of the full product. We got a compliance part as well where they store the licenses and all those which I checked with Andrew and they told that they are using the accounting software for storing the compliance documents or something like that or some other software.
+So yeah, I believe that the current group would be the right customer who can use everything within our softter.
+Sachee Perera | 01:26:28
+You. talked a little bit about your TAM numbers before.
+Like the total number of accounts. I think in one of our first conversations. Do you need to answer this right now? Maybe when you... If and I don't need it urgently in the next couple of days or when you have time, if you find that... Goes back.
+So those numbers. If you can send that through to me as well, that'll be very helpful.
+boney.mylady@swiftcheckin.com.au | 01:26:57
+So when you say that... When I got always doubts such a.
+Sachee Perera | 01:26:59
+So that's when I do the.
+boney.mylady@swiftcheckin.com.au | 01:27:04
+When you look at online, the full total construction industry or total companies raised here in Australia under construction is 450,000 companies.
+They say that 98% of those companies are SMBS.
+Sachee Perera | 01:27:22
+Yeah, yes.
+boney.mylady@swiftcheckin.com.au | 01:27:22
+Okay? Only 2% of the big companies. But then when I tell Sandy to all the marketing team to go and get the lead, they're even.
+Sachee Perera | 01:27:35
+The conflict.
+boney.mylady@swiftcheckin.com.au | 01:27:39
+They can't find it. So I can't relate the data that I'm getting from the internet to the data they're data.
+Sachee Perera | 01:27:42
+And getting the T 20 detector.
+boney.mylady@swiftcheckin.com.au | 01:27:46
+There should be something backing this to support this, right?
+Sachee Perera | 01:27:50
+Okay.
+boney.mylady@swiftcheckin.com.au | 01:27:51
+So in our investor pitch, I put there only 3,000 companies as service obtainable companies.
+Sachee Perera | 01:27:57
+Only.
+Yeah.
+boney.mylady@swiftcheckin.com.au | 01:28:09
+I'm not sure whether there are more than that or less than that or are we? Is our sales team not having enough idea where they have to go and find it out.
+Sachee Perera | 01:28:12
+Second to middle. The.
+boney.mylady@swiftcheckin.com.au | 01:28:22
+They are trying.
+So we are manually getting through Yellow Pages and enriching that through Apollo. That's how we used to do it. We are doing. Right now.
+Sachee Perera | 01:28:37
+Look, without diving deeper, I won't be able to give you any direct answer, but just thinking about businesses like Procore, Simcorp, all of these, they're in the same trades, right?
+boney.mylady@swiftcheckin.com.au | 01:28:41
+Yeah.
+Sachee Perera | 01:28:52
+Fergus and I saw on there the 2000 number. It sounds unlikely. It sounds like there should be more than that, but maybe we can... Let's try to answer this question as well, like how many current groups are
+cool. I'm excited to help answer these questions. You guys have done a good job so far getting to where you are now, right? You're just on the cusp of progressing to the next page. It's just like getting initial traction is the most challenging thing, right?
+So getting your first five customers or first five to ten is the most critical and it's gonna be the most challenging but the most fun as well. Now that we have a niche down into this construction and the key use cases as well.
+So let's jump into it, let's see if we can get there. Yeah. If you have those numbers that report that you have, if you can send that through to me, that'll be good. Then I can cross-check against what Sandy and Kabita has.
+Then I'll do my own research. The tool that I use as well.
+boney.mylady@swiftcheckin.com.au | 01:30:26
+Okay? And with WY, yeah. Key points. I'm sorry.
+Sachee Perera | 01:30:35
+You guys go.
+nisha.george@dibasys.com | 01:30:37
+I see in one of the next meetings, we would like to know how a journey was planned in court. You can just drink it. But it sounds like you've done a great job in core plan, so I'm really excited to hear your story. Yes, as well.
+If you are not now, in one of the next meetings.
+Sachee Perera | 01:30:52
+Yeah, no, I think I may have shared with Bonnie or maybe we can save it for the next. Yeah, absolutely.
+nisha.george@dibasys.com | 01:31:04
+Yes.
+Sachee Perera | 01:31:05
+Yeah. Cool. We can do that with the IG and service.
+boney.mylady@swiftcheckin.com.au | 01:31:07
+Look, I'll be open with you, Sandy. Asa. From where it's coming from, it's more like Lisa always asks me, she's always getting doubtful when we don't have the customers.
+Sachee Perera | 01:31:13
+It's coming. So.
+boney.mylady@swiftcheckin.com.au | 01:31:25
+And we making any step further? Are we taking at least one step further?
+She always raised that question against me, and sometimes getting those five customers or getting one customer at least because she's been looking at me.
+Sachee Perera | 01:31:47
+Is. I see. They're looking at this.
+boney.mylady@swiftcheckin.com.au | 01:31:53
+I resigned from my job in 2022 of having this team and going forward, and after three years, you don't... Are you in a dream world, or are you really going forward?
+Sachee Perera | 01:31:55
+The tech in this SP.
+boney.mylady@swiftcheckin.com.au | 01:32:13
+So I think that's when... So she's trying to relate. Okay, if that she says that Kpran had the same struggle in the initial phase, then okay, that makes sense. Otherwise, look, this guy is crazy, and he's going somewhere. Which is in a fancy world. Whether we are going to get there or not, it's not sure.
+Sachee Perera | 01:32:40
+Like be honest, if you were in a dream world, I wouldn't waste my time. So, being truthful, if you're not going to be interested in my time, I'm not going to do that, right?
+I think you're on the right track. I think there are some quick wins we can get by just doing this. Well, firstly, getting the current group across. I'm keen to hear how you go in today's call. I don't want to necessarily block this call because I need to get up to speed.
+So I think whatever you're going to do, the extra information from me will help you with the next step. But I don't think I... Yeah, like GT and perseverance will help you guys succeed, right? The retros and really understanding the customer and knowing when to pivot and when to double down is the thing.
+If you're talking about time sheets and the costs around that, that's why I know you're not in the dream world right now. That's basically what we solved at CorePlan, but for DRs, right? What is the log of the drill, but instead of trades and construction, it's foriling, so it's the same thing as an invoice, right? The same thing as a small business collecting your information and putting it on... It's the same. The funny thing is when you jump from one industry to the next, which I have at SideKicker and all of these other businesses, you see the patterns.
+At SideKicker, we did the same thing, which was another completely separate business. It was just a time sheet, but it was one person for 50 people, at the same time. But you're not in a dream world, so I think you guys are in a good position.
+boney.mylady@swiftcheckin.com.au | 01:35:09
+Okay, there you go. That's the answer to your initial question. Because I just had to... Yeah, thanks for confirming that, because sometimes.
+Sachee Perera | 01:35:20
+Now.
+boney.mylady@swiftcheckin.com.au | 01:35:22
+Yes, sometimes I do feel that if Nisha asked me that question ten times, sometimes when she asks the 11th time, I still sometimes doubt
+so yeah, it's a long journey. You bet so many things on this journey. There are a lot of people dependent on me as well in terms of... Yeah, to prove what we are doing is worth what we are doing.
+It's good.
+Sachee Perera | 01:35:55
+I cool.
+boney.mylady@swiftcheckin.com.au | 01:35:56
+Good to know.
+Sachee Perera | 01:35:58
+Now keep your head up, keep pushing forward. That's the only way. And your disclose, right? You're there with a bunch of trials, you're getting progress, you're getting the time, you're doubling down on the messaging for the key use cases, you're there, you're almost there, you just need to keep going.
+So, yeah, we'll... We'll be... Any questions from me about how the next couple of weeks will go?
+boney.mylady@swiftcheckin.com.au | 01:36:38
+Come I will keep... So I think we need to... Yeah, you can share that. NTA the one thing and then I will give you the calls, demos, HubSpot, all those as I go and fix those things.
+Sachee Perera | 01:36:47
+Yeah. Yes.
+boney.mylady@swiftcheckin.com.au | 01:36:56
+I'll go and call Andrew and keep you updated on the email how that thing goes then scientists list and comes list.
+I'll share those things Apollo access and everything that you have said in that email.
+Sachee Perera | 01:37:06
+No, yes.
+boney.mylady@swiftcheckin.com.au | 01:37:09
+I'll put all the links to your document in a single document. Then probably we will give... We will set up an account for you as well, especially on the inside Zoho and Microsoft so that you can get all the internal files and folders and everything.
+Sachee Perera | 01:37:30
+He.
+boney.mylady@swiftcheckin.com.au | 01:37:31
+Is that going to be too hard for Like.
+Sachee Perera | 01:37:34
+I haven't used Zoho, actually. No, that's what I have used Zoho once upon a time. But I'll figure out my way around and.
+boney.mylady@swiftcheckin.com.au | 01:37:42
+Yeah, so if you yeah, I can run you through, it's pretty much like the Google cloud or micro Microsoft.
+Sachee Perera | 01:37:50
+It.
+boney.mylady@swiftcheckin.com.au | 01:37:52
+Yeah, it's, one drive. They call it a Soha Drive, so Outlook, they called it a Zoho Mail.
+Sachee Perera | 01:37:57
+Okay.
+boney.mylady@swiftcheckin.com.au | 01:38:02
+That's it. It has a different name. It's pretty much the same thing. SLI instead of SLI, we use Zoho click.
+Sachee Perera | 01:38:11
+Yes, yeah, co sounds like a plan.
+boney.mylady@swiftcheckin.com.au | 01:38:11
+So. I'll try to give you all those things handed out in a meeting as quickly as possible, then share everything with you, then we'll go from there.
+Yeah, and one more thing, Sachee. I just want to let you know that we are very open with whatever negative suggestions you have. Don't feel that, okay, that's going to hurt this body. We never have things like that. You can come and talk to us in whatever way that you think it's not going to work.
+If it's working, tell us that, okay? If it's not working, tell me that, okay? When you did a very shitty job, we are happy to take that and so don't feel be open with us.
+Yeah. I'll talk to you much more in detail when I come and see you in person?
+Sachee Perera | 01:39:18
+Yeah, I will be challenging you and testing your assumptions and the things you say, how direct I may be.
+boney.mylady@swiftcheckin.com.au | 01:39:19
+Y.
+Sachee Perera | 01:39:33
+I probably won't tell you my [Laughter] unless you're in really big trouble, then I will, but yeah, I will.
+boney.mylady@swiftcheckin.com.au | 01:39:37
+[Laughter] yes.
+Sachee Perera | 01:39:48
+That's. the thing with everyone. I'm always testing them for... Well, get them to reflect on the actions. Why are you doing it this way or why didn't you do it that way? Okay, so I will be testing that, and as we work together a little bit more, we'll figure out what our best way way.
+boney.mylady@swiftcheckin.com.au | 01:40:07
+[Laughter] to. [Laughter] Yeah.
+Sachee Perera | 01:40:10
+Yeah, alright, cool guys. Thank you so much for your time. I've got so many notes over here. This is really good. I will send you this mutual NDA I found. I found the one-way NDA. There's another mutual one I have which I can send through to you.
+boney.mylady@swiftcheckin.com.au | 01:40:24
+He.
+Sachee Perera | 01:40:29
+I'll try and get through to YouTube later today or once I've found it somewhere in my drive.
+boney.mylady@swiftcheckin.com.au | 01:40:35
+Y?
+Sachee Perera | 01:40:36
+Yeah, so awesome.
+boney.mylady@swiftcheckin.com.au | 01:40:36
+Sure.
+Sachee Perera | 01:40:38
+Alright Nisha, nice to see you again.
+boney.mylady@swiftcheckin.com.au | 01:40:38
+Thank.
+Sachee Perera | 01:40:41
+Bonnie, have a safe flight. Let's coordinate after the NDA and all the documentation, then let's coordinate a time for me to really first understand the basics first. I'm not going to be making any recommendations or any actions straightway.
+I'll first understand the problem first and really talk to you more.
+boney.mylady@swiftcheckin.com.au | 01:41:03
+8.
+Sachee Perera | 01:41:08
+Talk to Nisha. Talk to Sandy. Talk to Kabita. All these guys. First, to really form what is working and what's not and really test.
+boney.mylady@swiftcheckin.com.au | 01:41:13
+Flo, please.
+Sachee Perera | 01:41:19
+Get an idea from what Sandy said. Or they can't find these accounts so they can't find the leads. What does that mean?
+And yeah, a little bit more in that stuff.
+boney.mylady@swiftcheckin.com.au | 01:41:30
+Sure. Absolutely.
+No, too.
+Sachee Perera | 01:41:34
+A good day.
+boney.mylady@swiftcheckin.com.au | 01:41:37
+Enjoy your day by.

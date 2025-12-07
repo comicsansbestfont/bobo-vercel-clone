@@ -1,0 +1,512 @@
+Speaker 2 | 00:32
+Hey, Saty, how are you?
+Sachee Perera | 00:34
+On. Hey. Good. Mate, how are you doing this?
+Speaker 2 | 00:38
+Good. Are you based in Australia at the moment, or have you been in Sri Lanka for some time.
+Sachee Perera | 00:43
+I was in Sri Lanka for about six or seven weeks, probably the longest I've been in Sri Lanka since I was a kid. [Laughter] Yeah, no, it was the first time I've spent that much time in Sri Lanka with my family, so I just stayed with them, just stayed at home, ate food.
+Speaker 2 | 00:54
+How is it? Did you travel around or mostly around Colombo? Yeah, yes, [Laughter] four yeah, that makes sense how like after how long did you visit Sri Lanka after like three years or.
+Sachee Perera | 01:09
+It was okay. It was good.
+I left home when I was 15, so now I'm 38. Living with your parents for that long after so long can be interesting. Yeah, no, I've been coming to Sri Lanka every year or two, but probably for a week here and there.
+Speaker 2 | 01:37
+Okay.
+Sachee Perera | 01:38
+That's about it. Yeah, but now I'm actually in Bali at the moment. Before I was in Sydney, then I was in Perth for a couple of weeks and then back to Sydney.
+Speaker 2 | 01:52
+Alr Yeah. Thanks for taking the time to have a chat, and I really appreciate it. Armani was the person who connected me because we have been building a product and then we've been raising some funds actively.
+Sachee Perera | 02:06
+[Laughter].
+Speaker 2 | 02:08
+So she was like hey, there was someone who visited who is interested and in kind of working with them helping some startups. So he/she wanted to... With you. So, yeah, I think... How would you like to structure the call? Such as... Yeah, amazing, happy to do that.
+Sachee Perera | 02:22
+Yeah, just maybe we can just dive right in, right? Looking at your background even in this space for a while with not the star, but in the scene.
+So curious to find out. Yeah, how did you manage to get to where you are today? How did you build the software? What was the reason? Yeah, what's the founding story?
+Speaker 2 | 02:49
+So essentially how I started or as my founder, of course, started exactly five years ago. So actually, I celebrated five years in business on the 3rd of November. So exactly a week ago. So I started when I was essentially nineteen.
+The very next day my IELTS exam finished yesterday. And then today I started my first business. So I started during the pandemic. When the pandemic hit, all my school classes, everything stopped.
+The general education was essentially restricted, right? So during that time, I kind of deviated towards learning a little bit of self-learning, a little bit about coding and designing.
+I found out this term called entrepreneurship. For a year, I was going down that rabbit hole. I got distracted from the usual education route.
+Sachee Perera | 03:40
+He.
+Speaker 2 | 03:41
+And when exam times were coming up, I was like, "Hey, for a year I was distracted."
+I know that I'm not going to do well in the sense that I need to have my next steps planned out, but I have some skills that I have gathered. So what I did was I spoke to a couple of my friends, "Hey, we have some skills around technology, building products, building simple sites and all that."
+Sri Lanka needs that because during the pandemic, everything had to go digital, and Sri Lanka was not very digital by that time. So it was we had a set of skills. There was a market need for it to serve the Sri Lankan local market itself.
+So we got together to serve that need during the pandemic right after my exams finished. But I knew that getting into business, knowing zero about it, wouldn't make sense. I started having an internship early to learn about how corporate works, how really the industry works.
+So I started both together. Nine to five, and then, of course, mornings and late nights. When I'm traveling, I work on the business. Five months down the line, I had to make a call on whether I'm going towards 95 or should I choose business.
+So I made the decision to go into business. From there, we scaled that team of four people at our best, a last day, close to about 50 people headquartered in the US. We have about 135 customers in 13-14 different regions globally, ranging from startups to public-listed organizations to even government agencies.
+So we scaled this technology as such.
+Sachee Perera | 05:20
+Sorry. You say you have 135 customers right now.
+Speaker 2 | 05:24
+So this is for the technology services business that we started.
+Sachee Perera | 05:27
+The services.
+Speaker 2 | 05:27
+So like the foundation, yeah.
+Sachee Perera | 05:28
+Sorry.
+Speaker 2 | 05:30
+So we have about these are long-term to short-term projects that we have worked on.
+So we have about 100 customers in that part of the difference in 40 different religions.
+Sachee Perera | 05:37
+Yeah. Yeah.
+Speaker 2 | 05:41
+So this is mainly about technology services. So primarily from product engineering, where we build products for startups to enterprises to web solutions that we have worked on.
+So when we were scaling, as I said, at one point, we were closing in on about 50 people. We hit an issue where we could not hire fast enough to cater to some of our demands.
+As a result, we lost some of our major deals. As startups, we don't like to operate with large, heavy recruitment teams. So we wanted to know if there was a solution for this. Any tool or other process that we could implement to really find the best people fast enough. Five different tools and platforms, none of them really gave us what we were looking for. Hence, we built a PUC on an early version of this product that we are currently focusing on. This is early in 2024.
+That really worked out for us. We were the first customers of this product for almost a year. It solved our internal hiring problems. We were able to hire people fast enough. Then we spoke to other founders and recruiters, saying, "Hey, do you have the same problem?"
+Many of them said yes. As a result of this, early in 2025, we pivoted the business model from services to products, scaled down the product services business, and went all in on the product. We productized that in two months and launched it in year.
+Sachee Perera | 07:11
+Zero.
+Speaker 2 | 07:13
+And is what our main focus is at the moment. So that is what we're building. Happy to go into a little more detail, but on a foundational level, that is like the story so far.
+Sachee Perera | 07:20
+Yeah, okay, that's cool, that's very good strategy. Well, very good strategy like building it internally and then writing the consultancy plan and then pivoting.
+I think that's a nice formula for success, right? The spring from one to the next. So I forgot to ask at the very start. So from today's catch-up, what are you hoping to get out of the time that we're having today?
+Speaker 2 | 07:51
+Yeah, I think in terms of your core capabilities, there are two areas, right? I think in terms of mainly scaling and go-to-market, JM is right. So something that from our product.
+Sachee Perera | 08:02
+So I'm I.
+Speaker 2 | 08:05
+So like you correctly said, we are springboarding off of a product engineering background, okay? How to build great products and all that. But from there onwards, okay, we have a great product. How do we get it out of the market in terms of scale, especially in the optimized way that it is somewhere that we are currently, I would say, struggling on because what we have is not an MVP like that, which is early stage. We have something that is mature that customers are using, but most of our customers are currently coming through our existing network of what we have built in the previous business.
+So how can we go beyond that and build an engine that acquired customers? That is something that we are struggling with. It's a big topic to address by itself, but any ideas or any kind of.
+Sachee Perera | 08:52
+How many customers do you have now?
+Speaker 2 | 08:55
+So currently, we have, in terms of paying customers at the moment, three. So these are enterprise customers. Then we are scaling up to two more within this week. So essentially... So what I'll do is shall I give you a little bit of a more structured conversation about the product itself?
+Sachee Perera | 09:13
+Sure.
+Speaker 2 | 09:14
+So I have a deck so that I can... Then you will have a better kind of understanding of the product, right?
+Sachee Perera | 09:17
+Beautiful.
+Speaker 2 | 09:20
+So essentially, Talvin is a product of.
+Sachee Perera | 09:22
+[Laughter].
+Speaker 2 | 09:25
+Talvin essentially comes up. If you look at the name, it's a combination of the words talent, voice, interviews.
+So, what we're building is a voice infrastructure for enterprise hiring, enterprise volume hiring. Essentially, our first core product right now, what we're building is a tool to eliminate the need for screening interviews.
+Because what we have seen is that if you look at the whole hiring process, screening is where a lot of time is spent, mainly that's why we say volume hiring, which is organizations that get thousands and thousands of CVs every single month.
+Sachee Perera | 09:55
+[Laughter].
+Speaker 2 | 09:59
+They cannot give every single CV the same attention, making it a little bit unfair for the candidates who interview or who apply.
+If you look at recruiters, if you hire, if you interview 100 people, you would end up moving only about 20 to 30% of them to the next stage. That means 80% of your time is spent with the wrong candidates.
+Like I said, screening is where you spend a lot of your time. So, you spend a lot of your time essentially on the wrong things. If you look at the whole hiring life cycle as a recruiter, that's why we need more and more people to process more and more volumes when you're hiring in scale.
+So, what our thought was, if you can really retain your same recruitment team and scale your hiring efforts by techniques like... What is the value that you can bring in and how much fairer can you make it to the candidates who applied?
+Looking at this problem, essentially, we built, like I said, the voice AI recruiter who would have conversations synchronously 24/7 with candidates who apply to your organization and give a detailed recommendation, saying, "Hey, these are the best set of candidates that you can take to the next stages of your hiring process."
+For example, if you want to interview 100 people right now with a recruitment team of about two to three people, that's about a month's worth of work for you to actually do. But hundreds of interviews are about one or two maximum days of work for our Talvin, a recruiter.
+So that means you can process volumes and volumes of candidates in a very short period of time and give a detailed, unbiased, data-driven recommendation saying, "Hey, these are the best fit for you to move forward."
+And at the moment, yeah, please, no.
+Sachee Perera | 11:38
+If I can ask, jump in here. So you have mine. Valley, sump bank, any time fit, and you're not the other one. These are big businesses, right?
+For example, Sampa Bank, have you? Is this rolled out for all of their branches or like what's that? What's the adoption?
+Speaker 2 | 12:00
+So I'll go one by one.
+Sachee Perera | 12:01
+Yep.
+Speaker 2 | 12:02
+Exactly. So mine Valley, we completed a pilot for about a month and we just got the... They don't have a board per se, but let's say a board kind of approval from WISH and the CEO last week to go public across all their recruitment channels.
+So I was in Malaysia about a couple of weeks ago with the team at the office, and then that kind of deal went forward. So they'll be rolling out across some bank. We got the board approval.
+So some bank processes took four months, you know, banks are public listed. There are a lot of restrictions around it. So that took a lot of time, but we just got the board approval. Janesk is a paying custom.
+So Janesk Insurance is not JX G. This is their whole holding company. So they're holding organization called JXG. He's a customer for now, like three or four months. At the moment, they're already running all their into interviews across that executive hiring across that Anytime Fitness.
+Sachee Perera | 13:05
+We can.
+Speaker 2 | 13:06
+Of course, I think in Australia, it's pretty big, if I'm correct.
+So Anytime Fitness, I think the Canadian entity is using a tool to run some of the ops-based hiring, not for the gyms themselves, but the office-structured hiring is done through our products.
+So stuff that we're very proud of is Anytime Fitness. Fitness is a purely inbound plan in a sense. They found us; they didn't book any demo; they just signed up, paid, and started using the tool. Others, of course, have been utilized across our network.
+As we mentioned, we went and did the demo and got them onboarded in that way. So, how can we have more? There's one more customer that we have acquired in that way.
+How can we revamp it further or are there more active initiatives like what we want to do because all these customers that we're taking, we are taking a fully organic approach. We don't have any paid ads that we run at all.
+If you look at some of the important keywords for our tool, like AI recruiter, voice AI recruiter, we are on the first page of many of those search engine keywords. We are the only non-funded startup across those things as well.
+So, the tool works in a very simple, straightforward way. You can set up a job on our product in less than 30-60 seconds and you get a URL that you will share with your set of candidates, and it will have a conversation, a structured conversation, which is why we say conversation: it adapts to all the answers that the candidate gives.
+It's not that "Here's the question, here's the answer. Go to the next question." That's not how it is. When you give an answer, AI is able to adapt and ask the relevant follow-up questions as well and have a conversation around it so you have more detailed information and context around the candidate's performance and what they have done.
+With that, we give the rank list of insights to the organization so that they can make the decision of where to go forward. It integrates very nicely with your existing workflow. If you have a manual workflow, yes, if you have an ATS product, it integrates with that.
+So, it integrates with all the key ones like ATS, Indeed, and LinkedIn. You can directly integrate and kind of run it across that way. So a fairly straightforward process.
+Sachee Perera | 15:21
+So I was I'm not sure if you're going to be jumping into this so I was just going to ask. So Ashby Greenhouse, all of these platforms, I noticed that they've started implementing AI into it.
+So what's your. What's your mode like? What's your. How are you gonna defend these big. You know, the big guys from just releasing this.
+Speaker 2 | 15:44
+Yeah. So, one of the key things when they started AI was one of the key things that we did. We were very specific when we did not want to, but we didn't want to do. It is playing in the CD space in the sense of utilizing AI to screen CBS because we don't believe that a CV tells the whole story of a candidate.
+That is the only and the key area that they can play in because if you look at Ashby, if you look at Workpay, the only AI tool that they have right now that they're looking at is a keyword search on the CV. We want to go one step beyond and fully focus on voice conversations, the story of the candidate, where it really helps us understand the candidate beyond the CV. Why wouldn't they do it.
+Sachee Perera | 16:30
+Y.
+Speaker 2 | 16:32
+Of course, there are organizations, for example, that, for example, Ashby is a very AI-focused product, let's say, as a product.
+But for us, our main key thing is that we fully focused on the voice infrastructure only. We do not focus on any other tools or anything that goes beyond it. So, in terms of the quality of the product and the quality of the recommendation, that is where we are going to play a little bit of an advantage because we are fully focused on the voice infrastructure itself.
+For them, voice infrastructure is just another part of the offering. So in terms of cross-selling, it's not going to be something very easy. Number one. Because from a price point of view...
+If you look at the general as product, it's going to cost you somewhere about $300 to $500 for starting amount, but selling or upselling another $300 to $500 product on top of a $300 to $500 product is not something that is easy for them to do because their infrastructure is not that... Let's say cheap at the moment, it's a little bit of an expensive tool.
+So when you look at organizations looking at tools as usually do not cost more than their core product sometimes. For them to say, "Hey, our core product is $300, but okay, this is $600." The buying journey wouldn't be the... You don't look at it in the saving. This is what something we have recognized because we looked at doing this with some ATS products where we want to go as an integration with them.
+When the ATS were selling for $100, they were saying for their customers, "Hey, here's a $600 add-on." It was sold by the same as they were not the customers that were happy with it.
+So when we go as two separate tools that they can collaborate and use, we have seen that work. I mean, it's a psychology, but we have seen that it works that way.
+Sachee Perera | 18:27
+Yes.
+Speaker 2 | 18:28
+That is something that we have recognized.
+Maybe we can be wrong, but that is what we have recognized so far. But essentially, fully being focused on how we can give the best recommendation to the candidate to the organization, saying, "Hey, this is the best candidate."
+That is something that is extremely tough to do. So that is to have extremely focus on getting that algorithm of how you really predict the candidate is good better and to have that focus, that is where I think you can be because if you twice. AI, yes, conversations can be done, but the customer would stay for the long term if we can keep on recommending only the candidate for the long term.
+So I think that is where most of our MOT is coming from. Yeah.
+Sachee Perera | 19:10
+And what's the... So those guys are going to be too? Yeah, I understand what you're saying. So then who's your biggest competitor? Or what is the competitive landscape?
+Speaker 2 | 19:24
+So looking at our kind of landscape, there's few the most like the bigger or it's the most straightforward organization that is in kind of competition with us it becomes called ribbon. AA So ribbon is one of the key ones, but the key focus is like Americas, like North American market. They're from Canada.
+So North American market is a key player. And of course, there's another one called hey Milo. Hey. Milo is based in America. Again. North American focused. So our product as a like a product wise, our focus is actually in the APAC region. Our next goal is JCC, but APC is kind of the key one for us because for our like I said, volume hiring, right?
+So for our product to make sense, organizations should do volume hiring. And where the organizations do a lot of volume adding is in APAC, where like, you know, they build their offshoring teams in APAC, one of our key customer ICPS that we're going after our large enterprises that are building offshore teams in India, in Malaysia and Philippines, all that.
+So for them because some of our customers, like someones that I didn't list here are actually like teams are building offsho organizations in these regions because for them, maintaining the same hiring, let's say process across these global offices and still being able to support like this volume hiring is pretty important.
+So our tool helps do that. So that is where I think like on a kind of region wise way like we are very different and some one other factor that contributes to the more as well in terms of regional focus and regional, let's say because for us, we are basically it's easy for us to meet these customers as well.
+Sachee Perera | 20:57
+No.
+Yeah. And what's the average deal size?
+Speaker 2 | 21:13
+Sorry.
+Sachee Perera | 21:15
+Where are you at in terms of ARR or MRR? And what's the average real size?
+Speaker 2 | 21:21
+So I think, as of today, we passed about 12,000 ARR. We will probably hit mid-November once we have the mid-market and the S&P Global contract starting.
+So we will be passing close to, I think, 30K because those two accounts will add a lot to our ID. Universal 12K, US ARR then.
+Sachee Perera | 21:44
+That's. CU.
+Speaker 2 | 21:47
+Sorry, yeah.
+Sachee Perera | 21:47
+That's Univers D.
+Speaker 2 | 21:50
+So 12K, USDRR is at where we are right now.
+Sachee Perera | 21:50
+Yeah. Okay, got he.
+Speaker 2 | 21:55
+So before December, we will hit 30K.
+Then our goal is at least 100K before January. February is one of our key goals because a lot of our sales processes are very long. These enterprise customers... We are in touch with seven banks at the moment.
+As soon as one bank starts using us publicly, other banks really wanted to lose us. So they are still holding back in terms of sales processes, and they are going slowly.
+So once some of those organizations start falling, it's like a domino effect in terms of closing those customers. That is one of the challenges we have, which is when we go to investors, some of the investors say, "Hey, you need revenue faster.
+Focus on a different ICP where the sales process is slower, but their per-customer value is very low." They would only pay a few hundred dollars a month, whereas enterprise customers, if you go to them, the sales prices are longer.
+But their contract values are much larger. So that is something that we're currently debating about internally as well because we are taking a fully organic approach.
+Sachee Perera | 23:10
+So how much are you charging? What's your pricing model?
+Speaker 2 | 23:14
+Yeah, so, yeah, this one I'll skip through one second.
+So, the pricing model works in a way where it's per minute of usage. So, essentially, let's say a candidate speaks with someone for, let's say, 5-6 minutes. The next candidate speaks for 4 minutes.
+That's 10 minutes of usage. So, it's on a usage basis. The organization can buy about 1000 minutes a month of interviews, and it grows on a usage basis. Essentially, that is how it works. We have one tier. Our first year is $149.
+That is just to start using the product because it's something brand new. We keep it something that is easy for them to get started and then ramp up. It starts at about $299 or $699, and then it goes for enterprise.
+So, if you look at most of our customers, the journey is that they start at $149 first and then quickly ramp it up to likely the next or the second or third years. There are some who start with $149 and then directly go for a custom requirement, which is our enterprise tier in terms of pricing.
+So that is how the value works. That is how Sampa Bank is working. So, they will be paying probably a few thousand dollars a month there.
+Sachee Perera | 24:41
+So with just these existing customers, right? Just the Lobos, it sounds like they haven't fully ramped up.
+If, when they fully ramp up, let's assume that each and every sales bank recruitment is going through Tabin. What's the full deal size for Asana now? What is it? Now, and what could it be?
+Speaker 2 | 25:11
+Yeah. So, Sampa, I would say the difference wouldn't be a lot because if you look at the hiring structure, junior and intern hiring is where most of the volume is. So that's about 650 interviews a month.
+So that is where they are going to start off with. So if you look at that, it is going to add about close to 25 KARR to us, but it's just that process and where they would go next is their internal cross-hiring and what you call it, promotions.
+So if you add that, it will probably be another 100 or 200. So that jump wouldn't be a lot. If you look at where the jump would have a little bit of a big impact, I would say it is in accounts like JXG. Janas right now, it's just the corporate, like JCPA organization that is using it.
+Sachee Perera | 25:48
+Okay?
+Speaker 2 | 25:59
+If they break it down into their other things, their current account is about, I think, 299 a month. That can ramp up to a few thousand a month if they do that. So there are both those types of customers, but I would say most of the trajectory is that they go up rather than go down because the volume is where most of our customers have the problem in.
+So with this tool, Asana is now able to do more volume because now, let's say, with the team of about two, three, or five recruiters, they will only be able to do about 200-300 interviews. Now, with the tool, it allows them to get more candidates to the workflow.
+So that means eventually they will be able to conduct more and then ramp up the accounts that they currently use as well.
+Sachee Perera | 26:47
+Correct me if I'm wrong. It sounds like you're pricing it too low because.
+Speaker 2 | 26:53
+Hundred hundred percent. I would say that is a little bit strategic when we started because we wanted to get our foot in the door. So, our profit margins from a GP, from a purely product standpoint, are very low compared to other SaaS products. I'm betting on two things.
+Sachee Perera | 27:14
+Yeah. Yes.
+Speaker 2 | 27:16
+Number one, once we show value, it's a little bit easier for us to increase.
+That is something that I'm looking at. The second thing is if you look at storing one GP of data about 10-15 years ago versus one year is completely different. What cost a few dollars back then would be almost nothing
+now. Right now, AI credits get cheaper every quarter, every year, right? So, what we pay for AI voice infrastructure drastically comes down the line. That means our GPS increases over time as the technology matures as well.
+So we're betting on both those sides of the formula. But yeah, from a pricing standpoint, I would say that is something that we are looking at revamping by Q1. We are taking a little bit of a marketing tactic there, saying, "Hey, you are because we are targeting enterprises." We are going to say when the finances are coming to an end, a month or two before the financial year starts. We are going to say, "Hey, by the time the financial year starts, we are going to increase our pricing."
+So, if you block an account, you know, sign up with us right now, there's a little bit of a discount that you can get. We are targeting that to convert some of the accounts that we have. But.
+Sachee Perera | 28:38
+So I think you said you want to get more... So it sounds like you're trying to solve the lead generation problem. You want more deals, you want to talk to more customers.
+But the challenge is your customer base is enterprise and the deal cycle is so along.
+Speaker 2 | 28:54
+No.
+Sachee Perera | 28:55
+What have you done or tried to do to get more enterprise deals or enterprise opportunities?
+Speaker 2 | 29:05
+So I'll be across... What do we usually right?
+Sachee Perera | 29:06
+What to do with.
+Speaker 2 | 29:08
+So we essentially first of all, run our... A webinar has been hosted for the last month, but we are doing a webinar around every month that he's focusing on a certain topic that we are focusing on.
+So these are global speakers that we bring in. The last one was from South Africa, and the next one is going to be from Malaysia. These are strategic markets, and they are, let's say, leaders in the space who have a following around them and have built trust around them.
+So that is one way that we are trying to build some of that noise across. We do a lot of lead magnets. So currently on the site, we have access to our full detailed videos that we have just built. We are launching an eBook right now in terms of how to adapt as an enterprise team to our blogs. They are ranking very well.
+So more of an SEO focus is something that we have focused on and something that is pretty well working for us. GEO is one way that we do it. Organizations are finding us through tools like JABBD and all that, which has been extremely working really well for us.
+That is one way that we do it, and my founder approach is more of partnerships where I go to direct people who have, for example, corporate trainers in the US who already have these enterprise customers. I work with them to strike some referral partnerships to take our product to their customers.
+That is something that I did because when I was in Singapore and Malaysia for about two or three weeks, I built those types of partnerships with organizations where our tool can be an add-on to what they're currently sitting on, so that I can get into the organizations in a door that is already open and a trust that is already built. Those two are the approaches that we're currently taking in terms of reaching these customers that we want.
+Sachee Perera | 31:10
+So it sounds like you put some plumbing in there to get these leads. How is that performing? How many leads? What's your pipeline looking like right now? And how many leads do you currently get on average a month.
+Speaker 2 | 31:26
+Yeah. For example, from the partnerships that we have built, the APAC partnerships, I just finished them, right?
+So, in terms of them converting to customers, it's pretty low. But in Sri Lanka, most of these banks that we're currently speaking to came through a certain relationship that we have built with someone who does corporate trainings across the country, who is one of our strategic advisors as well.
+So, yeah, so he's the leader in the space here. So, from him, the local customer base has been very active, probably like our issue and all that.
+Sachee Perera | 32:01
+Okay.
+Speaker 2 | 32:04
+Something that I've seen is the quality over quantity. I've seen that we get demos at least three to four demos a week, which is pretty low, but if you look at the quality, it's pretty good.
+These are organizations, we have had unicorn-valued organizations to a few billion dollar valuation organizations who compass and book their most purely organically the way they find us.
+Sachee Perera | 32:28
+4.
+Speaker 2 | 32:35
+But. Yeah. Like, you know, ramping that top into at least three to four. And what we want to do.
+Sachee Perera | 32:38
+Sorry if I can double-click on that. So you're getting three or four demos a week, and are they mostly... Are they from Sri Lanka, or are they international? global?
+Speaker 2 | 32:52
+Global Sri Lanka is very reality. Like, you know, if you look at like ten, one or two would be Sri Lanka. That comes so ically it's mostly global.
+Sachee Perera | 32:59
+Okay, y and the conversion of that.
+Speaker 2 | 33:00
+Yeah, our focus is global essentially.
+Yeah, conversion is at the moment, I would say pretty low. That is something that we are trying to figure out. What are the factors? One of the things about APAC that I've seen is not like in the US where if they don't like it, they would say it in a... If they don't like it, they go to...
+So it's sometimes hard to get really... While there was the discussion around it, the conversion rate has been pretty low in terms of some of the demos that we have done so far. But they don't close the door. We keep discussing over email. We say, "We help them sometimes when they come to us and say, 'Hey, you have this exclusive product, but if you have this additional feature, that could be great.'"
+So we say, "If you sign up with our first tier, we are happy to build this across and ship it so that you have a reason to now upgrade and use it." Likewise, we keep in touch, but in terms of conversion rates, it has been pretty low at the moment. Yeah.
+Sachee Perera | 34:00
+Understood Okay, so I know we've gone over time. How are you looking for time?
+Speaker 2 | 34:07
+I'm fully clear for the next thirty minutes as well.
+Sachee Perera | 34:08
+Sure, yeah, that's okay. Cool. The same question set, but mid-market, smaller deals.
+Speaker 2 | 34:22
+That like it. If you look at smaller deals, yeah. I would say the conversion... Okay. When you say organizations, if you're looking at enterprise to SMEs, it's really hard to structure because, I would say most of the customers that come to us are enterprise.
+If you only have one or two SMEs, I would say most of these are all at least a few hundred people, a few thousand people. Organizations. But if you break it down into global versus local, I think local customers are more active with us at the moment, something that I didn't expect.
+But a lot of local entities of these global organizations have been working with us very closely and looking at closing some of the accounts as well. There's a manufacturing organization called Yokay WS, which is large in manufacturing organizations around the world.
+So the Sri Lankan entity, likewise, a lot of global organizations, offshore teams in Sri Lanka, have been very positive working with us to grow. But global organizations, yeah, they're pretty slow in terms of the decision-making I See.
+Sachee Perera | 35:38
+Okay, so. Okay, so far, it's kind of quite clear that, you know, you need to install a enterprise sales motion for both inbound and outbound.
+Speaker 2 | 35:50
+Yes.
+Sachee Perera | 35:50
+So if you're not wrong in
+what you said, that makes sense. Who is asking you which bases or investors are asking you to go for smaller, faster deals? Is it like Ozzy ones or sorry, are they Sri Lankan ones or.
+Speaker 2 | 36:08
+No, I look at a lot of Sri Lankan VECS, I look at a bit of Sri Lankan angels. So they're not like domain specific, but they have to like, you know, invest money. These are like mostly smaller, like more funds across like APAC, mostly like Malaysia SAP based funds, but it's a mix like there are two parties, like two people saying like, hey, like, you know, hey, do this.
+And others are saying, hey, but Enterprise is better. So it's. It's something that like. But in the end of the day, like, I won't change, like the business model because of an investor, like, you know, I would of course, like just to get a deal done.
+Sachee Perera | 36:45
+Yes.
+Speaker 2 | 36:46
+Like would see, of course, the enterprise motion is working for us better in terms of a strategic focus because that is immediate validation for a product across markets as well. One enterprise customer, for example, going into APAC and saying, "Hey, we have MindValue and Anytime Fitness as a customer is a good validation for the product." Rather than saying, "Hey, we have this unknown startup." Yeah.
+Sachee Perera | 37:08
+I. Normally I would say gome market, but I think from your use case, it doesn't. I don't think right now it makes sense to go mi market. So I like the enterprise play.
+Speaker 2 | 37:19
+Two.
+Sachee Perera | 37:23
+So what are you so in your email, sorry, in your message, you said enterprise sales was a bottleneck and problem and then fundraising. Tell me a little bit more about how much are you looking to raise and what are you going to use the funds for?
+Speaker 2 | 37:41
+Okay, so currently what we are raising is we are trying to raise about a million for the 10% at the moment.
+So that will be primarily used across primary engineering. 65%. Where we want to really work on our voice infrastructure because at the moment, we have a pretty good tool at the moment, but we are dependent on some other infrastructures we have. Our costs are pretty high in the sense that we have to depend on some external tools to do that, but if we build it from our end, we have more control over the voice infrastructure we have and can bring down our costs a lot and increase our gross profit a lot.
+So that is something where we want to heavily invest because we can keep on investing and scaling more customers, but our gross profit will stay the same if we go in this route. So we have to work on the engineering part a lot, and then probably invest the rest across marketing.
+Right now, we don't have trial runs in the sense that none of the organizations can trial run our product. They can't just come and get any free trials because it's limited because the costs are a little bit higher in terms of running OAI. So we want to give the opportunity for a little bit more selected organizations to come and try the product before they purchase it so that the purchasing journey becomes a little bit more easier.
+Then we can allow more organizations to try and experience that first experience we can give them faster, and in the median, it gives us a massive runway because we're based in Sri Lanka from the engineering perspective. It's going to give us a massive runway rather than any other startup that is based out of either the US or any other part of the world.
+So it's going to give us a really good runway. We don't plan to raise a lot going forward. We want to really sustain a lot from a seed and scale it up as much as possible from customer revenue. We don't like to have a lot of investors on board rather than work with a few people who bet on us. Earnest early and kind of be with them for the long term.
+So that is why we want to raise a little bit more from the seed itself. So that gives us enough runway to not keep racing but focus on building and, like you said, the enterprise sales engine and, of course, the engineering to back it up.
+So that is where we are at. We have about $200,000 that is from angels that they are interested in, but I don't... I just essentially want to close the town once we have a significant portion of this $100 million or the full $100 million closed.
+So then it will be easier for us to deploy the capital and get the momentum that we are looking for.
+Sachee Perera | 40:46
+So how much of the million? So how much of that have you got already?
+Speaker 2 | 40:53
+So we have about two hundred k that is like committed from like close like angels in our network and there's a few other.
+Sachee Perera | 40:58
+Yes.
+Speaker 2 | 41:01
+Okay that we are currently speaking to. But I don't want to really... I'm very... Let's say... Intentional about who I work with as partners.
+It's very important. I focus on who comes on board rather than the money itself. So if there's someone who can bring strategic value to the organization rather than just the money, I would prioritize them more over anyone else.
+So that is something that I'm very focused on.
+Sachee Perera | 41:30
+So you're valuing yourself right now at Seed at $10 millionl?
+Speaker 2 | 41:35
+So I didn't get the question exactly.
+Sachee Perera | 41:37
+You're valuing yourself at $10 million at the moment, preced.
+Speaker 2 | 41:42
+Yeah, exactly, yeah.
+Sachee Perera | 41:43
+How did you come up with that number?
+Speaker 2 | 41:46
+So essentially, if you look at number one, like a lot of people go with kind of the like, you know, the tab, right, basically the total like addressable mark market. Something that I say is currently for AI products, building a TAM wouldn't make sense because if you look at, for example, UOB or ABN Amro, they launched... If you look at the TAM for, let's say, someone booking an Uber or a tip from their phone, there's no time for it, right? They created that market for a certain need that they have.
+So voice infrastructure. There's no time for it, but if you go a little bit down, okay, how big is the recruitment market across APAC that is massive? Again, I don't like that. Something that I believe, I think this is saying, "Hey, this is a hundred billion mark, 150 billion mark."
+Okay, how did you come up with that number? I don't believe in that. So this is purely reverse engineering. From okay, how much do we need to deploy in order to get to at least 10 million? How much do you think we require from a pre-seed stage to get the foundation to go there?
+That is what we reverse engineer towards. Okay, at least we would need a median for a 24-month runway so that we can raise further. But focused on this while generating enough revenue to bring it at least to a million.
+So that we can have the engine that is properly fine-tuned to these. Ten million. That is how I think I came up with these numbers and so forth. But if you look at the market, we are in all the pre-seeds, we are the lowest. I would say that is racing, which is... DEP is 8.2 million, and ours is 2.2 million. These are raised numbers that they have.
+In the EU, it is even larger. One of the other competitors raised 70 million, and another one raised 20 million just within the last month. So like, we are not raising much, I would say compared to the market.
+But since we are in APAC, we have a strategic advantage that we believe we can, not raise a massive amount of money, but just raise what we actually need in order to gain the traction that we require.
+Sachee Perera | 44:02
+Okay, so the whole point of raising is to get that cash injection to go faster, right? Like because with your enterprise sales organically you will get that money anyway. Would you consider raising less to and closing that off like let h hypothetically.
+Speaker 2 | 44:14
+Yeah, yes, so yeah, that is exactly exactly.
+Sachee Perera | 44:21
+500k if you have that.
+Speaker 2 | 44:25
+So one of the worst-case scenarios that we're looking at is, okay, if you can't close by Q1, the whole amount, 650k, is like...
+But we would definitely say that it is absolutely required. We wouldn't have the 24-month runway, but my benchmark is saying at least if we have 650k, I'm happy to close it around and fully focus on it because every month, every week that we're pushing back on this is like a year that we had in a... Right?
+So it's.
+Sachee Perera | 44:52
+Yeah, I think speed is the weapon here for this particular thing.
+Speaker 2 | 44:52
+It's. It's like the better for us at first. Exactly.
+Sachee Perera | 45:02
+Your are some strategies you can just deploy to get cash in from your customers straight up. Have we considered upfront payments and
+things like that?
+Speaker 2 | 45:16
+Again, from the market perspective, some of these enterprise deals from APAC in terms of them saying, "We need to take a bed for an year contract." Saying, "Hey, here's the 25k upfront." The probability of that happening is far less compared to a US or EU organization doing that.
+Sachee Perera | 45:31
+Yeah.
+Speaker 2 | 45:38
+So for that reason, I didn't focus on that being a strategy because my probability of winning would be very low. So that is why I'm taking the monthly or quarterly base motion to structure that.
+Taking bets on that structure at the moment. But in the US, that happens where you can meet the customers and talk to the customers. If there's a face to the brand, then they are happy to do that.
+So at the moment, we are not capable of being in those markets.
+Sachee Perera | 46:07
+Yeah, but I've been in a similar position, right?
+Speaker 2 | 46:11
+So that is not a thing that we have strategically focused on at the moment. Yeah, I think, in terms of the GTM building, the GTM, right?
+Sachee Perera | 46:20
+We had a whole bunch of tier one customers, and I was going to laugh a little bit earlier because you said four months was long. I've had to deal with 24-month sales cycles because it was mining, and it was really long.
+So the approach that I took was for the first year or for the foundations that our customers not even have a contract and nothing, just purely saying, "Hey guys, if we are providing new value, you must stay with us anyway. I don't need to sign you guys up for a contract."
+Then, for the first three years, for those initial ten to thirty customers, I didn't do anything. I just leveraged them to build the brand. But for you, in this AI age, you could potentially go after the first year. How do I increase the size of the pie? But get that first ask them to pay upfront and give them a risk.
+So if you pay two or two months upfront, give me the money at that first year point. So what? I'm trying to say is you have a 24-month runway. How can you raise that and offset it by leaving the customer to fund you?
+Because that's the question in my mind right now if finding funding is difficult up to me, alternatively, what? Yeah, sorry, I'm just going to shut up now. So, what questions do you have for me?
+You've worked through it quite a bit, and I've missed it. What would you like to know from me?
+Speaker 2 | 48:12
+So at the moment, I'm mainly responsible for sales from a founder's perspective because, at the moment, when I'm building anything from scratch, my approach is, "Hey, I need to experience the key parts of the organization before I delegate them."
+So, sales and product direction, at the moment, I lead. Of course, there are the rest of the teams who lead others. So, from a sales angle right now, you said we're fully depending on an Aco approach to get some of these demos and bookings for us.
+So, how can we really... What have you seen if you want to get more of the enterprise customers in front of enterprise customers? What are the other channels that you think we should focus on, or is there something that works?
+And how can we scale it up to really focus on getting or being in front of those customers? I think that is where I would say it's a very broad topic by itself, but that is where I would say my key problem Yeah.
+Sachee Perera | 49:22
+Yeah, 'cause I suppose, just like going back to the Uber example, people don't know that the majority of the market doesn't know, so they're not really searching for it, right?
+Unless you can push yourself into the SEO for hiring and recruitment, but that space is so competitive already. So, the challenge is how do you rank for those? If you already have AI equipment as the top,
+that's a good way. A lot of these things are not predictable for me, and it's off on the side. If it's a strategy, it would be a satellite strategy. But my core strategy and this is me playing in B2B is going around outbound sales for the enterprise, even a mid-market for a shorter period of time to live in the brand credibility.
+Speaker 2 | 50:17
+1.
+Sachee Perera | 50:24
+But for enterprise, absolutely. For outbound because that's predictable. That's something we can control. Putting in too much investment into ads and consultants and this, that, and the other.
+Speaker 2 | 50:36
+Yes.
+Sachee Perera | 50:39
+So. to answer your question, our payment is what would be my focus while experimenting with the things like Geo and all the stuff you're currently doing and seeing those channels that work.
+The good thing is you already have traction from these initial things. So you could dive in a little bit deeper into saying, "How do we do more of that?
+Speaker 2 | 51:12
+He.
+Sachee Perera | 51:12
+Which is a part of that satellite strategy.
+But the core for me, I would focus on the outbound, so what that looks like is your top hundred list. Well, not just basic stuff, right? What's the top hundred? What's the ICP? What are their pains?
+Speaker 2 | 51:27
+2.
+Sachee Perera | 51:31
+Crafty positioning, particularly for those, and run a sprint to see what the traction we're getting is.
+Then it becomes just another channel if it doesn't work. Hey, you've actually done some work in optimizing your positioning, your sales processes, and everything, and you probably have a better idea of your customer by doing this exercise.
+So, have you done any outbound, particularly in this fashion or...? Yeah, okay.
+Speaker 2 | 52:01
+One more like area that I was like we're kind of debating about is like is part of the sales cycle is when we speak to customers like we learn from them and that helps lets us kind of prioritize our product backlog, right? What to build next.
+So we have a voice infrastructure that is there. We are focusing on one pillar of the whole recruitment life cycle. Something that we have seen is that if you have to get in front of more customers...
+Okay, there are the pillars that we can touch where customers are more interested. It brings us, opens us to a volume. For example, we are in the interview killer, but what if we go to the sourcing pillar, where we help you find candidates, but in a more quality over quantity fashion, which is the same play for the VA?
+So, when it comes to sourcing now, we are speaking up to the candidates as well. We can, let's say, we are currently looking at a tool where we can build, where it speaks to candidates in thousands and go beyond the CB to collect high-value signals from a candidate and connect that with the right organization.
+Playing an AI recruiter, like recruiters who you work with, where you tell them, "Hey, as AJ, they find me candidates like that." But an AI who does that. So now it opens up a different pill, a different business model. It opens up more volume for us and gets your goals to the product as well. Now it becomes a bit of a marketplace. Kraken player as well.
+So that is something that we're thinking about. But that will be a completely shift of the product, going from B1 that we have to B2, which is completely different. So how do you really make those big decisions, whether it's the right thing to do or how do you verify whether that big jump would make sense right now? Small jumps like we are current TED version 1.4.
+So that version 1.4, if you look at the features that we build, at least about 60-70% of them are customer feedback. So we listen to them, we work with them to figure that out. So now we are planning to build something that is not coming through customer feedback but purely through what we think would be.
+But makes sense. So how do you really balance that out in terms of product?
+Sachee Perera | 54:24
+Look, are you working with Amani on this particular...? Okay, we had a.
+Speaker 2 | 54:30
+Yeah, she's just from the community. Yeah.
+Sachee Perera | 54:32
+Sure.
+Speaker 2 | 54:32
+That yeah.
+Sachee Perera | 54:33
+We had a similar discussion about something like this marketplace. Look, I think a marketplace would definitely give a lock-in for the equipment life cycle, but it's a completely different use case.
+It's a completely separate product, right? So when you're going up against enterprises and you're going to be... You're going to turn it into a big massive beast. So you're going to have to have two product well, essentially two CTOs effectively to run this. It should work, but if you can...
+So always going back to the first principles, why would I want to do that now? As opposed to a year down the line after I had, like, how many customers? That's what you're asking, right? Like, why would you do that now?
+Why would you want to go and invest time and effort into building a brand new product for me and the go-to-market for that? The onboarding, the plugs, and all of that. Now, how is that going to help you support the key top-line metric for your
+Yeah.
+Speaker 2 | 55:58
+Exactly.
+Sachee Perera | 55:59
+So. yeah, how is it?
+Speaker 2 | 56:06
+From a if you look at it from a product perspective, flow perspective, I would say it has value because one of the things that comes of the customers have mentioned as say saying hey, like we help us find candidates.
+But rather like currently our tool is helping organizations who have more candidates that they can't process. So that is where our tool comes in. So more candidates would make sense for them. But that is still not for these executive-type hiring.
+So for that, still, any organization, the largest organization, has problems around that where they can find those elite-type candidates for some of the very specific roles, senior roles.
+There is a value that... The tools can collaborate where, if you go to our tool and say, "Hey, I want to hire someone with these specific skills and this JD," our tool can go and speak to our marketplace of candidates. Understand if someone fits that role, conduct the voice share interview, select the top one or two people, and they directly hand it over to the customer.
+So, rather than now, at least even speaking to 10-15, you can speak to the top one or two candidates. There's a certain level of value that it can bring. But in terms of what you correctly said, now there should be a business model that is built around that, a completely different onboarding, a completely different education of the existing customers saying, "Hey, now this is something that is differently that is going to add value to you."
+Now, how are we going to differentiate from the rest of the product? So, of course, there are brand-new things that we have now. Think about that, which might distract us from the core thing. Yeah. That is the pros and cons that you're currently trying to weigh to see if it makes sense to go forward or not.
+Sachee Perera | 57:58
+I mean, on one side, it is going to get you more eyeballs on the product. But something that you just said, don't take this as a form of advice, but it makes me say, "Hey, don't check it."
+Because you just said our customers are getting too many candidates already, and that's why they are purchasing the same. Description. So what you're saying is let's do the complete opposite of what I.
+Speaker 2 | 58:24
+So yeah, that makes sense.
+Sachee Perera | 58:27
+Yeah, it sounds like an add-on that you could... Or a cool, fun experiment. You could probably spin it out as a separate brand. Get an intern on it or something. Get a TikTok influencer, or someone. But yeah, that's just my thinking right now.
+Speaker 2 | 58:47
+How we're trying to do it is if you're trying to do... Because we just finished one of our... Because we have preaching six months on the product.
+So we did a kind of a town hall last week. One thing that we are trying to do is before we build that feature completely, we just look at the eyeballs on this thing. We are trying to build an AI career guidance coach that sits on WhatsApp for candidates.
+So it's not a different tool that you want to this thing. It's just a number on WhatsApp because WhatsApp usage is pretty high in these markets where they can upload their CV, get feedback on it like upload the JD saying, "Hey, whether my JD, whether my CV fits this JD, how can I improve it?" That's a career approach within this thing.
+So it does not connect, but we are going to over time build a database of candidates that are like that, uploads the JD but with the conversations we have, we get more high-value signals above. So over time, if then it feels good, then we can do the matching algorithm.
+That is exactly what you're looking exactly.
+Sachee Perera | 59:50
+That excites me. That's because you're thinking about the long term, but you're not active. It's an easy one to deploy. Yeah, okay, and I like that.
+Speaker 2 | 01:00:00
+That is.
+Sachee Perera | 01:00:03
+Yeah, okay, cool. Yup, what else?
+Speaker 2 | 01:00:09
+Those are the two key GTM product prioritization in terms of how to build and what to build these. So that we're looking at, I'll be definitely... I mean, this is just a first open conversation I wanted to have.
+Sachee Perera | 01:00:22
+Yes, no.
+Speaker 2 | 01:00:22
+So we'll be definitely happy to continue and give you, if I have any other specific questions. Happy to show it across as well from an investment perspective. Are you currently looking at any investments or, as I mentioned, did AMA mention something about that.
+Sachee Perera | 01:00:39
+Yeah, so look, I don't cash out one million-dollar checks, unfortunately, but I'm cashing out anywhere between $25,000 to $50,000 as checks. This typically would be for angel pre-revenue if the product has legs in order to bridge the gap and to go and get the first 50-100 customers to prove the model and then go up to market to raise revenue to raise funding.
+Speaker 2 | 01:01:01
+One.
+Sachee Perera | 01:01:16
+My network in B2B in Southeast Asia is not that great, but in the ASEAN market it is.
+So I haven't really explored other W2W like Airtrait and invested in Europe for that reason. Because that's an OID fund, Right.
+Speaker 2 | 01:01:41
+Yeah. So we are essentially, as a business, registered and operating in the US, so we don't operate as an entity here. So, in terms of investments, everything that would essentially come to our US account structures and all that.
+So from that point of view, yeah.
+Sachee Perera | 01:01:56
+Okay. Who in the US have you reached out to? How many investing interviews have you had?
+Speaker 2 | 01:02:04
+So yeah, like I mean, since I'm currently like my always another one and the other the is I would rather get customers' money than investors' money first, that is something.
+So I've not invested actively like, you know, daily time to like look into it. But we have all... Compared to, I would say, more than 25 investor conversations so far across them. I think most of them come from the EU, and for them, not being based in the US is a dealbreaker because those funds have a lot of tax incentives to invest in the EU, so going out is a big no-no for them.
+But those conversations are going, and some of the later-stage funds, like seed, seed-stage, are saying, "Hey, we find the idea interesting." But we only invest when you have this amount of revenue and this amount of traction because they are serious about it after.
+So there are different reasons why they haven't gone forward, and some that I have turned down because it's not a culture fit for us from their thinking perspective. So it's a mix of everything.
+But angels, like I said, there are a few in here who are, like, second generations of large-scale enterprises that they are deploying capital into startups now who have an understanding of startups and tech that have shown interest and have done startup funds before.
+So they have been interested, but I'm still looking for some very intentional investors to look at it. You correctly said the worst things, the worst-case scenario would be that we bring the amount that we are raising low so that we can base fast and deploy it in terms of usage as soon as possible.
+I can keep you updated on what's happening with that as well. In terms of OSI, do you know anyone who writes checks in the range of $100,000 or any that you think we can speak to? I can share this deck with you as well for your reference.
+Sachee Perera | 01:04:03
+That's what I need to do. I haven't done that. I asked who invests outside the country. Everyone, I know, all the DCS I know are invested internally, but they're investors. May I haven't explored that yet. Which I will do, so yeah, let's do that.
+Okay, so look, I'm impressed with the work. I didn't realize you guys had all these really good leads and attraction. Well done on all the hard work. I think you're on a good trajectory, right?
+You just need to make a couple of tweaks to move a little bit faster to improve the conversion, et cetera. I will go through my LinkedIn to see who I know in the US because this is going back a couple of years, maybe two years ago. I had a whole bunch of investors reach out, and they thought we were a much smaller startup, and we turned them down.
+I'll see who they were and see if I can make some interest from a US perspective and see if that has any benefit to you. And hey, if we... Let's keep talking. In the future, if you want to install an enterprise sales motion or do some sort of engagement.
+Speaker 2 | 01:05:35
+Yes, I'll be happy to come to you with like some specific questions as we as well.
+Sachee Perera | 01:05:37
+I'm happy to look at that as well.
+Speaker 2 | 01:05:46
+So maybe we can continue the discussion, and I'll come to you.
+I'll share this email as well. Thanks for spending more than an hour with me. Really appreciate your time for two.
+Sachee Perera | 01:05:55
+Interesting startup, really cool idea. Sorry before we wrap up. Hey, Ted, launching Justun Product Hunt and seeing the feedback.
+Speaker 2 | 01:06:06
+So yeah, about six months ago when we launched first, we did it. But I would say on product time, you need to sometimes launch a few times. But yeah, I need to maybe keep doing that. I need to launch, I think probably one more time.
+Yeah, from that, I would say no, but I think it's now since we have a... Back then, the pool was completely different.
+Sachee Perera | 01:06:18
+Yeah. And did you get any traction back then?
+Speaker 2 | 01:06:29
+It didn't have this much of features or this much of value that...
+But I think right now it would make sense for me to maybe relaunch and see how the feedback leads.
+Sachee Perera | 01:06:38
+Okay. And to be frank, from all the founding interviews I've been conducting in the last two weeks, your positioning is probably the best out of the whole bunch.
+So, a very good pitch, a good article, and yeah, that's really good.
+Speaker 2 | 01:06:51
+Yeah. Appreciate it, man. Thank you so much. I'll send the... I as well if you have any feedback for the feedback up to TF as well.
+Sachee Perera | 01:07:00
+Cool, I bet. Have a good one. Nice to chat.
+Speaker 2 | 01:07:04
+You too. Appreciate Appreciateus.
+Sachee Perera | 01:07:05
+Bye.

@@ -1,0 +1,487 @@
+Sachee Perera | 00:18
+Bonnie, good morning. Can you hear me? You can hear me? Okay, yeah, okay, good. You have a so that is your actual office, you're not in a core working space or anything.
+Boney | 00:40
+No.
+Sachee Perera | 00:41
+Okay, cool. Wow. [Laughter] I didn't realize I [Laughter] see [Laughter] the term, yeah.
+Boney | 00:48
+That's our conference. So you should come and visit us. It's in a remote place. The nearest airport is two and a half hours away. So it's very close to... It's a remote place, but all the product engineering teams across the state come and stay near this place and work from here.
+Sachee Perera | 01:09
+Wow, very good. [Laughter]. What? What time is it? Must be really early where you are, right? 07:30.
+Boney | 01:19
+No, when it is 07:30, and when I work from India, I usually start at 06:30 in the morning.
+Sachee Perera | 01:23
+Yeah, okay, yeah.
+Boney | 01:27
+So movies. Yeah. So, just to imagine the time in Australia...
+So, Yeah.
+Sachee Perera | 01:36
+Understood. Alright, very good. Yeah, but I have been spending, I think a lot more time than I thought I would going through and listening to your calls. Listening to. Talking to the team members. Talking to Sandy and everyone.
+And I'm kind of. I think I've formed a very good picture from what everyone else has said, but I have some key questions and things I would like to, you know, ask you. Ask you, obviously. I but so far, I think the three demos or the sorry, the three the two pilots, the trials are the ones that I want to like. I'm itching to talk to you about.
+But I there's. But I leave that to the very end. So what I'd like to do is to extract from your head. Right, the strategy, the vision, the product roadmap, and ask a few more questions in more detail, just looking at the product. There are a lot of different things, right? There are the time sheets, the budgets, the QR check-ins, the Gantt chart vs.
+All of that: how did... There's a lot there, and it's very broad. How have you decided on putting that product roadmap together? Or how have those features been built incrementally? How are you managing that product roadmap?
+Who's involved in making those decisions? How do you know what to build? Or what goes into the product roadmap right now? MY.
+Boney | 03:35
+So the whole product roadmap is done by myself. So I tell the team, so we have a lot of roadmaps here. I tell the team, "Okay, this is what we want to tell." So I try. Then I'll tell them that.
+Okay, this is why I got the information from the customer. For example, let's take an example from ANT. He told us that. "Can we...?" The biggest challenge is that they have applied the time sheet to be implemented before, but the biggest challenge is that their site workers are not depending on the complexity of the product. The site workers are not using it.
+So, is it possible that we can have that other thing in place so that they finish the work at eight hours, alert them, and then move on to the overtime kind of thing? So, that information, I take it and put it in the product road fort.
+Sachee Perera | 04:45
+Cool. So there's a lot of... Has everything been built like that from different customers from different customer requests? Or have you gone and looked at a problem and tried to solve it yourself and then created it and then presented it to the customer?
+Boney | 05:08
+So will't they tell me about the problem? I usually visualize it myself. Okay, what's the best way to solve it or what's the easiest way to solve it so that there won't be any problem for them to adopt that technology at all?
+And then that's how I put it into the system, correct?
+Sachee Perera | 05:31
+So everything is like from demos and meetings with customers. From the... Yeah.
+Boney | 05:37
+Yeah. So I did the only thing that I did out of these customer demos is I go and find out in my friends circle or friends who were working in the construction industry and tapped into all those friends.
+I put together 20 eight questions. I can share those questions with you. Call the customer interviews. Then I sat with them and then asked all these questions and found out how they're answering this and then built those things up.
+Sachee Perera | 06:15
+Four?
+Boney | 06:16
+So that's all when looking back, the only thing that I can see is I have spoken to two different groups. I have spoken to builders and I've spoken to subcontractors as well.
+Sachee Perera | 06:36
+Yeah.
+Boney | 06:37
+And small to all the way up to thirty-five, forty million kind of businesses.
+I will talk to a project manager who is running a two billion dollar project.
+Sachee Perera | 06:49
+Sure.
+Boney | 06:50
+So that's a wide range. And so that's something that, if I look back, I should have avoided like going into that vast area of people. I'm not telling...
+I have put everything into the product from all the information I have received from this last group of people. But obviously that that's the other way that I found out all these s.
+Sachee Perera | 07:18
+Cool. All right, so I'm hearing you reached out to the network, you did some customer discovery interviews and you visualized the problems and then customer requests. You mentioned builders, right?
+So when you say builders, are you talking about the primary or principal contractor?
+Boney | 07:38
+Not the general contractor. The general contractors are the bigger ones, like the big massive ones. The builders that I have spoken to are much more small builders.
+Sachee Perera | 07:49
+Yeah.
+Boney | 07:52
+They're builders. building small homes. Probably custom. More like a custom build.
+I got some Excel sheets from so every group I could get some Excel sheet. The GAN chat that we have built is.
+Sachee Perera | 08:08
+No.
+Boney | 08:09
+That's is... an Excel sheet I got from this home builder A and home builder B.
+Sachee Perera | 08:16
+Okay.
+Boney | 08:17
+So B. that's what I'm using.
+But again, when I went back to them, okay, I sat with them and when I went back to them to ask them to use the product, then they said that there are a lot of... There are like a one-man show. They don't think that it's going to complicate their process much more because there are a lot of different things that are happening in between.
+So if there's a use of direct, the payment has to be within our invoice numbers. Some day pay by cash, some day they pay. So a lot of things are happening in those small builders. That's the response I got back when I started asking them to use the product. product.
+Sachee Perera | 09:14
+Understood. So I was gonna talk about this later, but... So when you say builders, you're talking about small businesses. So builders is separate to your specialty contractors, like the electrical contractors, the plumbing contractors, the fitting, the fit-out contractors, right? Is that okay? Cool.
+And then the general contractor is the larger one that general contractors will not engage a builder, right? They will never... A builder will never work with a general contractor or a specialty contractor.
+Boney | 09:49
+Okay, contractor. so for home builders, this is how it works. They pick up the subcontractors. They don't have any. They only have the site supervisors, site managers, or project managers, depending on the size of the company.
+These project managers and site supervisors manage all their subcontractors. They don't have a direct worker under them. There's only a difference in the case of an interior fit-out company. They call themselves sometimes specialty contractors for builders because their work is similar to a builder. They have their own employees.
+If it's a big company, they have their own employees, but they are more like shop features, kind of category lights.
+Sachee Perera | 10:47
+Yeah, Lesligo right, because they are a sharp fit.
+Boney | 10:58
+Trivision that I put it in the it's one of our Castles demos that we have provided.
+Sachee Perera | 11:05
+Yeah. So what is the product vision here?
+Boney | 11:07
+Yeah.
+Sachee Perera | 11:11
+Because we started off with Staf. Then we pivoted to construction. We've gone and, in your head, three years from now. What is the big picture?
+What is Swift Check in three to five years from now?
+Boney | 11:30
+For me, Swift Check should be a construction ecosystem that they can run a single process within a single platform. They will be able to do the majority of their construction operations from start to end.
+Sachee Perera | 11:49
+Yeah.
+Boney | 11:51
+That's what my vision is. And so does that answer your question? After looking at that, that's where I believe we need to find it out. That's where I believe we need to find it out from my head, I think.
+Sachee Perera | 12:03
+For whom?
+Boney | 12:22
+Look, we have two things. One is how many. We should have a sizable market within the construction industry so that we can go and tap into that market.
+So, when I look from the product side, everything that we have built so far aligns to the maximum.
+Sachee Perera | 12:42
+Its within the.
+Boney | 12:43
+To a subcontractor within the construction industry. So the subcontractors need the timesheets, they need the scheduling, they need more scheduling, they need catch-at scheduling, and they need the employee scheduling as well. On a day-to-day basis, they need the employee scheduling for seeing the bigger picture.
+Sachee Perera | 13:02
+Sustaining. scheduling, seeing the bigger pic.
+Boney | 13:06
+They need to have the catch-at us.
+Well, compliance with all the compliance documents, they have to store within the platform so that they can make sure that if the general contractor requests them, they can provide those documents. Budgeting is something that they need to understand how each milestone is going, whether it's according to what they have quoted or whether they have quoted.
+And the missing parties. The progress claimed that I said before, from Sandy from the current group. What we understood is if you have progress clear budget, time sheet and there's a pre-construction part as well, which is actually the estimation and takeoff of those things.
+But putting that aside, this itself is going to cover their two or three products that they are booking using on.
+Sachee Perera | 14:15
+Okay, and while you're thinking about that, right, like what do you think is the most important problem? Looking three years? Well, maybe not three years, actually. You can determine the time frame. What do you consider the most important problem that Swift solves or will solve better than everyone else?
+Boney | 14:41
+At the moment.
+From all the discussions that we have, both the time sheet and scheduling.
+Sachee Perera | 14:44
+Even.
+Boney | 14:53
+And scheduling you ask me why that's different from the other competitor or other competitors as we use it, I think we have to sit and come up with a value proposition that we did. We differentiate ourselves with those competitors that we hear from the market because the commentator that we thought should be okay, we thought okay, I'll pass, we'll come.
+But what we are hearing from the market is, for example, if you go to the subcontractors.
+Sachee Perera | 15:27
+For example, if you want to lis.
+Boney | 15:30
+But Simple, I got a tile license with me. Simplo file license, I'm just going... I got that recently. I'm just going through Simplo, but my understanding is that Simplo is for short-living jobs, like if the job is going to finish in half a day or one day time and they have to send the invoice across to their clients.
+That's where the Simpler has got the power, but until date, I haven't heard from anyone who is specifically solving the problem. Ofion specific support writers.
+Sachee Perera | 16:09
+Yeah. And what about, Fergus?
+Boney | 16:19
+For Fergus, this is a good example. Gina is using Fergus for their internal employees, but they still came to us to manage the subcontractors.
+Sachee Perera | 16:25
+Yeah. Y.
+Boney | 16:31
+So what we are trying to achieve is to manage the employees that contractors in a single platform.
+That's where our pricing model comes in. Then I asked this question specifically to you. I noticed that in my... Why can't you use Fergus for the purpose that they are after us? Then she told me that it's going to be a better user model.
+Sachee Perera | 16:58
+Yes.
+Boney | 16:59
+That's one problem. She said the other one is, there have to be some restrictions that need to be in place for the subcontractors to get to gather the information within the platform.
+Sachee Perera | 17:11
+Y so just hypothetically, enough of the customers say, "We want to manage our subcontractors too." And they deploy Fergus for subcontractors so that Gina can go in and invite all of her subcontractors with the permissions and all of that.
+Now it's overlaid onto the current workflow. What separates Swift from Fergus in that instance.
+Boney | 17:44
+Alright, first thing is the pricing model. That's what I would say. The first thing is not the cheaper they have a user model. Which means that Gina has got no control over the employees of their subcontractors.
+Sachee Perera | 17:57
+To all. Okay.
+Boney | 18:03
+That makes sense.
+Sachee Perera | 18:04
+Yeah.
+Boney | 18:05
+So Gina is giving the subcontracting to this plaster company, ABC Plaster. And ABC Plaster might have three employees or might have ten employees, which it has got no control over, according to the schedule of the work that's provided to them. They have to have.
+Sachee Perera | 18:19
+Yeah. Yeah.
+Boney | 18:35
+Okay, I'll put it in this way. So if there are four employees of that ABC Plaster, then they have to pay file licenses from workers.
+Sachee Perera | 18:43
+Yeah.
+Boney | 18:48
+Every time they are subcontracted, they have to take another license and they have no control because tomorrow it's safe.
+Plus union fees for the general contractor. So union fees. Sometimes they will take this union fees somewhere around 400 dollars, and then the subcontractor employee leaves the subcontractor, and they are still paying the union fees.
+Do you know what I mean? Say similar to that, this focus, they have to keep adding that license, and there is no obligation from this ABC Plaster to tell back to Gina that my John Doe from this ABC company has left our company so we don't want to use that license anymore.
+That makes sense.
+Sachee Perera | 19:38
+Yeah, okay, that yeah, it's an all-in rate.
+Boney | 19:39
+They still paying.
+Sachee Perera | 19:42
+Yeah. Okay, so I'm just gonna fast forward to the next question in my head right now. How can you describe the overall strategy for the business at this stage.
+Boney | 20:05
+Look I am really looking forward to the next two to three weeks of your report. Of all the candidates that we are running right now because even though we started actively running the campaigns from last month onwards,
+that's going to give us a lot of data in terms of the business strategy, something that I know these days. Okay. We got this product, we got this vision of bringing multiple departments into a single platform of subcontracting. How many or a builderities but adoption of that technology within the business?
+If you're telling these multiple stories, it's going to take some time. That's what my understanding is. If you look at our software, if whenever we get a demo, they are requesting a trial from us. So the trial is not a problem for us. Getting into the demo stage is where the problem is.
+But unless we get more and more demos and talk to more and more customers and feel that, "Okay, the theory that we are putting in to take the full software as such is going to work or not." That's the question that I'm trying to answer myself.
+Sachee Perera | 21:47
+Yeah. Look, I don't want to say I need to. Still, I usually like to sit on and absorb as much information as possible and just sit on it and then progressively answer the question. Eddy, I think a lot of people work like that.
+But I see some very simple things that we can just do to increase the demos. Very simple stuff. Which takes me to my next question.
+Boney | 22:12
+No.
+Sachee Perera | 22:13
+Like what? What made you. You know what made you go and get two sales hires?
+Like the s str and. And Sandy.
+Boney | 22:26
+All right. Throughout this journey, one thing is very clear for you. Such as my lack of experience in sales and marketing or the lack of knowledge of sales and marketing. It is very clear here.
+So all I can depend on is I can talk to my sales friends or I can talk to my sales friends. I can talk to my... Get into my network and find out whether I can get someone in sales and marketing and see what's the best way we can do it.
+So coming when I took KBITA, all I was thinking is I tried to make the calls myself, but it's not consistent because I will be tracked into this technical meeting. I'll be tracked on this engineering side.
+Then I realized after two or three months that that's not going to work. The next thing that I can do is find a co-founder. That's what I tried.
+Sachee Perera | 23:47
+Yeah.
+Boney | 23:47
+Advertising for you. I talked to some couple of other people as well, but that didn't go in the way that I was expecting. Then, meanwhile, all these things are happening. I need to have at least this core to be running even if I don't have that.
+Sachee Perera | 24:08
+Yeah.
+Boney | 24:10
+So once I took Kavita, then I realized again that I ought to spend quite a significant amount of time on her trying to do those things. So what of that? I have my hypothesis of getting this person in. Giving some collateral. Giving some very specific information and asking them to continuously give the calls. That's not working somehow.
+Sachee Perera | 24:46
+Yeah, okay, understood. I can see what's... Yeah, how.
+Boney | 24:47
+Then that's when I have to bring Sandy in as well.
+So yeah, I'll always still the... I'll always with the hosts we play on day so that we can leave from it and understand what actually happen.
+Sachee Perera | 25:09
+But Sandy didn't come first, Kavita came first.
+Boney | 25:13
+Cover that gate first.
+Sachee Perera | 25:13
+Yeah, understood. Okay, that makes more sense.
+Boney | 25:17
+Yeah.
+Sachee Perera | 25:18
+And one thing that's really clear is you guys are very efficient and fast at deploying on the product, like building, which is crazy, which is really good.
+Boney | 25:18
+So probably two or three weeks after coming up. I think Sandy gave... If I'm.
+Sachee Perera | 25:37
+I think that's... I remember you saying in our first meeting you were doing a reskin or a new UI and then just from my memory of how the product was and what it is right now from the Slico and the current group demos, it looks very different.
+Then I saw you didn't have a mobile app and now you have a mobile app already, right? Which is, do you have a mobile app now, Right?
+Boney | 26:05
+Now we still don't have a mobile app, but we found out a way to tweak into the actual product to install it as a mobile app so that customers feed does a mobile app.
+Sachee Perera | 26:09
+Okay, yeah, cool.
+Boney | 26:19
+But actually, it's not a mobile app.
+Sachee Perera | 26:23
+And you can still get the notifications and the GPS and everything through that, right?
+Okay. Cool. YH.
+Boney | 26:32
+Correct? Yeah, but... That's going to work. But we are facing an enormous technical challenge of not having a proper mobile app, which is the reason why I am here to hire a person to panelly develop the mobile app while we are doing all those things because we've got everything in place right now, so this person has to do only one thing, concentrate on doing that.
+Sachee Perera | 26:47
+Yeah.
+Boney | 26:58
+Mobilela app, but as coming back to your question, the GPS should work, the notification should work.
+Sachee Perera | 26:58
+One.
+Boney | 27:09
+But it was very tricky to make it work, and some years we didn't find any problems so far with the way that we have done, but it's a bit crazy way of doing it.
+Sachee Perera | 27:22
+That think that will work for now until we get there.
+Boney | 27:23
+Yeah, absolutely. Yeah. That's what I'm reading.
+Sachee Perera | 27:31
+I mean, it's fine. Well, what I was going to go, okay, cool. I think I've got a better understanding of what's in yourad right now. I'm really itching to know about... SL Andrew. Did you call? Get a TI.
+Boney | 27:52
+Yeah. Not since my last meeting. Since my last call, I need to give him a call today and go through him and tell him to book a meeting for next week. The reason things are getting pretty late is I need to pay for what's called hunting.
+Yeah, so I just want to be open with you right now.
+Sachee Perera | 28:13
+Yes.
+Boney | 28:15
+I just borrowed some more money from one of my friends and put that into the company to run for the next 3-4 months.
+Sachee Perera | 28:24
+Okay.
+Boney | 28:26
+That's how it's working. Don't worry, what your pavement does will be sorted out. [Laughter] I just want to be very open, so you should never think that I'm just delaying this call because I'm concentrating more.
+So I had a meeting with JSON yesterday. I had a meeting with Prager, and he's in the construction technology space. So both of those days are related to the funding plus Mongase funding plus the construction technology space. The other Jason, you probably already know. I'm not sure whether you know Jason Atkins. He's more into the table
+funding those kinds of areas. So Jason Atkins, yeah, I think he's a founder of Fakey Quick good, yeah.
+Sachee Perera | 29:24
+So. yeah, okay, cool. Yeah, I've heard of him. I don't know him, but I've heard of him. Yeah, look, I'm just going to say my payments and stuff.
+Boney | 29:34
+So I'm collecting all these things and putting... We never had an ESAU until now, so I'm putting together that EESOP. There are a lot of things that are happening finally.
+That's the reason why these other things are getting delayed. Yet.
+Sachee Perera | 29:59
+If we need to defer that to the next fund, like next year, that's fine. We need to get the business up and running and revenue coming. I'd like it if we do that, and we will not be too concerned about it right now, excluding you, right? What is the runway that you have for four months, and what's your cost?
+Boney | 30:18
+The runway is for four months. Yeah.
+Sachee Perera | 30:24
+What's your operating costs.
+Boney | 30:27
+Operating costs currently are sitting somewhere between $20,000 to $25,000 per month, tosi.
+Sachee Perera | 30:33
+Ozzie? Okay, cool, okay, so we need to okay, so 25, we need 25K to breakeven.
+Boney | 30:44
+8 public sales.
+Sachee Perera | 30:45
+Yeah, right. What is the biggest cost?
+Boney | 30:56
+I believe the product engineering team is the largest team that we have.
+Sachee Perera | 31:00
+Three.
+Boney | 31:00
+I'm not taking any salary. Lisa is not taking any salary. We. Yes, since the start of the business, we both didn't take a salary without both of our salary. This is what the expenses.
+But it's more I think three grand, two and a half grand. We are spending on marketing on the per month start time.
+Sachee Perera | 31:29
+Sorry, my phone's... per month. Okay, cool. So you're paying $2,500 just on marketing ads and stuff.
+Boney | 31:41
+I thought of ads, tools, and everything. I believe for the product engineering team, we might be spending around $7,000 to $8,000 per mark.
+Sachee Perera | 31:57
+Okay, I know, yeah, because I when I.
+Boney | 32:01
+Then marketing salary the two people in marketing Sandy plus kvia sales salary then a sales we areending five six grand as for as sales.
+Sachee Perera | 32:19
+What do you mean, $5,000 to $6,000 for sales, on top of the salary?
+Boney | 32:24
+No, not just for the s.
+Sachee Perera | 32:27
+Okay YP. Okay, cool.
+Alright, so. So twenty five k you have four month run runway. Okay, cool. So let's convert these two deals. I think that's critical for us. So, Andrew, we had for next week. And you're going to call and
+set up a meeting. And then Gina.
+Boney | 33:02
+Ginna. Sandy is talking with Gina, and she last time we spoke she pushed it for just to leave here for this month. But this is really probably... It might be too early. It might be too early for asking this question to you. This is where I feel that somewhere in the discovery call or during the demo, we need to have something like, "Okay, if we don't implement this product, this is the kind of money that you are losing from the information that they are providing." I believe if we can provide that kind of information rather than be pushing them to implement this solution, they will take much more initiative.
+That's what my understanding is. Yeah, that's just a football thought that came to my mind.
+Sachee Perera | 34:17
+Okay, yeah, and Gina, in Melbourne, right?
+Boney | 34:21
+Now. She's in Kinsland.
+Sachee Perera | 34:23
+She's in Queensland. Okay, sorry, I'm mixing it up. Okay, cool. Yeah, I was just listening to some sales calls and looking at the emails and stuff.
+I think there's some very easy stuff we can do straight away. I would like to reduce the cost of your marketing tools and stuff. The two and a half... I think that's... I'd like to understand how you're spending that currently.
+Boney | 34:55
+2.
+Sachee Perera | 34:56
+And looked at the marketing side as well, but I think Nisha shared some more information for me earlier today. I'd like to understand the ROI of that to start off with.
+Boney | 35:08
+Yeah.
+Sachee Perera | 35:08
+And it actually working?
+Because from what I'm seeing, it's not. We're doing a lot of stuff at the moment, and we need to experiment. We're experimenting and doing a lot of things to try and find out what works. One doesn't...
+But I think I'm not sure 100% yet, but I think there is a way to focus on one or two areas and just do that as a sprint for the three months, right? But we try and get that and get the business focused on just that.
+Right? I don't know, and I think I know where it is. It's identifying your actual one segment. Is it the specialty trade contractors, and then is the electrical? Do we go all the way down to electrical versus homebuilders versus fit-out versus this or what? What do we just... It's for the full... It's general for all of them.
+But structure the messaging, structure the positioning, structure the product, but what are the key... Maybe without telling you this, from Swift check in from the core plant side, what really worked was we were doing everything.
+Then when I looked at it, there were only the contractors, and they were in Karguli.
+Boney | 36:39
+He.
+Sachee Perera | 36:44
+So I focused on just Karguel, this is a town, right? Just one or two types of contractors, and I just did the sales myself, did the work, went to events, did all of that.
+Boney | 36:50
+Yeah.
+Sachee Perera | 37:00
+So it's identifying what's your... It's like a door, right? To open a door. If it's a heavy door, you can't open it with one hand. You need to push and then get some sort of a crowbar and wedge it into the door.
+So now you have the door open, and then you can keep adding more and more. So what's that little wedge that we can use to get into the market and then grow it? So, is it Sico, is it the current group, or is it the other businesses? We just need to close one or two of those.
+So, we know exactly... Who do we focus on? So then we can go and say, "Hey, we know you're an electrical contractor and subcontractor, and these are your pains." Here is... We know that you're paying for ghost employees and you're losing revenue or you're losing profit. Here's how we can help you do this. Here's a second infusion or Gina' or another company like Gina'. Hey, we know you're managing your contractors and your employees' co-plan.
+Sorry, not Cora Swift check-in will help you manage your subcontractors, okay? Just don't worry about the employees, just the subcontractors. Then that's the land, and then we can expand.
+It's like, what are the little stepping stones? We need to go from here to the next step? Yeah, so I'm trying to understand the landscape a little bit more, which is why I was asking you when you said builders, what do you mean by builders? Is it homebuilders?
+Boney | 39:00
+He absolutely.
+Sachee Perera | 39:00
+Yeah, it is homebuilders. Yeah, I'm trying to understand who we can focus on. When we pick up the phone and we talk to them, it is very specific. It's almost like they know that we know how they run their business.
+Boney | 39:18
+I see.
+Sachee Perera | 39:19
+Yeah, so I think that's the finding, or those are the learnings from previous.
+Boney | 39:21
+Just.
+Sachee Perera | 39:28
+And then I'm seeing is we're trying to do a lot. We just need to focus on one and it's not like forever, it's for the next, you know, till we had a revenue.
+Boney | 39:41
+Next year.
+Sachee Perera | 39:41
+Yeah. Till the next. And the next. Yeah, look, the website is right?
+Boney | 39:46
+Yeah. I do have this feeling of just going with only one or two things and having all our website messaging matched to those two messages because somewhere I feel such that even though people are coming to blank pages so they're not going further down, taking that action.
+So that's when I feel that either our messaging is not right or we are telling too many things so that they don't understand clearly what they're trying to solve by using a ro.
+Sachee Perera | 40:44
+And really important to have a very good-looking website that's clear and people can understand.
+But it's almost like, just like how you have concept cars. People have cars like what to have a concept car. Honda may have a concept car, but it doesn't come to life.
+It's there for show that this brand is doing some cool stuff. I think for where we are right now.
+Boney | 41:15
+He.
+Sachee Perera | 41:18
+The website is important, the messaging generally is important, but I would focus on the sales. We need to get the sales guys up and running.
+And the what they would do. Sorry. What I'm saying is if we were more marketing-led, if it was all ads and all like that, then investing in the marketing website is going to be important. But we need to do the sales part first to go what works one-on-one, one customer to another customer.
+So marketing becomes important after we have solved that because sales is one-on-one, marketing is one-many. So until we have solved the sales problem, it's almost not well, my personal way for me personally, what's worked is investing in marketing into this kind of stuff after the sales aspect because then you know what to talk about.
+Boney | 42:11
+Heym okay.
+Sachee Perera | 42:29
+So, what but that doesn't mean we shouldn't do anything. What what's there right now is great. It creates almost enough mystery for. So if someone does come in, it creates almost enough mystery for someone to go and click the demo button.
+But I think we're a little we are not there yet to go marketing led we need to. So to understand the customer pain points and everything from sales and the core focus of sales should be to get the demos do discovery like very discovery questions to understand their problems.
+So when we present the product, we are presenting a solution. We are sorry. When we are presenting the product, we understand their problems first, then we present relevant to them. Otherwise it's not going to be that.
+Well, otherwise, yeah, it won't. Marketing is not going to be an efficient use of your time or resources to invest.
+Boney | 43:51
+Quit you.
+Sachee Perera | 43:52
+YP because the Australian market is very small and it is very digitized. Going sales-led is important. That's
+why I wanted to... I think over the weekend, I'll spend some more time looking at the marketing side. I was listening to all the calls and things over the last couple of days. I want to understand what the current ROI is or how marketing is working and what the actual.
+Boney | 44:24
+I day.
+Sachee Perera | 44:25
+Yeah.
+Boney | 44:27
+But I want to tell you before. I think last month the marketing spend was very little, like five hundred to less than a thousand dollars a month.
+Sachee Perera | 44:36
+Okay.
+Boney | 44:38
+Then this one we increased the budget. When I got this extra money in from which I borrowed, that's when we spent that.
+That's when we put up the marketing spend to, I think, it's two grand or two and a half grand. I believe. Just to try the different landing pages we are putting in.
+Sachee Perera | 45:04
+And a good investment because you're experimenting, right? That's fine. Yeah, it'll be good to put together a budget over the next couple of months, but I think I have enough. I just need to go away and
+make my notes and listen to more calls. So, I'm going to talk to a couple of my network as well to understand a little bit more. One of my close friends is actually a project manager from the client side.
+So, I'm going to try and talk to them as well.
+Boney | 45:46
+No.
+Sachee Perera | 45:49
+But think all in all, it's a good time for the business because you've established an operating model that works to ship products super fast, right?
+You have some good people in the business as well. Everyone is very excited and very involved. Sandy is exceptional, as is Jadev. I think the findings of listening to the calls from Slico and the current group give me strong confidence on how to get to your three to five-year plan.
+Where do we like the path to get there? Five four.
+Boney | 46:36
+Great to hear that. What are your thoughts after one week of spending with us, apart from what I said right now, do you wait for your final report? From what you thought one week ago and one week after with us. What do you think.
+Sachee Perera | 47:03
+I thought you may have had a lot more demos. You had spoken to more of the same customers, and you'd have a lot more of those recordings. It was a matter of product placement, pricing, or maybe one of those, so that was a little bit under the five-K burn, not concerning. I want to get my head around that.
+I think we can reduce that as well. But my assumptions were you are spending less than what you're spending right now. And you had more demos, but that was my assumption. Yeah.
+Boney | 47:58
+So the idea in your mind if I could ask you to put the number out there. What's your expectation on our spending?
+Sachee Perera | 48:10
+Sorry, what's my expectation on.
+Boney | 48:12
+What on our spending?
+Like you are expecting 15. Spending at 15 grand. Or with a t.
+Sachee Perera | 48:23
+So maybe I'm just trying to remember what we were spending and the early days. I can't remember, but I can't actually remember. I think maybe 15K would have been it because you have your team in India, ten to 15K maybe is what I want, but maybe that's just it doesn't have any science or data behind it. It was just in my head where I had.
+Boney | 49:00
+Just final. Came that way out of your head? Yeah.
+Sachee Perera | 49:04
+Yeah, that was it.
+Boney | 49:05
+Yeah.
+Sachee Perera | 49:05
+And if Sandy and Kavi are commission-based, then you know that. You know, that's what I was expecting. But I think I'm very... I'm bullish. I'm hopeful. I think we can get there. We just need to hyper-focus on a couple of key areas.
+What do we start doing? What do we stop doing and what do we continue doing is what I want to get to. Yeah, cool, awesome, right?
+Boney | 49:35
+Yeah.
+Sachee Perera | 49:38
+Bonnie, I'm going to let you go. I'm probably not going to join the leadership meetings every day.
+I'll join in if I can, but I will. I'm going to spend the next couple of days just going through. I might shoot some messages over to you, and I'll still talk to the team and stuff.
+Boney | 49:57
+No.
+Sachee Perera | 49:58
+The report I'll be giving to you is not going to be...
+It's going to be a report, but we'll go through everything one-on-one, right? I'll talk you through the different parts, but I want to keep it simple and just focused on what we do in the next ninety days that can try us to near breakeven.
+Boney | 50:15
+Two.
+Sachee Perera | 50:20
+Because that's going to be important.
+Boney | 50:21
+Yeah.
+Sachee Perera | 50:23
+Well, yeah, to get generate revenue, but then breakeven. Sorry, I have one question I forgot to ask. Your pricing model. I notice you didn't give any pricing to Gina' or Andrew. Were you working on a new pricing model? Or do you have anything Or.
+Boney | 50:46
+I think the pricing we put in just 23 days before you started. Probably that pricing was put there two weeks, two or three weeks ago after the demo that we were done with Andrew and Ginna.
+Sachee Perera | 51:03
+Yes.
+Boney | 51:03
+So yeah. And that pricing is Santi and Jay, okay? Regarding the pricing, I will tell you the background. So no one in the construction industry has put the pricing on their website. Okay. So I was a bit hesitant to put the pricing on our website because I was still not clear whether we were not going to give the full product or just module-wise.
+But Santi and Jay were pushing me to come up with a pricing. So I put forward some pricing that's going to be fairly similar with everyone that we are targeting. That's how I put the price in. It has called nothing to pay up or anything like that. We are still experimenting with the pricing, to be honest with you.
+So I put some amount out there. When I put it there, I told the team, "Okay, this is what I want to mandate. If we put the pricing in fiction, then we put the pricing, and I want to see people going and clicking into the free plan, going into the demo.
+Sachee Perera | 52:19
+No.
+Boney | 52:19
+But since we put the pricing, I believe it's probably three weeks ago, four weeks ago, even though the people who came to the website have gone up. I didn't see people going into the free plan, but they haven't filled out the form.
+Going forward.
+Sachee Perera | 52:39
+Yeah, okay, so if we talk about just Slico, is it Slico or Silo? It's Slico, right? Yeah, I think she said she was paying for Fergus. $300 per month for 20 staff, and they are at a discount.
+Boney | 52:58
+No.
+Sachee Perera | 53:00
+What do you think is the pricing that we should provide to Slico?
+Boney | 53:08
+It's like it's... So ideally, we should start with that for our basic plan, just with the check-in and check-out for the subcontractors. That's it. Then probably we can expand later saying that. Okay, this is what it's going to be.
+From there, from the data that they have provided, that they got almost ten to fifty subcontractors, ten subcontractors, and they have no idea how many of those contractors have five employees, two employees.
+We have no idea.
+So that's something. So we're talking about, say, five employees. Then it's 50-50 users that are going to come into our system, plus three or four apps. So five.
+Sachee Perera | 54:08
+Yeah, okay, cool. Alright, let's talk a little bit more about the pricing stuff after I've done a little bit more work.
+Maybe for the current group and Slico, maybe we say, "Here's our normal pricing, but we'll do something special for you.
+Boney | 54:17
+Two.
+Sachee Perera | 54:24
+Here's our pricing for them just to convert them. Yup, yes, cool.
+Boney | 54:39
+Five.
+Sachee Perera | 54:39
+Alright, Bonnie, thank you so much for the chat. Enjoy your weekend, and you have much planned or?
+Boney | 54:46
+Look, I just want to spend some time with the kids. I've been away for the last three or four months, and they started complaining of not getting the data. So that's when I flew down here and I just spent some good time with my kids because usually when I come to the office in the morning, they won't wake up.
+Sachee Perera | 55:06
+I come to the office in the morning the week.
+Boney | 55:10
+So I had to start early. And by the time yester. Still I finish of. Even though I started at 06:30 in the morning, I finish at six 30 in the night.
+Sachee Perera | 55:19
+No.
+Boney | 55:19
+And then, yeah, then they were like, "But eventually." I took them out to dinner, and then we had some late-night time.
+Yeah, two in year five and year one.
+Sachee Perera | 55:33
+Okay, cool. Wow, very nice. I Bonnie, I enjoy your weekend. Spend time with the family and I will see I'll speak, I'll click you and over the weekend, sorry, on Monday if I have any questions y cool, sure, thank you.
+Boney | 55:45
+Yeah.
+So, one more thing before I forget. I think you asked some documents from Lisa. She told me that she shared the full marketing for you. But sometimes she's going to send you a message or catch up with you for 5:10 minutes to go through those folders.
+And what is what? She's going to explain those things. So she told me to pass this message. And That.
+Sachee Perera | 56:25
+All right, have a good day, see you later.

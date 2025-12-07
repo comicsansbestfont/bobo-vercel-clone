@@ -1,0 +1,320 @@
+Sachee Perera | 00:15
+Hey Jdev, how are you?
+Jayadev | 00:17
+Hey. Good. How are you?
+Sachee Perera | 00:19
+Yeah, good my friend, good. What time is it there?
+Jayadev | 00:25
+It's 11:35 am.
+Sachee Perera | 00:26
+[Laughter] Okay, cool. Wow, right, it's all lunch time. [Laughter] NI nice to chat to you, for the first time.
+Jayadev | 00:33
+Yeah.
+Notice that you changed your background to a more relaxing relaxing.
+Sachee Perera | 00:47
+Yeah. Because it was just the background for my, of my house before. [Laughter] Yeah, very keen to understand a little bit more about you know what, the areas of the business that you touch, and you know, a little bit more about you really and, you know, how you found yourself at Swift check in and all of that.
+Jayadev | 00:58
+Yeah.
+Sachee Perera | 01:17
+So how long have you been with the business?
+Jayadev | 01:20
+It's about going to be a year's time now.
+Sachee Perera | 01:23
+Wow, cool.
+Jayadev | 01:24
+Yeah.
+Sachee Perera | 01:24
+Yeah, that's quite a while. Yeah, very, so you must have been here, before the second pivot, when you had the event, the airport event after that.
+Okay. Right. Cool.
+Jayadev | 01:47
+I joined after that because they told me that they had the airport event after I joined.
+Sachee Perera | 01:52
+Yeah, sure. And do you work full time in the business or are you.
+Jayadev | 01:54
+Yeah, that, yeah, so let's start.
+Sachee Perera | 01:59
+Yeah, cool.
+Jayadev | 02:08
+What's the most important thing you want to know? Let's start with that [Laughter] he.
+Sachee Perera | 02:12
+I'm kind of I'm very keen to understand like what how you run marketing. And you know, what are the learnings so far, especially in the last three to four months where you have been doing lots of experimentation and I have gone into Google Analytics.
+I've been looking at Apollo. And a lot of these things. But I want to hear from you directly: "Yeah, what are the key things or key activities that you are focusing on right now? What have the things that have worked this year so far?"
+What are the things that are not working?
+Jayadev | 02:55
+Good. Okay, let me start maybe a few months beyond six months, I would say, because I think that will give you the right context. So I think the first thing... Have you seen what the oldest website homepage reviews are that you see?
+Sachee Perera | 03:24
+I've only seen this version and maybe the one in may?
+Jayadev | 03:28
+Yeah, you were having a conversation with Bonnie in that area that... Yeah, okay, so I'll give you context to that. Yeah, so when I joined, the focus of the broader verse on the website was basically about article check and cetera, that was the main thing, right?
+But if you look at dividing the features into modules, we had a few features under a lot all the modules.
+Sachee Perera | 04:04
+Y.
+Jayadev | 04:12
+But it was not... We didn't have all the features for each of the models, right? So initially, we started with the revamp of the website or the look and feel of it to actually make it look like a B-size business, because the first version was like a 1990s website, right?
+Sachee Perera | 04:37
+Yeah.
+Jayadev | 04:44
+So yeah. So I think initially the effort was to kind of get that really understand who are we selling to and what are we selling, right? So I think the first few months there was our focus was on builders.
+Sachee Perera | 05:05
+YP.
+Jayadev | 05:06
+And we learnt about the setup of the infrastructure of the builders, we kind of figured that when we asked the question, "Who is going to pay for the product?" Is it the builder guy who's saying that?
+Okay, this is my site, and I want all the information. Or is it the subcontractors company that is coming in and saying, "Okay, I will pay for it because I need to be a part of this builder's thing, right?" Associated with this builder, right?
+So that was the area that we were focusing on initially when we thought of creating the initial version of the pricing page. We had separate pricing for the builder and separate pricing for the contractor.
+As we had the conversations we had with the initial set of customers and kind of things, we made us ask more questions about how we were going to price the product, what the positioning of the product in that case should be.
+So it was a subcontractor, it was a builder. We were like, "Okay, the product caters to both these circles, but which one do we go after?" Those were the initial sets of thoughts. We started off focusing on the builder.
+If you can see our current website, if you go to the features page, the features homepage has a construction website as the background and talks about the entire thing.
+Sachee Perera | 06:56
+AA con.
+Jayadev | 07:00
+So our focus was saying that.
+Okay, the builder has more money than the subcontractor. So let's target him and see how well this story goes. We did some amount of repositioning in terms of our message towards it.
+We ran a bunch of campaigns trying to target builders, but we did not get a positive response to all those efforts. One of the reasons we found out was that when a builder compared our product to any other product in the market, we lost out on the feature list itself.
+Sachee Perera | 07:56
+On the what feature listed?
+Jayadev | 07:57
+On the feature list, am I audible?
+Is it?
+Sachee Perera | 08:01
+Yeah. Yeah. You're fine.
+Jayadev | 08:01
+Yeah. Okay. Right, so we lost out on the feature list itself. What it meant is that a builder, if he's looking at construction management software, would say that. Okay, let's start with materials, right?
+So that's one model, then your check-in sector, then your project management, then maybe your design and architecture, that bit of it, right?
+Sachee Perera | 08:23
+So. Cur.
+Jayadev | 08:34
+And then you have your budgeting and your costs, all of that, right?
+So if you broadly put it out, we figured that we were labor-focused and we didn't really have all the features that a full-fledged software would have across these modules. Right?
+So suppose that we went back and did an exercise of actually mapping out the features that the product had at that point in time and going back and saying that, "Okay, what category does this product fall under?
+Sachee Perera | 09:26
+Yp.
+Jayadev | 09:28
+Right? So it was more... The learning from that was it's not so much, I would say, construction management for a builder, but it's more in the terms of, contractor management software and probably more aligned to a subcontractor's business than a builder's business, right?
+Sachee Perera | 10:01
+Yeah.
+Jayadev | 10:03
+While, I mean, the materials part, et cetera, is still... What part of the basics?
+If we called ourselves a product that is focused on optimizing labor because that's what we purely focus on, that would be a better fit in terms of what a product has to offer today. What the market wants or what we think ends up being ideal, the same...
+So.
+Sachee Perera | 10:42
+So the first management software is as?
+Jayadev | 10:42
+So workforce management software and contractor management software were two of the categories when we mapped out the features of competitors and we said, "This is our features." What is the overlap there and what are the missing things? We found that there was a larger overlap in terms of features in those categories as compared to the construction management period.
+But construction management software is a term that is used by everybody, right? And that definition of what construction management is for each of these guys is different, right?
+Sachee Perera | 11:19
+Y.
+Jayadev | 11:21
+So that's I think, so there's no real industry definition saying that construction management software has to do a PCB, right? The person doing just a is still calling himself a construction management software.
+If you know a person doing or a company doing just A is still calling it Motion. So, right. So we did a repositioning again, rebuilt the website and the messaging around that, right? And then said, "Okay, let's try to start targeting the contractor." The entire contractor business and for ourselves, a software solution for the business for the contractor's business kind of thing.
+So that's the overall product positioning standpoint where we are and how we pay that we are right. There is still an overlap between builders, but I don't think the builder would a small builder maybe, but not really, say a mid-size or a large guy would not really engage with this, right?
+So that's what, yeah.
+Sachee Perera | 12:38
+So how did... So if I could go back and ask a couple of questions around that. So you said when you went to the builders, it wasn't working.
+And you did.
+Jayadev | 12:48
+Eight.
+Sachee Perera | 12:49
+We lost out on the feature list and they wanted the materials and different parts of the business. How did you find that out?
+Jayadev | 12:55
+Hey.
+Sachee Perera | 12:56
+Like what was it from sales calls or was it from purely ad performance?
+So. Like, how did you get that? How did you know? It wasn't working?
+Jayadev | 13:07
+Okay. So we had a hypothesis that you should run after builders did small experiments with a minimum budget to reach out to them, and there was nothing that we didn't stick with anybody.
+Sachee Perera | 13:19
+Yep.
+Jayadev | 13:28
+Which means that from an ad performance perspective, the answer was a negative over that.
+Right? And after that, we went and said, okay, clearly from a research perspective, let's list on the feature list of the other competitors that are right?
+Sachee Perera | 13:45
+Right?
+Jayadev | 13:47
+So when you did that, we automatically said that.
+Okay, how many grains and how many eggs are there from a feature perspective?
+Sachee Perera | 13:54
+Yes.
+Jayadev | 13:55
+So that clearly gave us a perspective saying that, hey, you can still be a labor-focused solution, but then you need to... The question was how much of the needle would you move from a labor perspective, right?
+So if you're spending 70% of your total cost on labor, right, are you going to reduce it to 50%, 40%, 30%?
+Sachee Perera | 14:31
+Yeah.
+Jayadev | 14:31
+That kind of... Right? So the answer again, you're moving it marginally, but it's not going to be significant, that's what...
+And yeah, the other part was the problems that the industry faced. For example, Nauses is a big concern, right? So is your software going to solve any of the real-world problems that are there? The answer to that, I mean, a question like the not show was that software is not going to do anything to solve this problem. It's not going to show up. It's not going to show up irrespective of what software you use, right?
+So this is the overall thing, right? So then we figured that, hey, we really aren't solving that problem.
+Sachee Perera | 15:31
+Yes. Yeah.
+Jayadev | 15:33
+We can call ourselves construction management software even today, right?
+Sachee Perera | 15:36
+Yes.
+Jayadev | 15:36
+And position ourselves. But honestly, if we reflect upon what we have built and think about it, it really doesn't fall under a whole suite of proper transition management software. We'll get to that eventually. Yes, as we keep building.
+But as of today, it's not. We should not be telling that story because what's gonna happen is the moment you get on a call, the sales calls are going to be back because we're all promising on the marketing side and under delivering on the sales side, which is not a good sign.
+Sachee Perera | 16:15
+Yeah.
+Jayadev | 16:15
+So yeah, so that's basically how we can get that back.
+Sachee Perera | 16:20
+Understood. So are you're running, so currently you're running some paid ads on Google Ads and Reddit. And are you running Facebook and LinkedIn as well? Or just Facebook?
+Jayadev | 16:35
+Okay, I'll give you an overview of this. So we started with Google and LinkedIn. The problem is that there is no search for you. So, what we have understood is our ICP is not Texavy.
+Sachee Perera | 17:00
+Yp.
+Jayadev | 17:02
+They don't even like a simple thing like a free trial, which I sold to the US market a lot.
+So the standard sort of actions, even whichever industry it is, they would basically at least take one step forward. The Australian market is, I would say, ten years behind that, right? Where they are not the sick.
+So what we did on LinkedIn didn't work. We ran Google ads with very little money, and we figured out that the competition is spending a lot more, right? So you're spending about $20-$25 per click.
+Right, that's what there's...
+Yeah, click on Google ads for certain keywords.
+Sachee Perera | 17:57
+On LinkedIn.
+Jayadev | 18:03
+Yeah, it's... So the fingers, the guy with the biggest purse has just bumped up the rates, right? So you are here saying that I can't spend more than $5 a click, $3 a click, and you don't basically feature anything, and it's just that, right?
+Sachee Perera | 18:15
+$8 and you basically... It's just that way.
+Jayadev | 18:20
+So.
+So we tried that, we didn't kind of. I mean, we spent very small budgets like $500, you know, of that nature, right?
+Sachee Perera | 18:25
+I mean. Very small business like kind among.
+Jayadev | 18:32
+And, so yeah, basically Google has a channel from a search perspective because of this. Then kind of take off the way they think.
+And then we said, okay, now so the digital landscape is kind of limited over that. So we said that instead of a full strategy, let's look at a push like let's go to the customer wherever he's in one what chaimators, right?
+And then we started reit so on re we're getting traffic yes, is it converting no initial right now what we have done. So on Reit, we started with ads. We have started answering q and any questions trying to build a brand there and to get the word out and from the pure a bit it's purely it's completely non salesy because Reit would immediately just star that, right?
+Sachee Perera | 19:27
+M yeah.
+Jayadev | 19:30
+So it's just purely having conversations, providing value, asking nothing in return. People who want to see okay, provideed value. The user profile itself is to check in so they can come and see a Qur LA that works right?
+So that is right now I would say it is a warm channel. Right now it is not really like a ho channel that we are like, okay, yes, this is s that is what LinkedIn has. The number of people that we're going after on LinkedIn is less, the volume itself is less. We've done a ads message as that has not really taken off in the way we wanted it to take out because purely because of the volume Facebook we haven't tried yet.
+Sachee Perera | 20:17
+With children. But not every technology in the way we wanted it to take up business And.
+Jayadev | 20:30
+It's in our pipeline to kind of... Because we just started posting on Facebook right now, it's all linked and posted. We should really focus on Facebook. So, in the initial months, just get that thing out and see what's happening from an organic standpoint on Facebook, and then I think in the following months, we can option a small budget to test on Facebook as well.
+So that's one thing. LLM calling, I think, is the best way to go right now? So, as a channel that technically is supposed to work, because they're more in the email, call, group, and IR ICP is primarily known in that right?
+Sachee Perera | 21:24
+One?
+Jayadev | 21:26
+So yeah, overall, I would say that the traditional online channels have not really worked. We had to think out of the box to say that things... Our initial goal was to first get traffic right.
+So, I think somewhere we are starting to see the numbers increase from a traffic perspective. Right now, our next stage is to see why we aren't getting any phone fills on the right?
+Sachee Perera | 22:07
+Yeah.
+Jayadev | 22:09
+So we had, like a request for amo free trial.
+I mean, all the possible altractions that you can think of. We kind of experimented with that and kept on for some time to see what the result is. So all this while the result was zero.
+Sachee Perera | 22:27
+Y.
+Jayadev | 22:28
+Zero in the sense that we've got a few leads, but it's not really like a life-changing lead from that perspective, right?
+So in my head, it is zero, right? And so now I've gone back to saying that. Okay, if this guy is so non-tech-savvy that he clicks the start, he hasn't clicked a requested demo, he hasn't clicked any of the existing "get started" whatever it is, right? That we have planned earlier, we have moved it this month to just contact sales.
+Right as a thing. And you made the name, email, and contact number compulsory, saying that we need a right. So let's... We're going to run this for the entire month and see what kind of... Out of it. And if the result is negative, I'm just going to reduce the friction of that itself. Can they just give me an email address so that at least I can start seeing people interact with the website and show intent of some sort, saying that, "Hey, I'm interested in being..."
+So that's the primary focus over there, right? And yeah, this is.
+Sachee Perera | 23:54
+The on the website. I think there was a spike in the number of activities on the 14th or 15th. Did you start a new campaign there or was that organic?
+Jayadev | 24:07
+No, organic is actually on the decline thanks to a and yeah, it's one of the campaigns that we are running, right? So it's pretty bad organic actually, it's a decline across the industry because of AI and the AI search rules.
+Sachee Perera | 24:24
+Ye.
+Jayadev | 24:26
+So I don't know if your Google search patterns have changed, but mine have currently changed because when I put a query, I don't go beyond the first screen because all the information is presented there. So the sponsored ads and the organic searches beyond that, I have not clicked the link for a really long time.
+So that's a thing across the landscape, changing. So we are writing content more. How do we get featured over there? That is the intent of what you're doing right now?
+Sachee Perera | 24:57
+Yeah, sorry, give me one second.
+Jayadev | 25:01
+Yeah, no reason.
+Sachee Perera | 25:04
+Okay, I start. What was I going to say?
+So do you have anyone supporting you? Are you the guy building the website? Are you the one doing the ads? Are you.
+Jayadev | 25:15
+I no.
+Sachee Perera | 25:15
+Are you doing gra?
+Jayadev | 25:18
+I the I was doing it. I was a one-man army for some time. We have Gunish in my team, who is the content guy right now.
+Sachee Perera | 25:29
+Yeah.
+Jayadev | 25:30
+So I've passed on all the content, so I've built all the websites. The content written is where we design. We have Bonnie who's taking so we had an existing design, obviously with feedback and input.
+Sachee Perera | 25:35
+After eating all that, it's mine and everything that's you.
+Jayadev | 25:46
+We improved the design of the entire thing over a period of time, but now we're broadly got.
+So Bonnie designed, Gunish is coming, and I passed on all the blog posts, all the content pieces, TED, Q&A, all of that he takes care of.
+Sachee Perera | 25:53
+Yeah.
+Jayadev | 26:08
+I write the landing pages, the copy of the website, and the pay-per-ads. I take care of it completely.
+Right now, with the limited resources that we have, I think all of us are working at 100%. We have Constantin Pask coming up. So I think we are having momentum there.
+That's on this thing, it's just now in terms of... It's time to try and see some results. I think that's where the last main issue is, right? I think you've done a lot of work already.
+It's just that, why aren't people doing it? Because if this is a US market, I saw results eight months ago.
+Sachee Perera | 26:59
+Yeah, the Aussie market's very different, right?
+Jayadev | 27:01
+SOR so yeah.
+Sachee Perera | 27:06
+Like they're very close knit. They are, like you said, ten years behind the Americans. Especially for small businesses.
+It's not... Even then, the population... We only have 22 million people in Australia, right? So the volumes are significantly lower, and it's more challenging.
+Jayadev | 27:26
+Three.
+Sachee Perera | 27:32
+But just one question, I have a couple more questions.
+Jayadev | 27:35
+Hey.
+Sachee Perera | 27:36
+So the websites and WordPress... Is it just... Have you built it? Is it on... Does the development team run it themselves?
+Jayadev | 27:46
+The development team runs it themselves, so we have moved the block section to WordPress recently. Earlier, it was Reiti, so we moved it. Yeah, so to WordPress right now. Just for the blocking, right?
+Sachee Perera | 28:02
+Okay, cool.
+Jayadev | 28:03
+Yes, yeah, of course.
+Sachee Perera | 28:04
+And look, I think we will... I'll need to chat to you again next week, but the work on the website and everything is really good. I'm excited to see how we take it to the next steps and evolve.
+I'm trying to understand like you said, construction management software... There are so many stakeholders, right? Construction management software versus contractor management are two separate things, right? How do we position.
+Jayadev | 28:41
+Yeah, we have created something like that, yeah, the next.
+Sachee Perera | 28:42
+But from what I caught up with Sandy and Nisha, they said that you have done some work on competitor analysis. Do you have a spreadsheet of all the different competitors and things like that? And do you have any other documentation? Sales brochures, slide decks, and things like that as well.
+Jayadev | 29:10
+So we've created a one PGER I think this is quite some time. But. So one pager for sales just for them to kind of hand over that is what. The other thing that we did was the recent set of case studies that we put
+up. So this is purely from the initial conversations that the sales team had, right? So we got that info and we translated that to a KPI. Don't know if you've seen the case study, but yeah, I think it's in one of those shared folders itself, so I'll see if I can pull out one quickly.
+Right? Of the meeting, but take a look at it. It's "No name" and nothing. It's just the problem statement and how you're solving the specific problem that the user can face. So we've created about four of them right now.
+Yeah, those are the two things that we've done from a serious enablement standpoint. We tech... I think Bonnie is working on the pitch deck. That's the only tech that we have, but we haven't worked on a sales PD which.
+Sachee Perera | 30:21
+4. Okay.
+Jayadev | 30:27
+So I think that yeah, the requirement in terms of... So we just didn't push because we've got our hands full already right now to, you know. So yeah.
+Sachee Perera | 30:37
+Do you have a design guide or a design system with the brand colors and stuff that you can share with me after this call?
+Jayadev | 30:45
+The brand guidelines, we haven't documented it like it's not documented, but I can ask Bonnie to take care of it.
+Sachee Perera | 30:49
+Okay. And he does.
+Jayadev | 30:56
+So he's the designer right now. So we haven't formulated it because, yeah, we need to first find customers before we [Laughter] get all these...
+Yeah, so the brand guidelines are not there, but yeah, so you give the... You write the content, I'll tell you the process, right?
+Sachee Perera | 31:11
+That's okay. It's. No, when I. When I like when I do slide decks. I like to use the branding and the colors and stuff.
+Jayadev | 31:25
+It will be easier for you. You decide what you want from a content perspective. When you run, you'll design it for you.
+Yeah, so you don't even need to get into a pre-formatted design. This thing that we have right now, we don't have right now. We can create one if you want quickly. Yeah, I'd rather say that you focus on the content bit and give it to so that maybe a couple of iterations you get to see the final picture.
+So let him take that.
+Sachee Perera | 31:54
+Sure. Okay, that's fine.
+Jayadev | 31:55
+Yeah.
+Sachee Perera | 31:56
+That's cool. Alright, Matt, that was very helpful. Thank you so much for jumping on.
+Yeah, I will send you a message at some point next week and we can go from there. If you can kindly send me any kind of reporting that you have done for the ads or anything like that, that would be good.
+Jayadev | 32:18
+So we have an A/B testing report thing that we use in our organizations. Apart from that, I think you've got access to all of the tools. So you can just export in order format. I'll give you the access to this.
+I'll just try to... Okay, do this, one thing right on chat, just list out all the things that you need. I'll just repeat that. That will be the easiest thing.
+Sachee Perera | 32:50
+One that'll be good, awesome, mate.
+Jayadev | 32:51
+You know, confusion. Yeah, okay.
+Sachee Perera | 32:54
+Thank you so much. You have a great day. Hey, I'll... Enjoy. You can see me next week, see?
+Jayadev | 32:57
+Yeah, sure. Take care half of.

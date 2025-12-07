@@ -233,6 +233,49 @@ lib/agent-sdk/
 
 ---
 
+## M3.7: Advisory File Search (Dec 2025)
+
+**STATUS:** ✅ **COMPLETE** - 43 files indexed, search_advisory tool operational
+
+### What Was Implemented
+
+1. **Advisory File Repository** (`advisory/`)
+   - `deals/` - MyTab, SwiftCheckin, ArcheloLab, ControlShiftAI, Talvin, Tandm
+   - `clients/` - SwiftCheckin
+   - 43 markdown files with embeddings in `files` table
+
+2. **search_advisory Agent Tool** (`lib/agent-sdk/advisory-tools.ts`)
+   - Hybrid search: 70% vector + 30% full-text (BM25)
+   - Filters by entity_type (deal/client) and entity_name
+   - Auto-approved (read-only)
+
+3. **Database RPC Function** (`search_advisory_files`)
+   - Added columns: entity_type, entity_name, fts (tsvector)
+   - Fixed advisory project UUID: `11111111-1111-1111-1111-111111111111`
+
+### Usage
+
+```bash
+# Index advisory files (after adding/modifying)
+npm run index-advisory
+
+# Verify indexing coverage
+npm run verify-advisory
+```
+
+### Key Files
+- `advisory/` - Advisory file repository
+- `scripts/index-advisory.ts` - Indexing script
+- `scripts/verify-advisory-indexing.ts` - Verification script
+- `lib/agent-sdk/advisory-tools.ts` - Agent tool module
+
+### Example Queries (Agent Mode)
+- "Brief me on MyTab" → Master-doc content
+- "What deals have red flags?" → Multiple deal files
+- "Prep me for SwiftCheckin call" → Client profile
+
+---
+
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router)
 - **React**: v19.2.0

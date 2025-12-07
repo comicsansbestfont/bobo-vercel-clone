@@ -36,3 +36,11 @@ export {
   streamAgentResponse,
   type UIStreamChunk,
 } from './stream-adapter';
+
+// M3.7: Advisory tools
+export {
+  advisoryTools,
+  searchAdvisoryTool,
+  ADVISORY_TOOL_NAMES,
+  getAdvisoryTool,
+} from './advisory-tools';

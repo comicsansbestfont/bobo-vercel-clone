@@ -1,0 +1,292 @@
+Transcript: 019a7162230f72a0acbbb77de391c3c6.mp3
+Duration: 0:03
+Speakers: 2
+
+==================================================
+
+[00:00] Ainhanran: It. Sa.
+
+[02:49] Sachee: In the Google meeting. Hello, mate.
+
+[03:28] Ainhanran: Hey.
+
+[03:29] Sachee: Long time no see. How you think?
+
+[03:34] Ainhanran: Good. I'm good. How are you?
+
+[03:39] Sachee: Where are you?
+
+[03:39] Ainhanran: Oh, you're in the.
+
+[03:40] Sachee: You're in the office. Yeah.
+
+[03:44] Ainhanran: Office.
+
+[03:46] Sachee: Can you hear me? Is the. Is the Internet all right or.
+
+[03:52] Ainhanran: Yeah, I think. Wait, let me just check it. Am I on the right Internet?
+
+[03:57] Sachee: Let me see if it's me.
+
+[03:58] Ainhanran: I think it's a little bit lacking.
+
+[04:03] Sachee: Let me check if it's me.
+
+[04:06] Ainhanran: Otherwise.
+
+[04:07] Sachee: I'll swap the connection.
+
+[04:10] Ainhanran: Okay, one sec. Because I'm in.
+
+[04:16] Sachee: I'm in Bali at the moment, and the Internet here is shocking. Okay, I think it is me. Give me two secs. It.
+
+[05:20] Ainhanran: Is it. Okay, because I see you moving here and there, but then.
+
+[05:25] Sachee: Okay, I think it should be fine now. Can you hear me?
+
+[05:31] Ainhanran: I can hear you. Yeah. Good.
+
+[05:32] Sachee: Excellent. Let's go. How's things, man? I'm keen to. Yeah, keen to. To hear what's all the new stuff you've been talking about?
+
+[05:44] Ainhanran: Yeah, I mean, like, you know, before. Before, just like, you know, jumping to your house constructions, like, you know, let me just quickly run through with this startup mvp, where we standing and all. Okay. First, I mean, I really need your, like, you know, kind of inputs from you as well, because I saw that even you are struggling with few things, which is. I also thought sometimes few features are not necessary at this point, but I know, like, you know, it's a bit of a confusing certain feature, so. So let's talk about them in a bit. So where I'm at right now is there are a lot of things happens. Okay, so I'll come back to that some other time. Not tonight.
+
+[06:37] Sachee: No, go for it. I'm all in. Is Tony. I have some feedback for you on the product and everything, but we'll jump into all of that later. But I'm keen to hear you said you made a whole bunch of changes and whatnot.
+
+[06:54] Ainhanran: Yeah. Yes. So what I really thought right now is because since the product is a little bit more clutter. Right. Maybe it is my mistake as well. Like, you know, when I was like, you know, dealing with the developers, I was like, you know, in the full scope. But I also maybe didn't really, like, you know, manage it in a proper way that like, you know, which one they should focus. And right now it's when. So there was a little bit of a lack of, like, you know, coordination as well, or the communication, I would say. So that's where like, you know, the product is kind of like, you know, you can see it's been touched everywhere but nothing is like in a complete for somebody to get like complete feeling. So now what I'm going to do is I'm removing like a lot of features right. So I thought of like and even that location feature will remove it. And also even in the dashboards few like in the buttons which are not functioning at the moment. I just wanted to remove it to keep it so clean and also even like you know there is some chat options are there. What I'm going to do is I'm going to remove that and keep it on a simple FAQs. So just wanted to make sure that like you know the product is very light and it can be easily like an access through the mobile. Because one of the problem also be most of the time we check with the desktop and all those things we didn't really like focus more on the mobile. But when I'm actually putting it out I would say 90% of the people were actually accessing it through the mobile. So the product is not so mobile friendly at the moment. So that's what I thought. I really wanted to remove those parts and keep it simple. And of course it doesn't still have the main feature that I wanted to have which is like it's exactly get your details from you and match you with the exact architect or an interior designer. So architectural. Interior designer. So right now it's more like once you just fill it up it's going to be showing every architects and interior designers in the platform. Yeah, so it's like more like a filtering. Right. Like.
+
+[09:08] Sachee: So I think what you have is I feel like you need to do big refactor. Right. And when I say that you have a lot happening there, I feel like you're trying to solve everything and there are a lot of unnecessary things that I see right There are just the pop ups with the chatbots, the Facebook shares, the this and that and like it's like this is raw feedback.
+
+[09:38] Ainhanran: You're like what?
+
+[09:42] Sachee: Yeah, these are not relevant right now. Pick yes your pick one or two workflows and optimize just for that. And like seriously you could replicate everything that you're doing right now with just Google Forms or Typeform or something. Just capture that information. So try to solve the problem without the software, without the tech and then solve it once you have that firm understanding of how to do it. Because right now you're trying to like kind of solve a problem but you're not. Yeah, I feel like you're. You're not really clear on how to solve it and. Or who your target ICP is or the workflow. So reduce the complexity and hyper focus on one or two workflows. Right. Is it the, is it the information capture? Is it the selection of the architects? Like what is it? What's the core problem you're trying to solve and for whom? And optimize it for that because. Yeah, because it's, it's going to be too confusing for you to figure out. Where should I focus my development? Where should I focus my effort?
+
+[10:54] Ainhanran: You know, exactly. No, no, I, I got it. Because what happens is because I really wanted to like, you know, create this like complete ecosystem. So mvp, I'm not really like, you know, focusing on like everything. So this is like, you know, I mean I'm bit of like, you know, ashamed to say as well, like, you know, this is like purely where things went wrong is with my project management probably in terms of this product development project management because I was like, you know, giving these instructions or the big pictures to the people and I expected something in a wrong way as well. So that's what like in a really took everywhere. So now, now I'm pretty clear. Like, you know, the one important problem here is like you know, the architect and clients meeting. So that's where if that didn't happen properly, everything going to happen is going to be a. Consequences of that. So my main aim is to make that matching properly, like, you know, in the right way. And then it's all about like, you know, having all the information they needed. So maybe as you say, rest of the things we can really do with offline, which is I have already done it more or less all the like, you know, the projects. I'm right now doing it manually. So where I will be needing the product is to go as like, you know, scalable product. Right. So if I'm really like, you know, going to be in Colombo and doing it, I don't really need this product at all because that's what exactly I'm doing it. So people come to me with the consultation. So even either I will do it or I will be directing to the right architect to do it. And when they meet with them, do the design, then I will be managing the projects, make sure, you know, they're going to be getting. So this is something I do. I don't really need a tech at all. Where the tech needed is for the scalability.
+
+[12:42] Sachee: Yeah.
+
+[12:43] Ainhanran: So what if.
+
+[12:46] Sachee: Here's an idea like what if we tried this way, you just have one form, you're capturing all the information that you're capturing right now, right, it comes through as an email or whatever to you, you review it and then you reply back saying, here are the four architects I have chosen for you, for you to choose from based on your requirements. And these are fit. I can help you connect with them. You won't need, like it's an experiment to try, right, like, because the problem you're trying to solve is the matching. So. And the unique value proposition that you have is your insight on the requirement. Right, which is done offline for now. And that will help. That'll eliminate all of the complexity for you to better understand what's the, what's the process. So then you can build all the workflows and tech around it and optimize the platform just for that.
+
+[13:56] Ainhanran: Exactly.
+
+[13:56] Sachee: Like, purely. Just that. Like after you've got through, done three or four, I mean, after you've done three or four matchings, then, okay, you can go and be like, all right, I will give the users the ability to log in and choose from the three or four that I have presented. But they can also see all the other architects as well. So it's just basically just a small CMS. Behind an authentication wall, behind an arc. Did you get that?
+
+[14:38] Ainhanran: We lost you again. It's frozen. Hello?
+
+[14:41] Sachee: Sorry, Matt. So what I was saying was like, if you do your first three to five manually, like that. Let me turn off the video, hopefully.
+
+[14:52] Ainhanran: Yeah.
+
+[14:55] Sachee: After you.
+
+[14:55] Ainhanran: Oh, yes, let's do that. Yeah.
+
+[14:58] Sachee: So after you do your first three or four matchings manually, right, Then you can potentially progress to going to giving the customer the ability to log into a platform of a sort, getting them to select the three or four that you have presented for them and then see the rest of the other architects, which is basically just a small CMS behind a login. Behind a login, right, so that's like conversion two of the mvp. Yeah, that's. That's just my, that's just my feedback on, on that. On a potential way forward to remove the complexity. Because, yeah, right now I feel like there's too much, too much happening, but I think we know that.
+
+[15:53] Ainhanran: Yeah, yeah, no, I mean, that's the thing. So I also, like, in a thought, not the thought the same, like, you know, because it was. The problem is when you were like developing UI inside there, so you know how to like, you know, manually, like the moment you go on to the market and you realize, like, you know, where things didn't really work out. So that's the exact position I'm in at the moment. Yeah. So I mean, exactly. That's what like an asset to you? That's exactly. I'm going to do it because otherwise it would be very difficult for somebody to try out the product as well because this is too complicated. And another thing is like, you know, there are not many parts are not completed. So keep the counter cabin complete. Like, you know, what can I say, A cycle of doing something. They can start something and it's stop somewhere. So. So that's that way it doesn't really going to help anyone.
+
+[16:49] Sachee: Yeah, exactly. Yeah. So what's next then for, for you with all of this?
+
+[17:05] Ainhanran: So next, since like, you know, what I'm trying to do right now is I'm stripping off all these like, you know, necessary things, right. And I'm gonna like, you know, focus on maybe creating something very simple like, you know, maybe using a cursor or something like that will create something, put it out and try to get more architects to sign up. So this is one of the things that I need to like really do with architects and interior designers to sign up for me to have that one. So then like in as you said, it would be like more like I'll be working on the background, matching them, making some like, you know, kind of a traction and then slowly moving on to the web. I mean, tech development.
+
+[17:53] Sachee: Yeah, yeah, exactly.
+
+[17:57] Ainhanran: Cool. And also now I'm very clear with my clients as well. So anyhow, for me the client is architects and interior designers because they were like, you know, find it very difficult to land into the right clients. At least that's the story in Sri Lanka. But however, there is another set of clients, as I told you, the diasporas, right, you know, living in different countries, who wants to build their homes or do something in terms of like, you know, the construction in Sri Lanka, they also have a huge gap there because they don't really have anyone that, you know, they can actually like, you know, rely on it in a sense, like, you know, how to find the right architect, how to find the right contractor. And also they don't know what is happening. So most of the time they had to rely on their relatives to go to the site and take some pictures and send it. So what I'm trying to do right now is like, you know, probably like within Columbus myself or maybe I will be getting few peoples in various places as well when it's grow. So where we will be like, you know, the progress also we will be recorded and we will be updated maybe initially as just an email, but Then we can slowly convert that as a platform as well where people can take photos, upload the progress and everything. Anybody can see that from anywhere. So my customers now like, you know, pretty like, you know, clear. So it's going to be more focusing on the solution is ideally for the end user who wants to build a house or do the renovation or a tour interior designer. But physically it is very difficult for them to be in that site. And on the other hand for architects or interior designer to meet these people who cannot be there physically to meet them in a very, how can I say, a platform that will be very like, you know, facilitating for them to understand and give path they want and also the issues of the payment and stuff like that. So this is what I'm going to solve. You know that, that's, that's exactly. And while I'm in Colombo, I don't actually need the platform. But if it's the day that I wanted to scale it up only I need like another platform. So it's going to be more like a manual running and then slowly I will get into the tech platform.
+
+[20:21] Sachee: My suggestion for you here is I think because you're providing a lot of value, right. And there's a lot to communicate. Have you done any kind of positioning exercises? Have you done any positioning and messaging work?
+
+[20:39] Ainhanran: Not really.
+
+[20:40] Sachee: Okay, you know what, I can, if you want, I can help you with that. I'll send you a little bit of instructions on what you would need to do. It's just pretty much to be crystal clear and succinct on what you are doing. So, so that when you go out to your diasporas or your architects or whoever, they know exactly what value you provide to them and improve the conversion of the signups. Well, improve the conversion of people signing up in the platform or signing up to your essential database.
+
+[21:19] Ainhanran: Right.
+
+[21:19] Sachee: And then staying on, staying on. Mmv.
+
+[21:29] Ainhanran: So okay.
+
+[21:33] Sachee: I will send it to, I'll send you a little bit of that by email for you to read through and just probably you just need to invest 15, 20 minutes of your time. That's about it.
+
+[21:48] Ainhanran: Right? Okay. Okay. Okay. Yeah. Oh.
+
+[21:58] Sachee: How else can I help you with, with all of this?
+
+[22:06] Ainhanran: Well, I mean like, you know, now that another thing is like, you know, anyway, I will speak to that Ganika or so to like, you know, reach out to these Canadian market. So one thing is, I would say is like, you know, really I need to be spread out these nieces into these like, you know, wherever the free language for us are not. So countries like Australia Canada. Uk. So UK also, I'm just trying to reach out now. I mean, this is, this is where the catch is. Like, you know, when you specially, like, you know, when you're like reaching out to these overseas countries, then you need some, you know, web that will be like, you know, doing at least the initial part of like, you know, getting the stuff from them at their convenient time. So this is where the check is coming. Right. So maybe I will be like, you know, we redo the. Not redo, like, you know, remove it and like, you know, make it very simple to just to capture the information in the website through whatever the information we needed. Then the rest of the things, as it were, you, for the time being, will carry out on a manual way.
+
+[23:12] Sachee: You know, you just need the capture of it and then let them know. Oh, yeah, cool. You will get a custom recommendation within 24 hours.
+
+[23:22] Ainhanran: Right?
+
+[23:23] Sachee: That's it. And that's exactly, That's a better. Yeah, so you have a. So you need to optimize like the flow for that. Otherwise you'll get all of these eyeballs on your, on your form or your website. But if people are not converting because, like me that had the difficulty, they're not going to come back again.
+
+[23:44] Ainhanran: Right, exactly.
+
+[23:49] Sachee: So, yeah, it's how you position that and be like, yeah, cool, within 24 hours, I will send you, you will receive a custom recommendation for three architects.
+
+[24:00] Ainhanran: That are best fit for your requirements. Absolutely. Anyway, anyway, that's the whole point even. That's what I wanted to do with this platform, but unfortunately we couldn't deliver it. Well, it's all like, you know, kind of a learning absolute curve, I would say.
+
+[24:19] Sachee: Absolutely. Yeah. There's, I mean, there's no other way to find out. Right. You have to start somewhere. I know. You know.
+
+[24:28] Ainhanran: Yeah, cool. So at least I'm, I'm happy that like, you know, I know it's like nearly one year and four months being wasted and a lot of money being put on it, but at least like, you know, now the time is to get back to the right part of doing it. Yeah, but, but the good part is like, you know, I'm getting more and more like projects, even unbelievably, like, you know, there are some people from, I don't even know, like, they will say they find me on online, but I don't know how did they find me on online, But I'm getting more projects. So that's a good part about it. There we go.
+
+[25:09] Sachee: But yeah, keep it simple, man. Keep it simple. And where Possible like remove as many moving parts and try it is it.
+
+[25:21] Ainhanran: It is there. So, so I, I decided like, you know, keep it, keep the site so simple that they come, they know where to like, you know, fill up the form.
+
+[25:31] Sachee: Right.
+
+[25:32] Ainhanran: And then even like you know, the end of it, it just matter of like, you know, the message goes to them. So then I can do rest of the things from behind the scene. Yeah, absolutely. Cool.
+
+[25:44] Sachee: Good. Yeah. Well, I'm excited to see what you do with it and the next version or the iteration.
+
+[25:53] Ainhanran: Yeah. And yeah, I just wanted to ask you. I know, I know it might be a little bit of like too much of. I mean you don't actually need to respond to these things as well. So what I would be like, you know, will be a bit of a help is like what if I use send you an email maybe on a weekly basis with some sort of a progress. Right. You don't even sometimes need to respond to me. Right. I just wanted to have someone, you know, to share that. Can we do something like that? Is it okay?
+
+[26:26] Sachee: Yeah, we can. What are you thinking of in terms of the weekly update?
+
+[26:35] Ainhanran: Because just as you drawn somebody to be like, you know, kind of, okay, this is my progress, this is what I'm doing it to be continuously like in a go that will be helping me to be like in a more and more streamlined things. Because this is what actually I did it so so far I did to myself right now I thought it's time to get some. As I told you, you don't really need to spend your time to read it and respond it to anything. Right. You can simply ignore it. But I just, I mean here and there you can do like, you know, but it's something that I'm.
+
+[27:09] Sachee: Well, look, I'm open to doing that. Why don't you, why don't you do this, right? Put together a 90 day, a three month sprint, right. Like, okay, what are you going to accomplish? What are the top three things you're gonna accomplish in the next three months?
+
+[27:26] Ainhanran: Okay.
+
+[27:27] Sachee: And give me the updates. Well, let's sync up on what those are. Okay. I will recommend whether, you know, whether that those three things are probably what you need to focus on or my feedback. And then once we agree on that, we can just do a weekly update according to that.
+
+[27:52] Ainhanran: Yeah, that's, that's even much better. But that sounds like a plan. I'll do that.
+
+[27:57] Sachee: Cool.
+
+[27:58] Ainhanran: Good. Yeah.
+
+[27:59] Sachee: So. So maybe the first thing is let's do that positioning exercise that I talked about. I'll send that through to you. So that's the first part. All right. And then.
+
+[28:12] Ainhanran: Sorry, I lost you again. I lost you again for a while.
+
+[28:15] Sachee: Sorry. So do the position.
+
+[28:18] Ainhanran: Are you there? Yeah, I'm here, I'm there.
+
+[28:23] Sachee: So let's do the positioning part first.
+
+[28:27] Ainhanran: Right.
+
+[28:28] Sachee: And then you come back to me with a three months sprint or three month plan. And then we can do a weekly. Just send me an email and update if we need to jump onto a call, we can. If we don't, no worries.
+
+[28:45] Ainhanran: Okay, cool. Well, that's the thing. So what I'm doing is I will share some of my three months plan with you and then we will take it from there. Cool.
+
+[28:53] Sachee: Sounds good.
+
+[28:55] Ainhanran: Excellent.
+
+[28:58] Sachee: Hopefully that gives more clarity on what a weekly update might indeed need to include.
+
+[29:09] Ainhanran: Yeah. Cool.
+
+[29:12] Sachee: Did you get a chance to review the blueprints?
+
+[29:17] Ainhanran: Yes. So I just wanted to quickly have a couple of things. One thing is this blueprint is like you know, kind of old one. I think most of the things been built as per this. But there are some changes in actual house. Let me just quickly open that. And also I'm quite surprised to see like it's a fully hand sketched one. Oh really?
+
+[29:46] Sachee: Because it's all.
+
+[29:50] Ainhanran: Yes, yes. Well, it's not that old. It's like 2092, so it's not really old. But maybe some old fashioned architect did it. I don't know. Okay, so do you know this actual plan right now here for an example, your master. But that I told you, wherever that height difference comes, we stopped it from there. And then like you know, rest of the part we extend to the outdoor area. Actually the house is designed that they have like, you know, then the people at later stage only they have extended the room and made that room bigger. You get what I'm saying?
+
+[30:37] Sachee: Yeah, because my dad did say something about that the original plan versus what was actually built are three separate things.
+
+[30:48] Ainhanran: Okay. No, but when I look at it, this original plan, that is certain areas, but we have actually said, okay, we will do this. Yeah, it is already in that plan. The house is not according to the plan.
+
+[31:02] Sachee: Yeah, yeah.
+
+[31:03] Ainhanran: I mean the current house.
+
+[31:04] Sachee: Yeah, so. So it's exactly what we, what we discussed. Is that what you're saying?
+
+[31:11] Ainhanran: Yes. Even that room, like you know. Yeah, take that out. And only thing is in the as with this plan, like you know, the interior ups. I mean the roof, there is no roof terrace. Everything is roof. Okay. But then the roof terrace also I think it's been added at the latest stage. That's where you are Seeing some of these leakage and everything in the rooms and all those things we have seen. So those things could have happened because of these changes at later stage.
+
+[31:41] Sachee: Okay, so.
+
+[31:42] Ainhanran: But of course we did.
+
+[31:43] Sachee: So what do we do now? Where do we go from here?
+
+[31:50] Ainhanran: Right, So I, like in another small thing is I have to visit the house again because you know why? This plan doesn't give me any level differences, especially in that particular bedroom that we want to make for your dad. You know, the, the downstairs work is next to the car park. So that level differences, those things are not mentioned in this particular drawing. So what I need to do is I have to go back, especially with that bathroom and everything. I need to really come. I mean, calculate that and then I will immediately give you the. I mean, rest of the things are like, you know, I mean, it's more or less me. Okay, maybe the bathroom and all those things. I need to do a little change. But other than that, only the major changes with this particular ground floor, the level differences. So I think I have your father's number. You also just inform him. Then I can call him up and go and take that particular measurement. Right. So once that is done, I can just come up with a small sketch for you. Just see like whether that's okay and is it everything that you want is included in that or not? Yeah, if not, like, you know, we do that. And then what I can do is I can give you a small cost indication of like, okay, if you're going to do how much it's going to do cost. But as I told you, that is not going to be an accurate cost. It will be like, you know, something, you know, closer to what it could be. So at least you can have an idea. Okay, this is the, like, you know, the budget I need to have in my mind. Then say, if that's all okay, then you need to be. Give a green light. Then there'll be a small payment for me to start a complete design. Then I do that and then we complete that. And then, then that time when we complete in that, we will be having accurate cost to do the India renovation. We can have it in our hand and then we kick off with it. So that's the plan. So if I go to your house within three days, I can come up with a sketch. Right. And then we should have a quick meeting and then you can say whether, I mean, even. Oh, I can even send that to you. So I mean, I think sometimes with you, I think that would be much easier than having a meeting given So I can say email that to you so then you can see it and you can share your comments. So then just develop that. And then once, yeah, once we are like, you know. Okay, yeah, so once we say come to the level. Oh, this is pretty good. Then I can quickly do the costing and let you know. Okay, approximately. This is much. Will cost you.
+
+[34:23] Sachee: Yeah. Look, I'm more than happy for you to contact my dad. He's really friendly as he does. He loves to talk. So, yeah, please, yeah, yeah, feel free to go and you know, reach out to him. I'll let him know that we've had a chat.
+
+[34:43] Ainhanran: Right.
+
+[34:43] Sachee: And yeah, and yeah, feel free to call in straight away or send him a message, whichever.
+
+[34:51] Ainhanran: All right, cool. So then I will. I will like, you know, do that. So I will probably like, you know, drop him a message right now itself. And then I think I can go by Thursday. I can visit Thursday or Friday. But as per the availability, I will go there. And I mean that will be very quick. But only thing is I need get that because even again, in this particular plan there is no basement area. That's also probably added later.
+
+[35:22] Sachee: There was no basement in the original. Oh, I didn't know that. I had no idea.
+
+[35:30] Ainhanran: Oh, wow. Okay. Yeah, that makes sense to me as well. That's where that height difference is coming. Because if somebody have the basement from the beginning, if they're not going to have that differences in the flow. Do you understand? So this is basically added later on. Wow, it looks.
+
+[35:49] Sachee: That's. Yeah, that's. I'm a bit shocked.
+
+[35:52] Ainhanran: A lot of life changes has been. Yes, indeed. But like, you know. Yeah, I mean the original plan is just a ground floor and the first floor even there is no second floor. The second floor is full of roof and there is no basement. Yeah, well, and also the. As per the original plan now. Anyway, this is also another funny part. Okay, as per the original plan. I know the. The main entrance is. No, no, that's a bedroom. Okay. So the main entrance. Okay, it is on a. Now right now. Your mom has changed the entrance, right Where. Yeah, that complete glass doors are there. Yep. Can I. Can I quickly share my screen and show you?
+
+[36:40] Sachee: Yeah, of course.
+
+[36:41] Ainhanran: I mean, you would be surprised to see these things. What is the original plan and where are you now? And you are literally asking me to redo the original plan now. Really? That's the funniest thing. Can you see the screen?
+
+[36:59] Sachee: Yeah, I can see the screen.
+
+[37:03] Ainhanran: Okay. So as per the original plan now this is the car park. That's the same thing, nothing changed. But this is the main entrance. Main entrance is here.
+
+[37:16] Sachee: And ah. And it was supposed to be a bedroom.
+
+[37:22] Ainhanran: Yes, this is a bedroom which is now again we are going to be converted that to a bedroom. Okay. So then they have. Right. So what they have done is they break this one and make that basement. Because of the basement they need to increase this height. That's why original plan doesn't have any height difference. So that's what I had to go back again to take it. Okay. Otherwise this original plan will have that high difference. So this is the main entrance and this was a bedroom with the attached bathroom. Oh no, not the attached bathroom. That's a common bathroom. So the bedroom door is here. So even if anybody in the living room that visits this, if they want to use it, they can come and use this bathroom still.
+
+[38:07] Sachee: Yeah, right.
+
+[38:07] Ainhanran: Okay. Right. And then this was a pantry area. Right. And the kitchen. Right, of course that's okay, that's remind the same. And then kitchen also the part having outside there is a washing area and a servant toilet. Okay.
+
+[38:25] Sachee: And there's a courtyard inside as well. I haven't seen this. Like I only took this, I only took a photo of this for you. I didn't actually look at this properly so. Holy crap.
+
+[38:39] Ainhanran: No, no, this is the court at that open area which is like, you know now again we were talking about, you know, have the ventilation. So that's right here. Right. So this is the courtyard. It's high difference. So they have again fill it up and cover the top. So if you see the roof, okay. Now this is the house, see, you see everything is roof and this is the courtyard fully open. And how they have actually designed the roof is it comes there, come from there and then you know, kind of open. So even the rain water and everything come here.
+
+[39:16] Sachee: Right, okay.
+
+[39:19] Ainhanran: Yeah, yeah.
+
+[39:22] Sachee: Interesting.
+
+[39:24] Ainhanran: Wonder why this is a problem and when to why they didn't.
+
+[39:30] Sachee: I wonder why they change made all these changes.
+
+[39:34] Ainhanran: Yeah, exactly. So this is the problem when you design something with a purpose. When some people come and change it. I mean all these changes probably they have done it like whenever they wanted something they just did this change. Yeah, they are not really properly thought and did those changes. So that's where you know, the house doesn't end. And actually now kitchen. Yeah, kitchen. But is this toilet at the washing area still there?
+
+[40:04] Sachee: I. I think, I think so. No, no, there is a toilet. I'm not sure about the washing area, but there is definitely a toilet service toilet at the back.
+
+[40:13] Ainhanran: Toilet is There. Okay, so that where the access is.
+
+[40:17] Sachee: No, no, no, no, no, sorry I lie. That's there's a toilet outside.
+
+[40:23] Ainhanran: That's somewhere here, right?
+
+[40:24] Sachee: Yeah, it's there. No, there's no toilet. There's no toilet inside where it says E. Exactly. There's no toilet there.
+
+[40:38] Ainhanran: And, and there is something that little bit. Okay. This area. I also, I have a video I need to play. I mean, okay, now I can see this kitchen. The door is like that right at the moment. The opening is from this wood itself. Right. Not like there's a small wall come like this and the door. Oh, I don't think there's always something like that.
+
+[41:00] Sachee: I'm not, I don't think there's a door. There is a small kind of pantry open. Yeah, yeah, it's, it's fully open. And there's no door. Oh no, no, sorry I lied. There is a door.
+
+[41:16] Ainhanran: Yes.
+
+[41:16] Sachee: And it does come out a little bit. Not too much. It's probably like a, probably like two feet or something. Or once one and a half seat maybe.
+
+[41:28] Ainhanran: Okay, okay. So that is there. Okay, okay, maybe then I, I, I missed that out. Yeah. So then this is that back where your father now have a roof. And that's another. So yeah. So basically like, you know, this is, was a room. Bedroom. Right, bedroom. And then they suddenly added a basement underneath.
+
+[41:52] Sachee: Yeah, that's. I'm impressed how they put a basement in a building.
+
+[42:00] Ainhanran: Yeah, man. Even I'm also thinking like, you know, probably there might be a lot of plumbing that might have gone through.
+
+[42:08] Sachee: I don't know.
+
+[42:09] Ainhanran: It's just sounds crazy.
+
+[42:11] Sachee: Sounds dodgy as. Anyway, mate, why don't you reach out to my dad and they'll go ahead, take a look, do what you need to do and let me know. But yeah, thanks for looking into this for me. I have learned so much about the house today that I had no idea.
+
+[42:34] Ainhanran: No, no. Okay. And okay, so this is the. Quickly I will show you. See, this is a roof garden on top of that. Wherever. Right now your master bedroom comes up to this point. Can you see my cursor? Hello? Hello. Hi there. Hey, it.
+

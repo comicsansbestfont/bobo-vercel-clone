@@ -11,7 +11,7 @@ import type { Options as AgentOptions } from '@anthropic-ai/claude-agent-sdk';
  * Default tool configuration - read-only tools auto-approved
  */
 export const DEFAULT_TOOL_CONFIG: Partial<AgentOptions> = {
-  allowedTools: ['Read', 'Glob', 'Grep', 'WebSearch', 'WebFetch', 'search_memory'],
+  allowedTools: ['Read', 'Glob', 'Grep', 'WebSearch', 'WebFetch', 'search_memory', 'search_advisory'],
 };
 
 /**
@@ -35,6 +35,8 @@ export const FULL_AGENT_TOOL_CONFIG: Partial<AgentOptions> = {
     'remember_fact',
     'update_memory',
     'forget_memory',
+    // M3.7 advisory tools
+    'search_advisory',
   ],
 };
 
@@ -42,7 +44,7 @@ export const FULL_AGENT_TOOL_CONFIG: Partial<AgentOptions> = {
  * Read-only tool configuration - for restricted agent mode
  */
 export const READONLY_TOOL_CONFIG: Partial<AgentOptions> = {
-  allowedTools: ['Read', 'Glob', 'Grep', 'search_memory'],
+  allowedTools: ['Read', 'Glob', 'Grep', 'search_memory', 'search_advisory'],
 };
 
 // Tool descriptions, icons, and confirmation logic are in ./utils.ts

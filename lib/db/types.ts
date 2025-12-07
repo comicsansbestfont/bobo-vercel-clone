@@ -5,6 +5,9 @@
  * These types ensure type safety when querying the database.
  */
 
+// Advisory project constant UUID (M3.7)
+export const ADVISORY_PROJECT_ID = '11111111-1111-1111-1111-111111111111';
+
 /**
  * Message content structure matching Vercel AI SDK UIMessage format
  * Extended with inline citation support for Double-Loop architecture
@@ -85,6 +88,8 @@ export type File = {
   content_text: string;
   created_at: string;
   embedding?: string | number[]; // Vector embedding
+  entity_type?: string | null; // M3.7: Advisory entity type
+  entity_name?: string | null; // M3.7: Advisory entity name
 };
 
 export type UserProfile = {
@@ -293,6 +298,22 @@ export type ProjectMessageSearchResult = {
   content: string;
   similarity: number;
   created_at: string;
+};
+
+/**
+ * Advisory search result type (M3.7)
+ * Used for searching advisory files with entity filtering
+ */
+export type AdvisorySearchResult = {
+  id: string;
+  filename: string;
+  content_text: string;
+  entity_type: string | null;
+  entity_name: string | null;
+  file_type: string;
+  vector_score: number;
+  text_score: number;
+  combined_score: number;
 };
 
 /**
@@ -583,6 +604,31 @@ export type Database = {
           text_score: number;
           recency_score: number;
           frequency_score: number;
+          combined_score: number;
+        }[];
+      };
+      // M3.7: Advisory file search
+      search_advisory_files: {
+        Args: {
+          query_embedding: number[];
+          query_text: string;
+          p_project_id?: string;
+          entity_type_filter?: string;
+          entity_name_filter?: string;
+          match_count?: number;
+          vector_weight?: number;
+          text_weight?: number;
+          min_similarity?: number;
+        };
+        Returns: {
+          id: string;
+          filename: string;
+          content_text: string;
+          entity_type: string | null;
+          entity_name: string | null;
+          file_type: string;
+          vector_score: number;
+          text_score: number;
           combined_score: number;
         }[];
       };

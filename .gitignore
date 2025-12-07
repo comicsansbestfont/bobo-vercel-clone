@@ -28,6 +28,10 @@ tests/fixtures/
 .DS_Store
 *.pem
 
+# Advisory file excludes (if any exist in future)
+advisory/**/_Inbox/
+advisory/**/_raw/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
