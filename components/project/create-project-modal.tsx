@@ -13,18 +13,26 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { FolderOpen, Plus } from 'lucide-react';
+
+type CreateMode = 'new' | 'import';
 
 interface CreateProjectModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onProjectCreated?: (projectId: string) => void;
+  onOpenImportWizard?: () => void;
+  onOpenBulkImport?: () => void;
 }
 
 export function CreateProjectModal({
   open,
   onOpenChange,
   onProjectCreated,
+  onOpenImportWizard,
+  onOpenBulkImport,
 }: CreateProjectModalProps) {
+  const [mode, setMode] = useState<CreateMode>('new');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -87,7 +95,18 @@ export function CreateProjectModal({
     setName('');
     setDescription('');
     setError(null);
+    setMode('new');
     onOpenChange(false);
+  };
+
+  const handleImportAdvisory = () => {
+    onOpenChange(false);
+    onOpenImportWizard?.();
+  };
+
+  const handleBulkImport = () => {
+    onOpenChange(false);
+    onOpenBulkImport?.();
   };
 
   return (
@@ -96,11 +115,86 @@ export function CreateProjectModal({
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>
-            Organize your chats by creating a new project. Projects help you keep related conversations together.
+            Create a new project or import from advisory folders.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Mode Selector */}
+        <div className="flex gap-2 border-b pb-4">
+          <button
+            type="button"
+            onClick={() => setMode('new')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              mode === 'new'
+                ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
+                : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800'
+            }`}
+          >
+            <Plus className="h-4 w-4" />
+            New Project
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('import')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              mode === 'import'
+                ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
+                : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800'
+            }`}
+          >
+            <FolderOpen className="h-4 w-4" />
+            Import Advisory
+          </button>
+        </div>
+
+        {mode === 'import' ? (
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              Import deals or clients from your advisory folders. Each imported folder becomes a project with AI-generated context.
+            </p>
+
+            <div className="grid gap-3">
+              <button
+                type="button"
+                onClick={handleImportAdvisory}
+                className="flex items-start gap-3 p-4 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 text-left transition-colors"
+              >
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                  <FolderOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">Import Single Folder</h4>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Choose one deal or client folder to import with guided setup
+                  </p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleBulkImport}
+                className="flex items-start gap-3 p-4 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 text-left transition-colors"
+              >
+                <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
+                  <FolderOpen className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">Bulk Import</h4>
+                  <p className="text-xs text-neutral-500 mt-0.5">
+                    Import multiple folders at once with auto-generated summaries
+                  </p>
+                </div>
+              </button>
+            </div>
+
+            <DialogFooter className="pt-2">
+              <Button variant="outline" onClick={handleCancel}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="project-name" className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
               Project Name *
@@ -153,6 +247,7 @@ export function CreateProjectModal({
             </Button>
           </DialogFooter>
         </form>
+        )}
       </DialogContent>
     </Dialog>
   );

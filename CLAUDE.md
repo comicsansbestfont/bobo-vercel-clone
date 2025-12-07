@@ -276,6 +276,75 @@ npm run verify-advisory
 
 ---
 
+## M3.8: Advisory Project Integration (Dec 2025)
+
+**STATUS:** ✅ **COMPLETE** - Project-per-deal system with file-reference mode
+
+### What Was Implemented
+
+1. **Database Schema Extensions**
+   - `entity_type` column: 'deal' | 'client' | 'personal'
+   - `advisory_folder_path` column: Links project to `/advisory/` folder
+   - Index for efficient entity type filtering
+
+2. **File Reference Mode** (`lib/advisory/`)
+   - `file-reader.ts` - Reads master docs with gray-matter YAML parsing
+   - `summarizer.ts` - Generates AI summaries using gpt-4o-mini
+   - Projects read directly from file system (always current)
+
+3. **Context Manager Enhancement** (`lib/ai/context-manager.ts`)
+   - Advisory projects read master doc from file system instead of database
+   - Extracts key sections for token-efficient context injection
+   - Supports `isAdvisory` flag for file-reference mode
+
+4. **API Endpoints** (`app/api/advisory/`)
+   - `GET /api/advisory/available` - Lists unimported deal/client folders
+   - `POST /api/advisory/import` - Imports single folder as project
+   - `POST /api/advisory/bulk-import` - Batch imports multiple folders
+   - `POST /api/advisory/refresh/[projectId]` - Re-reads from file, optionally regenerates summary
+
+5. **UI Components** (`components/advisory/`)
+   - `bulk-import.tsx` - Multi-select dialog for batch importing
+   - `import-wizard.tsx` - Step-by-step wizard for single folder import
+   - `entity-badge.tsx` - Deal (blue) / Client (green) badges
+
+### Usage
+
+**Import existing advisory folders:**
+1. Click "New project" in sidebar
+2. Select "Import Advisory" tab
+3. Choose "Bulk Import" to import all at once
+4. Projects appear with entity type badges
+
+**Add future folders:**
+1. Add folder to `advisory/deals/` or `advisory/clients/`
+2. Use Import Wizard via "Import Advisory" → "Import Single Folder"
+3. Review/edit AI-generated summary
+4. Project created with file-reference mode
+
+### Key Files
+- `lib/advisory/file-reader.ts` - Master doc parsing
+- `lib/advisory/summarizer.ts` - AI summary generation
+- `lib/ai/context-manager.ts` - File-reference context injection
+- `components/advisory/*.tsx` - Import UI components
+- `components/project/create-project-modal.tsx` - Mode selector
+
+### Architecture
+
+```
+Project (entity_type=deal, advisory_folder_path=advisory/deals/MyTab)
+    ↓
+Context Manager: if advisory_folder_path exists
+    ↓
+Read from FILE SYSTEM (not database)
+    ↓
+Extract key sections from master doc
+    ↓
+Inject into chat context (always current)
+```
+
+---
+
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router)
 - **React**: v19.2.0

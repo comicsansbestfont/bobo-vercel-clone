@@ -8,6 +8,9 @@
 // Advisory project constant UUID (M3.7)
 export const ADVISORY_PROJECT_ID = '11111111-1111-1111-1111-111111111111';
 
+// M38: Entity types for project categorization
+export type EntityType = 'deal' | 'client' | 'personal';
+
 /**
  * Message content structure matching Vercel AI SDK UIMessage format
  * Extended with inline citation support for Double-Loop architecture
@@ -51,6 +54,8 @@ export type Project = {
   name: string;
   description: string | null;
   custom_instructions: string | null;
+  entity_type: EntityType;              // M38: deal, client, or personal
+  advisory_folder_path: string | null;  // M38: path to advisory folder for file-reference mode
   created_at: string;
   updated_at: string;
 };
@@ -188,8 +193,10 @@ export type UserInsert = Omit<User, 'id' | 'created_at' | 'updated_at'> & {
   id?: string; // Optional for explicit UUID
 };
 
-export type ProjectInsert = Omit<Project, 'id' | 'created_at' | 'updated_at'> & {
+export type ProjectInsert = Omit<Project, 'id' | 'created_at' | 'updated_at' | 'entity_type' | 'advisory_folder_path'> & {
   id?: string;
+  entity_type?: EntityType;              // M38: Optional, defaults to 'personal'
+  advisory_folder_path?: string | null;  // M38: Optional, NULL for non-advisory projects
 };
 
 export type ChatInsert = Omit<

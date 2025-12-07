@@ -37,6 +37,9 @@ import {
 } from "@/components/ui/sidebar";
 import type { ProjectWithStats, ChatWithProject } from "@/lib/db/types";
 import { CreateProjectModal } from "@/components/project/create-project-modal";
+import { ImportWizard } from "@/components/advisory/import-wizard";
+import { BulkImport } from "@/components/advisory/bulk-import";
+import { EntityIndicator } from "@/components/advisory/entity-badge";
 import { toast } from "sonner";
 import { Skeleton } from "./skeleton";
 import { ThemeSwitcherConnected } from "@/components/theme-switcher-connected";
@@ -256,9 +259,14 @@ const ProjectItem = ({ project }: { project: ProjectWithStats }) => {
         <Link
           href={`/project/${project.id}`}
           onClick={() => isMobile && setOpenMobile(false)}
+          className="flex items-center gap-2"
         >
-          <IconFolder className="h-4 w-4" />
-          <span className="truncate">{project.name}</span>
+          <IconFolder className="h-4 w-4 flex-shrink-0" />
+          <span className="truncate flex-1">{project.name}</span>
+          {/* M38: Entity type indicator for advisory projects */}
+          {project.entity_type && (
+            <EntityIndicator entityType={project.entity_type} />
+          )}
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -327,6 +335,9 @@ function AppSidebarContent({
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [dateMode, setDateMode] = useState<'updated' | 'created'>('updated');
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
+  // M38: Advisory import modals
+  const [isImportWizardOpen, setIsImportWizardOpen] = useState(false);
+  const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
 
   const visibleProjects = showAllProjects ? projects : projects.slice(0, 3);
 
@@ -475,6 +486,26 @@ function AppSidebarContent({
         open={isCreateProjectModalOpen}
         onOpenChange={setIsCreateProjectModalOpen}
         onProjectCreated={handleProjectCreated}
+        onOpenImportWizard={() => setIsImportWizardOpen(true)}
+        onOpenBulkImport={() => setIsBulkImportOpen(true)}
+      />
+
+      {/* M38: Advisory Import Modals */}
+      <ImportWizard
+        open={isImportWizardOpen}
+        onOpenChange={setIsImportWizardOpen}
+        onProjectCreated={(projectId) => {
+          fetchData();
+          handleProjectCreated(projectId);
+        }}
+      />
+
+      <BulkImport
+        open={isBulkImportOpen}
+        onOpenChange={setIsBulkImportOpen}
+        onImportComplete={() => {
+          fetchData();
+        }}
       />
     </>
   );

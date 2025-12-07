@@ -1,10 +1,18 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 6, 2025 (M3.6-02 + M3.7 Repository Consolidation Strategy)
+**Last Updated:** December 7, 2025 (M3.6 Sprint 1 Complete + M3.8 Auto Tool Selection)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 7, 2025 Update:** 🧠 **M3.6 SPRINT 1 COMPLETE + M3.8 AUTO TOOL SELECTION**
+> - M3.6 Sprint 1 (Cognitive Foundation): 7/7 tasks complete
+> - REQ-013: Hebbian reinforcement - duplicates now strengthen existing memories
+> - REQ-014: Context-aware search - conversation context influences retrieval
+> - M3.8: Pre-flight knowledge search - auto-detects intent and injects advisory files + memories
+> - Intent classifier with pattern matching for advisory/memory/hybrid queries
+> - **Dogfooding ready** - all cognitive memory foundations deployed
 
 > **December 6, 2025 Update (PM):** 📂 **M3.7 REPOSITORY CONSOLIDATION PLANNED**
 > - Strategic decision: Consolidate Blog Migration into Bobo (vs MCP/sync)
@@ -45,11 +53,11 @@
 | **Milestones Complete** | 5 of 8 core (M1, M2, M3 P1-3, M3.5, M4) |
 | **Tasks Complete** | 78 of 140 (56%) |
 | **Hours Invested** | ~76 hours actual |
-| **Hours Remaining** | ~134 hours (M3.6: 94h, M3.7: 20h, M3 Phase 4: 17h) |
+| **Hours Remaining** | ~119 hours (M3.6: 79h, M3.7: 20h, M3 Phase 4: 17h) |
 | **Build Status** | ✅ Passing |
-| **Current Phase** | **M3.6 Cognitive Memory 🟡 IN PROGRESS** (Sprint 1 partial) |
+| **Current Phase** | **M3.6 Cognitive Memory 🟡 IN PROGRESS** (Sprint 1 complete) |
 
-*Dec 6, 2025: M3.6 Sprint 1 partial - enhanced_memory_search + bulk API complete (4 tasks done). 28 remaining across 5 sprints.*
+*Dec 7, 2025: M3.6 Sprint 1 complete - all 7 tasks done including Hebbian reinforcement and context-aware search. 25 tasks remaining across 4 sprints.*
 
 ### Gantt Chart - Timeline View
 
@@ -82,7 +90,7 @@ M4: AGENT SDK       ░░░░░░░░░░░░░░░░░░░░
   Sprint 01 (10)                          ██ Nov 26 ✅ 10h (Day 1!)
 
 M3.6: COGNITIVE MEM ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████████████░░░░░░░░
-  Sprint 1 (7)                                              ████ Dec 2025 📝 NEXT
+  Sprint 1 (7)                                              ████ Dec 2025 ✅ DONE
   Sprint 2 (4)                                                  ████ Jan 2026
   Sprint 3 (8)                                                      ████
   Sprint 4 (8)                                                          ████
@@ -109,7 +117,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3: Memory (P1-3)** | ✅ Complete | 22/22 | 51h | 28h | 182% | Hierarchical memory, Memory UI, UX polish |
 | **M3.5: Agent Memory** | ✅ Complete | 7/7 | 28h | 12h | 233% | remember_fact, search_memory, embedding backfill |
 | **M4: Agent SDK** | ✅ Complete | 10/10 | 25.5h | 10h | 255% | Claude SDK, tools, safety hooks, streaming |
-| **M3.6: Cognitive Memory** | 🟡 **IN PROGRESS** | 4/32 | 100h | 6h | 167% | Temporal decay, Hebbian, graph, consolidation |
+| **M3.6: Cognitive Memory** | 🟡 **IN PROGRESS** | 7/32 | 100h | 15h | 167% | Sprint 1 complete. Temporal decay, Hebbian, context-aware search |
 | **M3.7: Repo Consolidation** | 📝 Planned | 0/15 | 20h | - | - | Advisory file access, build-time indexing, search_advisory tool |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (after M3.7) |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
@@ -130,7 +138,7 @@ M3-03         │   7   │   15    │   16   │   +7%    │ ✅
 M3-03.1       │   7   │  3.5    │  3.5   │    0%    │ ✅
 Mobile v1.3.0 │  10   │    4    │    4   │    0%    │ ✅
 M4-01         │  10   │ 25.5    │   10   │  -61%    │ ✅
-M3.6-01       │   5   │   9     │    6   │  -33%    │ 🟡 (partial)
+M3.6-01       │   7   │  15     │   15   │    0%    │ ✅ Complete
 ──────────────┼───────┼─────────┼────────┼──────────┼────────
 TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
 ```
@@ -171,6 +179,10 @@ TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
 | **Importance Weighting** | ✅ Live | M3.6 | Category-based salience (red flags=0.9) |
 | **Recency Decay** | ✅ Live | M3.6 | Ebbinghaus curve with 45-day half-life |
 | **Bulk Memory Seeding** | ✅ Live | M3.6 | `/api/memory/bulk` with deduplication |
+| **Hebbian Reinforcement** | ✅ Live | M3.6 | Duplicate mentions strengthen existing memories |
+| **Context-Aware Search** | ✅ Live | M3.6 | Conversation context influences memory retrieval |
+| **Auto Tool Selection** | ✅ Live | M3.8 | Intent classification + pre-flight knowledge search |
+| **Advisory File Search** | ✅ Live | M3.7 | 43 deal/client files indexed with embeddings |
 | **Advisory File Access** | 📝 Planned | M3.7 | Deals/ + Clients/ in Git with RAG indexing |
 | **Build-time Indexing** | 📝 Planned | M3.7 | Auto-index advisory files to Supabase on build |
 | **Repository Consolidation** | 📝 Planned | M3.7 | Blog Migration → Bobo unified workspace |
@@ -194,13 +206,13 @@ TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
 │  ├─ ✅ Embedding backfill (100% coverage)
 │  └─ ✅ Build error fix (client/server separation)
 │
-🟡 IN PROGRESS: M3.6 Cognitive Memory (94h remaining, 5 sprints)
-├─ Sprint 1: Cognitive Foundation (9h remaining) ← IN PROGRESS
+🟡 IN PROGRESS: M3.6 Cognitive Memory (79h remaining, 4 sprints)
+├─ Sprint 1: Cognitive Foundation ✅ COMPLETE (Dec 7)
 │  ├─ ✅ REQ-001: Temporal columns (last_accessed, access_count) - Done Dec 4
 │  ├─ ✅ REQ-009: Enhanced search with Ebbinghaus decay - Done Dec 6
 │  ├─ ✅ REQ-010: Update access metrics function - Done Dec 4
 │  ├─ ✅ REQ-013: Hebbian reinforcement (strengthen duplicates) - Done Dec 7
-│  ├─ ⏳ REQ-014: Context-aware search (conversation context)
+│  ├─ ✅ REQ-014: Context-aware search (conversation context) - Done Dec 7
 │  ├─ ✅ REQ-023: API updates for new fields + Bulk API - Done Dec 6
 │  └─ ✅ REQ-002: Importance column - Done Dec 6 (pulled from Sprint 3)
 │
@@ -1448,11 +1460,11 @@ Same results every query       →    Context-aware search
 | M3.6-002 | Create `enhanced_memory_search` function with temporal decay | 🔴 P0 | 3h | ✅ Done (Dec 6) | REQ-009 |
 | M3.6-003 | Create `update_memory_access` function | 🔴 P0 | 1h | ✅ Done (Dec 4) | REQ-010 |
 | M3.6-004 | Implement Hebbian reinforcement in `remember_fact` | 🔴 P0 | 2h | ✅ Done (Dec 7) | REQ-013 |
-| M3.6-005 | Implement context-aware search in `search_memory` | 🔴 P0 | 4h | ⏳ | REQ-014 |
+| M3.6-005 | Implement context-aware search in `search_memory` | 🔴 P0 | 4h | ✅ Done (Dec 7) | REQ-014 |
 | M3.6-006 | Update Memory API for new fields + Bulk API | 🔴 P0 | 2h | ✅ Done (Dec 6) | REQ-023 |
-| M3.6-007 | Testing buffer (25% allocation) | 🔴 HIGH | 2h | ✅ Done (Dec 6) | Sprint rule |
+| M3.6-007 | Testing buffer (25% allocation) | 🔴 HIGH | 2h | ✅ Done (Dec 7) | Sprint rule |
 
-**Sprint 1 Progress:** 4/7 tasks complete (~6h actual)
+**Sprint 1 Progress:** 7/7 tasks complete ✅ (~15h actual)
 
 **Dec 6, 2025 Deliverables:**
 - ✅ `enhanced_memory_search` RPC with 5-component weighting (45% vector, 15% text, 20% recency, 10% freq, 10% confidence)

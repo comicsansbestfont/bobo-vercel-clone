@@ -1,8 +1,9 @@
 # Cognitive Memory System - Complete Requirements Document
 
 **Created:** December 1, 2025
+**Updated:** December 7, 2025
 **Purpose:** Comprehensive extraction of ALL requirements from cognitive memory research + backlog gaps
-**Status:** DRAFT - Pending sprint planning integration
+**Status:** ACTIVE - Sprint 1 Complete (7/7 tasks)
 
 > **Why This Document Exists:**
 > The [research folder](../research/) contains extensive neuroscience research that was never fully translated into actionable backlog items. This document bridges that gap by extracting every technical requirement with implementation-ready specifications.
@@ -27,7 +28,7 @@
 
 ### 1.1 Schema/Database Changes (P0 Critical)
 
-#### REQ-001: Temporal Dynamics Columns
+#### REQ-001: Temporal Dynamics Columns ✅ DONE (Dec 4)
 **Source:** Neuroscience Analysis Section 6.1, Cognitive Core Phase 1
 **Priority:** P0 (Critical) | **Effort:** 1h | **Dependencies:** None
 
@@ -44,13 +45,13 @@ CREATE INDEX idx_memory_entries_access_count ON memory_entries(user_id, access_c
 ```
 
 **Acceptance Criteria:**
-- [ ] Columns exist with sensible defaults
-- [ ] Indexes created for query performance
-- [ ] Migration runs idempotently
+- [x] Columns exist with sensible defaults
+- [x] Indexes created for query performance
+- [x] Migration runs idempotently
 
 ---
 
-#### REQ-002: Importance/Salience Column
+#### REQ-002: Importance/Salience Column ✅ DONE (Dec 6)
 **Source:** Neuroscience Analysis Section 6.8, Cognitive Core Phase 1
 **Priority:** P2 (Medium) | **Effort:** 1h | **Dependencies:** None
 
@@ -66,8 +67,9 @@ CREATE INDEX idx_memory_entries_importance ON memory_entries(user_id, importance
 ```
 
 **Acceptance Criteria:**
-- [ ] Column exists with 0-1 constraint
-- [ ] Default 0.5 (neutral importance)
+- [x] Column exists with 0-1 constraint
+- [x] Default 0.5 (neutral importance)
+- [x] Category-based defaults: red_flags=0.9, instructions=0.85, background=0.75, history=0.7, work=0.5
 
 ---
 
@@ -192,7 +194,7 @@ ALTER TABLE memory_entries
 
 ### 1.2 Search Algorithm Changes (P0 Critical)
 
-#### REQ-009: Enhanced Memory Search with Temporal Decay
+#### REQ-009: Enhanced Memory Search with Temporal Decay ✅ DONE (Dec 6)
 **Source:** Neuroscience Analysis Section 8.1, Cognitive Core Phase 1
 **Priority:** P0 (Critical) | **Effort:** 3h | **Dependencies:** REQ-001, REQ-002
 
@@ -267,7 +269,7 @@ $$;
 
 ---
 
-#### REQ-010: Update Access Metrics Function
+#### REQ-010: Update Access Metrics Function ✅ DONE (Dec 4)
 **Source:** Neuroscience Analysis Section 8.4, PDF Review
 **Priority:** P0 (Critical) | **Effort:** 1h | **Dependencies:** REQ-001
 
@@ -395,7 +397,7 @@ $$;
 
 ### 1.3 Agent Tool Changes (P0 Critical)
 
-#### REQ-013: Hebbian Reinforcement in remember_fact
+#### REQ-013: Hebbian Reinforcement in remember_fact ✅ DONE (Dec 7)
 **Source:** Neuroscience Analysis Section 6.6, Cognitive Core Phase 1
 **Priority:** P0 (Critical) | **Effort:** 2h | **Dependencies:** REQ-001
 
@@ -441,7 +443,7 @@ Confidence: ${existing.confidence.toFixed(2)} → ${newConfidence.toFixed(2)}
 
 ---
 
-#### REQ-014: Context-Aware Search in search_memory
+#### REQ-014: Context-Aware Search in search_memory ✅ DONE (Dec 7)
 **Source:** Neuroscience Analysis Section 6.5, Cognitive Core Phase 1
 **Priority:** P0 (Critical) | **Effort:** 4h | **Dependencies:** REQ-009
 
@@ -714,7 +716,7 @@ async function identifyPruningCandidates(): Promise<PruningCandidate[]> {
 
 ### 1.6 API Changes (P0)
 
-#### REQ-023: Update Memory API for New Fields
+#### REQ-023: Update Memory API for New Fields ✅ DONE (Dec 6)
 **Source:** All schema changes
 **Priority:** P0 (Critical) | **Effort:** 2h | **Dependencies:** All schema changes
 
