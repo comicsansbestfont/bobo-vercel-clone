@@ -4,7 +4,50 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an AI chatbot application built with Next.js 16, React 19, and the Vercel AI SDK. It provides a production-ready chat interface with multi-modal capabilities, context management, and support for multiple AI models through the AI Gateway.
+This is an AI chatbot application built with Next.js 16, React 19. It provides a production-ready chat interface with multi-modal capabilities, context management, and advisory file search tools.
+
+---
+
+## ⚠️ CRITICAL: SDK Architecture Decision (M3.9)
+
+**ALL CHAT FUNCTIONALITY MUST USE THE ANTHROPIC CLAUDE SDK** (`@anthropic-ai/sdk`)
+
+### SDK Responsibilities
+
+| Function | SDK | Package |
+|----------|-----|---------|
+| **Chat (ALL models)** | Anthropic Claude SDK | `@anthropic-ai/sdk` |
+| **Tool Use (advisory search)** | Anthropic Claude SDK | `@anthropic-ai/sdk` |
+| **Embeddings** | AI Gateway (Vercel) | `ai` package |
+| **Summarization** | AI Gateway (Vercel) | `ai` package |
+| **Non-Claude models** | AI Gateway (Vercel) | `ai` package |
+
+### Why Claude SDK for Chat?
+
+1. **Native `tool_use`** - Required for advisory file search/read/grep/glob tools
+2. **Prompt caching** - Cost/latency optimization for project context
+3. **Extended thinking** - Full access to Claude's reasoning capabilities
+4. **Direct API access** - No abstraction limitations
+
+### Key Files
+
+- `lib/ai/claude-client.ts` - Anthropic client singleton
+- `lib/ai/claude-message-converter.ts` - UIMessage → Claude format
+- `lib/ai/claude-stream-transformer.ts` - Claude SSE → UI SSE format
+- `lib/ai/claude-advisory-tools.ts` - 5 tools: search, read, list, glob, grep
+- `app/api/chat/route.ts` - Chat endpoint using Claude SDK
+
+### Environment Variables
+
+```bash
+# REQUIRED for chat
+ANTHROPIC_API_KEY=sk-ant-...  # Get from console.anthropic.com
+
+# Used for embeddings/summarization only
+AI_GATEWAY_API_KEY=...
+```
+
+---
 
 ## Development Commands
 
@@ -18,18 +61,20 @@ npm run lint       # Run ESLint
 
 ### Environment Setup
 Required environment variables in `.env.local`:
-- `AI_GATEWAY_API_KEY` - API key for the AI Gateway (supports OpenAI, Anthropic, Google, Deepseek models)
+- `ANTHROPIC_API_KEY` - **REQUIRED** for Claude SDK chat (get from console.anthropic.com)
+- `AI_GATEWAY_API_KEY` - Used for embeddings, summarization, non-Claude models
 
 ## Architecture Overview
 
 ### API Routes & Backend Logic
 
 **Chat API** (`app/api/chat/route.ts`)
-- Main chat endpoint using Vercel AI SDK's `streamText`
-- Supports web search via Perplexity when `webSearch: true`
-- Uses AI Gateway for unified access to multiple LLM providers
-- SDK warnings for non-OpenAI reasoning are disabled globally
-- Returns streaming responses via `toTextStreamResponse()`
+- Main chat endpoint using **Anthropic Claude SDK** (`@anthropic-ai/sdk`)
+- Native `tool_use` for advisory file search (5 tools: search, read, list, glob, grep)
+- Agentic loop: up to 5 iterations of tool use per request
+- Custom stream transformer: Claude SSE → UI SSE format for `useChat` hook
+- Fallback to Vercel AI SDK for web search (Perplexity) only
+- Returns streaming responses compatible with `@ai-sdk/react` useChat
 
 **Memory Compression API** (`app/api/memory/compress/route.ts`)
 - Summarizes conversation history when context limits are reached

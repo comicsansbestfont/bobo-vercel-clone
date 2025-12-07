@@ -94,20 +94,14 @@ export async function* transformClaudeStream(
               textBlockStarted = true;
             }
           } else if (event.content_block.type === 'tool_use') {
-            // Start tool use block
+            // Start tool use block (track internally, don't emit to UI)
             const toolBlock = event.content_block as ToolUseBlock;
             currentToolUse = {
               id: toolBlock.id,
               name: toolBlock.name,
             };
             currentToolInputJson = '';
-
-            // Emit tool start for UI
-            yield `data: ${JSON.stringify({
-              type: 'tool-start',
-              toolCallId: toolBlock.id,
-              toolName: toolBlock.name,
-            })}\n\n`;
+            // Note: tool-start is not a valid useChat event type, handled server-side
           }
           break;
 
@@ -145,14 +139,7 @@ export async function* transformClaudeStream(
                 name: currentToolUse.name,
                 input: parsedInput,
               });
-
-              // Emit tool ready for UI
-              yield `data: ${JSON.stringify({
-                type: 'tool-ready',
-                toolCallId: currentToolUse.id,
-                toolName: currentToolUse.name,
-                input: parsedInput,
-              })}\n\n`;
+              // Note: tool-ready is not a valid useChat event type, handled server-side
             } catch (e) {
               chatLogger.error('Failed to parse tool input:', e);
             }

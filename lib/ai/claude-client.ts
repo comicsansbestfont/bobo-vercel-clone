@@ -11,16 +11,24 @@ import Anthropic from '@anthropic-ai/sdk';
 let client: Anthropic | null = null;
 
 /**
+ * Check if a valid Anthropic API key is available
+ */
+export function hasValidAnthropicKey(): boolean {
+  return !!process.env.ANTHROPIC_API_KEY;
+}
+
+/**
  * Get the Claude client instance (creates one if not exists)
+ *
+ * @throws Error if ANTHROPIC_API_KEY is not set
  */
 export function getClaudeClient(): Anthropic {
   if (!client) {
-    // Try ANTHROPIC_API_KEY first, fall back to AI_GATEWAY_API_KEY
-    const apiKey = process.env.ANTHROPIC_API_KEY || process.env.AI_GATEWAY_API_KEY;
+    const apiKey = process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
       throw new Error(
-        'ANTHROPIC_API_KEY or AI_GATEWAY_API_KEY is required for Claude SDK'
+        'ANTHROPIC_API_KEY is required for Claude SDK. Get one at console.anthropic.com'
       );
     }
 

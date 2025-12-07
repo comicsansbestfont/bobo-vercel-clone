@@ -1007,7 +1007,8 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
                   } else if (event.content_block.type === 'tool_use') {
                     const tb = event.content_block as ToolUseBlock;
                     currentToolUse = { id: tb.id, name: tb.name, inputJson: '' };
-                    writeSSE({ type: 'tool-start', toolCallId: tb.id, toolName: tb.name });
+                    // Note: Don't emit tool-start - not a valid useChat event type
+                    chatLogger.debug(`[Claude SDK] Tool call started: ${tb.name}`);
                   }
                   break;
 
@@ -1026,12 +1027,8 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
                     try {
                       const input = currentToolUse.inputJson ? JSON.parse(currentToolUse.inputJson) : {};
                       toolUseBlocks.push({ id: currentToolUse.id, name: currentToolUse.name, input });
-                      writeSSE({
-                        type: 'tool-ready',
-                        toolCallId: currentToolUse.id,
-                        toolName: currentToolUse.name,
-                        input,
-                      });
+                      // Note: Don't emit tool-ready - not a valid useChat event type
+                      chatLogger.debug(`[Claude SDK] Tool ready: ${currentToolUse.name}`, input);
                     } catch (e) {
                       chatLogger.error('Failed to parse tool input:', e);
                     }
@@ -1080,12 +1077,11 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             // Execute tools in parallel
             const toolResults = await Promise.all(
               toolUseBlocks.map(async (tu) => {
+                chatLogger.debug(`[Claude SDK] Executing tool: ${tu.name}`);
                 const result = await executeAdvisoryTool(tu.name, tu.input);
-                writeSSE({
-                  type: 'tool-result',
-                  toolCallId: tu.id,
-                  result: JSON.parse(result).success ? 'success' : 'error',
-                });
+                const parsed = JSON.parse(result);
+                chatLogger.debug(`[Claude SDK] Tool ${tu.name} result: ${parsed.success ? 'success' : 'error'}`);
+                // Note: Don't emit tool-result - not a valid useChat event type
                 return { tool_use_id: tu.id, content: result };
               })
             );
