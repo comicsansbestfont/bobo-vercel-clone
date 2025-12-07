@@ -5,8 +5,8 @@ node_modules
 .pnp
 .pnp.*
 
-# next.js build cache
-.next/
+# Note: Don't ignore .next/ here - Vercel needs it for build output
+# The .next folder is handled automatically by Vercel's build system
 out/
 
 # Advisory raw files (large MP4s, etc)
