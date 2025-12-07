@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build",
   "functions": {
-    "api/**/*": {
+    "app/api/advisory/**": {
       "excludeFiles": "{.next/cache/**,.git/**,docs/**,playwright-report/**,test-results/**,tests/**}"
     }
   },
