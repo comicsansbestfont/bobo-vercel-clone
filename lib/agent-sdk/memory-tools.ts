@@ -122,7 +122,8 @@ export const searchMemoryTool = {
 
   description: `Search the user's memories to find relevant information.
 Use this to look up facts you previously stored or to find memories to update/forget.
-Returns up to 10 matching memories sorted by relevance.`,
+Returns up to 10 matching memories sorted by relevance.
+Optionally provide recent conversation context to improve relevance.`,
 
   parameters: z.object({
     query: z
@@ -140,25 +141,41 @@ Returns up to 10 matching memories sorted by relevance.`,
       .max(10)
       .default(5)
       .describe('Max results to return'),
+    conversationContext: z
+      .array(z.string())
+      .optional()
+      .describe('Recent conversation messages for context-aware search'),
   }),
 
   execute: async ({
     query,
     category,
     limit = 5,
+    conversationContext,
   }: {
     query: string;
     category?: MemoryCategory;
     limit?: number;
+    conversationContext?: string[];
   }): Promise<string> => {
     try {
       memoryLogger.info(`[search_memory] Searching for: "${query}"`, {
         category,
         limit,
+        hasContext: !!conversationContext,
       });
 
+      // REQ-014: Context-aware embedding generation
+      // If conversation context provided, combine last 3 messages with query
+      let embeddingText = query;
+      if (conversationContext && conversationContext.length > 0) {
+        const recentMessages = conversationContext.slice(-3);
+        embeddingText = [...recentMessages, query].join('\n');
+        memoryLogger.info(`[search_memory] Using contextual embedding with ${recentMessages.length} messages`);
+      }
+
       // Generate embedding for semantic search
-      const embedding = await generateEmbedding(query);
+      const embedding = await generateEmbedding(embeddingText);
 
       // M3.6-02: Call enhanced search RPC with temporal weighting (REQ-009)
       const { data: memories, error } = await supabase.rpc(
@@ -269,13 +286,55 @@ Do NOT store: transient tasks, temporary states, obvious context`,
         confidence,
       });
 
-      // Check for duplicates using semantic similarity
-      const duplicates = await findSimilarMemories(content, 0.85);
+      // REQ-013: Check for similar memories using semantic similarity (Hebbian Reinforcement)
+      // Threshold lowered from 0.85 to 0.80 to catch more near-duplicates
+      const duplicates = await findSimilarMemories(content, 0.80);
 
       if (duplicates.length > 0) {
         const existing = duplicates[0];
-        memoryLogger.info('[remember_fact] Duplicate found:', existing);
-        return `Similar memory already exists in ${existing.category}: "${existing.content}". Use update_memory if you need to modify it. (id: ${existing.id})`;
+        memoryLogger.info('[remember_fact] Similar memory found, reinforcing:', existing);
+
+        // REQ-013: Hebbian Reinforcement - strengthen existing memory instead of rejecting
+        const oldConfidence = existing.confidence;
+        const newConfidence = Math.min(1.0, oldConfidence + 0.05); // Cap at 1.0
+
+        // Get the existing memory to access importance field
+        const existingMemory = await getMemoryById(existing.id);
+
+        if (!existingMemory) {
+          memoryLogger.warn('[remember_fact] Memory not found during reinforcement:', existing.id);
+          // Fall through to create new memory if existing one disappeared
+        } else {
+          const oldImportance = existingMemory.importance;
+          const newImportance = Math.max(oldImportance, 0.8); // Use higher of existing vs default (0.8)
+
+          // Update existing memory with reinforced values
+          const { error } = await supabase
+            .from('memory_entries')
+            .update({
+              confidence: newConfidence,
+              importance: newImportance,
+              access_count: (existingMemory.access_count || 0) + 1,
+              last_accessed: new Date().toISOString(),
+              last_mentioned: new Date().toISOString(),
+            })
+            .eq('id', existing.id);
+
+          if (error) {
+            memoryLogger.error('[remember_fact] Reinforcement update failed:', error);
+            throw new Error(`Failed to reinforce memory: ${error.message}`);
+          }
+
+          memoryLogger.info('[remember_fact] Memory reinforced:', {
+            id: existing.id,
+            oldConfidence,
+            newConfidence,
+            oldImportance,
+            newImportance,
+          });
+
+          return `Reinforced existing memory: "${existing.content}" (confidence: ${oldConfidence.toFixed(2)} → ${newConfidence.toFixed(2)}, importance: ${oldImportance.toFixed(2)} → ${newImportance.toFixed(2)})`;
+        }
       }
 
       // Generate embedding for the new content

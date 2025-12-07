@@ -199,7 +199,7 @@ TOTALS        │  89   │ 129h    │  90h   │  -30%    │ 62% ✅
 │  ├─ ✅ REQ-001: Temporal columns (last_accessed, access_count) - Done Dec 4
 │  ├─ ✅ REQ-009: Enhanced search with Ebbinghaus decay - Done Dec 6
 │  ├─ ✅ REQ-010: Update access metrics function - Done Dec 4
-│  ├─ ⏳ REQ-013: Hebbian reinforcement (strengthen duplicates)
+│  ├─ ✅ REQ-013: Hebbian reinforcement (strengthen duplicates) - Done Dec 7
 │  ├─ ⏳ REQ-014: Context-aware search (conversation context)
 │  ├─ ✅ REQ-023: API updates for new fields + Bulk API - Done Dec 6
 │  └─ ✅ REQ-002: Importance column - Done Dec 6 (pulled from Sprint 3)
@@ -1447,7 +1447,7 @@ Same results every query       →    Context-aware search
 | M3.6-001 | Add `last_accessed`, `access_count` columns | 🔴 P0 | 1h | ✅ Done (Dec 4) | REQ-001 |
 | M3.6-002 | Create `enhanced_memory_search` function with temporal decay | 🔴 P0 | 3h | ✅ Done (Dec 6) | REQ-009 |
 | M3.6-003 | Create `update_memory_access` function | 🔴 P0 | 1h | ✅ Done (Dec 4) | REQ-010 |
-| M3.6-004 | Implement Hebbian reinforcement in `remember_fact` | 🔴 P0 | 2h | ⏳ | REQ-013 |
+| M3.6-004 | Implement Hebbian reinforcement in `remember_fact` | 🔴 P0 | 2h | ✅ Done (Dec 7) | REQ-013 |
 | M3.6-005 | Implement context-aware search in `search_memory` | 🔴 P0 | 4h | ⏳ | REQ-014 |
 | M3.6-006 | Update Memory API for new fields + Bulk API | 🔴 P0 | 2h | ✅ Done (Dec 6) | REQ-023 |
 | M3.6-007 | Testing buffer (25% allocation) | 🔴 HIGH | 2h | ✅ Done (Dec 6) | Sprint rule |
