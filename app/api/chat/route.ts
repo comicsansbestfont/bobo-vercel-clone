@@ -404,6 +404,7 @@ export async function POST(req: Request) {
     }
 
     // Build projects overview context
+    chatLogger.info('[Projects] Fetched projects for context:', { count: allProjects.length, names: allProjects.map(p => p.name) });
     if (allProjects.length > 0) {
       const projectsList = allProjects.map(p => {
         const type = p.entity_type === 'deal' ? '📊 Deal' : p.entity_type === 'client' ? '👥 Client' : '📁 Project';
@@ -416,6 +417,9 @@ You have ${allProjects.length} project${allProjects.length === 1 ? '' : 's'}:
 ${projectsList}
 
 When the user asks about their projects, you can reference this list. Each project may have its own context and files that become available when chatting within that specific project.`;
+      chatLogger.debug('[Projects] Built overview context:', { length: projectsOverviewContext.length });
+    } else {
+      chatLogger.warn('[Projects] No projects found for user');
     }
 
     // Build comprehensive system prompt (based on official Claude system prompt)
@@ -429,6 +433,7 @@ When the user asks about their projects, you can reference this list. Each proje
     // Add projects overview to system prompt
     if (projectsOverviewContext) {
       systemPrompt += projectsOverviewContext;
+      chatLogger.info('[Projects] Added projects overview to system prompt');
     }
 
     // PARALLELIZED: Project context + embedding generation run concurrently
