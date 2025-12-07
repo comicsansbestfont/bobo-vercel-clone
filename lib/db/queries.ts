@@ -687,6 +687,29 @@ export async function getFilesByProject(projectId: string): Promise<File[]> {
 }
 
 /**
+ * Get advisory files by folder path pattern
+ * Used by context-manager to load advisory project files from database
+ * Files are indexed with full path as filename (e.g., 'advisory/clients/SwiftCheckin/Meetings/...')
+ */
+export async function getAdvisoryFilesByPath(folderPath: string): Promise<File[]> {
+  // Query files where filename starts with the folder path
+  const { data, error } = await supabase
+    .from('files')
+    .select('*')
+    .eq('user_id', DEFAULT_USER_ID)
+    .like('filename', `${folderPath}%`)
+    .order('filename', { ascending: false }); // Recent files first (dates in filename)
+
+  if (error) {
+    dbLogger.error('Error fetching advisory files by path:', error);
+    return [];
+  }
+
+  dbLogger.debug(`Found ${data?.length || 0} advisory files for path: ${folderPath}`);
+  return data || [];
+}
+
+/**
  * Get a single file by ID
  */
 export async function getFile(id: string): Promise<File | null> {

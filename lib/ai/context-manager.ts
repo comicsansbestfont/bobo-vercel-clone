@@ -1,4 +1,4 @@
-import { getFilesByProject, getProject } from '@/lib/db/queries';
+import { getFilesByProject, getAdvisoryFilesByPath, getProject } from '@/lib/db/queries';
 import { CoreMessage, CoreSystemMessage } from 'ai';
 
 /**
@@ -8,8 +8,9 @@ import { CoreMessage, CoreSystemMessage } from 'ai';
  * Responsible for fetching project context and preparing it for the LLM,
  * applying caching strategies where supported (Anthropic, Gemini).
  *
- * M38: Extended to support advisory projects with file-reference mode.
- * Advisory projects read master docs directly from the file system (always current).
+ * M38: Extended to support advisory projects.
+ * Advisory files are pre-indexed in the database with embeddings.
+ * Query by folder path pattern instead of file system read (Vercel compatible).
  */
 
 export interface ProjectContext {
@@ -33,35 +34,40 @@ export async function getProjectContext(projectId: string): Promise<ProjectConte
     // First, check if this is an advisory project
     const project = await getProject(projectId);
 
-    // M38: Advisory projects - read from file system (always current)
+    // M38: Advisory projects - query from database by path pattern
+    // Files are pre-indexed via `npm run index-advisory` with full paths as filenames
     if (project?.advisory_folder_path) {
-        try {
-            // Dynamic import to avoid bundling fs in client
-            const { readAllAdvisoryFiles, buildAdvisoryContext } = await import('@/lib/advisory/file-reader');
-            const allFiles = await readAllAdvisoryFiles(project.advisory_folder_path);
+        const advisoryFiles = await getAdvisoryFilesByPath(project.advisory_folder_path);
 
-            if (allFiles.length > 0) {
-                console.log(`[context-manager] Found ${allFiles.length} files in ${project.advisory_folder_path}`);
+        if (advisoryFiles.length > 0) {
+            console.log(`[context-manager] Found ${advisoryFiles.length} advisory files for ${project.advisory_folder_path}`);
 
-                // Build context from all files (prioritizes meetings, recent files)
-                const contextContent = buildAdvisoryContext(allFiles, 30000);
+            // Sort by priority: Meetings first, then Comms, then others
+            const priorityOrder = ['Meetings', 'Comms', 'Engagements', 'Strategy', 'Valuation', 'Docs'];
+            const sortedFiles = [...advisoryFiles].sort((a, b) => {
+                const aPriority = priorityOrder.findIndex(p => a.filename.includes(p));
+                const bPriority = priorityOrder.findIndex(p => b.filename.includes(p));
+                if (aPriority !== -1 && bPriority === -1) return -1;
+                if (aPriority === -1 && bPriority !== -1) return 1;
+                if (aPriority !== bPriority) return aPriority - bPriority;
+                return b.filename.localeCompare(a.filename); // Recent files first
+            });
 
-                return {
-                    projectId,
-                    files: allFiles.map((f, idx) => ({
-                        id: `advisory-${idx}`,
-                        filename: f.relativePath,
-                        content_text: f.content,
-                    })),
-                    totalTokens: contextContent.length / 4,
-                    isAdvisory: true,
-                };
-            } else {
-                console.warn(`[context-manager] No files found in ${project.advisory_folder_path}`);
-            }
-        } catch (error) {
-            console.error('[context-manager] Error reading advisory files:', error);
-            // Fall through to database fallback
+            // Calculate total tokens
+            const totalTokens = sortedFiles.reduce((acc, f) => acc + (f.content_text?.length || 0) / 4, 0);
+
+            return {
+                projectId,
+                files: sortedFiles.map(f => ({
+                    id: f.id,
+                    filename: f.filename.replace(`${project.advisory_folder_path}/`, ''), // Use relative path
+                    content_text: f.content_text || '',
+                })),
+                totalTokens,
+                isAdvisory: true,
+            };
+        } else {
+            console.warn(`[context-manager] No indexed files found for ${project.advisory_folder_path}`);
         }
     }
 

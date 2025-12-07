@@ -73,6 +73,7 @@ export {
   deleteAllMessages,
   // Files
   getFilesByProject,
+  getAdvisoryFilesByPath,
   getFile,
   createFile,
   updateFile,

@@ -9,9 +9,21 @@ node_modules
 # The .next folder is handled automatically by Vercel's build system
 out/
 
-# Advisory raw files (large MP4s, etc)
-advisory/**/_raw/
-advisory/**/_Inbox/
+# Advisory folder - files are indexed in database, not needed at runtime
+# This saves ~20MB in serverless functions
+advisory/
+
+# Test screenshots - not needed in production
+tests/screenshots/
+
+# Large documentation files
+docs/JSON.json
+docs/*.svg
+
+# Build cache (shouldn't be bundled)
+.next/cache/
+
+# Large media files
 *.mp4
 *.mov
 *.avi
