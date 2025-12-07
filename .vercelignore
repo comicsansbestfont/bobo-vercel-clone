@@ -9,9 +9,10 @@ node_modules
 # The .next folder is handled automatically by Vercel's build system
 out/
 
-# Advisory folder - files are indexed in database, not needed at runtime
+# Advisory DATA folder - files are indexed in database, not needed at runtime
 # This saves ~20MB in serverless functions
-advisory/
+# Note: Use explicit path to avoid excluding lib/advisory/ and components/advisory/
+/advisory/
 
 # Test screenshots - not needed in production
 tests/screenshots/
