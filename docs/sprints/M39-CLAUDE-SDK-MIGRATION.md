@@ -392,6 +392,40 @@ Use when: User wants to explore what documents are available for a deal/client.`
       required: ['entity_type', 'entity_name'],
     },
   },
+  {
+    name: 'glob_advisory',
+    description: `Find files by FILENAME pattern (like Unix find/glob).
+Use when: User asks to find files by name pattern, date, or file type.
+Examples: "*email*" matches email files, "*2025-12*" matches December files.`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        pattern: {
+          type: 'string',
+          description: 'Glob pattern (e.g., "*email*", "*2025-12*")',
+        },
+        entity_type: { type: 'string', enum: ['deal', 'client', 'all'] },
+        entity_name: { type: 'string' },
+      },
+      required: ['pattern'],
+    },
+  },
+  {
+    name: 'grep_advisory',
+    description: `Search file CONTENTS for text (like Unix grep).
+Use when: User asks to find specific text, names, dates, or phrases in files.
+Examples: Find mentions of "Mikaela", "$5M", or "Series A".`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        pattern: { type: 'string', description: 'Text to search for' },
+        entity_type: { type: 'string', enum: ['deal', 'client', 'all'] },
+        entity_name: { type: 'string' },
+        subfolder: { type: 'string' },
+      },
+      required: ['pattern'],
+    },
+  },
 ];
 
 /**
@@ -408,6 +442,10 @@ export async function executeAdvisoryTool(
       return await readAdvisoryFile(input);
     case 'list_advisory_folder':
       return await listAdvisoryFolder(input);
+    case 'glob_advisory':
+      return await globAdvisory(input);
+    case 'grep_advisory':
+      return await grepAdvisory(input);
     default:
       return JSON.stringify({ error: `Unknown tool: ${name}` });
   }
@@ -701,11 +739,14 @@ const response = await client.messages.create({
 - [ ] Memory extraction triggers
 
 ### Phase 2 Tests
-- [ ] "Brief me on MyTab" triggers search_advisory
+- [x] "Brief me on MyTab" triggers search_advisory
 - [ ] Tool results display in UI
-- [ ] Multi-step tool use works (search → read)
-- [ ] Error handling for missing files
-- [ ] Tool execution doesn't block streaming
+- [x] Multi-step tool use works (search → read)
+- [x] Error handling for missing files
+- [x] Tool execution doesn't block streaming
+- [x] glob_advisory finds files by pattern (e.g., "*email*")
+- [x] grep_advisory finds text in file contents
+- [x] Complex workflow: "last email to Mikaela" uses grep → read
 
 ### Phase 3 Tests
 - [ ] UI shows tool invocation status
@@ -731,7 +772,7 @@ If issues arise:
 | `lib/ai/claude-client.ts` | CREATE | Anthropic client singleton |
 | `lib/ai/claude-message-converter.ts` | CREATE | UIMessage → Claude format |
 | `lib/ai/claude-stream-transformer.ts` | CREATE | Claude SSE → UI SSE |
-| `lib/ai/claude-advisory-tools.ts` | CREATE | Tool definitions & executors |
+| `lib/ai/claude-advisory-tools.ts` | CREATE | 5 tools: search, read, list, glob, grep |
 | `app/api/chat/route.ts` | MODIFY | Use Claude SDK instead of Vercel |
 | `components/chat/chat-interface.tsx` | MODIFY | Render tool invocations |
 | `package.json` | MODIFY | Add @anthropic-ai/sdk |

@@ -24,19 +24,23 @@ import { chatLogger } from '@/lib/logger';
 export const advisoryTools: Tool[] = [
   {
     name: 'search_advisory',
-    description: `Search advisory files including deal master docs, client profiles, and meeting notes.
+    description: `SEMANTIC search of advisory files (conceptual/topic-based queries).
 
-USE WHEN:
-- User asks about a specific deal or client (e.g., "Brief me on MyTab", "What's the status of SwiftCheckin?")
-- User wants a briefing or summary of advisory work
-- User asks about valuations, meetings, or communications for a deal/client
+BEST FOR:
+- Briefings and summaries ("Brief me on MyTab", "What's the status?")
+- Conceptual questions ("What are the key risks?", "What's the valuation thesis?")
+- Finding relevant files when you don't know exact text to search for
 
-RETURNS: Relevant file excerpts with similarity scores. Use the results to answer the user's question.
+NOT FOR:
+- Finding specific text (use grep_advisory instead)
+- Finding files by name pattern (use glob_advisory instead)
+- Chronological queries like "last email" (use grep_advisory + read_advisory_file)
+
+RETURNS: Relevant file excerpts ranked by semantic similarity.
 
 EXAMPLES:
-- "Brief me on MyTab" → search_advisory(query: "MyTab overview")
-- "What's SwiftCheckin's valuation?" → search_advisory(query: "SwiftCheckin valuation", entity_name: "SwiftCheckin")
-- "Show me ControlShiftAI research" → search_advisory(query: "ControlShiftAI research", entity_type: "deal")`,
+- "Brief me on MyTab" → search_advisory(query: "MyTab overview", entity_name: "MyTab")
+- "What's the valuation?" → search_advisory(query: "valuation analysis", entity_name: "SwiftCheckin")`,
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -63,17 +67,24 @@ EXAMPLES:
   },
   {
     name: 'read_advisory_file',
-    description: `Read the full contents of a specific advisory file.
+    description: `Read FULL contents of a specific advisory file.
 
 USE WHEN:
-- You found a relevant file via search_advisory and need full details
-- User explicitly asks to see a specific document
-- You need more context than the search excerpt provided
+- You found a file via search/grep/glob and need complete details
+- User asks to see a specific document
+- You need the master doc to understand folder structure (read it first!)
+- Following up on a search result to get full context
 
-RETURNS: Full file contents (truncated at 8000 chars if very large).
+WORKFLOW TIP: For complex queries like "last email to Mikaela":
+1. read_advisory_file(master doc) → find Communications Log
+2. grep_advisory(pattern: "Mikaela") → find email files
+3. read_advisory_file(email file) → get full content
+
+RETURNS: Full file contents (max 8000 chars).
 
 EXAMPLES:
-- After search returns "advisory/deals/MyTab/master-doc-mytab.md" → read_advisory_file(filename: "advisory/deals/MyTab/master-doc-mytab.md")`,
+- read_advisory_file(filename: "advisory/deals/MyTab/master-doc-mytab.md")
+- read_advisory_file(filename: "advisory/deals/MyTab/Communications/email-2025-12-01.md")`,
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -87,18 +98,24 @@ EXAMPLES:
   },
   {
     name: 'list_advisory_folder',
-    description: `List files and folders within an advisory entity's directory.
+    description: `List files and subdirectories in an entity's folder.
 
 USE WHEN:
-- User wants to explore what documents are available for a deal/client
-- You need to find specific file types (meetings, valuations, communications)
-- Discovering folder structure before reading specific files
+- User asks what files/folders exist for a deal or client
+- You need to discover folder structure before drilling down
+- Looking for specific subfolders (Meetings, Communications, Valuation)
 
-RETURNS: List of files and subdirectories.
+COMMON SUBFOLDERS:
+- Communications/ - Emails and messages
+- Meetings/ - Meeting transcripts and notes
+- Valuation/ - Financial analysis
+- Research/ - Background research
+
+RETURNS: List of files and subdirectories with sizes.
 
 EXAMPLES:
-- "What files do we have for MyTab?" → list_advisory_folder(entity_type: "deal", entity_name: "MyTab")
-- "Show me SwiftCheckin's meetings" → list_advisory_folder(entity_type: "client", entity_name: "SwiftCheckin", subfolder: "Meetings")`,
+- list_advisory_folder(entity_type: "deal", entity_name: "MyTab")
+- list_advisory_folder(entity_type: "deal", entity_name: "MyTab", subfolder: "Communications")`,
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -117,6 +134,96 @@ EXAMPLES:
         },
       },
       required: ['entity_type', 'entity_name'],
+    },
+  },
+  {
+    name: 'glob_advisory',
+    description: `Find files by FILENAME pattern (like Unix find/glob).
+
+USE WHEN:
+- User asks to find files by name pattern
+- You know part of the filename (date, type, person name in filename)
+- Looking for specific file types across folders
+
+PATTERN SYNTAX:
+- * matches any characters (e.g., "*email*" matches "email-to-mikaela.md")
+- Case-insensitive
+- Searches filenames only (use grep_advisory for content search)
+
+RETURNS: Matching file paths with entity info.
+
+EXAMPLES:
+- "Find email files for MyTab" → glob_advisory(pattern: "*email*", entity_name: "MyTab")
+- "Find December files" → glob_advisory(pattern: "*2025-12*")
+- "Find Mikaela files" → glob_advisory(pattern: "*mikaela*", entity_name: "MyTab")`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        pattern: {
+          type: 'string',
+          description: 'Glob pattern to match file names (e.g., "*email*", "*2025-12*", "*valuation*")',
+        },
+        entity_type: {
+          type: 'string',
+          enum: ['deal', 'client', 'all'],
+          description: 'Filter by entity type (default: all)',
+        },
+        entity_name: {
+          type: 'string',
+          description: 'Filter to specific entity (e.g., "MyTab")',
+        },
+      },
+      required: ['pattern'],
+    },
+  },
+  {
+    name: 'grep_advisory',
+    description: `Search file CONTENTS for text (like Unix grep).
+
+USE WHEN:
+- User asks to find specific text in files (names, dates, amounts, phrases)
+- Looking for mentions of a person, company, or topic
+- Finding "last" or "most recent" items (search Communications Log in master doc)
+- Locating specific information across multiple files
+
+SEARCH BEHAVIOR:
+- Case-insensitive text matching
+- Returns matching lines with line numbers and context
+- Searches .md files only
+
+WORKFLOW for "last email to Mikaela":
+1. grep_advisory(pattern: "Mikaela", entity_name: "MyTab") → find all mentions
+2. Identify the most recent file from results
+3. read_advisory_file(that file) → get full content
+
+RETURNS: Files with matching lines and context.
+
+EXAMPLES:
+- grep_advisory(pattern: "Mikaela", entity_name: "MyTab", subfolder: "Communications")
+- grep_advisory(pattern: "Series A", entity_type: "deal")
+- grep_advisory(pattern: "$5M", entity_name: "MyTab")`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        pattern: {
+          type: 'string',
+          description: 'Text to search for in file contents',
+        },
+        entity_type: {
+          type: 'string',
+          enum: ['deal', 'client', 'all'],
+          description: 'Filter by entity type (default: all)',
+        },
+        entity_name: {
+          type: 'string',
+          description: 'Filter to specific entity (e.g., "MyTab")',
+        },
+        subfolder: {
+          type: 'string',
+          description: 'Limit search to specific subfolder (e.g., "Communications", "Meetings")',
+        },
+      },
+      required: ['pattern'],
     },
   },
 ];
@@ -142,6 +249,10 @@ export async function executeAdvisoryTool(
         return await readAdvisoryFile(input);
       case 'list_advisory_folder':
         return await listAdvisoryFolder(input);
+      case 'glob_advisory':
+        return await globAdvisory(input);
+      case 'grep_advisory':
+        return await grepAdvisory(input);
       default:
         return JSON.stringify({ success: false, error: `Unknown tool: ${name}` });
     }
@@ -359,6 +470,256 @@ async function listAdvisoryFolder(input: Record<string, unknown>): Promise<strin
       directories: files.filter((f) => f.type === 'directory').length,
       files: files.filter((f) => f.type === 'file').length,
     },
+  });
+}
+
+type GlobAdvisoryInput = {
+  pattern: string;
+  entity_type?: 'deal' | 'client' | 'all';
+  entity_name?: string;
+};
+
+/**
+ * Find files by glob pattern matching
+ */
+async function globAdvisory(input: Record<string, unknown>): Promise<string> {
+  const { pattern, entity_type = 'all', entity_name } = input as GlobAdvisoryInput;
+
+  chatLogger.info(`[glob_advisory] Pattern: "${pattern}"`, { entity_type, entity_name });
+
+  // Convert glob pattern to regex (case-insensitive)
+  const regexPattern = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape regex special chars except *
+    .replace(/\*/g, '.*'); // Convert * to .*
+  const regex = new RegExp(regexPattern, 'i');
+
+  type MatchedFile = {
+    name: string;
+    path: string;
+    entity_type: 'deal' | 'client';
+    entity_name: string;
+    size: number;
+  };
+
+  const matches: MatchedFile[] = [];
+  const advisoryRoot = join(process.cwd(), 'advisory');
+
+  // Determine which folders to search
+  const typeFolders: Array<{ type: 'deal' | 'client'; folder: string }> = [];
+  if (entity_type === 'all' || entity_type === 'deal') {
+    typeFolders.push({ type: 'deal', folder: 'deals' });
+  }
+  if (entity_type === 'all' || entity_type === 'client') {
+    typeFolders.push({ type: 'client', folder: 'clients' });
+  }
+
+  // Recursive function to search directories
+  function searchDirectory(dir: string, entityType: 'deal' | 'client', entityName: string) {
+    if (!existsSync(dir)) return;
+
+    const entries = readdirSync(dir);
+    for (const entry of entries) {
+      if (entry.startsWith('.')) continue;
+
+      const fullPath = join(dir, entry);
+      const stat = statSync(fullPath);
+
+      if (stat.isDirectory()) {
+        // Recurse into subdirectories
+        searchDirectory(fullPath, entityType, entityName);
+      } else if (stat.isFile() && regex.test(entry)) {
+        // File matches pattern
+        const relativePath = fullPath.replace(process.cwd() + '/', '');
+        matches.push({
+          name: entry,
+          path: relativePath,
+          entity_type: entityType,
+          entity_name: entityName,
+          size: stat.size,
+        });
+      }
+    }
+  }
+
+  // Search each type folder
+  for (const { type, folder } of typeFolders) {
+    const typePath = join(advisoryRoot, folder);
+    if (!existsSync(typePath)) continue;
+
+    const entities = readdirSync(typePath);
+    for (const entity of entities) {
+      if (entity.startsWith('.')) continue;
+      if (entity_name && entity.toLowerCase() !== entity_name.toLowerCase()) continue;
+
+      const entityPath = join(typePath, entity);
+      if (statSync(entityPath).isDirectory()) {
+        searchDirectory(entityPath, type, entity);
+      }
+    }
+  }
+
+  chatLogger.info(`[glob_advisory] Found ${matches.length} matching files`);
+
+  if (matches.length === 0) {
+    return JSON.stringify({
+      success: true,
+      message: `No files matching pattern "${pattern}" found.`,
+      matches: [],
+    });
+  }
+
+  return JSON.stringify({
+    success: true,
+    message: `Found ${matches.length} file(s) matching "${pattern}"`,
+    matches: matches.slice(0, 50), // Limit to 50 results
+    total: matches.length,
+  });
+}
+
+type GrepAdvisoryInput = {
+  pattern: string;
+  entity_type?: 'deal' | 'client' | 'all';
+  entity_name?: string;
+  subfolder?: string;
+};
+
+type GrepMatch = {
+  file: string;
+  entity_type: 'deal' | 'client';
+  entity_name: string;
+  matches: Array<{
+    line_number: number;
+    line: string;
+    context_before?: string;
+    context_after?: string;
+  }>;
+};
+
+/**
+ * Search file contents for text pattern
+ */
+async function grepAdvisory(input: Record<string, unknown>): Promise<string> {
+  const { pattern, entity_type = 'all', entity_name, subfolder } = input as GrepAdvisoryInput;
+
+  chatLogger.info(`[grep_advisory] Pattern: "${pattern}"`, { entity_type, entity_name, subfolder });
+
+  // Case-insensitive search
+  const regex = new RegExp(pattern, 'gi');
+
+  const results: GrepMatch[] = [];
+  const advisoryRoot = join(process.cwd(), 'advisory');
+
+  // Determine which folders to search
+  const typeFolders: Array<{ type: 'deal' | 'client'; folder: string }> = [];
+  if (entity_type === 'all' || entity_type === 'deal') {
+    typeFolders.push({ type: 'deal', folder: 'deals' });
+  }
+  if (entity_type === 'all' || entity_type === 'client') {
+    typeFolders.push({ type: 'client', folder: 'clients' });
+  }
+
+  // Search function for a single file
+  async function searchFile(
+    filePath: string,
+    entityType: 'deal' | 'client',
+    entityName: string
+  ): Promise<GrepMatch | null> {
+    try {
+      const content = await readFile(filePath, 'utf-8');
+      const lines = content.split('\n');
+      const matchingLines: GrepMatch['matches'] = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        if (regex.test(lines[i])) {
+          matchingLines.push({
+            line_number: i + 1,
+            line: lines[i].trim().substring(0, 200), // Limit line length
+            context_before: i > 0 ? lines[i - 1].trim().substring(0, 100) : undefined,
+            context_after: i < lines.length - 1 ? lines[i + 1].trim().substring(0, 100) : undefined,
+          });
+        }
+      }
+
+      if (matchingLines.length > 0) {
+        return {
+          file: filePath.replace(process.cwd() + '/', ''),
+          entity_type: entityType,
+          entity_name: entityName,
+          matches: matchingLines.slice(0, 10), // Limit to 10 matches per file
+        };
+      }
+    } catch {
+      // Skip files that can't be read
+    }
+    return null;
+  }
+
+  // Recursive function to search directories
+  async function searchDirectory(
+    dir: string,
+    entityType: 'deal' | 'client',
+    entityName: string
+  ): Promise<void> {
+    if (!existsSync(dir)) return;
+
+    const entries = readdirSync(dir);
+    for (const entry of entries) {
+      if (entry.startsWith('.')) continue;
+
+      const fullPath = join(dir, entry);
+      const stat = statSync(fullPath);
+
+      if (stat.isDirectory()) {
+        await searchDirectory(fullPath, entityType, entityName);
+      } else if (stat.isFile() && entry.endsWith('.md')) {
+        const match = await searchFile(fullPath, entityType, entityName);
+        if (match) {
+          results.push(match);
+        }
+      }
+    }
+  }
+
+  // Search each type folder
+  for (const { type, folder } of typeFolders) {
+    const typePath = join(advisoryRoot, folder);
+    if (!existsSync(typePath)) continue;
+
+    const entities = readdirSync(typePath);
+    for (const entity of entities) {
+      if (entity.startsWith('.')) continue;
+      if (entity_name && entity.toLowerCase() !== entity_name.toLowerCase()) continue;
+
+      let searchPath = join(typePath, entity);
+      if (subfolder) {
+        searchPath = join(searchPath, subfolder);
+      }
+
+      if (existsSync(searchPath) && statSync(searchPath).isDirectory()) {
+        await searchDirectory(searchPath, type, entity);
+      }
+    }
+  }
+
+  chatLogger.info(`[grep_advisory] Found ${results.length} files with matches`);
+
+  if (results.length === 0) {
+    return JSON.stringify({
+      success: true,
+      message: `No files containing "${pattern}" found.`,
+      results: [],
+    });
+  }
+
+  // Sort by number of matches (most relevant first)
+  results.sort((a, b) => b.matches.length - a.matches.length);
+
+  return JSON.stringify({
+    success: true,
+    message: `Found "${pattern}" in ${results.length} file(s)`,
+    results: results.slice(0, 20), // Limit to 20 files
+    total_files: results.length,
+    total_matches: results.reduce((sum, r) => sum + r.matches.length, 0),
   });
 }
 
