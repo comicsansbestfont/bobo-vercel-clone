@@ -324,6 +324,9 @@ export async function POST(req: Request) {
     let userMemoryContext = '';
     let projectsOverviewContext = '';
 
+    // Explicitly log before calling getProjects to verify it's being executed
+    chatLogger.info('[Chat] Starting parallel data fetch including getProjects...');
+
     const [chat, profile, memories, allProjects] = await Promise.all([
       getChat(activeChatId),
       getUserProfile().catch(err => {
@@ -334,11 +337,25 @@ export async function POST(req: Request) {
         chatLogger.error('Failed to fetch user memories:', err);
         return [];
       }),
-      getProjects().catch(err => {
-        chatLogger.error('Failed to fetch projects:', err);
-        return [] as Project[];
-      }),
+      (async () => {
+        chatLogger.info('[Chat] Calling getProjects()...');
+        try {
+          const projects = await getProjects();
+          chatLogger.info('[Chat] getProjects() returned', { count: projects.length });
+          return projects;
+        } catch (err) {
+          chatLogger.error('[Chat] getProjects() threw error:', err);
+          return [] as Project[];
+        }
+      })(),
     ]);
+
+    chatLogger.info('[Chat] Parallel fetch complete', {
+      hasChat: !!chat,
+      hasProfile: !!profile,
+      memoriesCount: memories.length,
+      projectsCount: allProjects.length,
+    });
 
     // Process chat result - get project if chat has one
     if (chat && chat.project_id) {
