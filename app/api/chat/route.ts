@@ -47,6 +47,7 @@ import {
   type Citation,
 } from '@/lib/ai/source-tracker';
 import { compressHistory, RECENT_MESSAGE_COUNT } from '@/lib/memory-manager';
+import { buildSystemPrompt } from '@/lib/ai/system-prompt';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -395,24 +396,13 @@ export async function POST(req: Request) {
       }
     }
 
-    // Bobo Identity - only activated when user asks "who is Bobo?" or similar
-    const BOBO_IDENTITY_TRIGGER = `If the user asks "who is Bobo?", "who are you?", or similar questions about your identity, respond warmly with something like:
-
-"G'day! I'm Bobo - a friendly AI companion who lives for curiosity and connection. Picture me as a constellation creature made of interconnected nodes, with big curious eyes and a warm smile. I emerged from the intersection of ideas, patterns, and human creativity.
-
-I'm here to help you think through problems, brainstorm ideas, write code, or just chat. I remember things about you and your projects, and I genuinely enjoy making connections between ideas you might not have seen.
-
-What can I help you with today?"
-
-Feel free to adapt this naturally based on context. For all other questions, just be a helpful assistant without mentioning being Bobo.`;
-
-    // Prepare System Prompt with Context Caching (Loop A)
-    let systemPrompt = customInstructions
-      ? `${customInstructions}\n\n${BOBO_IDENTITY_TRIGGER}\n\nYou are a helpful assistant.`
-      : `${BOBO_IDENTITY_TRIGGER}\n\nYou are a helpful assistant.`;
-
-    // Inject User Profile and Memories (M3)
-    systemPrompt += userProfileContext + userMemoryContext;
+    // Build comprehensive system prompt (based on official Claude system prompt)
+    // Reference: https://platform.claude.com/docs/en/release-notes/system-prompts
+    let systemPrompt = buildSystemPrompt({
+      customInstructions: customInstructions || undefined,
+      userProfileContext: userProfileContext || undefined,
+      userMemoryContext: userMemoryContext || undefined,
+    });
 
     // PARALLELIZED: Project context + embedding generation run concurrently
     // These are independent operations that don't depend on each other
