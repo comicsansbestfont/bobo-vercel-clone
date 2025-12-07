@@ -48,10 +48,17 @@ export async function readMasterDoc(folderPath: string): Promise<AdvisoryFile | 
 
   try {
     const files = await fs.readdir(fullPath);
-    const masterDocFile = files.find(f => f.startsWith('master-doc-') && f.endsWith('.md'));
+
+    // Support multiple naming conventions:
+    // 1. master-doc-*.md (deals)
+    // 2. client-profile.md (clients)
+    // 3. profile.md (fallback)
+    const masterDocFile = files.find(f => f.startsWith('master-doc-') && f.endsWith('.md'))
+      || files.find(f => f === 'client-profile.md')
+      || files.find(f => f === 'profile.md');
 
     if (!masterDocFile) {
-      console.warn(`[file-reader] No master doc found in ${folderPath}`);
+      console.warn(`[file-reader] No master doc found in ${folderPath}. Expected: master-doc-*.md, client-profile.md, or profile.md`);
       return null;
     }
 
