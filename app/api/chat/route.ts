@@ -48,6 +48,8 @@ import {
 } from '@/lib/ai/source-tracker';
 import { compressHistory, RECENT_MESSAGE_COUNT } from '@/lib/memory-manager';
 import { buildSystemPrompt } from '@/lib/ai/system-prompt';
+import { handleAgentMode } from '@/lib/agent-sdk/server';
+import { isClaudeModel } from '@/lib/agent-sdk';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -562,6 +564,17 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
       count: validatedMessages.length,
       roles: validatedMessages.map(m => m.role),
     });
+
+    // Route Claude models through Agent SDK (has tools + pre-flight knowledge search)
+    if (isClaudeModel(model)) {
+      chatLogger.info('Routing to Agent SDK for Claude model:', { model, chatId: activeChatId, projectId: activeProjectId });
+      return handleAgentMode({
+        messages: validatedMessages,
+        model,
+        chatId: activeChatId,
+        projectId: activeProjectId || undefined,
+      });
+    }
 
     const isOpenAIModel = model?.startsWith('openai/');
     const modelMessages = convertToModelMessages(validatedMessages);
