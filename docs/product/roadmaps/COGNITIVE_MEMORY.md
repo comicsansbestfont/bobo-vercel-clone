@@ -1,11 +1,11 @@
 # Cognitive Memory System - Complete Requirements Document
 
 **Created:** December 1, 2025
-**Purpose:** Comprehensive extraction of ALL requirements from brain-building research + backlog gaps
+**Purpose:** Comprehensive extraction of ALL requirements from cognitive memory research + backlog gaps
 **Status:** DRAFT - Pending sprint planning integration
 
 > **Why This Document Exists:**
-> The brain-building folder contains extensive research that was never fully translated into actionable backlog items. This document bridges that gap by extracting every technical requirement with implementation-ready specifications.
+> The [research folder](../research/) contains extensive neuroscience research that was never fully translated into actionable backlog items. This document bridges that gap by extracting every technical requirement with implementation-ready specifications.
 
 ---
 

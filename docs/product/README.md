@@ -10,6 +10,13 @@ docs/product/
 ├── PRODUCT_BACKLOG.md        # Operational sprint-level task tracking
 ├── README.md                 # This file
 │
+├── research/                 # Foundational research documents
+│   ├── README.md             # Research overview and key concepts
+│   ├── COGNITIVE_CORE_BRIEF.md      # Master execution plan (Build vs Buy)
+│   ├── NEUROSCIENCE_ANALYSIS.md     # Biological memory systems deep dive
+│   ├── ChatGPT-Validation-Review.pdf  # External validation report
+│   └── Gemini-Research-Review.pdf     # Alternative perspective (rejected)
+│
 ├── use-cases/                # How Bobo is used (vertical applications)
 │   └── ADVISORY_WORKFLOW.md  # Deals & Clients management (primary dogfooding)
 │
@@ -50,9 +57,9 @@ docs/product/
 
 ## Related Documentation
 
-- `/docs/brain-building/` - Research on neuroscience-inspired memory
+- `/docs/product/research/` - Foundational research on neuroscience-inspired memory
+- `/docs/decisions/` - Architecture Decision Records (ADRs)
 - `/docs/sprints/` - Historical sprint documentation
-- `/docs/specs/` - Technical specifications
 - `/CLAUDE.md` - Codebase guide for Claude Code
 
 ---

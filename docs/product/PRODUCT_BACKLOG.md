@@ -20,7 +20,7 @@
 > - 22 deal/client memories seeded with embeddings (100% coverage)
 
 > **December 1, 2025 Update:** 🧠 **M3.6 COGNITIVE MEMORY ROADMAP INTEGRATED**
-> - Extracted 23 new requirements from brain-building research (neuroscience-inspired memory)
+> - Extracted 23 new requirements from cognitive memory research (neuroscience-inspired memory)
 > - Added 9 audit items improving existing backlog definitions
 > - Created 5-sprint sequence for systematic implementation (~100-120h total)
 > - Key additions: temporal decay (Ebbinghaus), Hebbian reinforcement, memory graph, consolidation
@@ -114,7 +114,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export (after M3.7) |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
-*Dec 1, 2025: M3.6 Cognitive Memory integrated from brain-building research. 32 tasks across 5 sprints.*
+*Dec 1, 2025: M3.6 Cognitive Memory integrated from cognitive memory research. 32 tasks across 5 sprints.*
 
 ### Sprint Velocity History
 
@@ -1419,7 +1419,7 @@ Both modes share:
 
 ### Why M3.6 Now?
 
-1. **Brain-building research gap** - Extensive research in `/docs/brain-building/` was never translated into actionable backlog items
+1. **Cognitive memory research gap** - Extensive research in `/docs/product/research/` was never translated into actionable backlog items
 2. **Current memory is passive** - Memories don't decay, strengthen, or relate to each other
 3. **No temporal dynamics** - 1-year-old memory weighted same as yesterday's
 4. **No associative network** - Can't traverse related concepts
