@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   experimental: {
-    optimizePackageImports: ['streamdown'],
+    optimizePackageImports: ['streamdown', 'lucide-react'],
   },
   async rewrites() {
     return [
