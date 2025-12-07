@@ -1,0 +1,17 @@
+[
+  {
+    "testName": "bundle-size",
+    "timestamp": "2025-12-07T03:34:29.383Z",
+    "bundleSize": 3912
+  },
+  {
+    "testName": "api-payload",
+    "timestamp": "2025-12-07T03:34:36.733Z",
+    "payloadSize": 271
+  },
+  {
+    "testName": "network-requests",
+    "timestamp": "2025-12-07T03:34:38.607Z",
+    "networkRequests": 64
+  }
+]

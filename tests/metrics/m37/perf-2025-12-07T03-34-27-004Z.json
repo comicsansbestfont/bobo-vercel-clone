@@ -1,0 +1,19 @@
+[
+  {
+    "testName": "home-page-load",
+    "timestamp": "2025-12-07T03:34:24.117Z",
+    "pageLoad": 2052,
+    "fcp": 96
+  },
+  {
+    "testName": "fcp-test",
+    "timestamp": "2025-12-07T03:34:25.564Z",
+    "pageLoad": 1345.4000000953674,
+    "fcp": 64
+  },
+  {
+    "testName": "tti-test",
+    "timestamp": "2025-12-07T03:34:26.959Z",
+    "tti": 1299
+  }
+]

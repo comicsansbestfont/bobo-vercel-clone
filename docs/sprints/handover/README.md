@@ -24,6 +24,7 @@ A handover is a **quick-start guide** that lets a developer begin coding within 
 | Testing Checklist | How to verify |
 | Success Criteria | Definition of done |
 | Resources | External docs |
+| Recommended Sub-Agents | Which agents to use per phase |
 
 ---
 
@@ -73,6 +74,50 @@ cp HANDOVER_TEMPLATE.md HANDOVER_M##-##.md
 ## Template
 
 [HANDOVER_TEMPLATE.md](./HANDOVER_TEMPLATE.md)
+
+---
+
+## Sub-Agent Selection Guide
+
+**Repository Location:** `~/VibeCoding Projects/awesome-claude-code-subagents-main/`
+
+### Selection Matrix
+
+| Sprint Type | Primary Agents | Support Agents |
+|-------------|----------------|----------------|
+| New Feature (Full-stack) | `fullstack-developer`, `nextjs-developer` | `code-reviewer`, `qa-expert` |
+| Database/Schema | `postgres-pro`, `database-administrator` | `performance-engineer` |
+| AI/ML Feature | `ai-engineer`, `llm-architect` | `prompt-engineer` |
+| Infrastructure | `devops-engineer`, `terraform-engineer` | `security-engineer` |
+| Refactoring | `refactoring-specialist`, `architect-reviewer` | `code-reviewer` |
+| Bug Fix | `debugger`, `error-detective` | `qa-expert` |
+| Documentation | `documentation-engineer`, `technical-writer` | - |
+| API Design | `api-designer`, `api-documenter` | `security-auditor` |
+
+### Available Categories (115 agents)
+
+| Category | Count | Key Agents |
+|----------|-------|------------|
+| Core Development | 11 | `fullstack-developer`, `frontend-developer`, `backend-developer` |
+| Language Specialists | 24 | `typescript-pro`, `nextjs-developer`, `react-specialist`, `python-pro` |
+| Infrastructure | 12 | `devops-engineer`, `kubernetes-specialist`, `terraform-engineer` |
+| Quality & Security | 12 | `code-reviewer`, `qa-expert`, `security-auditor`, `debugger` |
+| Data & AI | 12 | `postgres-pro`, `ai-engineer`, `llm-architect` |
+| Developer Experience | 10 | `refactoring-specialist`, `documentation-engineer` |
+| Specialized Domains | 11 | `fintech-engineer`, `blockchain-developer` |
+| Business & Product | 10 | `product-manager`, `technical-writer` |
+| Meta & Orchestration | 8 | `agent-organizer`, `workflow-orchestrator` |
+| Research & Analysis | 6 | `research-analyst`, `competitive-analyst` |
+
+### Setup
+
+```bash
+# Option 1: Symlink for all projects (recommended)
+ln -s ~/VibeCoding\ Projects/awesome-claude-code-subagents-main/agents ~/.claude/agents
+
+# Option 2: Copy specific agents to project
+cp ~/VibeCoding\ Projects/awesome-claude-code-subagents-main/agents/{agent-name}.md .claude/agents/
+```
 
 ---
 

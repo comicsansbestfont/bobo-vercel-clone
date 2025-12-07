@@ -189,4 +189,23 @@ npm run dev
 
 ---
 
+## Recommended Sub-Agents
+
+**Repository:** `~/VibeCoding Projects/awesome-claude-code-subagents-main/`
+
+{Select sub-agents based on sprint type. Reference the selection matrix in the handover README.}
+
+| Phase | Sub-Agent | Purpose | Invocation |
+|-------|-----------|---------|------------|
+| {Phase 1} | `{agent-name}` | {What it helps with} | `@{agent-name} {task description}` |
+| {Phase 2} | `{agent-name}` | {What it helps with} | `@{agent-name} {task description}` |
+| {All} | `code-reviewer` | PR review before merge | `@code-reviewer review this PR` |
+
+**How to use:**
+1. Ensure agents are in your global `~/.claude/agents/` or project `.claude/agents/`
+2. Invoke with `@agent-name` prefix in Claude Code
+3. Agents are read-only by default (reviewers) or read-write (developers)
+
+---
+
 *Prepared by Claude Code - {Date}*
