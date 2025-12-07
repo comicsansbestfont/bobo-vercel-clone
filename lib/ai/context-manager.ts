@@ -37,26 +37,30 @@ export async function getProjectContext(projectId: string): Promise<ProjectConte
     if (project?.advisory_folder_path) {
         try {
             // Dynamic import to avoid bundling fs in client
-            const { readMasterDoc, extractKeySections } = await import('@/lib/advisory/file-reader');
-            const masterDoc = await readMasterDoc(project.advisory_folder_path);
+            const { readAllAdvisoryFiles, buildAdvisoryContext } = await import('@/lib/advisory/file-reader');
+            const allFiles = await readAllAdvisoryFiles(project.advisory_folder_path);
 
-            if (masterDoc) {
-                // Extract key sections to limit token usage
-                const keySections = extractKeySections(masterDoc);
+            if (allFiles.length > 0) {
+                console.log(`[context-manager] Found ${allFiles.length} files in ${project.advisory_folder_path}`);
+
+                // Build context from all files (prioritizes meetings, recent files)
+                const contextContent = buildAdvisoryContext(allFiles, 30000);
 
                 return {
                     projectId,
-                    files: [{
-                        id: 'master-doc',
-                        filename: masterDoc.filename,
-                        content_text: keySections,
-                    }],
-                    totalTokens: keySections.length / 4,
+                    files: allFiles.map((f, idx) => ({
+                        id: `advisory-${idx}`,
+                        filename: f.relativePath,
+                        content_text: f.content,
+                    })),
+                    totalTokens: contextContent.length / 4,
                     isAdvisory: true,
                 };
+            } else {
+                console.warn(`[context-manager] No files found in ${project.advisory_folder_path}`);
             }
         } catch (error) {
-            console.error('[context-manager] Error reading advisory file:', error);
+            console.error('[context-manager] Error reading advisory files:', error);
             // Fall through to database fallback
         }
     }

@@ -204,3 +204,104 @@ export function getAdvisoryFolderPath(folderName: string, entityType: 'deal' | '
   const typeFolder = entityType === 'client' ? 'clients' : 'deals';
   return `advisory/${typeFolder}/${folderName}`;
 }
+
+/**
+ * Read ALL markdown files from an advisory folder recursively
+ * Used for full context injection including meetings, comms, etc.
+ */
+export async function readAllAdvisoryFiles(folderPath: string): Promise<Array<{
+  filename: string;
+  relativePath: string;
+  content: string;
+}>> {
+  const fullPath = path.join(process.cwd(), folderPath);
+  const files: Array<{ filename: string; relativePath: string; content: string }> = [];
+
+  // Exclude patterns (same as indexing script)
+  const excludePatterns = ['_Inbox', '_raw', '_TEMPLATE', 'README.md'];
+
+  async function walkDir(dir: string, baseDir: string) {
+    try {
+      const entries = await fs.readdir(dir, { withFileTypes: true });
+
+      for (const entry of entries) {
+        const entryPath = path.join(dir, entry.name);
+        const relativePath = path.relative(baseDir, entryPath);
+
+        // Skip excluded patterns
+        if (excludePatterns.some(pattern => relativePath.includes(pattern))) {
+          continue;
+        }
+
+        if (entry.isDirectory()) {
+          await walkDir(entryPath, baseDir);
+        } else if (entry.name.endsWith('.md')) {
+          try {
+            const content = await fs.readFile(entryPath, 'utf-8');
+            files.push({
+              filename: entry.name,
+              relativePath,
+              content,
+            });
+          } catch (err) {
+            console.warn(`[file-reader] Failed to read ${entryPath}:`, err);
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`[file-reader] Error walking directory ${dir}:`, err);
+    }
+  }
+
+  await walkDir(fullPath, fullPath);
+  return files;
+}
+
+/**
+ * Build a summarized context from all advisory files
+ * Prioritizes recent files and limits total token count
+ */
+export function buildAdvisoryContext(
+  files: Array<{ filename: string; relativePath: string; content: string }>,
+  maxTokens: number = 30000
+): string {
+  // Sort files by priority: meetings first, then comms, then others
+  const priorityOrder = ['Meetings', 'Comms', 'Engagements', 'Strategy', 'Valuation', 'Docs'];
+
+  const sortedFiles = [...files].sort((a, b) => {
+    const aPriority = priorityOrder.findIndex(p => a.relativePath.includes(p));
+    const bPriority = priorityOrder.findIndex(p => b.relativePath.includes(p));
+
+    // Files matching priority patterns come first
+    if (aPriority !== -1 && bPriority === -1) return -1;
+    if (aPriority === -1 && bPriority !== -1) return 1;
+    if (aPriority !== bPriority) return aPriority - bPriority;
+
+    // Then sort by filename (which typically includes date) descending
+    return b.filename.localeCompare(a.filename);
+  });
+
+  const contextParts: string[] = [];
+  let currentTokens = 0;
+  const tokensPerChar = 0.25; // Rough estimate
+
+  for (const file of sortedFiles) {
+    const fileTokens = Math.ceil(file.content.length * tokensPerChar);
+
+    // Check if we have room
+    if (currentTokens + fileTokens > maxTokens) {
+      // Try to add truncated version
+      const remainingTokens = maxTokens - currentTokens;
+      if (remainingTokens > 500) {
+        const truncatedContent = file.content.slice(0, Math.floor(remainingTokens / tokensPerChar));
+        contextParts.push(`### ${file.relativePath}\n${truncatedContent}\n[...truncated]`);
+      }
+      break;
+    }
+
+    contextParts.push(`### ${file.relativePath}\n${file.content}`);
+    currentTokens += fileTokens;
+  }
+
+  return contextParts.join('\n\n---\n\n');
+}
