@@ -9,7 +9,8 @@ import { NextRequest } from 'next/server';
 import { extractMemoriesFromChat } from '@/lib/memory/extractor';
 import { memoryLogger } from '@/lib/logger';
 
-export const runtime = 'edge';
+// Use nodejs runtime - this route requires database operations via Supabase
+export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
