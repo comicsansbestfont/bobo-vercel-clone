@@ -15,6 +15,7 @@ import { chatLogger } from '@/lib/logger';
 import { buildMemoryContext } from './memory-integration';
 import { buildProjectContext } from './project-integration';
 import { buildGlobalSearchContext } from './global-search-integration';
+import { searchKnowledge } from './knowledge-search';
 import { FULL_AGENT_TOOL_CONFIG } from './tool-config';
 import { SAFETY_HOOKS } from './safety-hooks';
 import { streamAgentResponse, type UIStreamChunk } from './stream-adapter';
@@ -174,8 +175,21 @@ export async function handleAgentMode(
       activeProjectId
     );
 
+    // M3.8: Pre-flight knowledge search (advisory files + memory)
+    const knowledgeResult = await searchKnowledge(userPrompt);
+    chatLogger.debug('Knowledge search complete:', {
+      intent: knowledgeResult.intent.category,
+      advisory: knowledgeResult.sourceCounts.advisory,
+      memory: knowledgeResult.sourceCounts.memory,
+    });
+
     // Build system prompt with all contexts
-    const systemPrompt = buildAgentSystemPrompt(memoryContext, projectContext, globalContext);
+    const systemPrompt = buildAgentSystemPrompt(
+      memoryContext,
+      projectContext,
+      globalContext,
+      knowledgeResult.context
+    );
 
     // Save user message to database BEFORE streaming
     const userMessageParts: MessagePart[] = [{ type: 'text', text: userPrompt }];
@@ -263,14 +277,16 @@ function mapModelToAgentModel(model: string): string {
 }
 
 /**
- * Build system prompt with memory, project context, and global search context
+ * Build system prompt with memory, project context, global search, and knowledge context
  *
  * M4-13: Added globalContext parameter for Loop B integration
+ * M3.8: Added knowledgeContext for pre-flight advisory/memory search
  */
 function buildAgentSystemPrompt(
   memoryContext: string,
   projectContext: string,
-  globalContext: string = ''
+  globalContext: string = '',
+  knowledgeContext: string = ''
 ): string {
   let prompt = `You are Bobo, a helpful AI assistant with agent capabilities.
 
@@ -293,6 +309,11 @@ IMPORTANT GUIDELINES:
   // M4-13: Add global search context (Loop B)
   if (globalContext) {
     prompt += `\n\n${globalContext}`;
+  }
+
+  // M3.8: Add knowledge context (pre-flight advisory/memory search)
+  if (knowledgeContext) {
+    prompt += `\n\n${knowledgeContext}`;
   }
 
   return prompt;

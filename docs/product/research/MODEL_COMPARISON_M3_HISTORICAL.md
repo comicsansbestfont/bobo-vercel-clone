@@ -1,3 +1,11 @@
+> **HISTORICAL DOCUMENT**
+>
+> This document was created for **Sprint M3-01** (November 2025) and represents a point-in-time model comparison. Model capabilities and rankings change frequently. Use this as a reference for understanding the decision-making process, not for current model selection.
+>
+> *Migrated from docs/Research/ on December 7, 2025*
+
+---
+
 # LLM Model Comparison for Sprint M3-01
 
 **Date:** November 24, 2025
