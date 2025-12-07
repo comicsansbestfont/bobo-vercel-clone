@@ -260,7 +260,7 @@ export function ChatInterface({
   const chatIdFromUrl = searchParams?.get('chatId');
 
   const [input, setInput] = useState('');
-  const [model, setModel] = useState<string>(models[0].value);
+  const [model, setModel] = useState<string>('anthropic/claude-opus-4-5-20251101');
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [toolSteps, setToolSteps] = useState<ToolStep[]>([]);
