@@ -24,7 +24,8 @@
     "test:m37:security": "playwright test m37-advisory-security",
     "test:validation": "playwright test --grep 'Validation Query'",
     "index-advisory": "npx tsx scripts/index-advisory.ts",
-    "verify-advisory": "npx tsx scripts/verify-advisory-indexing.ts"
+    "verify-advisory": "npx tsx scripts/verify-advisory-indexing.ts",
+    "postbuild": "node scripts/ensure-next-lock.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.71",
