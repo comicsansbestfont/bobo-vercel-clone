@@ -102,7 +102,6 @@ import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
 import { cn } from '@/lib/utils';
 import { compressHistory } from '@/lib/memory-manager';
 import { toast } from 'sonner';
-import { useTextStream } from '@/components/ui/response-stream';
 import { chatLogger } from '@/lib/logger';
 import { ChatHeader } from './chat-header';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
@@ -198,71 +197,6 @@ function getToolIcon(toolName?: string): LucideIcon {
   return TOOL_ICON_MAP[toolName] || FileTextIcon;
 }
 
-/**
- * Lightweight async stream controller to feed text chunks into ResponseStream
- */
-type TextStreamEntry = {
-  controller: {
-    iterable: AsyncIterable<string>;
-    push: (chunk: string) => void;
-    close: () => void;
-  };
-  lastValue: string;
-};
-
-function createTextStreamEntry(initialText = ''): TextStreamEntry {
-  let isClosed = false;
-  let pending: ((value: IteratorResult<string>) => void) | null = null;
-  const queue: string[] = initialText ? [initialText] : [];
-
-  const entry: TextStreamEntry = {
-    lastValue: initialText,
-    controller: {
-      iterable: {
-        [Symbol.asyncIterator]() {
-          return {
-            next: () => {
-              if (queue.length > 0) {
-                return Promise.resolve({ value: queue.shift()!, done: false });
-              }
-
-              if (isClosed) {
-                return Promise.resolve({ value: undefined, done: true });
-              }
-
-              return new Promise<IteratorResult<string>>((resolve) => {
-                pending = resolve;
-              });
-            },
-          };
-        },
-      },
-      push: (chunk: string) => {
-        if (!chunk || isClosed) return;
-
-        if (pending) {
-          pending({ value: chunk, done: false });
-          pending = null;
-          return;
-        }
-
-        queue.push(chunk);
-      },
-      close: () => {
-        if (isClosed) return;
-
-        isClosed = true;
-        if (pending) {
-          pending({ value: undefined, done: true });
-          pending = null;
-        }
-      },
-    },
-  };
-
-  return entry;
-}
-
 type StreamingMessageResponseProps = {
   text: string;
   rehypePlugins?: Pluggable[];
@@ -270,43 +204,16 @@ type StreamingMessageResponseProps = {
 };
 
 function StreamingMessageResponse({ text, rehypePlugins, components }: StreamingMessageResponseProps) {
-  const streamEntry = useMemo(() => createTextStreamEntry(), []);
-
-  // Push incremental chunks into the async iterable as the text grows
-  useEffect(() => {
-    if (text.length < streamEntry.lastValue.length) {
-      streamEntry.controller.close();
-      return;
-    }
-
-    const delta = text.slice(streamEntry.lastValue.length);
-    if (delta) {
-      streamEntry.lastValue = text;
-      streamEntry.controller.push(delta);
-    }
-  }, [text, streamEntry]);
-
-  // Close the stream when the component unmounts to prevent dangling listeners
-  useEffect(() => {
-    return () => {
-      streamEntry.controller.close();
-    };
-  }, [streamEntry]);
-
-  const { displayedText } = useTextStream({
-    textStream: streamEntry.controller.iterable,
-    mode: 'typewriter',
-    speed: 28,
-  });
-
-  const streamedWithSupTags = useMemo(
-    () => displayedText.replace(/\[(\d+)\]/g, '<sup class="citation-marker">[$1]</sup>'),
-    [displayedText]
+  // Direct passthrough - no artificial typewriter delay
+  // The backend already streams text incrementally via SSE
+  const textWithSupTags = useMemo(
+    () => text.replace(/\[(\d+)\]/g, '<sup class="citation-marker">[$1]</sup>'),
+    [text]
   );
 
   return (
     <MessageResponse rehypePlugins={rehypePlugins} components={components}>
-      {streamedWithSupTags}
+      {textWithSupTags}
     </MessageResponse>
   );
 }
