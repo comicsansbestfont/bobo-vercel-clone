@@ -383,7 +383,7 @@ fit_assessment: "UNCERTAIN - Awaiting positioning response"
 - Former Global Head of DevOps (AU, NZ, APAC, Middle East, North America)
 - High-paying job but "living paycheck to paycheck" mindset from lower middle class background
 - COVID made him realize job security is illusion
-- Christmas 2024: Started exploring AI, building at night while employed
+- Christmas 2025: Started exploring AI, building at night while employed
 - Realized "can't catch two rabbits" - quit to go full-time on startup
 
 **GTM Reality (From Call):**

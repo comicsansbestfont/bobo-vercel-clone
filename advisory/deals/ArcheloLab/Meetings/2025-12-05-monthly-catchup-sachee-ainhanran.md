@@ -75,7 +75,7 @@ Monthly advisory call covering Ainhanran's 90-day plan launch, development pivot
 
 ## Key Metrics to Track
 
-- **Target:** 10 diaspora clients by January 5, 2025
+- **Target:** 10 diaspora clients by January 5, 2026
 - **Current pipeline:** 0 diaspora clients
 - **Outbound messages sent:** TBD
 - **Response rate:** TBD
@@ -106,7 +106,7 @@ Monthly advisory call covering Ainhanran's 90-day plan launch, development pivot
 
 ## Next Meeting
 
-- **When:** Early January 2025 (1 month from now)
+- **When:** Early January 2026 (1 month from now)
 - **Focus:** Review Month 1 progress, adjust Month 2 plan
 
 ---

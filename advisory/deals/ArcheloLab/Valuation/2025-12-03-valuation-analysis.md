@@ -2,7 +2,7 @@
 
 **Date:** 2025-12-03
 **Analyst:** Sachee Perera
-**Source:** Sri Lanka trip - personal networking (September 2024)
+**Source:** Sri Lanka trip - personal networking (September 2025)
 **Assessment Tier:** Tier 2: Full Diagnostic
 
 ---
@@ -14,7 +14,7 @@
 | **Company** | ArcheloLAB LTD |
 | **Founder(s)** | Ainharan Vivekananthan (Ain Haran), BEng (Hons) |
 | **Location** | TRACE Expert City, Colombo 10, Sri Lanka |
-| **Founded** | ~2023 (1 year 4 months in development as of Nov 2024) |
+| **Founded** | ~2024 (1 year 4 months in development as of Nov 2025) |
 | **Sector** | Construction tech / Diaspora services / Two-sided marketplace |
 
 **Quick Numbers:**

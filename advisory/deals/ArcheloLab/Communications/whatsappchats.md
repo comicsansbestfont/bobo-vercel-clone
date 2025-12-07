@@ -8,7 +8,7 @@ Here is the transcription of the WhatsApp conversation.
 
 ### **[Page 1]**
 
-**14/09/2026**
+**14/09/2025**
 
 **Sachee:** Morning matey - its Sachee. thanks for sharing deets. I'm actually in colombo already and here till mid to late OCT. thanks for the heads up about about distruict - I have a commitment for the 18th which ill try to move but unlikely. shall we go for coffee one morning or a beer in the arvo sometime the week of the 22nd?
 
@@ -33,7 +33,7 @@ Cool.
 
 **Ainharan:** Yes, I have accepted. See you on 23rd.
 
-**21/09/2026**
+**21/09/2025**
 
 **Sachee:** hi mate i hope you have had a great conference.
 about our catchup - apologies there has been a change in my schedule and i have to ask if we can push to the following week. please let me know day works for you
@@ -44,13 +44,13 @@ about our catchup - apologies there has been a change in my schedule and i have 
 
 **Ainharan:** Cool man.
 
-**28/09/2026**
+**28/09/2025**
 
 **Sachee:** hi mate, hope you had a good conference last week and a nice time down at mirissa.
 looking forward to our catch up tomorrow. what's the best place to meet you?
 Hey Sachee, how are you? Cab we meet at TRACE? We have few coffee shops there and we can have a peaceful chat without much disturbances as all those are dedicated only for TRACE offices
 
-**30/09/2026**
+**30/09/2025**
 
 **Ainharan:** That's correct
 
@@ -80,14 +80,14 @@ Call me once you are here.
 
 **Ainharan:** [Link Shared: The Gallery Café - Colombo]
 
-**01/10/2026**
+**01/10/2025**
 
 **Sachee:** hey matey it was good to meet you yesterday. lets catchup soon!
 
 **Ainharan:** Hey bro, indeed. I went and sleep almost straight ....haha. let's catch up at dodgy bar 😂
 Also, if you need any information about my startup, just give me a buzz.
 
-**04/10/2026**
+**04/10/2025**
 
 **Sachee:** Are you at Lanka Hospital?
 
@@ -96,7 +96,7 @@ Just left.
 Haha.
 Came for a blood test.
 
-**06/10/2026**
+**06/10/2025**
 
 **Sachee:** haha - so random. i saw you from a far, but was there coz my dad fractured his foot.
 
@@ -104,7 +104,7 @@ Came for a blood test.
 Haha.
 Oh dear, I hope he is fine now.
 
-**10/10/2026**
+**10/10/2025**
 
 **Ainharan:** Hey man! No sound from you. Let me know how we can take the things forward.
 
@@ -116,7 +116,7 @@ Take care bro.
 [Quoting Sachee: "...let me know on progressing..."]
 I suppose to say startup, not plan 😁
 
-**13/10/2026**
+**13/10/2025**
 
 **Sachee:** i have a bunch of meetings tomorrow but free after 3pm - but ill be at Hatch Works in the CBD (near kingsbury, cargills building)
 
@@ -130,7 +130,7 @@ what time works for you
 
 **Ainharan:** After 5
 
-**14/10/2026**
+**14/10/2025**
 
 **Ainharan:** Hey bro, confirm the catch up today.
 Because , I have to send the vehicle home if we are going to dodgy bar 😬
@@ -194,7 +194,7 @@ Will be there in 5 mins
 **Sachee:** just got here meself.
 no rush
 
-**16/10/2026**
+**16/10/2025**
 
 **Sachee:** hey matey morning. you coming around 10?
 
@@ -221,12 +221,12 @@ let me know when yojre here, you need to head down ahmed terrace and turn tight
 
 ### **[Page 2]**
 
-**17/10/2026**
+**17/10/2025**
 
 **Sachee:** absolutely
 let's chat late next week about your business, and i'll have these scans to send to you
 
-**18/10/2026**
+**18/10/2025**
 
 **Ainharan:** Sure bro
 In Sydney now?
@@ -237,7 +237,7 @@ In Sydney now?
 Cool
 Enjoy
 
-**19/10/2026**
+**19/10/2025**
 
 **Ainharan:** Hi Sachee, how are you doing?
 I hope you are back in Sydney
@@ -249,14 +249,14 @@ Hire me on the platform
 And will start your home renovation project from there
 This will give you a clear picture about the product as well as we can kick off your project too.
 
-**26/10/2026**
+**26/10/2025**
 
 **Sachee:** nice! thats a great plan. ill jump onto it this week
 
 **Ainharan:** Awesome man
 Thanks
 
-**30/10/2026**
+**30/10/2025**
 
 **Sachee:** hey man i signed up on the platform but i couldnt find a way to start a project or hire
 [Image: Screenshot of uploading a file "374 kB"]
@@ -278,7 +278,7 @@ Mobile version have some issues
 Will fix now
 But desktop version working fine
 
-**03/11/2026**
+**03/11/2025**
 
 **Ainharan:** Hey bro
 How are you doing
@@ -289,7 +289,7 @@ I basically put the project on hold due to some urgent tasks. I will be started 
 Hey bro, did you get a chance to hire me? I have few questions to ask too
 Officially, starting your project today
 
-**04/11/2026**
+**04/11/2025**
 
 **Sachee:** hey mate thats awesome.
 yes i started the other day and went through most of hiring process but didnt complete it. im flying to melbourne then bali. ill try to do tomorrow morning when im on the computer
@@ -300,7 +300,7 @@ Hey, try to do with the phone itself. Because of you only I was able to find a b
 [Quoting Sachee: "by the way, when do you want to go..."]
 I have already done. Now getting ready for some events coming up in December. You let me know a time, anytime, I can and want to do 😃
 
-**07/11/2026**
+**07/11/2025**
 
 **Ainharan:** Hey, how are you doing man? Did you get a chance to look into the product?
 Also, let me know what sort of a timeline you are looking at with your project? I mean, when do you want to Start and etc
@@ -379,11 +379,11 @@ Long story, maybe will chat on those tomorrow or some other time.
 
 **Ainharan:** Likewise! See you tomorrow
 
-**11/11/2026**
+**11/11/2025**
 
 **Sachee:** hey, dude, i'm in the Google Meet
 
-**12/11/2026**
+**12/11/2025**
 
 **Ainharan:** Hey bro, just an undate. I will be visiting your place tomorrow at 10am
 When you have time, please share the email you said you will be sending me to prepare my 90 days pls
@@ -403,7 +403,7 @@ And you, send me a text
 
 **Sachee:** sounds good
 
-**31/11/2026**
+**31/11/2025**
 
 **Ainharan:** Good morning bro
 How are you doing?
@@ -419,13 +419,13 @@ Yes mate, got the mail.
 Hi mate, how are you doing? Just want to let you know that, Is it ok to Start your project from next week? Little stuck with so many things going on, including the staffs and other things.
 Give me till next week and I will get it sorted out.
 
-**24/12/2026**
+**24/12/2025**
 
 **Sachee:** hey man, when you say start the project next week are you talking about the scoping and the costing and stuff? have you been liaising with my dad to get all the details and is he in the loop? as i said ideally you're running everything through him and then looping me in.
 
 **Ainharan:** Hey, sure. No problem. I will do it. Yes, it will be the revised design with the costing
 
-**25/12/2026**
+**25/12/2025**
 
 **Sachee:** hey matey, let's put together a fortnightly catch-up in our calendars for you to go through stuff with me. just a half an hour if you can. also, give me your back-of-the-envelope 3-month plan and goal between now and, say, the end of February
 

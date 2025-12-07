@@ -2,15 +2,15 @@
 company: "Archelo Lab"
 website: "archelolab.com"
 founder: "Ainharan Vivekananthan"
-lead_source: "Sri Lanka trip - personal networking (September 2024)"
-first_contact: "2024-09"
+lead_source: "Sri Lanka trip - personal networking (September 2025)"
+first_contact: "2025-09"
 deal_stage: "Relationship Development"
 engagement_type: ""
 current_stage: "Phase 1a"
 arr_estimate: "Pre-revenue"
 team_size: "Solo founder + 1 contractor (task-based)"
 burn_to_date: "$20,000 USD"
-last_updated: "2024-12-03"
+last_updated: "2025-12-03"
 ---
 
 # Archelo Lab - Client Master Doc
@@ -23,8 +23,8 @@ last_updated: "2024-12-03"
 | Website | archelolab.com |
 | Founder/Key Contact | Ainharan Vivekananthan (Ain Haran), BEng (Hons) |
 | Location | TRACE Expert City, Colombo 10, Sri Lanka |
-| Lead Source | Sri Lanka trip - networking with startup community (Sep 2024) |
-| First Contact Date | September 2024 |
+| Lead Source | Sri Lanka trip - networking with startup community (Sep 2025) |
+| First Contact Date | September 2025 |
 | **Deal Stage** | Relationship Development |
 | Engagement Type | TBD (monthly advisory cadence established) |
 | GTM Stage | Phase 1a (pre-PMF) |
@@ -44,7 +44,7 @@ last_updated: "2024-12-03"
 ### 2.1 Company Background
 > ArcheloLab is a Sri Lankan construction/architecture tech startup founded by Ainharan Vivekananthan. Originally conceived as a two-sided marketplace, the company has evolved its positioning to:
 >
-> **Current Positioning (Nov 2024):**
+> **Current Positioning (Nov 2025):**
 > *"ArcheloLAB is the trust layer and operating system for residential construction. It matches homeowners with the right architect, protects collaboration, and ensures a transparent, stress-free homebuilding journey."*
 >
 > **Two customer segments:**
@@ -55,7 +55,7 @@ last_updated: "2024-12-03"
 > - UK experience/education (BEng Hons)
 > - Mentor at Founders Institute Sri Lanka
 > - Runs a construction business in Sri Lanka (domain expertise)
-> - 1 year 4 months in development as of Nov 2024
+> - 1 year 4 months in development as of Nov 2025
 
 ### 2.2 Market & Industry
 > **Vertical:** Construction tech / Diaspora services / Two-sided marketplace
@@ -76,13 +76,13 @@ last_updated: "2024-12-03"
 > - Different time zones require async communication
 
 ### 2.3 Product/Service
-> **Current state (post-simplification, Nov 2024):**
+> **Current state (post-simplification, Nov 2025):**
 > - Stripped down MVP live at archelolab.com
 > - Simplified form-based intake
 > - Manual architect matching by Ain (24-hour turnaround promised)
 > - Focus on "simple and lovable" per Sachee's Lovability Pyramid
 >
-> **Previous issues (pre-Nov 2024):**
+> **Previous issues (pre-Nov 2025):**
 > - Platform had too many features, nothing complete
 > - Desktop-focused but 90% of users on mobile
 > - Cluttered with chatbots, pop-ups, social share widgets
@@ -91,8 +91,8 @@ last_updated: "2024-12-03"
 > - Old technology stack, terrible UX
 >
 > **Product evolution:**
-> - Original MVP: archfolio.club (Oct 2024)
-> - Current: archelolab.com (Nov 2024, simplified)
+> - Original MVP: archfolio.club (Oct 2025)
+> - Current: archelolab.com (Nov 2025, simplified)
 >
 > **Value proposition pitch:**
 > *"Finding the right architect is hard. Managing construction is harder. ArcheloLAB does both. We match you with curated architects, protect the collaboration, and handle timelines, payments, updates, and site coordination. You get a stress-free homebuilding journey. Architects get qualified clients and fewer headaches."*
@@ -111,7 +111,7 @@ last_updated: "2024-12-03"
 ### 2.5 Growth Signals
 > **Concerning signals:**
 > - $20,000 USD spent "almost in vain" on development
-> - Let entire team go (Nov 2024) - suggests hiring/delegation issues
+> - Let entire team go (Nov 2025) - suggests hiring/delegation issues
 > - Referenced "turmoil" in December communications
 > - Founder taking on dev + marketing + PM simultaneously (overwhelm risk)
 > - Actively fundraising but December events suggest pitch deadlines
@@ -133,9 +133,9 @@ last_updated: "2024-12-03"
 > - Now solo founder after letting team go
 > - Taking on technology, marketing, and PM personally
 > - "A bit up himself" but receptive to direct feedback
-> - "Going through a lot right now" (Nov 2024)
+> - "Going through a lot right now" (Nov 2025)
 >
-> **Team (as of Nov 2024):**
+> **Team (as of Nov 2025):**
 > - Previous: Local developers + marketing person (all let go)
 > - Current: 1 contractor on task-based (not monthly salary)
 > - Ain handling dev, marketing, PM personally
@@ -171,7 +171,7 @@ last_updated: "2024-12-03"
 
 ## 3. GTM Assessment
 
-### Current State (as of Nov 2024)
+### Current State (as of Nov 2025)
 > **Founder-led everything:**
 > - Ain personally handling: development, marketing, project management, sales
 > - Manual architect matching process working in Colombo
@@ -201,7 +201,7 @@ last_updated: "2024-12-03"
 > - **Two-sided marketplace:** Still hasn't solved chicken-and-egg systematically
 > - **Case studies needed:** Platform validation requires projects routed through it
 
-### Immediate Goals (90-Day Sprint: Dec 2024 - Mar 2025)
+### Immediate Goals (90-Day Sprint: Dec 2025 - Mar 2026)
 > **Ain's 3-month plan structure:**
 > - **Pre-bagging:** Nov 15-30 (completed)
 > - **Offensive Strategy:** Dec 3 - Mar 3
@@ -233,7 +233,7 @@ last_updated: "2024-12-03"
 
 *Extracted from /Meetings folder. Add new meetings at top.*
 
-### November 11, 2024 - Strategy Session (Google Meet)
+### November 11, 2025 - Strategy Session (Google Meet)
 **Attendees:** Sachee Perera, Ain Haran
 **Duration:** ~25 minutes (business portion)
 **Type:** Advisory call (mixed with house renovation discussion)
@@ -295,7 +295,7 @@ last_updated: "2024-12-03"
 
 ---
 
-### October 30, 2024 - Platform Testing (WhatsApp)
+### October 30, 2025 - Platform Testing (WhatsApp)
 **Type:** Async feedback
 
 **Bug Discovery:**
@@ -310,7 +310,7 @@ last_updated: "2024-12-03"
 
 ---
 
-### October 14, 2024 - Second In-Person Meeting
+### October 14, 2025 - Second In-Person Meeting
 **Location:** Dodgy Bar/7 Degrees, Colombo (5:30pm)
 **Type:** Informal catch-up
 
@@ -321,7 +321,7 @@ last_updated: "2024-12-03"
 
 ---
 
-### September 30, 2024 - First Formal Meeting
+### September 30, 2025 - First Formal Meeting
 **Location:** TRACE Expert City, Colombo (2pm)
 **Type:** Initial business discussion
 
@@ -330,7 +330,7 @@ last_updated: "2024-12-03"
 
 ---
 
-### September 2024 - Initial Coffee Meetings (Multiple)
+### September 2025 - Initial Coffee Meetings (Multiple)
 **Attendees:** Sachee, Ain Haran
 **Duration:** Various informal catch-ups
 **Location:** Sri Lanka (during Sachee's networking trip)
@@ -350,22 +350,22 @@ last_updated: "2024-12-03"
 
 | Date | Channel | Direction | Summary |
 |------|---------|-----------|---------|
-| Dec 3, 2024 | WhatsApp | Bilateral | Scheduled Friday call 8:30am SL for 3-month sprint planning |
-| Nov 20, 2024 | Email | Inbound | Ain completed positioning, launched simplified MVP, requesting platform test |
-| Nov 12, 2024 | Email | Outbound | Sachee sent positioning exercise + 90-day planning framework |
-| Nov 12, 2024 | Email | Inbound | Ain: Let team go, $20K spent, taking on tech himself |
-| Nov 11, 2024 | Google Meet | Bilateral | Strategy session - platform simplification, manual-first approach |
-| Nov 7, 2024 | WhatsApp | Bilateral | UX feedback - location filter bug, booking flow confusion |
-| Nov 4, 2024 | WhatsApp | Bilateral | Pitch practice offered; Ain: "Already done, getting ready for December events" |
-| Nov 3, 2024 | WhatsApp | Inbound | Ain: "Issues fixed, can you try and see" |
-| Oct 30, 2024 | WhatsApp | Outbound | Sachee: Mobile UX bugs discovered |
-| Oct 19, 2024 | WhatsApp | Inbound | MVP launched (archfolio.club), requested testing |
-| Oct 14, 2024 | In-person | Bilateral | Meeting at Dodgy Bar/7 Degrees |
-| Oct 10, 2024 | WhatsApp | Inbound | "Maybe I can pitch my startup as I am into fundraising too" |
-| Oct 1, 2024 | WhatsApp | Inbound | Post-meeting follow-up, offered startup info |
-| Sep 30, 2024 | In-person | Bilateral | First formal meeting at TRACE Expert City |
-| Sep 2024 | In-person | Bilateral | Multiple coffee meetings during Sri Lanka trip |
-| Sep 2024 | LinkedIn | Inbound | Initial connection through SL startup community |
+| Dec 3, 2025 | WhatsApp | Bilateral | Scheduled Friday call 8:30am SL for 3-month sprint planning |
+| Nov 20, 2025 | Email | Inbound | Ain completed positioning, launched simplified MVP, requesting platform test |
+| Nov 12, 2025 | Email | Outbound | Sachee sent positioning exercise + 90-day planning framework |
+| Nov 12, 2025 | Email | Inbound | Ain: Let team go, $20K spent, taking on tech himself |
+| Nov 11, 2025 | Google Meet | Bilateral | Strategy session - platform simplification, manual-first approach |
+| Nov 7, 2025 | WhatsApp | Bilateral | UX feedback - location filter bug, booking flow confusion |
+| Nov 4, 2025 | WhatsApp | Bilateral | Pitch practice offered; Ain: "Already done, getting ready for December events" |
+| Nov 3, 2025 | WhatsApp | Inbound | Ain: "Issues fixed, can you try and see" |
+| Oct 30, 2025 | WhatsApp | Outbound | Sachee: Mobile UX bugs discovered |
+| Oct 19, 2025 | WhatsApp | Inbound | MVP launched (archfolio.club), requested testing |
+| Oct 14, 2025 | In-person | Bilateral | Meeting at Dodgy Bar/7 Degrees |
+| Oct 10, 2025 | WhatsApp | Inbound | "Maybe I can pitch my startup as I am into fundraising too" |
+| Oct 1, 2025 | WhatsApp | Inbound | Post-meeting follow-up, offered startup info |
+| Sep 30, 2025 | In-person | Bilateral | First formal meeting at TRACE Expert City |
+| Sep 2025 | In-person | Bilateral | Multiple coffee meetings during Sri Lanka trip |
+| Sep 2025 | LinkedIn | Inbound | Initial connection through SL startup community |
 
 **Channel codes:** Email, WhatsApp, LinkedIn, Call, SMS, Slack, In-person, Google Meet
 **Direction:** Inbound, Outbound, Bilateral
@@ -437,11 +437,11 @@ last_updated: "2024-12-03"
 ### Deal Stage History
 | Date | Stage | Notes |
 |------|-------|-------|
-| Sep 2024 | New Opportunity | Met through SL trip networking |
-| Sep 30, 2024 | Triage & Qualification | First formal meeting at TRACE |
-| Oct 2024 | Deep Dive & Diagnosis | Multiple meetings, understanding business |
-| Nov 2024 | Relationship Development | Positioning exercise, advisory calls, pro-bono value |
-| Dec 2024 | Relationship Development | Monthly cadence established, 3-month sprint |
+| Sep 2025 | New Opportunity | Met through SL trip networking |
+| Sep 30, 2025 | Triage & Qualification | First formal meeting at TRACE |
+| Oct 2025 | Deep Dive & Diagnosis | Multiple meetings, understanding business |
+| Nov 2025 | Relationship Development | Positioning exercise, advisory calls, pro-bono value |
+| Dec 2025 | Relationship Development | Monthly cadence established, 3-month sprint |
 
 ### Deliverables Completed
 - [x] Positioning education material (Nov 12)
@@ -459,14 +459,14 @@ last_updated: "2024-12-03"
 ### Timeline
 | Milestone | Target Date | Status |
 |-----------|-------------|--------|
-| Positioning worksheet provided | Nov 12, 2024 | ✅ Done |
-| Worksheet completed by Ain | Nov 20, 2024 | ✅ Done |
-| Simplified MVP launched | Nov 20, 2024 | ✅ Done |
-| Sachee tests platform | Dec 2024 | Pending |
-| 3-month sprint kickoff | Dec 3, 2024 | Scheduled |
-| Monthly check-in #1 | Jan 2025 | Pending |
-| Monthly check-in #2 | Feb 2025 | Pending |
-| Sprint review | Mar 2025 | Pending |
+| Positioning worksheet provided | Nov 12, 2025 | ✅ Done |
+| Worksheet completed by Ain | Nov 20, 2025 | ✅ Done |
+| Simplified MVP launched | Nov 20, 2025 | ✅ Done |
+| Sachee tests platform | Dec 2025 | Pending |
+| 3-month sprint kickoff | Dec 3, 2025 | Scheduled |
+| Monthly check-in #1 | Jan 2026 | Pending |
+| Monthly check-in #2 | Feb 2026 | Pending |
+| Sprint review | Mar 2026 | Pending |
 
 ### Next Steps
 - [ ] **Sachee:** Visit archelolab.com and test hiring flow
@@ -477,7 +477,7 @@ last_updated: "2024-12-03"
 - [ ] Decide: Convert to paid engagement after 3-month sprint?
 
 ### Next Meeting
-> **Date:** Friday, December 5, 2024 at 8:30am Sri Lanka time
+> **Date:** Friday, December 5, 2025 at 8:30am Sri Lanka time
 > **Agenda:**
 > - Review Ain's 90-day sprint goals in detail
 > - Define success metrics for tracking
@@ -489,7 +489,7 @@ last_updated: "2024-12-03"
 
 ## 8. Origin Story - How This Deal Came About
 
-**Context:** During Sachee's trip to Sri Lanka in September 2024, he proactively networked with the Sri Lankan startup community to build local connections.
+**Context:** During Sachee's trip to Sri Lanka in September 2025, he proactively networked with the Sri Lankan startup community to build local connections.
 
 **Connection Timeline:**
 1. Sachee researched "who's who" in Sri Lankan startups
