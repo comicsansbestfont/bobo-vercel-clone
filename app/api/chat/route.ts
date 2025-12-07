@@ -57,6 +57,8 @@ import {
 } from '@/lib/ai/source-tracker';
 import { compressHistory, RECENT_MESSAGE_COUNT } from '@/lib/memory-manager';
 import { buildSystemPrompt } from '@/lib/ai/system-prompt';
+import { detectContentCreationIntent } from '@/lib/ai/content-detection';
+import { getContentCreationContext } from '@/lib/ai/identity-context';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -464,12 +466,33 @@ INSTRUCTION: When the user asks about their projects, deals, or clients, use thi
       chatLogger.warn('[Projects] No projects found for user');
     }
 
+    // Extract user text FIRST (needed for content detection and embedding)
+    const lastUserMessage = messages[messages.length - 1];
+    let userText = '';
+    if (lastUserMessage && Array.isArray(lastUserMessage.parts)) {
+      userText = lastUserMessage.parts
+        .filter(p => p.type === 'text')
+        .map(p => p.text)
+        .join(' ');
+    }
+
+    // M3.9-Identity: Detect content creation intent and fetch identity context
+    let identityContext: string | null = null;
+    if (userText && detectContentCreationIntent(userText)) {
+      chatLogger.info('[Identity] Content creation detected, fetching voice & tone guide');
+      identityContext = await getContentCreationContext();
+      if (identityContext) {
+        chatLogger.info('[Identity] Voice & tone guide loaded', { length: identityContext.length });
+      }
+    }
+
     // Build comprehensive system prompt (based on official Claude system prompt)
     // Reference: https://platform.claude.com/docs/en/release-notes/system-prompts
     let systemPrompt = buildSystemPrompt({
       customInstructions: customInstructions || undefined,
       userProfileContext: userProfileContext || undefined,
       userMemoryContext: userMemoryContext || undefined,
+      identityContext: identityContext || undefined,
     });
 
     // Add projects overview to system prompt
@@ -483,16 +506,6 @@ INSTRUCTION: When the user asks about their projects, deals, or clients, use thi
     let projectContext: ProjectContext | null = null;
     let projectName = '';
     let queryEmbedding: number[] | null = null;
-
-    // Extract user text for embedding
-    const lastUserMessage = messages[messages.length - 1];
-    let userText = '';
-    if (lastUserMessage && Array.isArray(lastUserMessage.parts)) {
-      userText = lastUserMessage.parts
-        .filter(p => p.type === 'text')
-        .map(p => p.text)
-        .join(' ');
-    }
 
     // Run project context loading and embedding generation in parallel
     const [projectContextResult, embeddingResult] = await Promise.all([

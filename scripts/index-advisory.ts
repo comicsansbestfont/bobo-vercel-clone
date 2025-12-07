@@ -46,7 +46,7 @@ interface AdvisoryFile {
   filepath: string;
   filename: string;
   content: string;
-  entityType: 'deal' | 'client';
+  entityType: 'deal' | 'client' | 'identity';
   entityName: string;
   fileSize: number;
 }
@@ -65,8 +65,9 @@ async function generateEmbedding(text: string): Promise<number[]> {
 /**
  * Parse entity info from file path
  * e.g., advisory/deals/MyTab/master-doc-mytab.md -> { entityType: 'deal', entityName: 'MyTab' }
+ * e.g., advisory/identity/Sachee/CORE_PROFILE.md -> { entityType: 'identity', entityName: 'Sachee' }
  */
-function parseFilePath(filepath: string): { entityType: 'deal' | 'client'; entityName: string } {
+function parseFilePath(filepath: string): { entityType: 'deal' | 'client' | 'identity'; entityName: string } {
   const parts = filepath.split(path.sep);
   const advisoryIdx = parts.findIndex(p => p === 'advisory');
 
@@ -74,11 +75,20 @@ function parseFilePath(filepath: string): { entityType: 'deal' | 'client'; entit
     return { entityType: 'deal', entityName: 'unknown' };
   }
 
-  const typeFolder = parts[advisoryIdx + 1]; // 'deals' or 'clients'
-  const entityName = parts[advisoryIdx + 2]; // Company name
+  const typeFolder = parts[advisoryIdx + 1]; // 'deals', 'clients', or 'identity'
+  const entityName = parts[advisoryIdx + 2]; // Company/person name
+
+  let entityType: 'deal' | 'client' | 'identity';
+  if (typeFolder === 'clients') {
+    entityType = 'client';
+  } else if (typeFolder === 'identity') {
+    entityType = 'identity';
+  } else {
+    entityType = 'deal';
+  }
 
   return {
-    entityType: typeFolder === 'clients' ? 'client' : 'deal',
+    entityType,
     entityName,
   };
 }

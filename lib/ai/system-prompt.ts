@@ -118,8 +118,9 @@ export function buildSystemPrompt(options: {
   customInstructions?: string;
   userProfileContext?: string;
   userMemoryContext?: string;
+  identityContext?: string;
 }): string {
-  const { customInstructions, userProfileContext, userMemoryContext } = options;
+  const { customInstructions, userProfileContext, userMemoryContext, identityContext } = options;
 
   let prompt = BOBO_SYSTEM_PROMPT;
 
@@ -135,6 +136,11 @@ export function buildSystemPrompt(options: {
 
   if (userMemoryContext) {
     prompt += userMemoryContext;
+  }
+
+  // Add identity context (for content creation - voice & tone guide)
+  if (identityContext) {
+    prompt += identityContext;
   }
 
   return prompt;

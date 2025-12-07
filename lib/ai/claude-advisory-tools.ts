@@ -50,8 +50,8 @@ EXAMPLES:
         },
         entity_type: {
           type: 'string',
-          enum: ['deal', 'client', 'all'],
-          description: 'Filter by entity type: deal, client, or all (default: all)',
+          enum: ['deal', 'client', 'identity', 'all'],
+          description: 'Filter by entity type: deal, client, identity, or all (default: all)',
         },
         entity_name: {
           type: 'string',
@@ -121,8 +121,8 @@ EXAMPLES:
       properties: {
         entity_type: {
           type: 'string',
-          enum: ['deal', 'client'],
-          description: 'Type of entity: deal or client',
+          enum: ['deal', 'client', 'identity'],
+          description: 'Type of entity: deal, client, or identity',
         },
         entity_name: {
           type: 'string',
@@ -165,7 +165,7 @@ EXAMPLES:
         },
         entity_type: {
           type: 'string',
-          enum: ['deal', 'client', 'all'],
+          enum: ['deal', 'client', 'identity', 'all'],
           description: 'Filter by entity type (default: all)',
         },
         entity_name: {
@@ -211,7 +211,7 @@ EXAMPLES:
         },
         entity_type: {
           type: 'string',
-          enum: ['deal', 'client', 'all'],
+          enum: ['deal', 'client', 'identity', 'all'],
           description: 'Filter by entity type (default: all)',
         },
         entity_name: {
@@ -271,7 +271,7 @@ export async function executeAdvisoryTool(
 
 type SearchAdvisoryInput = {
   query: string;
-  entity_type?: 'deal' | 'client' | 'all';
+  entity_type?: 'deal' | 'client' | 'identity' | 'all';
   entity_name?: string;
   limit?: number;
 };
@@ -397,7 +397,7 @@ async function readAdvisoryFile(input: Record<string, unknown>): Promise<string>
 }
 
 type ListAdvisoryFolderInput = {
-  entity_type: 'deal' | 'client';
+  entity_type: 'deal' | 'client' | 'identity';
   entity_name: string;
   subfolder?: string;
 };
@@ -406,7 +406,7 @@ async function listAdvisoryFolder(input: Record<string, unknown>): Promise<strin
   const { entity_type, entity_name, subfolder } = input as ListAdvisoryFolderInput;
 
   // Map entity type to folder
-  const typeFolder = entity_type === 'deal' ? 'deals' : 'clients';
+  const typeFolder = entity_type === 'deal' ? 'deals' : entity_type === 'client' ? 'clients' : 'identity';
   let targetPath = join(process.cwd(), 'advisory', typeFolder, entity_name);
 
   if (subfolder) {
@@ -475,7 +475,7 @@ async function listAdvisoryFolder(input: Record<string, unknown>): Promise<strin
 
 type GlobAdvisoryInput = {
   pattern: string;
-  entity_type?: 'deal' | 'client' | 'all';
+  entity_type?: 'deal' | 'client' | 'identity' | 'all';
   entity_name?: string;
 };
 
@@ -496,7 +496,7 @@ async function globAdvisory(input: Record<string, unknown>): Promise<string> {
   type MatchedFile = {
     name: string;
     path: string;
-    entity_type: 'deal' | 'client';
+    entity_type: 'deal' | 'client' | 'identity';
     entity_name: string;
     size: number;
   };
@@ -505,16 +505,19 @@ async function globAdvisory(input: Record<string, unknown>): Promise<string> {
   const advisoryRoot = join(process.cwd(), 'advisory');
 
   // Determine which folders to search
-  const typeFolders: Array<{ type: 'deal' | 'client'; folder: string }> = [];
+  const typeFolders: Array<{ type: 'deal' | 'client' | 'identity'; folder: string }> = [];
   if (entity_type === 'all' || entity_type === 'deal') {
     typeFolders.push({ type: 'deal', folder: 'deals' });
   }
   if (entity_type === 'all' || entity_type === 'client') {
     typeFolders.push({ type: 'client', folder: 'clients' });
   }
+  if (entity_type === 'all' || entity_type === 'identity') {
+    typeFolders.push({ type: 'identity', folder: 'identity' });
+  }
 
   // Recursive function to search directories
-  function searchDirectory(dir: string, entityType: 'deal' | 'client', entityName: string) {
+  function searchDirectory(dir: string, entityType: 'deal' | 'client' | 'identity', entityName: string) {
     if (!existsSync(dir)) return;
 
     const entries = readdirSync(dir);
@@ -578,14 +581,14 @@ async function globAdvisory(input: Record<string, unknown>): Promise<string> {
 
 type GrepAdvisoryInput = {
   pattern: string;
-  entity_type?: 'deal' | 'client' | 'all';
+  entity_type?: 'deal' | 'client' | 'identity' | 'all';
   entity_name?: string;
   subfolder?: string;
 };
 
 type GrepMatch = {
   file: string;
-  entity_type: 'deal' | 'client';
+  entity_type: 'deal' | 'client' | 'identity';
   entity_name: string;
   matches: Array<{
     line_number: number;
@@ -610,18 +613,21 @@ async function grepAdvisory(input: Record<string, unknown>): Promise<string> {
   const advisoryRoot = join(process.cwd(), 'advisory');
 
   // Determine which folders to search
-  const typeFolders: Array<{ type: 'deal' | 'client'; folder: string }> = [];
+  const typeFolders: Array<{ type: 'deal' | 'client' | 'identity'; folder: string }> = [];
   if (entity_type === 'all' || entity_type === 'deal') {
     typeFolders.push({ type: 'deal', folder: 'deals' });
   }
   if (entity_type === 'all' || entity_type === 'client') {
     typeFolders.push({ type: 'client', folder: 'clients' });
   }
+  if (entity_type === 'all' || entity_type === 'identity') {
+    typeFolders.push({ type: 'identity', folder: 'identity' });
+  }
 
   // Search function for a single file
   async function searchFile(
     filePath: string,
-    entityType: 'deal' | 'client',
+    entityType: 'deal' | 'client' | 'identity',
     entityName: string
   ): Promise<GrepMatch | null> {
     try {
@@ -657,7 +663,7 @@ async function grepAdvisory(input: Record<string, unknown>): Promise<string> {
   // Recursive function to search directories
   async function searchDirectory(
     dir: string,
-    entityType: 'deal' | 'client',
+    entityType: 'deal' | 'client' | 'identity',
     entityName: string
   ): Promise<void> {
     if (!existsSync(dir)) return;

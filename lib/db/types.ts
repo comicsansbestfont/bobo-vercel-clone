@@ -9,7 +9,8 @@
 export const ADVISORY_PROJECT_ID = '11111111-1111-1111-1111-111111111111';
 
 // M38: Entity types for project categorization
-export type EntityType = 'deal' | 'client' | 'personal';
+// M39: Added 'identity' for personal identity documents
+export type EntityType = 'deal' | 'client' | 'personal' | 'identity';
 
 /**
  * Message content structure matching Vercel AI SDK UIMessage format

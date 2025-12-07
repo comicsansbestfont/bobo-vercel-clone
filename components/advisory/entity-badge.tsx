@@ -8,7 +8,7 @@
  * M38: Advisory Project Integration
  */
 
-import { Building2, Users, FolderOpen } from 'lucide-react';
+import { Building2, Users, FolderOpen, UserCircle } from 'lucide-react';
 import type { EntityType } from '@/lib/db/types';
 
 interface EntityBadgeProps {
@@ -40,6 +40,12 @@ const config: Record<EntityType, {
     bgColor: 'bg-neutral-100 dark:bg-neutral-800',
     textColor: 'text-neutral-600 dark:text-neutral-400',
     icon: FolderOpen,
+  },
+  identity: {
+    label: 'Identity',
+    bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+    textColor: 'text-purple-700 dark:text-purple-300',
+    icon: UserCircle,
   },
 };
 
