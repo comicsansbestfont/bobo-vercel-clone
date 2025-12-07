@@ -2,7 +2,7 @@
  * Advisory Summarizer
  *
  * Generates AI summaries from master docs for project instructions.
- * Uses Gemini Flash via AI Gateway for cost efficiency.
+ * Uses Gemini 3.0 Pro via AI Gateway.
  *
  * M38: Advisory Project Integration
  */
@@ -31,7 +31,7 @@ export async function generateSummary(
 ): Promise<string> {
   try {
     const { text } = await generateText({
-      model: getModel('google/gemini-2.0-flash'),
+      model: getModel('google/gemini-3.0-pro'),
       system: SUMMARY_PROMPT,
       prompt: `Entity Type: ${entityType}
 Company: ${masterDoc.frontmatter.company || 'Unknown'}
