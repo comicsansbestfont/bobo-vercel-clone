@@ -1,9 +1,15 @@
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
 
+const isVercel = process.env.VERCEL === "1";
+const disablePWA =
+  process.env.DISABLE_PWA === "true" ||
+  process.env.NODE_ENV === "development" ||
+  isVercel; // disable on Vercel to avoid SW build/minify overhead; override with DISABLE_PWA=false locally
+
 const withPWA = withPWAInit({
   dest: "public",
-  disable: process.env.NODE_ENV === "development",
+  disable: disablePWA,
   register: true,
   skipWaiting: true,
 });

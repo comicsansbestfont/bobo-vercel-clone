@@ -8,6 +8,11 @@
 
 ## ✨ Latest Work (Nov 29, 2025 - BLOCKER RESOLUTION SESSION)
 
+**Session (Dec 07, 2025):**
+- 🛠️ Shortened Vercel build path by removing `.next` purge from `vercel.json` build command (enables cache reuse)
+- 🛡️ Default-disabled PWA on Vercel (and via `DISABLE_PWA=true`) to avoid SW minify overhead; local PWA stays enabled unless overridden
+- 🚧 Build verification in sandbox blocked by DNS to fonts.googleapis.com (next/font Geist fetch); needs network access or cached fonts to confirm locally
+
 ### Critical Blocker Resolution ✅
 
 **All P0 blockers from Nov 28 have been fully resolved:**

@@ -420,20 +420,38 @@ export async function POST(req: Request) {
       }
     }
 
-    // Build projects overview context
+    // Build projects overview context with summaries
     chatLogger.info('[Projects] Fetched projects for context:', { count: allProjects.length, names: allProjects.map(p => p.name) });
     if (allProjects.length > 0) {
-      const projectsList = allProjects.map(p => {
+      // Build detailed project briefings
+      const projectBriefings = allProjects.map(p => {
         const type = p.entity_type === 'deal' ? '📊 Deal' : p.entity_type === 'client' ? '👥 Client' : '📁 Project';
-        const desc = p.description ? ` - ${p.description}` : '';
-        return `- ${type}: ${p.name}${desc}`;
-      }).join('\n');
+
+        // Include custom_instructions (AI summary) if available, truncated to ~500 chars for context efficiency
+        let summary = '';
+        if (p.custom_instructions) {
+          // Extract first ~500 chars but try to end at a sentence boundary
+          const truncated = p.custom_instructions.substring(0, 600);
+          const lastSentence = truncated.lastIndexOf('.');
+          summary = lastSentence > 200 ? truncated.substring(0, lastSentence + 1) : truncated;
+          if (summary.length < p.custom_instructions.length) {
+            summary += '...';
+          }
+        } else if (p.description) {
+          summary = p.description;
+        }
+
+        return `#### ${type}: ${p.name}
+${summary}`;
+      }).join('\n\n');
 
       projectsOverviewContext = `\n\n### YOUR PROJECTS
-You have ${allProjects.length} project${allProjects.length === 1 ? '' : 's'}:
-${projectsList}
+You have ${allProjects.length} project${allProjects.length === 1 ? '' : 's'}. Here is your briefing on each:
 
-When the user asks about their projects, you can reference this list. Each project may have its own context and files that become available when chatting within that specific project.`;
+${projectBriefings}
+
+---
+INSTRUCTION: When the user asks about their projects, deals, or clients, use this briefing to provide informed answers. You know the key details about each project including company snapshots, status, and red flags.`;
       chatLogger.debug('[Projects] Built overview context:', { length: projectsOverviewContext.length });
     } else {
       chatLogger.warn('[Projects] No projects found for user');
