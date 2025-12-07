@@ -3,9 +3,15 @@
  * M3.5-6: Added Memory Tools Configuration
  *
  * Defines which tools are available and their descriptions.
+ *
+ * NOTE: Agent SDK is disabled in Vercel deployments. These configs are
+ * retained for local development compatibility.
  */
 
-import type { Options as AgentOptions } from '@anthropic-ai/claude-agent-sdk';
+// Stub type to replace SDK import
+type AgentOptions = {
+  allowedTools?: string[];
+};
 
 /**
  * Default tool configuration - read-only tools auto-approved

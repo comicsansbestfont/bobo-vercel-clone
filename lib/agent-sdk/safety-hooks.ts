@@ -1,21 +1,16 @@
 /**
  * M4-10: Safety Hooks for Agent SDK
  *
- * PreToolUse hooks that block dangerous commands and protect sensitive files.
- *
- * M4-11: Fixed path traversal vulnerability by using path.resolve() instead
- * of string prefix matching to properly canonicalize paths.
+ * DISABLED: Agent SDK is not available in Vercel deployments.
+ * These utility functions are retained for potential local development use.
  */
 
-import type {
-  Options as AgentOptions,
-  HookCallback,
-  PreToolUseHookInput,
-  SyncHookJSONOutput,
-} from '@anthropic-ai/claude-agent-sdk';
 import { chatLogger } from '@/lib/logger';
 import path from 'path';
 import fs from 'fs';
+
+// Stub types to replace SDK imports
+type HookInput = Record<string, unknown>;
 
 /**
  * Dangerous bash command patterns that should always be blocked
@@ -33,31 +28,6 @@ const BLOCKED_BASH_PATTERNS: RegExp[] = [
   /curl.*\|\s*sh/,               // download and execute
   />\s*\/etc\//,                 // write to /etc
   /rm\s+.*\/\*/,                 // rm with wildcards at root level
-];
-
-/**
- * Safe bash commands that can be auto-approved
- */
-const SAFE_BASH_COMMANDS = [
-  'ls',
-  'pwd',
-  'cat',
-  'head',
-  'tail',
-  'echo',
-  'which',
-  'npm list',
-  'npm run',
-  'npm test',
-  'npm run build',
-  'npm run dev',
-  'git status',
-  'git log',
-  'git diff',
-  'git branch',
-  'node --version',
-  'npm --version',
-  'npx tsc --noEmit',
 ];
 
 /**
@@ -84,13 +54,10 @@ const PROTECTED_DIRECTORIES = [
   'build/',
 ];
 
-// Type for hook input - using a flexible type since SDK types may vary
-type HookInput = Record<string, unknown>;
-
 /**
  * Bash safety hook - blocks dangerous commands
  */
-function checkBashSafety(input: HookInput): { allowed: boolean; reason?: string } {
+export function checkBashSafety(input: HookInput): { allowed: boolean; reason?: string } {
   const command = String(input.command || '');
 
   // Check for blocked patterns
@@ -104,24 +71,13 @@ function checkBashSafety(input: HookInput): { allowed: boolean; reason?: string 
     }
   }
 
-  // Auto-approve safe commands
-  for (const safeCmd of SAFE_BASH_COMMANDS) {
-    if (command.startsWith(safeCmd)) {
-      return { allowed: true };
-    }
-  }
-
-  // Everything else needs user confirmation (handled by permission mode)
   return { allowed: true };
 }
 
 /**
  * File write safety hook - prevents writes to protected files/directories
- *
- * M4-11: Uses path.resolve() to canonicalize paths and prevent path traversal
- * attacks using ".." sequences. Also handles symlink resolution.
  */
-function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string } {
+export function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string } {
   const rawFilePath = String(input.file_path || input.path || '');
   const cwd = process.cwd();
 
@@ -131,7 +87,6 @@ function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string
   // Use realpath for symlink resolution (if parent directory exists)
   let canonicalPath = resolvedPath;
   try {
-    // Check parent directory to handle new files in existing directories
     const parentDir = path.dirname(resolvedPath);
     if (fs.existsSync(parentDir)) {
       const resolvedParent = fs.realpathSync(parentDir);
@@ -142,23 +97,17 @@ function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string
   }
 
   // Check if canonical path is within project directory
-  // Must be either exactly cwd or start with cwd + separator
   if (canonicalPath !== cwd && !canonicalPath.startsWith(cwd + path.sep)) {
-    chatLogger.warn('Blocked write outside project (path traversal attempt):', {
-      rawPath: rawFilePath,
-      canonicalPath,
-      cwd,
-    });
+    chatLogger.warn('Blocked write outside project:', { rawPath: rawFilePath, canonicalPath, cwd });
     return {
       allowed: false,
       reason: `Cannot write outside project directory`,
     };
   }
 
-  // Block writes to protected files (check against canonical path)
+  // Block writes to protected files
   for (const protectedFile of PROTECTED_FILES) {
     if (canonicalPath.endsWith(protectedFile) || canonicalPath.includes(`${path.sep}${protectedFile}`)) {
-      chatLogger.warn('Blocked write to protected file:', { canonicalPath, protectedFile });
       return {
         allowed: false,
         reason: `Cannot modify protected file: ${protectedFile}`,
@@ -166,13 +115,11 @@ function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string
     }
   }
 
-  // Block writes to protected directories (check against canonical path)
+  // Block writes to protected directories
   for (const protectedDir of PROTECTED_DIRECTORIES) {
-    // Remove trailing slash for consistent checking
     const dirName = protectedDir.replace(/\/$/, '');
     if (canonicalPath.includes(`${path.sep}${dirName}${path.sep}`) ||
         canonicalPath.endsWith(`${path.sep}${dirName}`)) {
-      chatLogger.warn('Blocked write to protected directory:', { canonicalPath, protectedDir });
       return {
         allowed: false,
         reason: `Cannot write to protected directory: ${protectedDir}`,
@@ -184,8 +131,7 @@ function checkWriteSafety(input: HookInput): { allowed: boolean; reason?: string
 }
 
 /**
- * Custom permission handler for the Agent SDK
- * This is called before each tool use to determine if it should proceed
+ * Permission check function
  */
 export async function canUseTool(
   toolName: string,
@@ -194,76 +140,15 @@ export async function canUseTool(
   switch (toolName) {
     case 'Bash':
       return checkBashSafety(input);
-
     case 'Write':
     case 'Edit':
       return checkWriteSafety(input);
-
     default:
-      // All other tools (including memory tools) are checked in agent-handler
       return { allowed: true };
   }
 }
 
 /**
- * PreToolUse hook callback for blocking dangerous operations
- * Uses the SDK's HookCallback signature
- *
- * NOTE: Memory tools (update_memory, forget_memory) are NOT blocked here.
- * They are handled separately in the agent-handler with a custom approval flow.
+ * Safety hooks configuration - DISABLED (stub)
  */
-const preToolUseHook: HookCallback = async (
-  input,
-  _toolUseID,
-  _options
-): Promise<SyncHookJSONOutput> => {
-  // Type guard: only process PreToolUse events
-  if (input.hook_event_name !== 'PreToolUse') {
-    return {};
-  }
-
-  const preToolInput = input as PreToolUseHookInput;
-  const toolName = preToolInput.tool_name;
-  const toolInput = (preToolInput.tool_input as Record<string, unknown>) || {};
-
-  const result = await canUseTool(toolName, toolInput);
-
-  if (!result.allowed) {
-    chatLogger.warn('Tool blocked by safety hooks:', { toolName, reason: result.reason });
-    // Return block decision with reason
-    return {
-      decision: 'block',
-      reason: result.reason || 'Operation blocked by safety hooks',
-      hookSpecificOutput: {
-        hookEventName: 'PreToolUse',
-        permissionDecision: 'deny',
-        permissionDecisionReason: result.reason,
-      },
-    };
-  }
-
-  // Allow tool to proceed
-  return {
-    hookSpecificOutput: {
-      hookEventName: 'PreToolUse',
-      permissionDecision: 'allow',
-    },
-  };
-};
-
-/**
- * Safety hooks configuration for Agent SDK
- * Implements PreToolUse hook to block dangerous operations
- */
-export const SAFETY_HOOKS: AgentOptions['hooks'] = {
-  PreToolUse: [
-    {
-      hooks: [preToolUseHook],
-    },
-  ],
-};
-
-/**
- * Export the permission check function for use in agent handler
- */
-export { checkBashSafety, checkWriteSafety };
+export const SAFETY_HOOKS = {};
