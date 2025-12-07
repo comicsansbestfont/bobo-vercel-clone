@@ -1,6 +1,5 @@
 {
   "buildCommand": "npm run build",
-  "functions": {},
   "crons": [
     {
       "path": "/api/cron/consolidate-memories",
