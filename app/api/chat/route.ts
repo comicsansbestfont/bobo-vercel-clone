@@ -21,6 +21,7 @@ import {
   updateChat,
   getChat,
   getProject,
+  getProjects,
   getMessages,
   deleteMessage,
   getUserProfile,
@@ -30,6 +31,7 @@ import {
   type SearchResult,
   type Message,
   type ProjectMessageSearchResult,
+  type Project,
   getUserMemories,
   searchProjectMessages,
 } from '@/lib/db';
@@ -314,14 +316,15 @@ export async function POST(req: Request) {
       chatExists = true;
     }
 
-    // PARALLELIZED: Fetch chat, user profile, and memories concurrently
+    // PARALLELIZED: Fetch chat, user profile, memories, and projects concurrently
     // These are independent queries that don't depend on each other
     let customInstructions = '';
     let activeProjectId = projectId;
     let userProfileContext = '';
     let userMemoryContext = '';
+    let projectsOverviewContext = '';
 
-    const [chat, profile, memories] = await Promise.all([
+    const [chat, profile, memories, allProjects] = await Promise.all([
       getChat(activeChatId),
       getUserProfile().catch(err => {
         chatLogger.error('Failed to load user profile:', err);
@@ -330,6 +333,10 @@ export async function POST(req: Request) {
       getUserMemories({ relevance_threshold: 0.2, limit: 50 }).catch(err => {
         chatLogger.error('Failed to fetch user memories:', err);
         return [];
+      }),
+      getProjects().catch(err => {
+        chatLogger.error('Failed to fetch projects:', err);
+        return [] as Project[];
       }),
     ]);
 
@@ -396,6 +403,21 @@ export async function POST(req: Request) {
       }
     }
 
+    // Build projects overview context
+    if (allProjects.length > 0) {
+      const projectsList = allProjects.map(p => {
+        const type = p.entity_type === 'deal' ? '📊 Deal' : p.entity_type === 'client' ? '👥 Client' : '📁 Project';
+        const desc = p.description ? ` - ${p.description}` : '';
+        return `- ${type}: ${p.name}${desc}`;
+      }).join('\n');
+
+      projectsOverviewContext = `\n\n### YOUR PROJECTS
+You have ${allProjects.length} project${allProjects.length === 1 ? '' : 's'}:
+${projectsList}
+
+When the user asks about their projects, you can reference this list. Each project may have its own context and files that become available when chatting within that specific project.`;
+    }
+
     // Build comprehensive system prompt (based on official Claude system prompt)
     // Reference: https://platform.claude.com/docs/en/release-notes/system-prompts
     let systemPrompt = buildSystemPrompt({
@@ -403,6 +425,11 @@ export async function POST(req: Request) {
       userProfileContext: userProfileContext || undefined,
       userMemoryContext: userMemoryContext || undefined,
     });
+
+    // Add projects overview to system prompt
+    if (projectsOverviewContext) {
+      systemPrompt += projectsOverviewContext;
+    }
 
     // PARALLELIZED: Project context + embedding generation run concurrently
     // These are independent operations that don't depend on each other
