@@ -23,6 +23,7 @@
     "test:m37:db": "playwright test m37-advisory-database-validation",
     "test:m37:security": "playwright test m37-advisory-security",
     "test:validation": "playwright test --grep 'Validation Query'",
+    "test:sidebar": "npx tsx tests/e2e/sidebar-navigation-test.ts",
     "index-advisory": "npx tsx scripts/index-advisory.ts",
     "verify-advisory": "npx tsx scripts/verify-advisory-indexing.ts",
     "postbuild": "node scripts/ensure-next-lock.mjs"
@@ -69,7 +70,7 @@
     "gpt-tokenizer": "^3.4.0",
     "gray-matter": "^4.0.3",
     "jotai": "^2.15.1",
-    "jsdom": "^27.2.0",
+    "jsdom": "^24.1.3",
     "lucide-react": "^0.554.0",
     "motion": "^12.23.24",
     "nanoid": "^5.1.6",
@@ -96,9 +97,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ws": "^8.18.3"
   }
 }
