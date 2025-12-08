@@ -1,10 +1,19 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 7, 2025 (M3.7 Complete + M3.8 Ready)
+**Last Updated:** December 8, 2025 (M3.10 PAPR-Inspired Knowledge Graph added)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 8, 2025 Update:** 🧠 **M3.10 PAPR-INSPIRED KNOWLEDGE GRAPH ADDED**
+> - Research conducted on [PAPR AI](https://platform.papr.ai/) - #1 on Stanford's STaRK benchmark
+> - Key insight: PAPR's value comes from **knowledge graphs**, not prediction
+> - Added M3.10 milestone: Entity extraction, spreading activation, agent self-learning
+> - 4 sprints, 28.5 hours total (20 tasks)
+> - Tier 1 (HIGH VALUE): Entity relationships, spreading activation, agent self-learning
+> - Tier 2 (MEDIUM): Context pre-fetching (optional)
+> - Skipped: Predictive caching, ML models (over-engineered for advisory workflow)
 
 > **December 7, 2025 Update (PM):** 🗂️ **M3.7 REPOSITORY CONSOLIDATION COMPLETE + DATABASE CLEANED**
 > - M3.7 Sprint complete: 11/11 tasks done in 3.9h (70% faster than estimate)
@@ -61,7 +70,7 @@
 | **Milestones Complete** | 8 of 10 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8) |
 | **Tasks Complete** | 115 of 160 (72%) |
 | **Hours Invested** | ~110 hours actual |
-| **Hours Remaining** | ~80 hours (M3.6: 64h, M3.9: 15h future) |
+| **Hours Remaining** | ~108.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
 
@@ -129,6 +138,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.7: Repo Consolidation** | ✅ Complete | 11/11 | 13h | 3.9h | 333% | 43 advisory files, search_advisory tool, auto tool selection |
 | **M3.8: Advisory Projects** | ✅ Complete | 19/19 | 16h | ~8h | 200% | Project-per-deal, file-reference mode, AI summaries |
 | **M3.9: Advisory-Memory Integration** | 📝 Planned | 0/8 | 15h | - | - | Bidirectional advisory↔memory linking |
+| **M3.10: Knowledge Graph** | 📝 Planned | 0/20 | 28.5h | - | - | Entity extraction, spreading activation, agent self-learning |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -203,12 +213,15 @@ TOTALS        │ 126   │ 173h    │ 111h   │  -36%    │ 72% ✅
 | **AI Deal Summaries** | ✅ Live | M3.8 | Auto-generated custom_instructions from master docs |
 | **Entity Type Badges** | ✅ Live | M3.8 | Deal/Client/Personal project classification |
 | **Advisory-Memory Link** | 📝 Planned | M3.9 | Bidirectional relationship between files and memories |
+| **Entity Relationship Extraction** | 📝 Planned | M3.10 | Extract people, companies, deals from advisory files |
+| **Spreading Activation Search** | 📝 Planned | M3.10 | Graph traversal to surface related entities |
+| **Agent Self-Learning** | 📝 Planned | M3.10 | Claude records user preference observations |
+| **Knowledge Graph (PAPR-inspired)** | 📝 Planned | M3.10 | Entity relationships + multi-hop queries |
 | **Memory Provenance** | 📝 Planned | M3-04 | Source chat tracking |
 | **Memory Debugger** | 📝 Planned | M3-04 | "What was injected?" view |
 | **Description-Driven Extraction** | 📝 Planned | M3-04 | Letta-inspired guidance fields |
 | **Async Memory Extraction** | 📝 Planned | M3-04 | Non-blocking background processing |
 | **Living Documentation** | 📝 Deferred | M5 | Auto-updating project docs |
-| **Knowledge Graph** | 📝 Deferred | M5 | Fact extraction & queries |
 | **Multi-User Auth** | 📝 Not Planned | Future | OAuth, if SaaS pivot |
 
 ### Next Priorities
@@ -279,6 +292,20 @@ TOTALS        │ 126   │ 173h    │ 111h   │  -36%    │ 72% ✅
 ├─ Cross-reference: "See MyTab master doc for details"
 └─ Learnings from chats suggest advisory updates
 │
+📝 PLANNED: M3.10 PAPR-Inspired Knowledge Graph (28.5h) - NEW Dec 8
+├─ Research source: PAPR AI (STaRK benchmark #1)
+├─ Sprint 1: Entity extraction from advisory files (9h)
+│  ├─ entity_relationships table
+│  ├─ Claude extraction prompt (people, companies, deals)
+│  └─ Auto-extract on indexing
+├─ Sprint 2: Spreading activation search (8h)
+│  ├─ Graph traversal (1-hop, 2-hop)
+│  └─ Boost related entities in search results
+├─ Sprint 3: Agent self-learning memory (6h)
+│  ├─ learn_preference tool
+│  └─ Agent-inferred memories with faster decay
+└─ Sprint 4 (Optional): Context pre-fetching (5.5h)
+│
 LATER (After Dogfooding)
 ├─ M3.6 Sprints 2-5: Memory Safety, Graph, Consolidation
 ├─ M5: Cognitive Layer (Living docs, knowledge graph)
@@ -295,11 +322,13 @@ MAYBE (If SaaS Pivot)
 ## 📊 Backlog Priority Matrix
 
 ```
-Agent SDK (M4) ✅ → M3.5 ✅ → M3.6 (cognitive memory) → M3 Phase 4 → M5 → Future
-                           ────────────────────────
-                           📝 NEXT (Dec 2025 - Mar 2026)
-                           100h across 5 sprints
-                           Neuroscience-inspired memory architecture
+Agent SDK (M4) ✅ → M3.5 ✅ → M3.6 → M3.9 → M3.10 → M3 Phase 4 → M5 → Future
+                           ─────────────────────────────────────
+                           📝 NEXT (Dec 2025 - Q1 2026)
+                           ~108h across milestones
+                           M3.6: Neuroscience-inspired memory (64h)
+                           M3.9: Advisory-memory integration (15h)
+                           M3.10: PAPR-inspired knowledge graph (28.5h) ← NEW
 ```
 
 ---
@@ -1840,6 +1869,240 @@ After implementation, verify these queries work in Agent Mode:
 | Search returns irrelevant results | Medium | High | Tune similarity threshold, add filters |
 | Build time increases significantly | Low | Medium | Parallelize indexing, cache embeddings |
 | Vercel deployment size limit | Low | High | Exclude large files, use external storage |
+
+---
+
+## 🧠 MILESTONE 3.10: PAPR-Inspired Knowledge Graph (Research: Dec 8, 2025)
+
+**Status:** 📝 Planned
+**Target:** January-February 2026 (after M3.9)
+**Research Source:** [PAPR AI Platform](https://platform.papr.ai/) - Predictive Memory Graph architecture
+**Focus:** Entity relationship extraction, spreading activation search, agent self-learning
+**Rationale:** PAPR's #1 STaRK benchmark ranking comes from knowledge graphs, not just vector search. Key insight: relationships ARE the value for advisory work.
+
+### Strategic Analysis: What's Actually Useful from PAPR
+
+**PAPR's Core Innovation:** Predictive Memory Graph that maps real relationships between entities, enabling multi-hop reasoning (code → ticket → conversation → decision).
+
+**Key Insight for Bobo:** PAPR optimizes for speed/prediction (voice apps). Bobo optimizes for depth/accuracy (advisory work). Adopt the **relationship graph** without the ML prediction complexity.
+
+| PAPR Feature | Adopt? | Rationale |
+|--------------|--------|-----------|
+| Knowledge Graph with Entity Extraction | ✅ YES | Highest ROI - enables "What patterns across deals?" |
+| Spreading Activation Search | ✅ YES | Surfaces hidden connections automatically |
+| Agent Self-Learning Memory | ✅ YES | Claude learns user preferences over time |
+| Context-Aware Pre-fetching | 🟡 MAYBE | Nice-to-have, not critical for deliberate work |
+| Memory Consolidation | 🟡 MAYBE | Already partially in M3.6 Sprint 4 |
+| <100ms Predictive Caching | ❌ NO | Over-engineered for advisory workflow |
+| Full Predictive ML Model | ❌ NO | Adds complexity without clear ROI |
+
+### Sprint 1: Entity Extraction Foundation (8-10h)
+
+**Goal:** Extract entities (people, companies, deals) and their relationships from advisory files. Store as graph edges.
+
+| ID | Task | Priority | Estimate | Status | Notes |
+|----|------|----------|----------|--------|-------|
+| **M3.10-01** | Create `entity_relationships` table | 🔴 HIGH | 1h | ⏳ | source_entity, relationship_type, target_entity, confidence |
+| **M3.10-02** | Design entity extraction prompt for Claude | 🔴 HIGH | 2h | ⏳ | Extract people, companies, deals, relationships |
+| **M3.10-03** | Create `extractEntities()` function | 🔴 HIGH | 2h | ⏳ | Call Claude to parse file content |
+| **M3.10-04** | Run extraction on existing advisory files | 🔴 HIGH | 1h | ⏳ | Batch process 43 files |
+| **M3.10-05** | Add extraction to advisory indexing pipeline | 🟡 MED | 1h | ⏳ | Auto-extract on `npm run index-advisory` |
+| **M3.10-06** | Testing buffer | 🔴 HIGH | 2h | ⏳ | Sprint rule |
+
+**Sprint 1 Total:** 9h
+
+**Schema Design:**
+```sql
+CREATE TABLE entity_relationships (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_entity_type TEXT NOT NULL,  -- 'deal', 'person', 'company', 'document'
+  source_entity_id TEXT NOT NULL,    -- e.g., 'MyTab', 'John Smith'
+  relationship_type TEXT NOT NULL,   -- 'employs', 'invested_in', 'related_to', 'mentioned_in', 'previously_at'
+  target_entity_type TEXT NOT NULL,
+  target_entity_id TEXT NOT NULL,
+  confidence FLOAT DEFAULT 0.8,
+  extracted_from UUID REFERENCES files(id),
+  metadata JSONB,                    -- Additional context
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_entity_source ON entity_relationships(source_entity_type, source_entity_id);
+CREATE INDEX idx_entity_target ON entity_relationships(target_entity_type, target_entity_id);
+```
+
+**Example Relationships:**
+```
+MyTab (deal) --employs--> John Smith (person)
+John Smith (person) --previously_at--> SwiftCheckin (company)
+SwiftCheckin (company) --related_to--> SwiftCheckin Deal (deal)
+MyTab (deal) --has_investor--> VC Firm X (company)
+```
+
+**Definition of Done:**
+- [ ] `entity_relationships` table exists with indexes
+- [ ] Claude extraction prompt identifies: people, companies, deals, relationship types
+- [ ] All 43 advisory files have entities extracted
+- [ ] Entities stored with confidence scores
+- [ ] Extraction runs automatically during indexing
+
+### Sprint 2: Spreading Activation Search (6-8h)
+
+**Goal:** When searching, automatically surface related entities via graph traversal.
+
+| ID | Task | Priority | Estimate | Status | Notes |
+|----|------|----------|----------|--------|-------|
+| **M3.10-07** | Create `getRelatedEntities(entityId, hops)` function | 🔴 HIGH | 2h | ⏳ | 1-hop and 2-hop traversal |
+| **M3.10-08** | Create `spreadingActivationSearch` RPC | 🔴 HIGH | 2h | ⏳ | Combine vector search + graph boost |
+| **M3.10-09** | Modify hybrid_search to boost related entities | 🟡 MED | 1h | ⏳ | Optional `boost_entities` parameter |
+| **M3.10-10** | Update context injection to include relationships | 🟡 MED | 1h | ⏳ | Show "Related: Person X (previously at Company Y)" |
+| **M3.10-11** | Testing buffer | 🔴 HIGH | 2h | ⏳ | Sprint rule |
+
+**Sprint 2 Total:** 8h
+
+**Algorithm:**
+```typescript
+async function spreadingActivationSearch(query: string, startEntity?: string) {
+  // 1. Standard hybrid search
+  const baseResults = await hybridSearch(query);
+
+  // 2. If entity detected, find related entities (1-hop)
+  if (startEntity) {
+    const related = await getRelatedEntities(startEntity, hops: 1);
+
+    // 3. Boost scores for results mentioning related entities
+    for (const result of baseResults) {
+      if (related.some(r => result.content.includes(r.entity_id))) {
+        result.score *= 1.2; // 20% boost for related entities
+      }
+    }
+  }
+
+  // 4. Optionally expand to 2-hop for high-confidence relations
+  const secondaryEntities = related
+    .filter(r => r.confidence > 0.8)
+    .flatMap(r => getRelatedEntities(r.entity_id, hops: 1));
+
+  return { results: baseResults, relatedEntities: related };
+}
+```
+
+**Definition of Done:**
+- [ ] `getRelatedEntities()` returns 1-hop and 2-hop neighbors
+- [ ] Search for "MyTab" also surfaces related people and companies
+- [ ] Related entities shown in context injection
+- [ ] Graph traversal completes in <200ms
+
+### Sprint 3: Agent Self-Learning Memory (4-6h)
+
+**Goal:** Let Claude record observations about user preferences and patterns.
+
+| ID | Task | Priority | Estimate | Status | Notes |
+|----|------|----------|----------|--------|-------|
+| **M3.10-12** | Add `memory_source` column to memory_entries | 🔴 HIGH | 0.5h | ⏳ | 'user_stated', 'agent_inferred', 'system_derived' |
+| **M3.10-13** | Create `learn_preference` agent tool | 🔴 HIGH | 2h | ⏳ | Agent records observations |
+| **M3.10-14** | Add confirmation workflow for agent-inferred memories | 🟡 MED | 1.5h | ⏳ | "I noticed X. Should I remember this?" |
+| **M3.10-15** | Set decay rules for unconfirmed inferences | 🟡 MED | 1h | ⏳ | Faster decay if never confirmed |
+| **M3.10-16** | Testing buffer | 🔴 HIGH | 1h | ⏳ | Sprint rule |
+
+**Sprint 3 Total:** 6h
+
+**Tool Design:**
+```typescript
+const learnPreferenceTool = {
+  name: 'learn_preference',
+  description: 'Record an observation about user preferences or work patterns',
+  parameters: {
+    observation: string,      // "User prefers bullet points over paragraphs"
+    confidence: number,       // 0.3-0.7 for agent-inferred
+    evidence: string,         // "User asked for bullets in last 3 responses"
+    category: string          // 'communication_style', 'workflow', 'priorities'
+  }
+};
+```
+
+**Agent-Inferred Memory Rules:**
+- Initial confidence: 0.5 (vs 0.9 for user-stated)
+- Decay rate: 2x faster than normal (22-day half-life vs 45-day)
+- Strengthening: User confirmation bumps confidence to 0.85
+- Examples:
+  - "User always asks about red flags first when reviewing deals"
+  - "User prefers meeting prep in format: Summary → Key People → Questions"
+  - "User's investment thesis focuses on B2B SaaS"
+
+**Definition of Done:**
+- [ ] `memory_source` column distinguishes user vs agent memories
+- [ ] `learn_preference` tool available in agent mode
+- [ ] Agent-inferred memories have lower initial confidence
+- [ ] Unconfirmed inferences decay faster
+- [ ] User can confirm/reject agent observations
+
+### Sprint 4: Context-Aware Pre-fetching (Optional - 4-6h)
+
+**Goal:** Pre-load related context when user switches projects.
+
+| ID | Task | Priority | Estimate | Status | Notes |
+|----|------|----------|----------|--------|-------|
+| **M3.10-17** | Create `onProjectSwitch` pre-fetch hook | 🟢 LOW | 2h | ⏳ | Fire when project changes |
+| **M3.10-18** | Pre-fetch related entities for deals | 🟢 LOW | 1.5h | ⏳ | People, related deals, companies |
+| **M3.10-19** | Cache pre-fetched context | 🟢 LOW | 1h | ⏳ | 5-minute TTL |
+| **M3.10-20** | Testing buffer | 🟢 LOW | 1h | ⏳ | Sprint rule |
+
+**Sprint 4 Total:** 5.5h (OPTIONAL)
+
+**Definition of Done:**
+- [ ] Switching to deal project pre-fetches related entities
+- [ ] Pre-fetched context available for immediate injection
+- [ ] Cache invalidates on entity relationship changes
+
+### M3.10 Success Criteria
+
+- [ ] Asking "Brief me on MyTab" also surfaces related people and their other involvements
+- [ ] Cross-deal patterns discoverable: "What deals involve people who worked together?"
+- [ ] Agent learns user preferences without explicit instruction
+- [ ] Graph queries complete in <200ms
+- [ ] No significant increase in chat latency (<500ms total)
+
+### M3.10 Milestone Totals
+
+| Sprint | Focus | Hours | Status |
+|--------|-------|-------|--------|
+| Sprint 1 | Entity Extraction | 9h | ⏳ Planned |
+| Sprint 2 | Spreading Activation | 8h | ⏳ Planned |
+| Sprint 3 | Agent Self-Learning | 6h | ⏳ Planned |
+| Sprint 4 | Pre-fetching (Optional) | 5.5h | ⏳ Optional |
+| **Total** | | **28.5h** | |
+
+### Validation Queries (Success Criteria)
+
+| Query | Expected Behavior (with Knowledge Graph) |
+|-------|------------------------------------------|
+| "Brief me on MyTab" | Returns master doc + related people + their other involvements |
+| "Who from SwiftCheckin is involved in other deals?" | Graph traversal finds people at SwiftCheckin → their other connections |
+| "What patterns exist across deals with red flags?" | Cross-entity analysis of red flag sections |
+| "What's my preferred meeting prep format?" | Agent-inferred memory from past interactions |
+| "Find deals connected through common investors" | Multi-hop graph query: Deal → Investor → Other Deals |
+
+### Files to Create/Modify
+
+**New Files:**
+- `supabase/migrations/YYYYMMDD_entity_relationships.sql` - Graph schema
+- `lib/knowledge-graph/extract.ts` - Entity extraction
+- `lib/knowledge-graph/traverse.ts` - Graph traversal
+- `lib/knowledge-graph/search.ts` - Spreading activation
+- `lib/agent-sdk/self-learning-tools.ts` - learn_preference tool
+
+**Modified Files:**
+- `lib/db/types.ts` - Add EntityRelationship types
+- `lib/db/queries.ts` - Add graph query functions
+- `lib/agent-sdk/server.ts` - Register new tools
+- `scripts/index-advisory.ts` - Add entity extraction step
+- `app/api/chat/route.ts` - Inject related entities in context
+
+### Research References
+
+- [PAPR AI Platform](https://platform.papr.ai/) - Predictive Memory Graph architecture
+- [STaRK Benchmark](https://arxiv.org/html/2404.13207v1) - Semi-structured retrieval evaluation
+- [PAPR TypeScript SDK](https://github.com/Papr-ai/papr-TypescriptSDK) - API patterns
 
 ---
 
