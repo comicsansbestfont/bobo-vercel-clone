@@ -3,6 +3,8 @@
  *
  * Tool definitions and executors for searching and reading advisory files.
  * Uses Claude's native tool_use format.
+ *
+ * M3.10: Added fetch_url tool for external weblink access.
  */
 
 import type { Tool } from '@anthropic-ai/sdk/resources/messages';
@@ -13,6 +15,8 @@ import { generateEmbedding } from '@/lib/ai/embedding';
 import { supabase } from '@/lib/db/client';
 import { ADVISORY_PROJECT_ID } from '@/lib/db/types';
 import { chatLogger } from '@/lib/logger';
+import { JSDOM } from 'jsdom';
+import { Readability } from '@mozilla/readability';
 
 // ============================================================================
 // Tool Definitions
@@ -729,6 +733,182 @@ async function grepAdvisory(input: Record<string, unknown>): Promise<string> {
   });
 }
 
+type FetchUrlInput = {
+  url: string;
+};
+
+/**
+ * Fetch content from an external URL
+ * M3.10: External weblink access tool
+ */
+async function fetchUrl(input: Record<string, unknown>): Promise<string> {
+  const { url } = input as FetchUrlInput;
+
+  chatLogger.info(`[fetch_url] Fetching: ${url}`);
+
+  // Validate URL
+  if (!url || typeof url !== 'string') {
+    return JSON.stringify({ success: false, error: 'URL is required' });
+  }
+
+  // Must be http or https
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return JSON.stringify({
+      success: false,
+      error: 'URL must start with http:// or https://',
+    });
+  }
+
+  // Parse URL to validate it
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    return JSON.stringify({ success: false, error: 'Invalid URL format' });
+  }
+
+  // Block localhost and private IPs (SSRF protection)
+  const hostname = parsedUrl.hostname.toLowerCase();
+  if (
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname.startsWith('192.168.') ||
+    hostname.startsWith('10.') ||
+    hostname.startsWith('172.16.') ||
+    hostname.endsWith('.local')
+  ) {
+    return JSON.stringify({
+      success: false,
+      error: 'Cannot fetch from localhost or private networks',
+    });
+  }
+
+  try {
+    // Fetch with timeout and reasonable headers
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'BoboBot/1.0 (AI Assistant; +https://bobo.ai)',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,text/plain;q=0.8,*/*;q=0.7',
+        'Accept-Language': 'en-US,en;q=0.5',
+      },
+      signal: controller.signal,
+      redirect: 'follow',
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      return JSON.stringify({
+        success: false,
+        error: `HTTP ${response.status}: ${response.statusText}`,
+        url: response.url,
+      });
+    }
+
+    // Get content type
+    const contentType = response.headers.get('content-type') || '';
+    const isHtml = contentType.includes('text/html') || contentType.includes('application/xhtml');
+    const isText = contentType.includes('text/') || contentType.includes('application/json');
+
+    // Read response body
+    const rawText = await response.text();
+
+    // Limit raw content size
+    const maxRawSize = 500000; // 500KB max raw
+    if (rawText.length > maxRawSize) {
+      chatLogger.warn(`[fetch_url] Content too large: ${rawText.length} chars`);
+    }
+
+    let extractedContent: string;
+    let title: string | null = null;
+
+    if (isHtml) {
+      // Parse HTML and extract readable content
+      try {
+        const dom = new JSDOM(rawText, { url: response.url });
+        const reader = new Readability(dom.window.document);
+        const article = reader.parse();
+
+        if (article) {
+          title = article.title ?? null;
+          extractedContent = article.textContent || '';
+          chatLogger.info(`[fetch_url] Extracted article: "${title}" (${extractedContent.length} chars)`);
+        } else {
+          // Fallback: extract text from body
+          extractedContent = dom.window.document.body?.textContent || '';
+          title = dom.window.document.title || null;
+          chatLogger.info(`[fetch_url] Fallback extraction (${extractedContent.length} chars)`);
+        }
+      } catch (parseError) {
+        chatLogger.warn('[fetch_url] HTML parsing failed, using raw text:', parseError);
+        // Strip HTML tags as fallback
+        extractedContent = rawText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+    } else if (isText) {
+      // Plain text or JSON - use as-is
+      extractedContent = rawText;
+    } else {
+      // Binary or unsupported content type
+      return JSON.stringify({
+        success: false,
+        error: `Unsupported content type: ${contentType}`,
+        url: response.url,
+      });
+    }
+
+    // Clean up whitespace
+    extractedContent = extractedContent
+      .replace(/\n{3,}/g, '\n\n') // Max 2 newlines
+      .replace(/[ \t]+/g, ' ') // Collapse spaces
+      .trim();
+
+    // Truncate if too long
+    const maxLength = 15000;
+    const truncated = extractedContent.length > maxLength;
+    const finalContent = truncated
+      ? extractedContent.substring(0, maxLength) + '\n\n... [Content truncated - page has ' + extractedContent.length + ' characters]'
+      : extractedContent;
+
+    chatLogger.info(`[fetch_url] Success: ${finalContent.length} chars (truncated: ${truncated})`);
+
+    return JSON.stringify({
+      success: true,
+      url: response.url, // Final URL after redirects
+      title: title,
+      content: finalContent,
+      content_type: contentType,
+      truncated,
+      total_length: extractedContent.length,
+    });
+  } catch (error) {
+    chatLogger.error('[fetch_url] Fetch failed:', error);
+
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        return JSON.stringify({
+          success: false,
+          error: 'Request timed out (15 seconds)',
+          url,
+        });
+      }
+      return JSON.stringify({
+        success: false,
+        error: error.message,
+        url,
+      });
+    }
+
+    return JSON.stringify({
+      success: false,
+      error: 'Failed to fetch URL',
+      url,
+    });
+  }
+}
 // ============================================================================
 // Helpers
 // ============================================================================
