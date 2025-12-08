@@ -15,8 +15,7 @@ import { generateEmbedding } from '@/lib/ai/embedding';
 import { supabase } from '@/lib/db/client';
 import { ADVISORY_PROJECT_ID } from '@/lib/db/types';
 import { chatLogger } from '@/lib/logger';
-import { JSDOM } from 'jsdom';
-import { Readability } from '@mozilla/readability';
+import { parse as parseHtml } from 'node-html-parser';
 
 // ============================================================================
 // Tool Definitions
@@ -868,22 +867,24 @@ async function fetchUrl(input: Record<string, unknown>): Promise<string> {
     let title: string | null = null;
 
     if (isHtml) {
-      // Parse HTML and extract readable content
+      // Parse HTML and extract readable content using node-html-parser
       try {
-        const dom = new JSDOM(rawText, { url: response.url });
-        const reader = new Readability(dom.window.document);
-        const article = reader.parse();
+        const root = parseHtml(rawText);
 
-        if (article) {
-          title = article.title ?? null;
-          extractedContent = article.textContent || '';
-          chatLogger.info(`[fetch_url] Extracted article: "${title}" (${extractedContent.length} chars)`);
-        } else {
-          // Fallback: extract text from body
-          extractedContent = dom.window.document.body?.textContent || '';
-          title = dom.window.document.title || null;
-          chatLogger.info(`[fetch_url] Fallback extraction (${extractedContent.length} chars)`);
-        }
+        // Extract title
+        const titleElement = root.querySelector('title');
+        title = titleElement?.textContent?.trim() || null;
+
+        // Remove script and style elements
+        root.querySelectorAll('script, style, noscript, iframe, nav, footer, header, aside').forEach(el => el.remove());
+
+        // Try to find main content (article, main, or body)
+        const mainContent = root.querySelector('article') || root.querySelector('main') || root.querySelector('body') || root;
+
+        // Get text content
+        extractedContent = mainContent.textContent || '';
+
+        chatLogger.info(`[fetch_url] Extracted content: "${title}" (${extractedContent.length} chars)`);
       } catch (parseError) {
         chatLogger.warn('[fetch_url] HTML parsing failed, using raw text:', parseError);
         // Strip HTML tags as fallback
