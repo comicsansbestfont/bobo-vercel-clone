@@ -60,8 +60,9 @@ import { buildSystemPrompt } from '@/lib/ai/system-prompt';
 import { detectContentCreationIntent } from '@/lib/ai/content-detection';
 import { getContentCreationContext } from '@/lib/ai/identity-context';
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+// Allow streaming responses up to 60 seconds (Vercel Hobby limit)
+// For Pro plan, this can be increased to 300 seconds
+export const maxDuration = 60;
 
 // Disable the SDK warning about non-OpenAI reasoning
 if (typeof globalThis !== 'undefined') {
