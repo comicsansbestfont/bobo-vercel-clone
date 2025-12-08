@@ -230,6 +230,45 @@ EXAMPLES:
       required: ['pattern'],
     },
   },
+  {
+    name: 'fetch_url',
+    description: `Fetch and read content from an external URL/webpage.
+
+USE WHEN:
+- User shares a URL and asks you to read/analyze it
+- User asks about content from a specific webpage
+- Need to access external documentation, articles, or web content
+- User pastes a link and asks what it's about
+
+CAPABILITIES:
+- Fetches webpage content and extracts readable text
+- Handles HTML pages, converting to clean readable text
+- Works with articles, documentation, blog posts, etc.
+- Follows redirects automatically
+
+LIMITATIONS:
+- Cannot access pages requiring authentication
+- Cannot interact with JavaScript-rendered content (SPA)
+- Large pages are truncated to ~15000 characters
+- Some sites may block automated access
+
+RETURNS: Extracted text content from the webpage.
+
+EXAMPLES:
+- fetch_url(url: "https://example.com/article")
+- fetch_url(url: "https://docs.company.com/api-reference")
+- fetch_url(url: "https://news.site.com/story/12345")`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        url: {
+          type: 'string',
+          description: 'The full URL to fetch (must start with http:// or https://)',
+        },
+      },
+      required: ['url'],
+    },
+  },
 ];
 
 // ============================================================================
@@ -257,6 +296,8 @@ export async function executeAdvisoryTool(
         return await globAdvisory(input);
       case 'grep_advisory':
         return await grepAdvisory(input);
+      case 'fetch_url':
+        return await fetchUrl(input);
       default:
         return JSON.stringify({ success: false, error: `Unknown tool: ${name}` });
     }
