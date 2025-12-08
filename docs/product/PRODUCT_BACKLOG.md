@@ -7,13 +7,10 @@
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
 
 > **December 8, 2025 Update (PM):** 🚀 **M3.11 GTM HEALTH CHECK BOT ADDED**
-> - Lead generation tool launching January 2026
+> - Lead generation chatbot launching January 2026
 > - "Introducing Bobo, a GTM co-pilot for advisory portfolio startups"
-> - Free GTM health check open to anyone (public-facing)
-> - 3 sprints, 24h total (15 tasks)
-> - Sprint 1: Assessment engine + AI report generation
-> - Sprint 2: Public landing page + lead capture
-> - Sprint 3: Follow-up automation + analytics
+> - Chatbot IS the interface: collects info, runs assessment, delivers report
+> - 1 sprint, 8h total (6 tasks) - simple and focused
 
 > **December 8, 2025 Update (AM):** 🧠 **M3.10 PAPR-INSPIRED KNOWLEDGE GRAPH ADDED**
 > - Research conducted on [PAPR AI](https://platform.papr.ai/) - #1 on Stanford's STaRK benchmark
@@ -79,7 +76,7 @@
 | **Milestones Complete** | 8 of 10 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8) |
 | **Tasks Complete** | 115 of 160 (72%) |
 | **Hours Invested** | ~110 hours actual |
-| **Hours Remaining** | ~132.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 24h) |
+| **Hours Remaining** | ~116.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
 
@@ -148,7 +145,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.8: Advisory Projects** | ✅ Complete | 19/19 | 16h | ~8h | 200% | Project-per-deal, file-reference mode, AI summaries |
 | **M3.9: Advisory-Memory Integration** | 📝 Planned | 0/8 | 15h | - | - | Bidirectional advisory↔memory linking |
 | **M3.10: Knowledge Graph** | 📝 Planned | 0/20 | 28.5h | - | - | Entity extraction, spreading activation, agent self-learning |
-| **M3.11: GTM Health Check Bot** | 📝 Planned | 0/15 | 24h | - | - | Lead gen, public assessment, AI reports, Jan 2026 launch |
+| **M3.11: GTM Health Check Bot** | 📝 Planned | 0/6 | 8h | - | - | Lead gen chatbot, collects info + runs assessment, Jan 2026 launch |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -2120,191 +2117,68 @@ const learnPreferenceTool = {
 
 **Status:** 📝 Planned
 **Target Launch:** January 2026
-**Focus:** Public-facing lead generation tool - "Introducing Bobo, a GTM co-pilot"
-**Positioning:** Free GTM health check open to anyone, converting to advisory leads
+**Focus:** Chatbot-driven GTM assessment for lead generation
+**Positioning:** "Introducing Bobo, a GTM co-pilot" - free health check open to anyone
 
-### Strategic Context
+### Concept
 
-**January 2026 Launch Narrative:**
 > "Introducing Bobo, a GTM co-pilot for my advisory portfolio startups to navigate go-to-market. But Bobo is opening up for anyone and everyone to conduct a **free GTM health check**."
 
-**Lead Gen Funnel:**
-1. **Awareness:** Social media launch, word-of-mouth, startup communities
-2. **Capture:** Free GTM health check assessment (email required)
-3. **Deliver:** AI-generated GTM health report with scores + recommendations
-4. **Convert:** Follow-up email sequence → advisory call booking
+**The chatbot IS the interface.** No separate landing page needed. User lands on chat, Bobo:
+1. Collects basic info (name, company, email, role)
+2. Asks GTM assessment questions conversationally
+3. Runs the assessment
+4. Delivers personalized report with scores + recommendations
 
-**Differentiation:**
-- Not a generic assessment - powered by Bobo's knowledge of real GTM challenges
-- Draws from advisory portfolio patterns (anonymized)
-- Actionable recommendations, not just scores
-
-### Sprint 1: GTM Assessment Engine (10h)
-
-**Goal:** Build the core assessment questionnaire and AI-powered analysis engine.
+### Tasks (8h)
 
 | ID | Task | Priority | Estimate | Status | Notes |
 |----|------|----------|----------|--------|-------|
-| **M3.11-01** | Design GTM health questionnaire (15-20 questions) | 🔴 HIGH | 2h | ⏳ | Covers: ICP, channels, metrics, team, positioning |
-| **M3.11-02** | Create scoring rubric and dimension weights | 🔴 HIGH | 1.5h | ⏳ | 5 dimensions: ICP Clarity, Channel Fit, Metrics Maturity, Team Readiness, Positioning |
-| **M3.11-03** | Build assessment data model | 🔴 HIGH | 1h | ⏳ | `gtm_assessments` table: responses, scores, email, created_at |
-| **M3.11-04** | Implement scoring engine | 🔴 HIGH | 2h | ⏳ | Calculate dimension scores + overall health score |
-| **M3.11-05** | Create AI report generation prompt | 🔴 HIGH | 2h | ⏳ | Claude generates personalized recommendations per dimension |
-| **M3.11-06** | Testing buffer | 🔴 HIGH | 1.5h | ⏳ | Sprint rule |
+| **M3.11-01** | Design GTM assessment conversation flow | 🔴 HIGH | 1.5h | ⏳ | Questions for: ICP, channels, metrics, positioning |
+| **M3.11-02** | Create GTM Health Check system prompt | 🔴 HIGH | 1.5h | ⏳ | Bobo persona + assessment logic |
+| **M3.11-03** | Build assessment data model | 🔴 HIGH | 1h | ⏳ | `gtm_assessments` table: contact info, responses, scores |
+| **M3.11-04** | Implement scoring + report generation | 🔴 HIGH | 2h | ⏳ | Claude analyzes responses → personalized report |
+| **M3.11-05** | Public chat route (no auth required) | 🔴 HIGH | 1h | ⏳ | `/gtm` or similar - anonymous access |
+| **M3.11-06** | Testing buffer | 🔴 HIGH | 1h | ⏳ | Sprint rule |
 
-**Sprint 1 Total:** 10h
+**Total:** 8h
 
-**Assessment Dimensions:**
-1. **ICP Clarity (20%)** - How well-defined is the ideal customer profile?
-2. **Channel Fit (25%)** - Are channels aligned with where ICP lives?
-3. **Metrics Maturity (20%)** - Are GTM metrics tracked and acted upon?
-4. **Team Readiness (15%)** - Does the team have GTM capabilities?
-5. **Positioning (20%)** - Is the value proposition clear and differentiated?
+### Assessment Flow
 
-**Question Examples:**
-- "How would you describe your ideal customer in one sentence?"
-- "What's your primary customer acquisition channel?"
-- "What's your current CAC? (Approximate or 'Don't know')"
-- "How many people focus on GTM full-time?"
-- "What's your one-liner pitch?"
-
-**Scoring Rubric:**
-- 0-40: 🔴 Critical - Major GTM gaps
-- 41-60: 🟠 Developing - Foundation exists, needs focus
-- 61-80: 🟡 Solid - Good fundamentals, optimization needed
-- 81-100: 🟢 Strong - GTM engine running well
-
-**Definition of Done:**
-- [ ] 15-20 question assessment covering all 5 dimensions
-- [ ] Scoring rubric produces consistent, meaningful scores
-- [ ] AI-generated report has actionable recommendations
-- [ ] Assessment results stored in database
-
-### Sprint 2: Public Interface (8h)
-
-**Goal:** Create the public-facing landing page and assessment flow.
-
-| ID | Task | Priority | Estimate | Status | Notes |
-|----|------|----------|----------|--------|-------|
-| **M3.11-07** | Design landing page (value prop, CTA) | 🔴 HIGH | 2h | ⏳ | Hero, benefits, social proof, CTA |
-| **M3.11-08** | Build assessment wizard UI | 🔴 HIGH | 2.5h | ⏳ | Multi-step form with progress indicator |
-| **M3.11-09** | Implement email capture + validation | 🔴 HIGH | 1h | ⏳ | Required before seeing results |
-| **M3.11-10** | Create results page with score visualization | 🔴 HIGH | 2h | ⏳ | Dimension breakdown, overall score, report |
-| **M3.11-11** | Testing buffer | 🔴 HIGH | 0.5h | ⏳ | Sprint rule |
-
-**Sprint 2 Total:** 8h
-
-**Landing Page Structure:**
 ```
-/gtm-health-check (public route)
-├── Hero: "How healthy is your GTM?"
-├── Benefits: Free, 5 minutes, actionable insights
-├── Social proof: "Built from advising 20+ startups"
-├── CTA: "Start Your Free Assessment"
-└── FAQ: What's included, who is this for
+User lands on /gtm
+    ↓
+Bobo: "Hey! I'm Bobo. Want a free GTM health check? First, tell me about yourself..."
+    ↓
+Collects: Name, Company, Email, Role
+    ↓
+Bobo asks 8-10 GTM questions conversationally
+    ↓
+Bobo: "Analyzing your GTM setup..."
+    ↓
+Delivers report: Overall score + dimension breakdown + 3 recommendations
 ```
 
-**Assessment Flow:**
-```
-Start → Questions (1-15) → Email Capture → Processing → Results Page
-                                    ↓
-                          (Triggers report generation)
-```
+### Assessment Dimensions
 
-**Definition of Done:**
-- [ ] Landing page converts visitors to assessment starts
-- [ ] Assessment wizard is mobile-friendly and < 5 minutes
-- [ ] Email captured before results shown
-- [ ] Results page displays scores + AI report clearly
+1. **ICP Clarity** - How well-defined is the ideal customer?
+2. **Channel Fit** - Are you where your customers are?
+3. **Metrics** - Do you know what's working?
+4. **Positioning** - Is your value prop clear?
 
-### Sprint 3: Lead Nurture & Analytics (6h)
+### Success Criteria
 
-**Goal:** Automated follow-up and conversion tracking.
+- [ ] Assessment feels like a natural conversation (not a form)
+- [ ] Completes in < 5 minutes
+- [ ] Report provides actionable insights (not generic)
+- [ ] Contact info captured for follow-up
 
-| ID | Task | Priority | Estimate | Status | Notes |
-|----|------|----------|----------|--------|-------|
-| **M3.11-12** | Set up email delivery (Resend/SendGrid) | 🟡 MED | 1.5h | ⏳ | Send report PDF to email |
-| **M3.11-13** | Create follow-up email sequence (3 emails) | 🟡 MED | 2h | ⏳ | Day 1: Report, Day 3: Deep dive, Day 7: Advisory offer |
-| **M3.11-14** | Add analytics tracking (PostHog events) | 🟡 MED | 1h | ⏳ | Funnel: visit → start → complete → email |
-| **M3.11-15** | Testing buffer | 🟡 MED | 1.5h | ⏳ | Sprint rule |
+### Files to Create
 
-**Sprint 3 Total:** 6h
-
-**Email Sequence:**
-1. **Day 0 (Immediate):** "Your GTM Health Report" - PDF report attached
-2. **Day 3:** "Quick wins for your GTM" - Top 2-3 actionable tips based on lowest scores
-3. **Day 7:** "Want to go deeper?" - Advisory call booking CTA
-
-**Analytics Events:**
-- `gtm_assessment_started` - Landed on assessment
-- `gtm_assessment_question_{n}` - Reached question N
-- `gtm_assessment_completed` - All questions answered
-- `gtm_assessment_email_captured` - Email submitted
-- `gtm_assessment_report_viewed` - Viewed results
-- `gtm_assessment_cta_clicked` - Clicked advisory CTA
-
-**Definition of Done:**
-- [ ] Report emailed within 1 minute of completion
-- [ ] Follow-up sequence triggers automatically
-- [ ] Full funnel tracked in PostHog
-- [ ] Conversion rate visible in dashboard
-
-### M3.11 Success Criteria
-
-- [ ] Assessment can be completed in < 5 minutes
-- [ ] Report provides genuinely useful insights (not generic fluff)
-- [ ] At least 50% of starters complete the assessment
-- [ ] Email capture rate > 90% of completions
-- [ ] At least 1 advisory inquiry per 20 assessments
-
-### M3.11 Milestone Totals
-
-| Sprint | Focus | Hours | Status |
-|--------|-------|-------|--------|
-| Sprint 1 | Assessment Engine | 10h | ⏳ Planned |
-| Sprint 2 | Public Interface | 8h | ⏳ Planned |
-| Sprint 3 | Lead Nurture | 6h | ⏳ Planned |
-| **Total** | | **24h** | |
-
-### Files to Create/Modify
-
-**New Files:**
-- `app/gtm-health-check/page.tsx` - Public landing page
-- `app/gtm-health-check/assessment/page.tsx` - Assessment wizard
-- `app/gtm-health-check/results/[id]/page.tsx` - Results page
-- `app/api/gtm-health-check/route.ts` - Assessment submission API
-- `app/api/gtm-health-check/report/route.ts` - AI report generation
-- `lib/gtm/assessment-engine.ts` - Scoring logic
-- `lib/gtm/questions.ts` - Question definitions
-- `lib/gtm/report-prompt.ts` - AI report generation prompt
-- `supabase/migrations/YYYYMMDD_gtm_assessments.sql` - Database schema
-- `components/gtm/assessment-wizard.tsx` - Multi-step form
-- `components/gtm/score-visualization.tsx` - Radar chart or bar chart
-
-**Modified Files:**
-- `app/layout.tsx` - Add GTM routes to public layout
-- `middleware.ts` - Allow unauthenticated access to /gtm-health-check
-
-### Marketing Launch Checklist
-
-**Pre-Launch (1 week before):**
-- [ ] Landing page live and tested
-- [ ] Assessment flow end-to-end tested
-- [ ] Email sequence configured and tested
-- [ ] Analytics events firing correctly
-- [ ] OG image and meta tags for social sharing
-
-**Launch Day:**
-- [ ] LinkedIn post: "Introducing Bobo..."
-- [ ] Twitter/X thread explaining GTM health check
-- [ ] Share in relevant Slack/Discord communities
-- [ ] Email to existing network
-
-**Post-Launch (Week 1):**
-- [ ] Monitor completion rates and funnel dropoff
-- [ ] Review AI report quality from real submissions
-- [ ] Iterate on questions based on feedback
-- [ ] Track advisory conversion rate
+- `app/gtm/page.tsx` - Public chat interface (no auth)
+- `lib/gtm/system-prompt.ts` - GTM Health Check Bobo persona
+- `lib/gtm/scoring.ts` - Assessment scoring logic
+- `supabase/migrations/YYYYMMDD_gtm_assessments.sql` - Store results
 
 ---
 
