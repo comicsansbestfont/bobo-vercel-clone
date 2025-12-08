@@ -1,10 +1,17 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 8, 2025 (M3.11 GTM Health Check Bot added)
+**Last Updated:** December 8, 2025 (M3.12 Chat UX Enhancements added)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 8, 2025 Update (Late PM):** 🎨 **M3.12 CHAT UX ENHANCEMENTS ADDED**
+> - **Message Editing** - Edit sent messages and retry (like Claude/ChatGPT)
+> - **Document Attachments** - Add PDFs, text files, images to chat context
+> - **GitHub Integration** - Pull context from git repos into Bobo
+> - **Advisory Folder Browser** - Visualize and reference files in project advisory folders
+> - 1 sprint, 15h total (8 tasks) - dogfooding quality-of-life improvements
 
 > **December 8, 2025 Update (PM):** 🚀 **M3.11 GTM HEALTH CHECK BOT ADDED**
 > - Lead generation chatbot launching January 2026
@@ -76,7 +83,7 @@
 | **Milestones Complete** | 8 of 10 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8) |
 | **Tasks Complete** | 115 of 160 (72%) |
 | **Hours Invested** | ~110 hours actual |
-| **Hours Remaining** | ~116.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h) |
+| **Hours Remaining** | ~131.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h, M3.12: 15h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
 
@@ -146,6 +153,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.9: Advisory-Memory Integration** | 📝 Planned | 0/8 | 15h | - | - | Bidirectional advisory↔memory linking |
 | **M3.10: Knowledge Graph** | 📝 Planned | 0/20 | 28.5h | - | - | Entity extraction, spreading activation, agent self-learning |
 | **M3.11: GTM Health Check Bot** | 📝 Planned | 0/6 | 8h | - | - | Lead gen chatbot, collects info + runs assessment, Jan 2026 launch |
+| **M3.12: Chat UX Enhancements** | 📝 Planned | 0/8 | 15h | - | - | Message editing, document attachments, GitHub integration, folder browser |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -2179,6 +2187,102 @@ Delivers report: Overall score + dimension breakdown + 3 recommendations
 - `lib/gtm/system-prompt.ts` - GTM Health Check Bobo persona
 - `lib/gtm/scoring.ts` - Assessment scoring logic
 - `supabase/migrations/YYYYMMDD_gtm_assessments.sql` - Store results
+
+---
+
+## 🎨 M3.12: Chat UX Enhancements (Dogfooding Quality-of-Life)
+
+**Status:** 📝 Planned
+**Priority:** 🔴 HIGH (dogfooding blockers)
+**Estimate:** 15h total (8 tasks)
+**Goal:** Essential UX features identified during dogfooding to match Claude/ChatGPT usability
+
+### Background
+
+During active dogfooding of Bobo, several UX gaps were identified that impact daily usability:
+1. No way to edit a sent message and retry (must retype entire message)
+2. Can't add documents (PDFs, text files, images) to chat context
+3. No GitHub integration for pulling repo context
+4. Can't see what files exist in advisory folders for projects
+
+### Task Breakdown
+
+| ID | Task | Priority | Estimate | Status | Notes |
+|----|------|----------|----------|--------|-------|
+| **M3.12-01** | Message editing UI component | 🔴 HIGH | 2h | ⏳ | Edit button on user messages, inline editing mode |
+| **M3.12-02** | Edit/retry API endpoint | 🔴 HIGH | 1.5h | ⏳ | Regenerate from edited message, preserve history |
+| **M3.12-03** | Document upload modal (multi-type) | 🔴 HIGH | 2h | ⏳ | Accept PDF, TXT, MD, images in chat input |
+| **M3.12-04** | Document processing pipeline | 🔴 HIGH | 3h | ⏳ | PDF text extraction, image OCR/vision, file chunking |
+| **M3.12-05** | GitHub repo context integration | 🟡 MEDIUM | 3h | ⏳ | Add GitHub repo as context source, file tree + content |
+| **M3.12-06** | Advisory folder browser component | 🔴 HIGH | 2h | ⏳ | Tree view of files in project's advisory folder |
+| **M3.12-07** | Quick file reference from folder view | 🟡 MEDIUM | 1h | ⏳ | Click file → inject into chat context or copy path |
+| **M3.12-08** | Testing buffer | 🔴 HIGH | 0.5h | ⏳ | Sprint rule |
+
+**Total:** 15h
+
+### Feature Details
+
+#### F1: Message Editing & Retry
+
+Like Claude and ChatGPT, users should be able to:
+- Click an edit icon on any sent user message
+- Edit the message text inline
+- Submit to regenerate the assistant response from that point
+- Previous response is replaced (not appended)
+
+**Files to modify:**
+- `components/ai-elements/message.tsx` - Add edit mode for user messages
+- `app/api/chat/route.ts` - Handle edit/regenerate requests
+- `lib/ai/claude-client.ts` - Support message replacement
+
+#### F2: Document Attachments
+
+Upload documents directly into chat context:
+- **PDF:** Extract text via pdf-parse or similar
+- **Text/Markdown:** Direct injection
+- **Images:** Send to Claude vision for description, or inject as base64
+
+**Files to create/modify:**
+- `components/ai-elements/document-upload.tsx` - Upload UI
+- `lib/documents/processor.ts` - Parse different file types
+- `app/api/documents/process/route.ts` - Server-side processing
+
+#### F3: GitHub Integration
+
+Pull context from GitHub repositories:
+- Enter repo URL or select from connected repos
+- Fetch file tree and selected file contents
+- Inject as context for chat
+
+**Files to create:**
+- `lib/github/client.ts` - GitHub API wrapper
+- `components/github/repo-browser.tsx` - Repo selection UI
+- `app/api/github/fetch/route.ts` - Fetch repo contents
+
+#### F4: Advisory Folder Browser
+
+For projects linked to advisory folders:
+- Show a file tree of the advisory folder contents
+- Click to preview file
+- Quick action to reference file in chat
+
+**Files to create/modify:**
+- `components/advisory/folder-browser.tsx` - Tree view component
+- `lib/advisory/file-list.ts` - List files in advisory folder
+- Integrate into project detail view
+
+### Success Criteria
+
+- [ ] Can edit any user message and regenerate response
+- [ ] Can upload PDF, TXT, MD, and image files to chat
+- [ ] Can connect a GitHub repo and pull files as context
+- [ ] Can see all files in an advisory project's folder
+- [ ] Can reference a specific file from the folder browser
+
+### Dependencies
+
+- M3.8 (Advisory Projects) - folder browser needs advisory project system
+- Claude SDK vision capabilities for image processing
 
 ---
 
