@@ -27,6 +27,8 @@ import type {
   ChatWithProject,
   ProjectWithStats,
   SearchResult,
+  MessageContent,
+  MessagePart,
 } from './types';
 
 // ============================================================================
@@ -1285,4 +1287,257 @@ export async function updateMemoryAccess(memoryIds: string[]): Promise<void> {
       memoryIds,
     });
   }
+}
+
+// ============================================================================
+// MESSAGE CONTINUATION QUERIES (Progressive Response Saving)
+// ============================================================================
+
+/**
+ * Continuation state for resuming interrupted AI responses
+ */
+export interface MessageContinuation {
+  id: string;
+  chat_id: string;
+  message_id: string | null;
+  accumulated_text: string;
+  accumulated_parts: MessagePart[] | null;
+  continuation_token: string;
+  iteration_state: {
+    iteration: number;
+    tool_results?: Array<{ tool_use_id: string; content: string }>;
+    messages_snapshot?: unknown[];
+  } | null;
+  created_at: string;
+  expires_at: string;
+  used_at: string | null;
+}
+
+/**
+ * Create a continuation token for an interrupted response
+ * Used when approaching timeout to save state for resume
+ */
+export async function createContinuation(
+  chatId: string,
+  accumulatedText: string,
+  accumulatedParts: MessagePart[] | null,
+  iterationState: MessageContinuation['iteration_state'],
+  messageId?: string
+): Promise<MessageContinuation | null> {
+  // Generate unique token
+  const token = Buffer.from(
+    JSON.stringify({
+      chatId,
+      timestamp: Date.now(),
+      random: Math.random().toString(36).substring(7),
+    })
+  ).toString('base64');
+
+  // Set expiry to 24 hours from now
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+  // Use type assertion since message_continuations isn't in generated types yet
+  const { data, error } = await (supabase as any)
+    .from('message_continuations')
+    .insert({
+      chat_id: chatId,
+      message_id: messageId || null,
+      accumulated_text: accumulatedText,
+      accumulated_parts: accumulatedParts,
+      continuation_token: token,
+      iteration_state: iterationState,
+      expires_at: expiresAt,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    dbLogger.error('Error creating continuation:', error);
+    return null;
+  }
+
+  return data as MessageContinuation;
+}
+
+/**
+ * Get a continuation by token
+ */
+export async function getContinuation(
+  token: string
+): Promise<MessageContinuation | null> {
+  // Use type assertion since message_continuations isn't in generated types yet
+  const { data, error } = await (supabase as any)
+    .from('message_continuations')
+    .select('*')
+    .eq('continuation_token', token)
+    .is('used_at', null) // Only unused continuations
+    .gt('expires_at', new Date().toISOString()) // Not expired
+    .single();
+
+  if (error) {
+    dbLogger.error('Error fetching continuation:', error);
+    return null;
+  }
+
+  return data as MessageContinuation;
+}
+
+/**
+ * Mark a continuation as used
+ */
+export async function markContinuationUsed(
+  token: string
+): Promise<boolean> {
+  // Use type assertion since message_continuations isn't in generated types yet
+  const { error } = await (supabase as any)
+    .from('message_continuations')
+    .update({ used_at: new Date().toISOString() })
+    .eq('continuation_token', token);
+
+  if (error) {
+    dbLogger.error('Error marking continuation used:', error);
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Upsert a partial message (for progressive saving)
+ * Creates or updates a message marked as partial
+ */
+export async function upsertPartialMessage(
+  chatId: string,
+  messageId: string,
+  content: MessageContent,
+  completionStatus: 'streaming' | 'partial' | 'timeout' | 'error' = 'streaming'
+): Promise<Message | null> {
+  const { data: existing } = await supabase
+    .from('messages')
+    .select('id')
+    .eq('id', messageId)
+    .single();
+
+  if (existing) {
+    // Update existing - use type assertion for new columns
+    const { data, error } = await (supabase as any)
+      .from('messages')
+      .update({
+        content,
+        is_partial: completionStatus !== 'streaming',
+        completion_status: completionStatus,
+      })
+      .eq('id', messageId)
+      .select()
+      .single();
+
+    if (error) {
+      dbLogger.error('Error updating partial message:', error);
+      return null;
+    }
+    return data as Message;
+  } else {
+    // Get next sequence number
+    const { data: lastMsg } = await supabase
+      .from('messages')
+      .select('sequence_number')
+      .eq('chat_id', chatId)
+      .order('sequence_number', { ascending: false })
+      .limit(1)
+      .single();
+
+    const nextSequence = (lastMsg?.sequence_number ?? 0) + 1;
+
+    // Insert new - use type assertion for new columns
+    const { data, error } = await (supabase as any)
+      .from('messages')
+      .insert({
+        id: messageId,
+        chat_id: chatId,
+        user_id: DEFAULT_USER_ID,
+        role: 'assistant',
+        content,
+        is_partial: true,
+        completion_status: completionStatus,
+        sequence_number: nextSequence,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      dbLogger.error('Error creating partial message:', error);
+      return null;
+    }
+    return data as Message;
+  }
+}
+
+/**
+ * Finalize a partial message (mark as complete)
+ */
+export async function finalizeMessage(
+  messageId: string,
+  content: MessageContent,
+  tokenCount?: number
+): Promise<Message | null> {
+  // Use type assertion for new columns
+  const { data, error } = await (supabase as any)
+    .from('messages')
+    .update({
+      content,
+      is_partial: false,
+      completion_status: 'complete',
+      token_count: tokenCount,
+    })
+    .eq('id', messageId)
+    .select()
+    .single();
+
+  if (error) {
+    dbLogger.error('Error finalizing message:', error);
+    return null;
+  }
+
+  return data as Message;
+}
+
+/**
+ * Get partial messages for a chat (for recovery/display)
+ */
+export async function getPartialMessages(
+  chatId: string
+): Promise<Message[]> {
+  // Use type assertion for new column
+  const { data, error } = await (supabase as any)
+    .from('messages')
+    .select('*')
+    .eq('chat_id', chatId)
+    .eq('is_partial', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    dbLogger.error('Error fetching partial messages:', error);
+    return [];
+  }
+
+  return (data || []) as Message[];
+}
+
+/**
+ * Clean up expired continuations (called periodically)
+ */
+export async function cleanupExpiredContinuations(): Promise<number> {
+  // Use type assertion since message_continuations isn't in generated types yet
+  const { data, error } = await (supabase as any)
+    .from('message_continuations')
+    .delete()
+    .lt('expires_at', new Date().toISOString())
+    .select('id');
+
+  if (error) {
+    dbLogger.error('Error cleaning up continuations:', error);
+    return 0;
+  }
+
+  return data?.length || 0;
 }

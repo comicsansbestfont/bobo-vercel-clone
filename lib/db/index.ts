@@ -90,4 +90,15 @@ export {
   ensureMemorySettings,
   getLastExtractionTime,
   updateMemoryAccess,
+  // Continuation (M3.9)
+  createContinuation,
+  getContinuation,
+  markContinuationUsed,
+  upsertPartialMessage,
+  finalizeMessage,
+  getPartialMessages,
+  cleanupExpiredContinuations,
 } from './queries';
+
+// Re-export continuation types
+export type { MessageContinuation } from './queries';

@@ -98,6 +98,7 @@ import {
 } from '@/components/ai-elements/inline-citations';
 
 import { Loader } from '@/components/ai-elements/loader';
+import { ContinueButton, TimeoutWarning } from '@/components/ai-elements/continue-button';
 import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
 import { cn } from '@/lib/utils';
 import { compressHistory } from '@/lib/memory-manager';
@@ -264,6 +265,10 @@ export function ChatInterface({
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [toolSteps, setToolSteps] = useState<ToolStep[]>([]);
+  // Continuation state for handling timeouts
+  const [continuationToken, setContinuationToken] = useState<string | null>(null);
+  const [timeoutOccurred, setTimeoutOccurred] = useState(false);
+  const [isContinuing, setIsContinuing] = useState(false);
   // Initialize chatId from URL directly to avoid Next.js searchParams hydration delay
   const [chatId, setChatId] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
@@ -287,8 +292,31 @@ export function ChatInterface({
   const [chatProjectId, setChatProjectId] = useState<string | null>(projectId || null);
   const [chatProjectName, setChatProjectName] = useState<string | null>(null);
 
-  const handleToolStepData = useCallback((data: unknown) => {
-    const dataChunk = data as { type?: string; data?: Record<string, unknown> };
+  const handleStreamData = useCallback((data: unknown) => {
+    const dataChunk = data as { type?: string; data?: Record<string, unknown>; token?: string; message?: string };
+
+    // Handle timeout warning event
+    if (dataChunk?.type === 'timeout-warning') {
+      chatLogger.warn('[Timeout] Response truncated due to timeout');
+      setTimeoutOccurred(true);
+      toast.warning('Response timeout', {
+        description: dataChunk.message || 'Response was truncated. Click "Continue" to resume.',
+        duration: 10000,
+      });
+      return;
+    }
+
+    // Handle continuation available event
+    if (dataChunk?.type === 'continuation-available') {
+      const token = dataChunk.token as string;
+      if (token) {
+        chatLogger.info('[Continuation] Token received:', token.substring(0, 8) + '...');
+        setContinuationToken(token);
+      }
+      return;
+    }
+
+    // Handle tool step data (existing logic)
     if (dataChunk?.type !== 'data-tool-step' || !dataChunk.data) {
       return;
     }
@@ -381,7 +409,7 @@ export function ChatInterface({
         description: error.message || 'An error occurred while processing your message.',
       });
     },
-    onData: handleToolStepData,
+    onData: handleStreamData,
     onFinish: () => {
       // Message finished streaming and is now in the messages array
       // Clear the previous timeout if it exists
@@ -427,9 +455,11 @@ export function ChatInterface({
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [chatId, chatIdFromUrl, router]);
 
-  // Reset tool steps when switching chats
+  // Reset tool steps and continuation state when switching chats
   useEffect(() => {
     setToolSteps([]);
+    setContinuationToken(null);
+    setTimeoutOccurred(false);
   }, [chatId]);
 
   // Keep local chatId in sync with URL when navigating between chats
@@ -723,8 +753,10 @@ export function ChatInterface({
     justSubmittedRef.current = true;
     chatLogger.info('🚀 Message submitted - blocking history loads until persistence completes');
 
-    // Clear previous tool steps for new request
+    // Clear previous tool steps and continuation state for new request
     setToolSteps([]);
+    setContinuationToken(null);
+    setTimeoutOccurred(false);
 
     // Send the message - AI SDK expects { text: string } as first parameter
     // The body in options contains custom data sent to the backend
@@ -745,7 +777,69 @@ export function ChatInterface({
 
   const handleRegenerate = () => {
     setToolSteps([]);
+    setContinuationToken(null);
+    setTimeoutOccurred(false);
     regenerate();
+  };
+
+  // Handle continuation - resume a timed-out response
+  const handleContinue = async () => {
+    if (!continuationToken || isContinuing) return;
+
+    setIsContinuing(true);
+    chatLogger.info('[Continuation] Starting continuation...');
+
+    try {
+      const response = await fetch('/api/chat/continue', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          continuationToken,
+          model,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to continue response');
+      }
+
+      // Clear timeout state since we're continuing
+      setTimeoutOccurred(false);
+      setContinuationToken(null);
+
+      // The response is an SSE stream - we need to process it
+      // For now, just reload the chat to get updated content
+      // In a more sophisticated implementation, we'd append the continued text
+      chatLogger.info('[Continuation] Continuation started, refreshing chat...');
+
+      // Wait a bit for the response to be saved, then reload history
+      setTimeout(async () => {
+        if (chatId) {
+          try {
+            const res = await fetch(`/api/chats/${chatId}`);
+            if (res.ok) {
+              const data = await res.json();
+              const uiMessages = data.messages.map((msg: DBMessage) => ({
+                id: msg.id,
+                role: msg.role,
+                parts: msg.content.parts,
+              }));
+              setMessages(uiMessages);
+            }
+          } catch (err) {
+            chatLogger.error('[Continuation] Failed to reload messages:', err);
+          }
+        }
+        setIsContinuing(false);
+      }, 5000);
+    } catch (err) {
+      chatLogger.error('[Continuation] Failed:', err);
+      toast.error('Failed to continue', {
+        description: err instanceof Error ? err.message : 'Unknown error',
+      });
+      setIsContinuing(false);
+    }
   };
 
   // Calculate context usage
@@ -1225,6 +1319,30 @@ export function ChatInterface({
                 </MessageResponse>
               </MessageContent>
             </Message>
+          )}
+          {/* Show timeout warning and continue button when response timed out */}
+          {timeoutOccurred && continuationToken && status === 'ready' && (
+            <div className="flex flex-col gap-3 mt-4">
+              <TimeoutWarning message="Response was interrupted due to server timeout. Your partial response has been saved." />
+              <ContinueButton
+                continuationToken={continuationToken}
+                model={model}
+                onContinue={() => chatLogger.info('[UI] Continue button clicked')}
+                onSuccess={() => {
+                  chatLogger.info('[UI] Continuation succeeded');
+                  handleContinue();
+                }}
+                onError={(err) => chatLogger.error('[UI] Continuation failed:', err)}
+                disabled={isContinuing}
+              />
+            </div>
+          )}
+          {/* Show loading state when continuing */}
+          {isContinuing && (
+            <div className="flex items-center gap-2 mt-4 text-sm text-muted-foreground">
+              <Loader className="h-4 w-4" />
+              <span>Continuing response...</span>
+            </div>
           )}
         </ConversationContent>
         <ConversationScrollButton />

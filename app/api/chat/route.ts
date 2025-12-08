@@ -41,6 +41,10 @@ import {
   type Project,
   getUserMemories,
   searchProjectMessages,
+  // Progressive saving and continuation
+  createContinuation,
+  upsertPartialMessage,
+  finalizeMessage,
 } from '@/lib/db';
 import { getModel } from '@/lib/ai/models';
 import { getProjectContext, prepareSystemPrompt, type ProjectContext } from '@/lib/ai/context-manager';
@@ -63,6 +67,52 @@ import { getContentCreationContext } from '@/lib/ai/identity-context';
 // Allow streaming responses up to 60 seconds (Vercel Hobby limit)
 // For Pro plan, this can be increased to 300 seconds
 export const maxDuration = 60;
+
+// ============================================================================
+// TIMEOUT TRACKING CONSTANTS (Progressive Saving)
+// ============================================================================
+const FUNCTION_TIMEOUT_MS = 60000; // Match maxDuration
+const SHUTDOWN_BUFFER_MS = 8000;   // Graceful shutdown 8s before timeout
+const PROGRESSIVE_SAVE_INTERVAL_MS = 5000; // Save every 5 seconds
+const PROGRESSIVE_SAVE_THRESHOLD = 200;    // Min chars to trigger save
+
+/**
+ * Timeout tracker for graceful shutdown
+ */
+class TimeoutTracker {
+  private startTime: number;
+
+  constructor() {
+    this.startTime = Date.now();
+  }
+
+  getElapsedMs(): number {
+    return Date.now() - this.startTime;
+  }
+
+  getRemainingMs(): number {
+    return FUNCTION_TIMEOUT_MS - this.getElapsedMs();
+  }
+
+  shouldShutdown(): boolean {
+    return this.getRemainingMs() < SHUTDOWN_BUFFER_MS;
+  }
+
+  getStatus(): { elapsed: number; remaining: number; shouldShutdown: boolean } {
+    return {
+      elapsed: this.getElapsedMs(),
+      remaining: this.getRemainingMs(),
+      shouldShutdown: this.shouldShutdown(),
+    };
+  }
+}
+
+/**
+ * Generate a unique message ID for progressive saving
+ */
+function generateMessageId(): string {
+  return crypto.randomUUID();
+}
 
 // Disable the SDK warning about non-OpenAI reasoning
 if (typeof globalThis !== 'undefined') {
@@ -962,12 +1012,24 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
       const client = getClaudeClient();
       const { messages: claudeMessages } = convertToClaudeMessages(validatedMessages);
 
+      // =======================================================================
+      // TIMEOUT TRACKING & PROGRESSIVE SAVING SETUP
+      // =======================================================================
+      const timeoutTracker = new TimeoutTracker();
+      const assistantMessageId = generateMessageId(); // Pre-generate for progressive saves
+      let lastProgressiveSaveTime = Date.now();
+      let lastProgressiveSaveLength = 0;
+      let progressiveSaveInterval: ReturnType<typeof setInterval> | null = null;
+      let didTimeout = false;
+      let continuationToken: string | null = null;
+
       // Agentic loop: Execute tools and continue until no more tool use
-      const MAX_TOOL_ITERATIONS = 5;
+      const MAX_TOOL_ITERATIONS = 3; // Reduced from 5 to improve timeout safety
       let currentMessages: MessageParam[] = claudeMessages;
       let allTextContent = '';
       let totalInputTokens = 0;
       let totalOutputTokens = 0;
+      let currentIteration = 0;
 
       // Create transform stream for SSE response
       const transform = new TransformStream<Uint8Array, Uint8Array>();
@@ -979,6 +1041,28 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
         writer.write(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
       };
 
+      // Progressive save helper - saves partial content to DB
+      const progressiveSave = async (status: 'streaming' | 'partial' | 'timeout' | 'error' = 'streaming') => {
+        if (!activeChatId || allTextContent.length === 0) return;
+
+        const contentDelta = allTextContent.length - lastProgressiveSaveLength;
+        if (contentDelta < PROGRESSIVE_SAVE_THRESHOLD && status === 'streaming') return;
+
+        try {
+          await upsertPartialMessage(
+            activeChatId,
+            assistantMessageId,
+            { parts: [{ type: 'text', text: allTextContent }] },
+            status
+          );
+          lastProgressiveSaveLength = allTextContent.length;
+          lastProgressiveSaveTime = Date.now();
+          chatLogger.debug(`[Progressive Save] Saved ${allTextContent.length} chars (status: ${status})`);
+        } catch (err) {
+          chatLogger.error('[Progressive Save] Failed:', err);
+        }
+      };
+
       // Start streaming response immediately
       const responsePromise = (async () => {
         try {
@@ -986,8 +1070,54 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
           writeSSE({ type: 'start-step' });
           let textBlockStarted = false;
 
+          // Set up progressive save interval
+          progressiveSaveInterval = setInterval(async () => {
+            const timeSinceLastSave = Date.now() - lastProgressiveSaveTime;
+            if (timeSinceLastSave >= PROGRESSIVE_SAVE_INTERVAL_MS) {
+              await progressiveSave('streaming');
+            }
+          }, PROGRESSIVE_SAVE_INTERVAL_MS);
+
           for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
-            chatLogger.debug(`[Claude SDK] Iteration ${iteration + 1}/${MAX_TOOL_ITERATIONS}`);
+            currentIteration = iteration;
+
+            // CHECK TIMEOUT before starting iteration
+            if (timeoutTracker.shouldShutdown()) {
+              chatLogger.warn(`[Claude SDK] Approaching timeout at iteration ${iteration}, initiating graceful shutdown`);
+              didTimeout = true;
+
+              // Save partial content
+              await progressiveSave('timeout');
+
+              // Create continuation token
+              const continuation = await createContinuation(
+                activeChatId!,
+                allTextContent,
+                [{ type: 'text', text: allTextContent }],
+                {
+                  iteration,
+                  messages_snapshot: currentMessages,
+                }
+              );
+
+              if (continuation) {
+                continuationToken = continuation.continuation_token;
+                writeSSE({
+                  type: 'timeout-warning',
+                  message: 'Response truncated due to timeout. Click "Continue" to resume.',
+                  remaining: timeoutTracker.getRemainingMs()
+                });
+                writeSSE({
+                  type: 'continuation-available',
+                  token: continuationToken,
+                  messageId: assistantMessageId
+                });
+              }
+
+              break; // Exit loop gracefully
+            }
+
+            chatLogger.debug(`[Claude SDK] Iteration ${iteration + 1}/${MAX_TOOL_ITERATIONS} (elapsed: ${timeoutTracker.getElapsedMs()}ms)`);
 
             // Call Claude API with streaming
             const stream = client.messages.stream({
@@ -1003,8 +1133,17 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             const toolUseBlocks: Array<{ id: string; name: string; input: Record<string, unknown> }> = [];
             let currentToolUse: { id: string; name: string; inputJson: string } | null = null;
             let stopReason: string | null = null;
+            let shouldBreakStreaming = false;
 
             for await (const event of stream) {
+              // CHECK TIMEOUT during streaming
+              if (timeoutTracker.shouldShutdown() && !didTimeout) {
+                chatLogger.warn('[Claude SDK] Timeout during streaming, breaking');
+                didTimeout = true;
+                shouldBreakStreaming = true;
+                break;
+              }
+
               switch (event.type) {
                 case 'message_start':
                   if (event.message?.usage) {
@@ -1021,7 +1160,6 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
                   } else if (event.content_block.type === 'tool_use') {
                     const tb = event.content_block as ToolUseBlock;
                     currentToolUse = { id: tb.id, name: tb.name, inputJson: '' };
-                    // Note: Don't emit tool-start - not a valid useChat event type
                     chatLogger.debug(`[Claude SDK] Tool call started: ${tb.name}`);
                   }
                   break;
@@ -1041,7 +1179,6 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
                     try {
                       const input = currentToolUse.inputJson ? JSON.parse(currentToolUse.inputJson) : {};
                       toolUseBlocks.push({ id: currentToolUse.id, name: currentToolUse.name, input });
-                      // Note: Don't emit tool-ready - not a valid useChat event type
                       chatLogger.debug(`[Claude SDK] Tool ready: ${currentToolUse.name}`, input);
                     } catch (e) {
                       chatLogger.error('Failed to parse tool input:', e);
@@ -1062,6 +1199,38 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             }
 
             allTextContent += iterationText;
+
+            // Handle timeout break
+            if (shouldBreakStreaming || didTimeout) {
+              await progressiveSave('timeout');
+
+              if (!continuationToken) {
+                const continuation = await createContinuation(
+                  activeChatId!,
+                  allTextContent,
+                  [{ type: 'text', text: allTextContent }],
+                  {
+                    iteration,
+                    messages_snapshot: currentMessages,
+                  }
+                );
+
+                if (continuation) {
+                  continuationToken = continuation.continuation_token;
+                  writeSSE({
+                    type: 'timeout-warning',
+                    message: 'Response truncated due to timeout.',
+                    remaining: timeoutTracker.getRemainingMs()
+                  });
+                  writeSSE({
+                    type: 'continuation-available',
+                    token: continuationToken,
+                    messageId: assistantMessageId
+                  });
+                }
+              }
+              break;
+            }
 
             // If no tools were called, we're done
             if (toolUseBlocks.length === 0 || stopReason === 'end_turn') {
@@ -1088,14 +1257,19 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 
             currentMessages.push({ role: 'assistant', content: assistantContent });
 
-            // Execute tools in parallel
+            // Execute tools in parallel (with timeout check)
+            if (timeoutTracker.shouldShutdown()) {
+              chatLogger.warn('[Claude SDK] Timeout before tool execution, skipping');
+              didTimeout = true;
+              break;
+            }
+
             const toolResults = await Promise.all(
               toolUseBlocks.map(async (tu) => {
                 chatLogger.debug(`[Claude SDK] Executing tool: ${tu.name}`);
                 const result = await executeAdvisoryTool(tu.name, tu.input);
                 const parsed = JSON.parse(result);
                 chatLogger.debug(`[Claude SDK] Tool ${tu.name} result: ${parsed.success ? 'success' : 'error'}`);
-                // Note: Don't emit tool-result - not a valid useChat event type
                 return { tool_use_id: tu.id, content: result };
               })
             );
@@ -1111,12 +1285,22 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             });
           }
 
+          // Clean up progressive save interval
+          if (progressiveSaveInterval) {
+            clearInterval(progressiveSaveInterval);
+            progressiveSaveInterval = null;
+          }
+
           // End streaming
           if (allTextContent) {
             writeSSE({ type: 'text-end', id: '0' });
           }
           writeSSE({ type: 'finish-step' });
-          writeSSE({ type: 'finish', finishReason: 'stop' });
+          writeSSE({
+            type: 'finish',
+            finishReason: didTimeout ? 'timeout' : 'stop',
+            continuationToken: continuationToken || undefined
+          });
           writer.write(encoder.encode('data: [DONE]\n\n'));
 
           // Return collected data for persistence
@@ -1124,10 +1308,24 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
             text: allTextContent,
             inputTokens: totalInputTokens,
             outputTokens: totalOutputTokens,
+            didTimeout,
+            continuationToken,
+            messageId: assistantMessageId,
           };
         } catch (error) {
+          // Clean up on error
+          if (progressiveSaveInterval) {
+            clearInterval(progressiveSaveInterval);
+          }
+
           chatLogger.error('[Claude SDK] Stream error:', error);
           writeSSE({ type: 'error', error: error instanceof Error ? error.message : 'Unknown error' });
+
+          // Try to save partial content on error
+          if (allTextContent.length > 0 && activeChatId) {
+            await progressiveSave('error');
+          }
+
           throw error;
         } finally {
           writer.close();
@@ -1136,9 +1334,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 
       // Handle persistence after streaming completes (fire and forget)
       responsePromise
-        .then(async ({ text, inputTokens, outputTokens }) => {
+        .then(async ({ text, inputTokens, outputTokens, didTimeout: timedOut, continuationToken: contToken, messageId }) => {
           try {
-            // Save user message
+            // Save user message (always, regardless of timeout)
             const lastUserMessage = messages[messages.length - 1];
             if (lastUserMessage && lastUserMessage.role === 'user') {
               const userMessageParts = (lastUserMessage.parts || []) as MessagePart[];
@@ -1160,6 +1358,14 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
               if (firstTextPart?.text) {
                 await updateChatTitleFromMessage(activeChatId!, firstTextPart.text);
               }
+            }
+
+            // If timeout occurred, partial message already saved via progressiveSave
+            // Just log and skip assistant message creation
+            if (timedOut) {
+              chatLogger.info(`[Claude SDK] Response timed out. Partial message saved (${text.length} chars). Continuation token: ${contToken ? 'available' : 'none'}`);
+              await updateChat(activeChatId!, { last_message_at: new Date().toISOString() });
+              return; // Skip assistant message creation - already saved as partial
             }
 
             // Track sources and insert inline citations
@@ -1202,15 +1408,29 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
               assistantParts.push(...sourceParts);
             }
 
-            const assistantMsg = await createMessage({
-              chat_id: activeChatId!,
-              role: 'assistant',
-              content: { parts: assistantParts },
-              token_count: inputTokens + outputTokens || getTokenCount(assistantParts),
-            });
+            // Use finalizeMessage instead of createMessage since progressive save
+            // may have already created a partial message with this ID
+            const assistantMsg = await finalizeMessage(
+              messageId,
+              { parts: assistantParts },
+              inputTokens + outputTokens || getTokenCount(assistantParts)
+            );
 
             if (assistantMsg) {
               embedAndSaveMessage(assistantMsg.id, text).catch((err) => chatLogger.error('Failed to embed assistant message:', err));
+              chatLogger.info(`[Claude SDK] Response complete. Message finalized (${text.length} chars)`);
+            } else {
+              // Fallback: If finalizeMessage fails (no partial message exists), create new
+              chatLogger.warn('[Claude SDK] finalizeMessage returned null, falling back to createMessage');
+              const newMsg = await createMessage({
+                chat_id: activeChatId!,
+                role: 'assistant',
+                content: { parts: assistantParts },
+                token_count: inputTokens + outputTokens || getTokenCount(assistantParts),
+              });
+              if (newMsg) {
+                embedAndSaveMessage(newMsg.id, text).catch((err) => chatLogger.error('Failed to embed assistant message:', err));
+              }
             }
 
             await updateChat(activeChatId!, { last_message_at: new Date().toISOString() });
