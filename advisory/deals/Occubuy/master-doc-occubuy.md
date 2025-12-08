@@ -15,6 +15,7 @@ founder_engine_score: ""
 gtm_readiness: ""
 valuation_decision: ""
 last_updated: "2025-12-08"
+contact_number: "+61477666671"
 ---
 
 # Occubuy - Client Master Doc
@@ -318,6 +319,9 @@ last_updated: "2025-12-08"
 
 | Date | Channel | Direction | Summary |
 |------|---------|-----------|---------|
+| 2025-12-08 | WhatsApp | Both | Deeper discussion - Sachee tested app, users asking "which banks support points?", Nathan explained Qantas-style points model, refined 3 selling points to banks |
+| 2025-11-19 | WhatsApp | Outbound | Phone exchange, Sachee suggested reframe: pitch verification (risk reduction) not volume (leads) to banks |
+| 2025-11-19 | LinkedIn | Both | Post-call follow-up - Nathan shared WhatsApp, Sachee praised Amy hire as "coup", suggested leverage = proving lower-risk borrowers |
 | 2025-11-19 | Google Meet | Both | Discovery call - 43 min, discussed business model, traction, fundraising, offered to help with enterprise sales |
 | 2025-11-16 | LinkedIn | Inbound | Nathan confirmed Wed 2pm call, shared email nathan@iamxo.com |
 | 2025-11-15 | LinkedIn | Outbound | Sachee proposed Wed, asked for email to send calendar |
@@ -361,6 +365,17 @@ last_updated: "2025-12-08"
 - **Crypto-to-PropTech pivot:** Interesting pattern, brings community building skills
 - **The "partner network as moat" play:** See this in marketplaces - needs critical mass
 - **Amy Sheen Ash hire:** Classic "hire 10 years ahead" move - could accelerate or create tension
+
+### Strategic Insight (from Dec 2025 comms)
+
+**The bank pitch reframe:** Stop pitching volume (leads), start pitching verification (risk reduction).
+
+Nathan's refined 3 selling points to banks:
+1. **Customer understanding:** 20-45 y/o underserved, unengaged segment
+2. **Lower CAC:** Cheaper mortgage customer acquisition than traditional channels
+3. **Reduced risk:** Occubuyers are statistically lower-risk borrowers (open banking data proves it)
+
+Key question to validate: Can they prove open-banking users are statistically lower-risk borrowers? This is the leverage play.
 
 ### Personal Notes
 
