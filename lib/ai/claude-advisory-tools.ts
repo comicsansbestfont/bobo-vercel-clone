@@ -875,7 +875,7 @@ async function fetchUrl(input: Record<string, unknown>): Promise<string> {
         const article = reader.parse();
 
         if (article) {
-          title = article.title;
+          title = article.title ?? null;
           extractedContent = article.textContent || '';
           chatLogger.info(`[fetch_url] Extracted article: "${title}" (${extractedContent.length} chars)`);
         } else {
