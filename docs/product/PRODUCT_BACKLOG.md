@@ -1,12 +1,18 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 8, 2025 (M3.10 PAPR-Inspired Knowledge Graph added)
+**Last Updated:** December 8, 2025 (M3.11 GTM Health Check Bot added)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
 
-> **December 8, 2025 Update:** 🧠 **M3.10 PAPR-INSPIRED KNOWLEDGE GRAPH ADDED**
+> **December 8, 2025 Update (PM):** 🚀 **M3.11 GTM HEALTH CHECK BOT ADDED**
+> - Lead generation chatbot launching January 2026
+> - "Introducing Bobo, a GTM co-pilot for advisory portfolio startups"
+> - Chatbot IS the interface: collects info, runs assessment, delivers report
+> - 1 sprint, 8h total (6 tasks) - simple and focused
+
+> **December 8, 2025 Update (AM):** 🧠 **M3.10 PAPR-INSPIRED KNOWLEDGE GRAPH ADDED**
 > - Research conducted on [PAPR AI](https://platform.papr.ai/) - #1 on Stanford's STaRK benchmark
 > - Key insight: PAPR's value comes from **knowledge graphs**, not prediction
 > - Added M3.10 milestone: Entity extraction, spreading activation, agent self-learning
@@ -70,7 +76,7 @@
 | **Milestones Complete** | 8 of 10 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8) |
 | **Tasks Complete** | 115 of 160 (72%) |
 | **Hours Invested** | ~110 hours actual |
-| **Hours Remaining** | ~108.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h) |
+| **Hours Remaining** | ~116.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
 
@@ -139,6 +145,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.8: Advisory Projects** | ✅ Complete | 19/19 | 16h | ~8h | 200% | Project-per-deal, file-reference mode, AI summaries |
 | **M3.9: Advisory-Memory Integration** | 📝 Planned | 0/8 | 15h | - | - | Bidirectional advisory↔memory linking |
 | **M3.10: Knowledge Graph** | 📝 Planned | 0/20 | 28.5h | - | - | Entity extraction, spreading activation, agent self-learning |
+| **M3.11: GTM Health Check Bot** | 📝 Planned | 0/6 | 8h | - | - | Lead gen chatbot, collects info + runs assessment, Jan 2026 launch |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -2103,6 +2110,75 @@ const learnPreferenceTool = {
 - [PAPR AI Platform](https://platform.papr.ai/) - Predictive Memory Graph architecture
 - [STaRK Benchmark](https://arxiv.org/html/2404.13207v1) - Semi-structured retrieval evaluation
 - [PAPR TypeScript SDK](https://github.com/Papr-ai/papr-TypescriptSDK) - API patterns
+
+---
+
+## 🚀 M3.11: GTM Health Check Bot (Lead Generation)
+
+**Status:** 📝 Planned
+**Target Launch:** January 2026
+**Focus:** Chatbot-driven GTM assessment for lead generation
+**Positioning:** "Introducing Bobo, a GTM co-pilot" - free health check open to anyone
+
+### Concept
+
+> "Introducing Bobo, a GTM co-pilot for my advisory portfolio startups to navigate go-to-market. But Bobo is opening up for anyone and everyone to conduct a **free GTM health check**."
+
+**The chatbot IS the interface.** No separate landing page needed. User lands on chat, Bobo:
+1. Collects basic info (name, company, email, role)
+2. Asks GTM assessment questions conversationally
+3. Runs the assessment
+4. Delivers personalized report with scores + recommendations
+
+### Tasks (8h)
+
+| ID | Task | Priority | Estimate | Status | Notes |
+|----|------|----------|----------|--------|-------|
+| **M3.11-01** | Design GTM assessment conversation flow | 🔴 HIGH | 1.5h | ⏳ | Questions for: ICP, channels, metrics, positioning |
+| **M3.11-02** | Create GTM Health Check system prompt | 🔴 HIGH | 1.5h | ⏳ | Bobo persona + assessment logic |
+| **M3.11-03** | Build assessment data model | 🔴 HIGH | 1h | ⏳ | `gtm_assessments` table: contact info, responses, scores |
+| **M3.11-04** | Implement scoring + report generation | 🔴 HIGH | 2h | ⏳ | Claude analyzes responses → personalized report |
+| **M3.11-05** | Public chat route (no auth required) | 🔴 HIGH | 1h | ⏳ | `/gtm` or similar - anonymous access |
+| **M3.11-06** | Testing buffer | 🔴 HIGH | 1h | ⏳ | Sprint rule |
+
+**Total:** 8h
+
+### Assessment Flow
+
+```
+User lands on /gtm
+    ↓
+Bobo: "Hey! I'm Bobo. Want a free GTM health check? First, tell me about yourself..."
+    ↓
+Collects: Name, Company, Email, Role
+    ↓
+Bobo asks 8-10 GTM questions conversationally
+    ↓
+Bobo: "Analyzing your GTM setup..."
+    ↓
+Delivers report: Overall score + dimension breakdown + 3 recommendations
+```
+
+### Assessment Dimensions
+
+1. **ICP Clarity** - How well-defined is the ideal customer?
+2. **Channel Fit** - Are you where your customers are?
+3. **Metrics** - Do you know what's working?
+4. **Positioning** - Is your value prop clear?
+
+### Success Criteria
+
+- [ ] Assessment feels like a natural conversation (not a form)
+- [ ] Completes in < 5 minutes
+- [ ] Report provides actionable insights (not generic)
+- [ ] Contact info captured for follow-up
+
+### Files to Create
+
+- `app/gtm/page.tsx` - Public chat interface (no auth)
+- `lib/gtm/system-prompt.ts` - GTM Health Check Bobo persona
+- `lib/gtm/scoring.ts` - Assessment scoring logic
+- `supabase/migrations/YYYYMMDD_gtm_assessments.sql` - Store results
 
 ---
 
