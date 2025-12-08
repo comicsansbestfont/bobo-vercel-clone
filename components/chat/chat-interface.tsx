@@ -272,8 +272,17 @@ export function ChatInterface({
     }
     return chatIdFromUrl;
   });
+  // Track if we've synced chatId with URL to handle hydration edge cases
+  const [chatIdSynced, setChatIdSynced] = useState(false);
   // Initialize to true when chatId is present to prevent empty state flash during page load
-  const [isLoadingHistory, setIsLoadingHistory] = useState(Boolean(chatIdFromUrl));
+  // Check both sources to handle SSR/hydration timing
+  const [isLoadingHistory, setIsLoadingHistory] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return Boolean(params.get('chatId'));
+    }
+    return Boolean(chatIdFromUrl);
+  });
   const [chatTitle, setChatTitle] = useState<string | null>(null);
   const [chatProjectId, setChatProjectId] = useState<string | null>(projectId || null);
   const [chatProjectName, setChatProjectName] = useState<string | null>(null);
@@ -375,11 +384,12 @@ export function ChatInterface({
         clearTimeout(persistenceTimeoutRef.current);
       }
 
-      // Wait 1.5 seconds for database persistence to complete before allowing history loads
+      // Wait 3 seconds for database persistence to complete before allowing history loads
+      // Increased from 1.5s to account for slower persistence under load
       persistenceTimeoutRef.current = setTimeout(() => {
         chatLogger.info('✅ Database persistence window complete - allowing history loads');
         justSubmittedRef.current = false;
-      }, 1500);
+      }, 3000);
     },
   });
 
@@ -419,6 +429,11 @@ export function ChatInterface({
 
   // Keep local chatId in sync with URL when navigating between chats
   useEffect(() => {
+    // Mark that we've done initial sync
+    if (!chatIdSynced) {
+      setChatIdSynced(true);
+    }
+
     // Handle navigation away from a chat (chatId cleared)
     // BUT skip if we're auto-generating a chatId (URL hasn't synced yet)
     if (!chatIdFromUrl && chatId) {
@@ -430,6 +445,8 @@ export function ChatInterface({
       setChatId(null);
       setMessages([]);
       setIsLoadingHistory(false);
+      setChatTitle(null);
+      setChatProjectName(null);
       return;
     }
 
@@ -448,9 +465,11 @@ export function ChatInterface({
 
     setChatId(chatIdFromUrl);
     setMessages([]);
+    setChatTitle(null);
+    setChatProjectName(null);
     // Set loading state to prevent empty state flash
     setIsLoadingHistory(true);
-  }, [chatIdFromUrl, chatId, status, setMessages]);
+  }, [chatIdFromUrl, chatId, status, setMessages, chatIdSynced]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -463,11 +482,24 @@ export function ChatInterface({
 
   useEffect(() => {
     if (!chatId) return;
-    if (chatId !== chatIdFromUrl) return;
+
+    // Handle hydration: chatIdFromUrl might be undefined during initial hydration
+    // but chatId was set from window.location.search. In that case, wait for
+    // chatIdFromUrl to sync, OR if chatIdSynced is true but they still don't match,
+    // use chatId directly
+    const urlChatId = typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search).get('chatId')
+      : chatIdFromUrl;
+
+    if (chatId !== urlChatId && chatId !== chatIdFromUrl) {
+      chatLogger.info('⏭️  Skipping history load - chatId mismatch (hydration)', { chatId, chatIdFromUrl, urlChatId });
+      return;
+    }
 
     // Don't load history if we already have messages (they're from streaming)
     if (messages.length > 0) {
       chatLogger.info('⏭️  Skipping history load - messages already present');
+      setIsLoadingHistory(false);
       return;
     }
 
@@ -491,8 +523,12 @@ export function ChatInterface({
       return;
     }
 
-    async function loadChatHistory() {
-      chatLogger.info('📚 Loading chat history for chatId:', chatId);
+    async function loadChatHistory(retryCount = 0) {
+      const MAX_RETRIES = 2;
+      const RETRY_DELAY = 1500; // 1.5 seconds between retries
+      let willRetry = false;
+
+      chatLogger.info('📚 Loading chat history for chatId:', chatId, retryCount > 0 ? `(retry ${retryCount})` : '');
       try {
         const res = await fetch(`/api/chats/${chatId}`);
         if (!res.ok) {
@@ -520,6 +556,15 @@ export function ChatInterface({
           role: msg.role,
           parts: msg.content.parts,
         }));
+
+        // If chat exists but has no messages, it might be a timing issue
+        // (messages not yet persisted). Retry a few times before giving up.
+        if (uiMessages.length === 0 && retryCount < MAX_RETRIES) {
+          chatLogger.info(`⏳ Chat exists but no messages yet - retrying in ${RETRY_DELAY}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+          willRetry = true;
+          setTimeout(() => loadChatHistory(retryCount + 1), RETRY_DELAY);
+          return;
+        }
 
         chatLogger.success(`✅ Loaded ${uiMessages.length} messages`);
         setMessages(uiMessages);
@@ -561,13 +606,16 @@ export function ChatInterface({
         });
         setChatId(null);
       } finally {
-        chatLogger.info('✅ Chat history loading complete - isLoadingHistory = false');
-        setIsLoadingHistory(false);
+        // Only mark loading complete if we're not retrying
+        if (!willRetry) {
+          chatLogger.info('✅ Chat history loading complete - isLoadingHistory = false');
+          setIsLoadingHistory(false);
+        }
       }
     }
 
     loadChatHistory();
-  }, [chatIdFromUrl, setMessages, chatId, status]);
+  }, [chatIdFromUrl, setMessages, chatId, status, chatIdSynced]);
 
   // Auto-submit initial message from URL parameter
   useEffect(() => {
