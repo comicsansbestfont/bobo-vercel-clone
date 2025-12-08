@@ -23,7 +23,6 @@
     "test:m37:db": "playwright test m37-advisory-database-validation",
     "test:m37:security": "playwright test m37-advisory-security",
     "test:validation": "playwright test --grep 'Validation Query'",
-    "test:sidebar": "npx tsx tests/e2e/sidebar-navigation-test.ts",
     "index-advisory": "npx tsx scripts/index-advisory.ts",
     "verify-advisory": "npx tsx scripts/verify-advisory-indexing.ts",
     "postbuild": "node scripts/ensure-next-lock.mjs"
