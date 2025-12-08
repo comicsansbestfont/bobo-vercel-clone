@@ -336,6 +336,11 @@ export function ChatInterface({
 
   // Track if we just submitted a message to prevent history loading before DB persistence
   const justSubmittedRef = useRef(false);
+
+  // Track which chatId we've successfully loaded history for
+  // This prevents the race condition where stale messages from a previous chat
+  // cause us to skip loading history for the new chat
+  const loadedHistoryForChatIdRef = useRef<string | null>(null);
   const persistenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   // Track when we're auto-generating a chatId to prevent the sync effect from clearing it
   const isAutoGeneratingChatIdRef = useRef(false);
@@ -442,6 +447,7 @@ export function ChatInterface({
         return;
       }
       chatLogger.info('🔁 Chat closed, clearing state');
+      loadedHistoryForChatIdRef.current = null;
       setChatId(null);
       setMessages([]);
       setIsLoadingHistory(false);
@@ -462,6 +468,9 @@ export function ChatInterface({
     }
 
     chatLogger.info('🔁 Syncing chatId from URL', { chatIdFromUrl });
+
+    // Reset the loaded history ref to allow loading for the new chat
+    loadedHistoryForChatIdRef.current = null;
 
     setChatId(chatIdFromUrl);
     setMessages([]);
@@ -496,9 +505,11 @@ export function ChatInterface({
       return;
     }
 
-    // Don't load history if we already have messages (they're from streaming)
-    if (messages.length > 0) {
-      chatLogger.info('⏭️  Skipping history load - messages already present');
+    // Don't load history if we've already loaded it for this specific chat
+    // Using a ref instead of messages.length to avoid race condition where
+    // stale messages from a previous chat haven't been cleared yet
+    if (loadedHistoryForChatIdRef.current === chatId) {
+      chatLogger.info('⏭️  Skipping history load - already loaded for this chatId');
       setIsLoadingHistory(false);
       return;
     }
@@ -535,6 +546,7 @@ export function ChatInterface({
           // 404 means the chat doesn't exist yet (new chat) - this is OK
           if (res.status === 404) {
             chatLogger.info('✨ New chat detected (404) - starting with empty history');
+            loadedHistoryForChatIdRef.current = chatId;
             setMessages([]);
             return;
           }
@@ -568,6 +580,9 @@ export function ChatInterface({
 
         chatLogger.success(`✅ Loaded ${uiMessages.length} messages`);
         setMessages(uiMessages);
+
+        // Mark that we've loaded history for this chat to prevent duplicate loads
+        loadedHistoryForChatIdRef.current = chatId;
 
         // Set chat metadata for header
         if (data.chat.title) {
