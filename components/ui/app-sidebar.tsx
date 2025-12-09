@@ -19,6 +19,7 @@ import {
   Pencil,
   Trash2,
   Archive,
+  FileSearch,
 } from "lucide-react";
 import {
   Sidebar,
@@ -459,6 +460,14 @@ function AppSidebarContent({
             title="Home"
           >
             <Home className="h-5 w-5" />
+          </Link>
+          <Link
+            href="/advisory"
+            onClick={() => isMobile && setOpenMobile(false)}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
+            title="Advisory Files"
+          >
+            <FileSearch className="h-5 w-5" />
           </Link>
           <Link
             href="/memory"
