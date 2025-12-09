@@ -1,12 +1,22 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 9, 2025 (M3.13 Thinking Partner Foundation added)
+**Last Updated:** December 9, 2025 (M40-01 Refactor Sprint COMPLETE)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
 
-> **December 9, 2025 Update:** 🧠 **M3.13 THINKING PARTNER FOUNDATION ADDED**
+> **December 9, 2025 Update (PM):** 🧹 **M40-01 REFACTOR & OPTIMIZATION SPRINT COMPLETE**
+> - All 10 tasks completed in ~2.4h (estimated 11h) - **4.6x velocity**
+> - Deleted 1501 lines of dead code (2 orphan sidebars, debug route)
+> - Consolidated icon libraries: @tabler → lucide-react (49 icons in 10 files)
+> - Fixed N+1 query in cron: 400+ queries → ~100 (75% reduction)
+> - Lazy loaded Shiki (~2.5MB) with dynamic import
+> - Added MessageContinuation types, removed 8 `as any` assertions
+> - Extracted 6 chat hooks: chat-interface.tsx 1400 → 933 lines (33% reduction)
+> - Build passes ✅
+
+> **December 9, 2025 Update (AM):** 🧠 **M3.13 THINKING PARTNER FOUNDATION ADDED**
 > - Critical review of "Bobo as Thinking Partner" architecture with 4 sub-agents
 > - Key insight: **Build primitives first, defer graph infrastructure**
 > - LLMs already do graph-like reasoning; bottleneck is **context assembly**, not graph traversal
@@ -88,9 +98,9 @@
 
 | Metric | Value |
 |--------|-------|
-| **Milestones Complete** | 8 of 10 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8) |
-| **Tasks Complete** | 115 of 160 (72%) |
-| **Hours Invested** | ~110 hours actual |
+| **Milestones Complete** | 9 of 11 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8, M40) |
+| **Tasks Complete** | 125 of 170 (74%) |
+| **Hours Invested** | ~113 hours actual |
 | **Hours Remaining** | ~146.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h, M3.12: 15h, M3.13: 15h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
@@ -163,6 +173,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.11: GTM Health Check Bot** | 📝 Planned | 0/6 | 8h | - | - | Lead gen chatbot, collects info + runs assessment, Jan 2026 launch |
 | **M3.12: Chat UX Enhancements** | 📝 Planned | 0/8 | 15h | - | - | Message editing, document attachments, GitHub integration, folder browser |
 | **M3.13: Thinking Partner Foundation** | 📝 Planned | 0/7 | 15h | - | - | Memory types (question/decision/insight), tags, thought threads, similar questions prompt |
+| **M40: Refactor & Optimization** | ✅ Complete | 10/10 | 11h | 2.4h | 458% | Dead code removal, icon consolidation, N+1 fix, Shiki lazy load, type safety, hook extraction |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -185,11 +196,12 @@ M4-01         │  10   │ 25.5    │   10   │  -61%    │ ✅
 M3.6-01       │   7   │  15     │    9   │  -40%    │ ✅ Complete
 M3.7-01       │  11   │  13     │  3.9   │  -70%    │ ✅ Complete
 M3.8-01       │  19   │  16     │   ~8   │  -50%    │ ✅ Complete
+M40-01        │  10   │  11     │  2.4   │  -78%    │ ✅ Complete
 ──────────────┼───────┼─────────┼────────┼──────────┼────────
-TOTALS        │ 126   │ 173h    │ 111h   │  -36%    │ 72% ✅
+TOTALS        │ 136   │ 184h    │ 113h   │  -39%    │ 75% ✅
 ```
 
-**Average Velocity:** 30% faster than estimated
+**Average Velocity:** 39% faster than estimated
 
 ### Feature Capability Matrix
 
