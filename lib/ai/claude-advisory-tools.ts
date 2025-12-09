@@ -15,7 +15,8 @@ import { generateEmbedding } from '@/lib/ai/embedding';
 import { supabase } from '@/lib/db/client';
 import { ADVISORY_PROJECT_ID } from '@/lib/db/types';
 import { chatLogger } from '@/lib/logger';
-import { parse as parseHtml } from 'node-html-parser';
+import { parseHTML } from 'linkedom';
+import { Readability } from '@mozilla/readability';
 
 // ============================================================================
 // Tool Definitions
@@ -867,24 +868,25 @@ async function fetchUrl(input: Record<string, unknown>): Promise<string> {
     let title: string | null = null;
 
     if (isHtml) {
-      // Parse HTML and extract readable content using node-html-parser
+      // Parse HTML and extract readable content using linkedom + Readability
+      // Readability is Mozilla's algorithm (same as Firefox Reader View)
       try {
-        const root = parseHtml(rawText);
+        const { document } = parseHTML(rawText);
 
-        // Extract title
-        const titleElement = root.querySelector('title');
-        title = titleElement?.textContent?.trim() || null;
+        // Use Readability to extract main article content
+        const reader = new Readability(document);
+        const article = reader.parse();
 
-        // Remove script and style elements
-        root.querySelectorAll('script, style, noscript, iframe, nav, footer, header, aside').forEach(el => el.remove());
-
-        // Try to find main content (article, main, or body)
-        const mainContent = root.querySelector('article') || root.querySelector('main') || root.querySelector('body') || root;
-
-        // Get text content
-        extractedContent = mainContent.textContent || '';
-
-        chatLogger.info(`[fetch_url] Extracted content: "${title}" (${extractedContent.length} chars)`);
+        if (article) {
+          title = article.title ?? null;
+          extractedContent = article.textContent || '';
+          chatLogger.info(`[fetch_url] Readability extracted: "${title}" (${extractedContent.length} chars)`);
+        } else {
+          // Fallback: extract text from body if Readability fails
+          extractedContent = document.body?.textContent || '';
+          title = document.title || null;
+          chatLogger.info(`[fetch_url] Fallback extraction (${extractedContent.length} chars)`);
+        }
       } catch (parseError) {
         chatLogger.warn('[fetch_url] HTML parsing failed, using raw text:', parseError);
         // Strip HTML tags as fallback

@@ -47,7 +47,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import type { Message as DBMessage, MessagePart } from '@/lib/db/types';
 
-import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon } from 'lucide-react';
+import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, RotateCcwIcon } from 'lucide-react';
 import {
   FileTextIcon,
   FilePlusIcon,
@@ -99,6 +99,7 @@ import {
 
 import { Loader } from '@/components/ai-elements/loader';
 import { ContinueButton, TimeoutWarning } from '@/components/ai-elements/continue-button';
+import { Button } from '@/components/ui/button';
 import { getContextUsage, formatTokenCount } from '@/lib/context-tracker';
 import { cn } from '@/lib/utils';
 import { compressHistory } from '@/lib/memory-manager';
@@ -166,6 +167,29 @@ function hasVisibleAssistantText(messages: Array<{ role: string; parts: Array<{ 
     }
   }
   return false;
+}
+
+/**
+ * Check if the last message is an orphaned user message (no assistant response)
+ * This happens when the API crashes silently
+ */
+function isOrphanedUserMessage(
+  messages: Array<{ role: string; parts: Array<{ type: string; text?: string }> }>,
+  status: string,
+  hasError: boolean
+): boolean {
+  if (messages.length === 0) return false;
+  const lastMessage = messages.at(-1);
+
+  // Only flag as orphaned if:
+  // 1. Last message is from user
+  // 2. We're not currently submitting/streaming
+  // 3. There was an error OR we're in ready state with no response
+  return (
+    lastMessage?.role === 'user' &&
+    status === 'ready' &&
+    hasError
+  );
 }
 
 type ToolStep = {
@@ -1312,13 +1336,28 @@ export function ChatInterface({
             </Reasoning>
           )}
           {error && (
-            <Message from="assistant">
-              <MessageContent>
-                <MessageResponse>
-                  {`Error: ${error.message || 'An error occurred'}`}
-                </MessageResponse>
-              </MessageContent>
-            </Message>
+            <div className="flex flex-col gap-3 w-full max-w-[80%]">
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                <AlertTriangleIcon className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                <div className="flex-1 space-y-2">
+                  <p className="text-sm font-medium text-destructive">
+                    Failed to get response
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {error.message || 'An error occurred while processing your message. This might be a temporary issue.'}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRegenerate}
+                    className="mt-2"
+                  >
+                    <RotateCcwIcon className="h-4 w-4 mr-2" />
+                    Retry
+                  </Button>
+                </div>
+              </div>
+            </div>
           )}
           {/* Show timeout warning and continue button when response timed out */}
           {timeoutOccurred && continuationToken && status === 'ready' && (
