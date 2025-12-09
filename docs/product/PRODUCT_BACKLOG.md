@@ -1,10 +1,18 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 8, 2025 (M3.12 Chat UX Enhancements added)
+**Last Updated:** December 9, 2025 (M3.13 Thinking Partner Foundation added)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 9, 2025 Update:** 🧠 **M3.13 THINKING PARTNER FOUNDATION ADDED**
+> - Critical review of "Bobo as Thinking Partner" architecture with 4 sub-agents
+> - Key insight: **Build primitives first, defer graph infrastructure**
+> - LLMs already do graph-like reasoning; bottleneck is **context assembly**, not graph traversal
+> - M3.13: Memory types (question/decision/insight), tags, thought threads, similar questions
+> - 1 sprint, 15h total (7 tasks) - delivers 80% of "thinking partner" value with 10% of effort
+> - **Recommendation:** Complete M3.13 BEFORE M3.10 (Knowledge Graph) to prove value
 
 > **December 8, 2025 Update (Late PM):** 🎨 **M3.12 CHAT UX ENHANCEMENTS ADDED**
 > - **Message Editing** - Edit sent messages and retry (like Claude/ChatGPT)
@@ -83,7 +91,7 @@
 | **Milestones Complete** | 8 of 10 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8) |
 | **Tasks Complete** | 115 of 160 (72%) |
 | **Hours Invested** | ~110 hours actual |
-| **Hours Remaining** | ~131.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h, M3.12: 15h) |
+| **Hours Remaining** | ~146.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h, M3.12: 15h, M3.13: 15h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
 
@@ -154,6 +162,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.10: Knowledge Graph** | 📝 Planned | 0/20 | 28.5h | - | - | Entity extraction, spreading activation, agent self-learning |
 | **M3.11: GTM Health Check Bot** | 📝 Planned | 0/6 | 8h | - | - | Lead gen chatbot, collects info + runs assessment, Jan 2026 launch |
 | **M3.12: Chat UX Enhancements** | 📝 Planned | 0/8 | 15h | - | - | Message editing, document attachments, GitHub integration, folder browser |
+| **M3.13: Thinking Partner Foundation** | 📝 Planned | 0/7 | 15h | - | - | Memory types (question/decision/insight), tags, thought threads, similar questions prompt |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -232,6 +241,10 @@ TOTALS        │ 126   │ 173h    │ 111h   │  -36%    │ 72% ✅
 | **Spreading Activation Search** | 📝 Planned | M3.10 | Graph traversal to surface related entities |
 | **Agent Self-Learning** | 📝 Planned | M3.10 | Claude records user preference observations |
 | **Knowledge Graph (PAPR-inspired)** | 📝 Planned | M3.10 | Entity relationships + multi-hop queries |
+| **Memory Types (Thinking Capture)** | 📝 Planned | M3.13 | question/decision/insight as first-class types |
+| **Tags for Emergent Domains** | 📝 Planned | M3.13 | TEXT[] array, no clustering algorithm needed |
+| **Thought Threads** | 📝 Planned | M3.13 | Link related thinking across time |
+| **Similar Questions Prompt** | 📝 Planned | M3.13 | Surface past questions when new question asked |
 | **Memory Provenance** | 📝 Planned | M3-04 | Source chat tracking |
 | **Memory Debugger** | 📝 Planned | M3-04 | "What was injected?" view |
 | **Description-Driven Extraction** | 📝 Planned | M3-04 | Letta-inspired guidance fields |
@@ -337,13 +350,14 @@ MAYBE (If SaaS Pivot)
 ## 📊 Backlog Priority Matrix
 
 ```
-Agent SDK (M4) ✅ → M3.5 ✅ → M3.6 → M3.9 → M3.10 → M3 Phase 4 → M5 → Future
+Agent SDK (M4) ✅ → M3.5 ✅ → M3.6 → M3.9 → M3.13 → M3.10 (if needed) → M3 Phase 4 → M5 → Future
                            ─────────────────────────────────────
                            📝 NEXT (Dec 2025 - Q1 2026)
-                           ~108h across milestones
+                           ~123h across milestones
                            M3.6: Neuroscience-inspired memory (64h)
                            M3.9: Advisory-memory integration (15h)
-                           M3.10: PAPR-inspired knowledge graph (28.5h) ← NEW
+                           M3.13: Thinking Partner Foundation (15h) ← NEW - DO THIS BEFORE M3.10
+                           M3.10: PAPR-inspired knowledge graph (28.5h) ← ONLY IF NEEDED after M3.13
 ```
 
 ---
@@ -2283,6 +2297,242 @@ For projects linked to advisory folders:
 
 - M3.8 (Advisory Projects) - folder browser needs advisory project system
 - Claude SDK vision capabilities for image processing
+
+---
+
+## 🧠 M3.13: Thinking Partner Foundation (Critical Path)
+
+**Status:** 📝 Planned
+**Estimate:** 15 hours (1 sprint)
+**Priority:** 🔴 HIGH - **Should be completed BEFORE M3.10 (Knowledge Graph)**
+**Target:** Q1 2025
+
+### Strategic Context
+
+**Origin:** Critical review of "Bobo as Thinking Partner" architecture (Dec 9, 2025) with 4 sub-agents analyzing:
+1. Schema design
+2. Product vision
+3. Implementation plan
+4. Papr AI comparison
+
+**Key Insight:** The proposed knowledge graph architecture (4 loops, Louvain clustering, entity extraction) is **premature optimization**. The real value comes from capturing **thinking processes** (questions, decisions, insights) as first-class entities.
+
+**Core Finding:**
+> "LLMs already do graph-like reasoning. The bottleneck isn't graph structure—it's what gets into the context window. Build the primitives first, defer the infrastructure."
+
+### Why M3.13 Before M3.10?
+
+| Approach | Effort | Value |
+|----------|--------|-------|
+| **M3.13 (Primitives)** | 15h | 80% of "thinking partner" value |
+| **M3.10 (Knowledge Graph)** | 28.5h | 20% additional value |
+
+**Recommendation:** Complete M3.13 and use it for 3 months. Then decide if M3.10's graph infrastructure is needed. It probably won't be.
+
+### The Simpler Architecture
+
+Instead of 4 loops + knowledge graph:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  memory_entries (existing)                                       │
+│  + memory_type   ← 'fact' | 'question' | 'decision' | 'insight' │
+│  + tags          ← Emergent domains                              │
+│  + thread_id     ← Temporal continuity                           │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│  ENHANCED SEARCH (Already Exists!)                               │
+│  • 45% vector, 15% BM25, 20% recency, 10% frequency, 10% conf   │
+│  + NEW: Filter by memory_type                                    │
+│  + NEW: Boost by matching tags                                   │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│  "RELATED THINKING" PROMPT                                       │
+│  On new question:                                                │
+│  1. Search memory_type='question' with high similarity          │
+│  2. If match > 0.8: "You asked something similar before..."     │
+│  3. Claude does the cross-domain reasoning                      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Sprint Tasks
+
+| ID | Task | Priority | Estimate | Status | Notes |
+|----|------|----------|----------|--------|-------|
+| **M3.13-01** | Add `memory_type` column to memory_entries | 🔴 HIGH | 2h | ⏳ | 'fact' \| 'question' \| 'decision' \| 'insight' |
+| **M3.13-02** | Add `tags` array column to memory_entries | 🔴 HIGH | 2h | ⏳ | TEXT[], enables emergent domains without clustering |
+| **M3.13-03** | Create `record_question` agent tool | 🔴 HIGH | 1.5h | ⏳ | Captures open questions with status: 'open' \| 'answered' |
+| **M3.13-04** | Create `record_decision` agent tool | 🔴 HIGH | 1.5h | ⏳ | Captures decisions with rationale, alternatives_considered |
+| **M3.13-05** | Create `record_insight` agent tool | 🔴 HIGH | 1h | ⏳ | Captures insights with optional source_question_id |
+| **M3.13-06** | Add `thread_id` column for thought threads | 🟡 MED | 2h | ⏳ | Groups related thinking over time |
+| **M3.13-07** | Implement "similar questions" prompt | 🔴 HIGH | 3h | ⏳ | On new question, search memory_type='question', surface similar |
+| **M3.13-08** | Testing buffer | 🔴 HIGH | 2h | ⏳ | Sprint rule |
+
+**Total:** 15h
+
+### Schema Changes
+
+```sql
+-- M3.13-01: Memory types for thinking capture
+ALTER TABLE memory_entries ADD COLUMN memory_type TEXT
+  DEFAULT 'fact'
+  CHECK (memory_type IN ('fact', 'question', 'decision', 'insight'));
+
+-- M3.13-02: Tags for emergent domains (no clustering algorithm needed)
+ALTER TABLE memory_entries ADD COLUMN tags TEXT[] DEFAULT ARRAY[]::TEXT[];
+CREATE INDEX idx_memory_tags ON memory_entries USING gin(tags);
+
+-- M3.13-06: Thought threads for temporal continuity
+ALTER TABLE memory_entries ADD COLUMN thread_id UUID REFERENCES thought_threads(id);
+
+CREATE TABLE thought_threads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id),
+  title TEXT,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Agent Tools Specification
+
+#### M3.13-03: `record_question`
+
+```typescript
+{
+  name: 'record_question',
+  description: 'Capture an open question the user is exploring. Use when user asks strategic or exploratory questions.',
+  parameters: {
+    content: 'The question being asked',
+    context: 'Why this question arose',
+    tags: 'Optional tags (e.g., ["product", "strategy"])',
+    thread_id: 'Optional thread to link to'
+  }
+}
+```
+
+#### M3.13-04: `record_decision`
+
+```typescript
+{
+  name: 'record_decision',
+  description: 'Capture a decision the user has made. Use when user explicitly decides something.',
+  parameters: {
+    content: 'The decision made',
+    rationale: 'Why this decision was made',
+    alternatives_considered: 'Other options that were rejected',
+    tags: 'Optional tags'
+  }
+}
+```
+
+#### M3.13-05: `record_insight`
+
+```typescript
+{
+  name: 'record_insight',
+  description: 'Capture an insight or learning. Use when user has a realization or learns something.',
+  parameters: {
+    content: 'The insight',
+    source_question_id: 'Optional: question this insight answers',
+    tags: 'Optional tags'
+  }
+}
+```
+
+### "Similar Questions" Flow
+
+When user asks a question:
+
+1. **Detect question type:**
+   - Strategic: "How should I...?", "What's the best way to...?"
+   - Exploratory: "I wonder if...", "Could we...?"
+
+2. **Search existing questions:**
+   ```sql
+   SELECT * FROM memory_entries
+   WHERE memory_type = 'question'
+     AND user_id = :user_id
+     AND 1 - (embedding <=> :query_embedding) > 0.8
+   ORDER BY similarity DESC
+   LIMIT 3;
+   ```
+
+3. **Surface related thinking:**
+   ```
+   "You asked something similar 4 months ago about MyTab:
+   'How do I evaluate founder-market fit?'
+
+   Here's what you decided then: [decision]
+   And what you learned: [insight]"
+   ```
+
+4. **Claude does the reasoning** - connects past thinking to current question
+
+### Success Criteria
+
+- [ ] Can capture questions, decisions, and insights as distinct memory types
+- [ ] Can tag memories for emergent domain grouping
+- [ ] Can link related thinking via thread_id
+- [ ] When asking a strategic question, Bobo surfaces similar past questions
+- [ ] Related decisions and insights are included in context
+
+### What This Enables (Without Graph Infrastructure)
+
+| Use Case | How It Works |
+|----------|--------------|
+| "Show me my decisions about pricing" | Search `memory_type='decision'` + tag boost for 'pricing' |
+| "What have I learned about PMF?" | Search `memory_type='insight'` + 'pmf' tag or semantic match |
+| "I'm thinking about X again" | Similar questions prompt surfaces prior exploration |
+| "Connect my MyTab learning to this" | Claude already does this with good context |
+
+### Why Tags > Clustering
+
+| Approach | Effort | Value | Scale Needed |
+|----------|--------|-------|--------------|
+| **Tags** (M3.13) | 2h | Full domain organization | Works at any scale |
+| **Louvain Clustering** (M3.10) | 10-15h | Auto-discovers domains | Needs 200+ entities |
+
+At current scale (~100 entities), tags work better:
+- User/agent naturally tag: `['advisory', 'sales', 'swiftcheckin']`
+- Emergent domains appear: "I keep tagging things with #product-strategy"
+- No algorithm needed
+
+### Dependencies
+
+- M3.5 (Memory Tools) - extend existing `remember_fact` pattern
+- M3.6 (Enhanced Search) - reuse `enhanced_memory_search` with type filter
+
+### Deferred to M3.10 (Only if Needed)
+
+| Feature | Why Defer |
+|---------|-----------|
+| `nodes` and `edges` tables | Search works fine at current scale |
+| Entity extraction pipeline | Noisy, expensive, requires entity resolution |
+| Louvain community detection | Tags work better for <200 entities |
+| Loop C / Loop D separation | Just improve existing search ranking |
+
+### Milestone Totals
+
+| Metric | Value |
+|--------|-------|
+| Tasks | 8 |
+| High Priority | 6 |
+| Total Estimate | 15h |
+| Sprints | 1 |
+
+### Post-M3.13 Decision Gate
+
+After completing M3.13, use it for 3 months. Then answer:
+
+1. **Are tags insufficient for domain organization?** → Consider clustering
+2. **Is semantic search missing explicit relationships?** → Consider graph
+3. **Are multi-hop queries common?** → Consider M3.10
+
+If all answers are "no", M3.10 can be indefinitely deferred.
 
 ---
 
