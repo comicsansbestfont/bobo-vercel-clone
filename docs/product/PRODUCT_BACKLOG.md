@@ -1,10 +1,19 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 9, 2025 (M40-01 Refactor Sprint COMPLETE)
+**Last Updated:** December 9, 2025 (M40-02 Monolithic Chat Route Refactor COMPLETE)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 9, 2025 Update (Evening):** 🏗️ **M40-02 MONOLITHIC CHAT ROUTE REFACTOR COMPLETE**
+> - `app/api/chat/route.ts` reduced from **1608 lines to 150 lines** (91% reduction!)
+> - Created modular architecture in `lib/ai/chat/` with 14 focused modules
+> - **Handler pattern:** OpenAI, Claude, Vercel handlers with clean `canHandle/handle` interface
+> - **~300 lines deduplication:** Unified persistence service consolidates 3 paths
+> - **N+1 query fix:** Batched queries in `getProjectNamesForSearchResults`
+> - E2E tested on production (bobo.lovabo.com) - all 4 tests passed
+> - Build passes ✅
 
 > **December 9, 2025 Update (PM):** 🧹 **M40-01 REFACTOR & OPTIMIZATION SPRINT COMPLETE**
 > - All 10 tasks completed in ~2.4h (estimated 11h) - **4.6x velocity**
@@ -99,8 +108,8 @@
 | Metric | Value |
 |--------|-------|
 | **Milestones Complete** | 9 of 11 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8, M40) |
-| **Tasks Complete** | 125 of 170 (74%) |
-| **Hours Invested** | ~113 hours actual |
+| **Tasks Complete** | 126 of 171 (74%) |
+| **Hours Invested** | ~114.5 hours actual |
 | **Hours Remaining** | ~146.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h, M3.12: 15h, M3.13: 15h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
@@ -173,7 +182,7 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.11: GTM Health Check Bot** | 📝 Planned | 0/6 | 8h | - | - | Lead gen chatbot, collects info + runs assessment, Jan 2026 launch |
 | **M3.12: Chat UX Enhancements** | 📝 Planned | 0/8 | 15h | - | - | Message editing, document attachments, GitHub integration, folder browser |
 | **M3.13: Thinking Partner Foundation** | 📝 Planned | 0/7 | 15h | - | - | Memory types (question/decision/insight), tags, thought threads, similar questions prompt |
-| **M40: Refactor & Optimization** | ✅ Complete | 10/10 | 11h | 2.4h | 458% | Dead code removal, icon consolidation, N+1 fix, Shiki lazy load, type safety, hook extraction |
+| **M40: Refactor & Optimization** | ✅ Complete | 11/11 | 15h | ~4h | 375% | M40-01: Dead code, icons, N+1, Shiki, types, hooks. M40-02: Chat route 1608→150 lines, modular handlers |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -197,8 +206,9 @@ M3.6-01       │   7   │  15     │    9   │  -40%    │ ✅ Complete
 M3.7-01       │  11   │  13     │  3.9   │  -70%    │ ✅ Complete
 M3.8-01       │  19   │  16     │   ~8   │  -50%    │ ✅ Complete
 M40-01        │  10   │  11     │  2.4   │  -78%    │ ✅ Complete
+M40-02        │   1   │   4     │  1.5   │  -63%    │ ✅ Complete
 ──────────────┼───────┼─────────┼────────┼──────────┼────────
-TOTALS        │ 136   │ 184h    │ 113h   │  -39%    │ 75% ✅
+TOTALS        │ 137   │ 188h    │ 114.5h │  -39%    │ 76% ✅
 ```
 
 **Average Velocity:** 39% faster than estimated
