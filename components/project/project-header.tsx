@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import {
-  IconChevronRight,
-  IconCopy,
-  IconSettings,
-} from "@tabler/icons-react";
+  ChevronRight,
+  Copy,
+  Settings,
+} from "lucide-react";
 import { toast } from "sonner";
 
 interface ProjectHeaderProps {
@@ -34,7 +34,7 @@ export function ProjectHeader({
         >
           Home
         </Link>
-        <IconChevronRight className="h-3.5 w-3.5 text-neutral-400" />
+        <ChevronRight className="h-3.5 w-3.5 text-neutral-400" />
         <span className="text-neutral-900 dark:text-neutral-100">
           {projectName}
         </span>
@@ -48,7 +48,7 @@ export function ProjectHeader({
           title="Project Settings"
           aria-label="Project settings"
         >
-          <IconSettings className="h-4 w-4" />
+          <Settings className="h-4 w-4" />
         </Link>
         <button
           onClick={handleCopyLink}
@@ -56,7 +56,7 @@ export function ProjectHeader({
           title="Copy link"
           aria-label="Copy project link"
         >
-          <IconCopy className="h-4 w-4" />
+          <Copy className="h-4 w-4" />
         </button>
       </div>
     </div>

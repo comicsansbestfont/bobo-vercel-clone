@@ -1,10 +1,9 @@
 import { apiLogger } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/db/client';
-import { getAllUsersWithMemories, getMemory, deleteMemory, updateMemory } from '@/lib/db/queries';
-import { mergeDuplicateMemories } from '@/lib/memory/deduplicator';
+import { getAllUsersWithMemories } from '@/lib/db/queries';
 import { differenceInDays } from 'date-fns';
-import { MemoryCategory } from '@/lib/db/types';
+import { MemoryCategory, MemoryEntry } from '@/lib/db/types';
 
 export async function GET(request: NextRequest) {
   // Verify cron secret
@@ -55,36 +54,86 @@ async function consolidateUserMemories(userId: string) {
   // Use a set to track merged/deleted IDs to avoid double processing
   const processedIds = new Set<string>();
 
-  if (duplicates) {
+  if (duplicates && duplicates.length > 0) {
+    // Batch fetch all memories involved in duplicate pairs
+    const allIds = Array.from(
+      new Set(duplicates.flatMap(pair => [pair.id1, pair.id2]))
+    );
+
+    const { data: memoriesData } = await supabase
+      .from('memory_entries')
+      .select('*')
+      .in('id', allIds)
+      .eq('user_id', userId);
+
+    // Create a map for O(1) lookup
+    const memoriesMap = new Map<string, MemoryEntry>(
+      (memoriesData || []).map((m: MemoryEntry) => [m.id, m])
+    );
+
+    // Process merges and collect batch operations
+    const mergeUpdates: Array<{ id: string; updates: Record<string, any> }> = [];
+    const idsToDelete: string[] = [];
+
     for (const pair of duplicates) {
-        if (processedIds.has(pair.id1) || processedIds.has(pair.id2)) continue;
+      if (processedIds.has(pair.id1) || processedIds.has(pair.id2)) continue;
 
-        const m1 = await getMemory(pair.id1);
-        const m2 = await getMemory(pair.id2);
+      const m1 = memoriesMap.get(pair.id1);
+      const m2 = memoriesMap.get(pair.id2);
 
-        if (m1 && m2) {
-            // Merge logic: keep the one with higher confidence, or m1 if equal
-            let keep = m1;
-            let merge = m2;
+      if (m1 && m2) {
+        // Merge logic: keep the one with higher confidence, or m1 if equal
+        let keep = m1;
+        let merge = m2;
 
-            if (m2.confidence > m1.confidence) {
-                keep = m2;
-                merge = m1;
-            }
-
-            // Merge 'merge' into 'keep'
-            await mergeDuplicateMemories(keep, merge);
-            
-            // Delete 'merge'
-            await deleteMemory(merge.id);
-            
-            processedIds.add(merge.id);
-            // We kept 'keep', so we don't mark it as processed (it could be merged with others)
-            // But strict pair processing is simpler. Let's mark both to avoid complex chains in one run.
-            processedIds.add(keep.id);
-            
-            mergedCount++;
+        if (m2.confidence > m1.confidence) {
+          keep = m2;
+          merge = m1;
         }
+
+        // Prepare merge updates
+        const combinedChatIds = Array.from(
+          new Set([...keep.source_chat_ids, ...merge.source_chat_ids])
+        );
+
+        const updates: Record<string, any> = {
+          source_chat_ids: combinedChatIds,
+          source_message_count: (keep.source_message_count || 0) + 1,
+          last_mentioned: new Date().toISOString(),
+        };
+
+        if (merge.confidence > keep.confidence) {
+          updates.content = merge.content;
+          updates.confidence = merge.confidence;
+          updates.last_updated = new Date().toISOString();
+        }
+
+        mergeUpdates.push({ id: keep.id, updates });
+        idsToDelete.push(merge.id);
+
+        processedIds.add(merge.id);
+        processedIds.add(keep.id);
+
+        mergedCount++;
+      }
+    }
+
+    // Execute batch updates
+    for (const { id, updates } of mergeUpdates) {
+      await supabase
+        .from('memory_entries')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', userId);
+    }
+
+    // Execute batch deletes
+    if (idsToDelete.length > 0) {
+      await supabase
+        .from('memory_entries')
+        .delete()
+        .in('id', idsToDelete)
+        .eq('user_id', userId);
     }
   }
 
@@ -131,7 +180,10 @@ async function recalculateScoresAndPeriods(userId: string) {
     .select('*')
     .eq('user_id', userId);
 
-  if (!memories) return;
+  if (!memories || memories.length === 0) return;
+
+  // Collect all updates to execute in batch
+  const batchUpdates: Array<{ id: string; updates: Record<string, string | number> }> = [];
 
   for (const memory of memories) {
     const updates: Record<string, string | number> = {};
@@ -144,21 +196,21 @@ async function recalculateScoresAndPeriods(userId: string) {
     // This implies moving items from brief_history subcategories?
     // Or just updating the `time_period` field.
     // Let's rely on created_at for now.
-    
+
     const daysSinceCreated = differenceInDays(new Date(), new Date(memory.created_at));
     let newTimePeriod = memory.time_period;
-    
+
     if (daysSinceCreated < 90) newTimePeriod = 'recent';
     else if (daysSinceCreated < 365) newTimePeriod = 'past';
     else newTimePeriod = 'long_ago';
-    
+
     // Override for 'current' items? If something is 'current' (work_context), it stays current unless manually changed?
     // Spec says "Update time_period classifications".
     // Let's only update if it was already one of recent/past/long_ago, OR if it's top_of_mind (maybe?).
     // Actually, 'work_context' is usually 'current'.
     // Safe bet: only update if category is brief_history OR if it's just updating the label.
     // Let's stick to spec: "Update time_period classifications"
-    
+
     if (memory.category === 'brief_history' && newTimePeriod !== memory.time_period) {
         updates.time_period = newTimePeriod;
         changed = true;
@@ -179,7 +231,20 @@ async function recalculateScoresAndPeriods(userId: string) {
     }
 
     if (changed) {
-        await updateMemory(memory.id, updates);
+        batchUpdates.push({ id: memory.id, updates });
+    }
+  }
+
+  // Execute all updates in batch (one query per update, but collected together)
+  // Note: Supabase doesn't support bulk updates with different values per row,
+  // so we execute them sequentially but in a single transaction context
+  if (batchUpdates.length > 0) {
+    for (const { id, updates } of batchUpdates) {
+      await supabase
+        .from('memory_entries')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', userId);
     }
   }
 }

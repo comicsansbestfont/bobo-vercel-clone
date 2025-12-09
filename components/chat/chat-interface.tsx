@@ -39,27 +39,28 @@ import {
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import type { ComponentType } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import rehypeRaw from 'rehype-raw';
 import type { Pluggable } from 'unified';
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import type { Message as DBMessage, MessagePart } from '@/lib/db/types';
+import type { MessagePart } from '@/lib/db/types';
 
 import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, RotateCcwIcon } from 'lucide-react';
 import {
-  FileTextIcon,
-  FilePlusIcon,
-  FileEditIcon,
-  TerminalIcon,
-  FolderSearchIcon,
-  SearchIcon,
-  DownloadIcon,
-  BrainIcon,
   AlertTriangleIcon,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+
+// Import extracted hooks
+import {
+  useChatState,
+  useChatHistory,
+  useToolSteps,
+  useContinuation,
+  useAutoSubmit,
+  useStreamData,
+} from '@/hooks/chat';
 
 import {
   Source,
@@ -192,35 +193,7 @@ function isOrphanedUserMessage(
   );
 }
 
-type ToolStep = {
-  id: string;
-  toolName?: string;
-  status: 'pending' | 'active' | 'complete';
-  success?: boolean;
-  input?: Record<string, unknown>;
-  output?: string;
-  duration?: number;
-};
-
-const TOOL_ICON_MAP: Record<string, LucideIcon> = {
-  Read: FileTextIcon,
-  Write: FilePlusIcon,
-  Edit: FileEditIcon,
-  Bash: TerminalIcon,
-  Glob: FolderSearchIcon,
-  Grep: SearchIcon,
-  WebSearch: GlobeIcon,
-  WebFetch: DownloadIcon,
-  search_memory: BrainIcon,
-  remember_fact: BrainIcon,
-  update_memory: BrainIcon,
-  forget_memory: BrainIcon,
-};
-
-function getToolIcon(toolName?: string): LucideIcon {
-  if (!toolName) return FileTextIcon;
-  return TOOL_ICON_MAP[toolName] || FileTextIcon;
-}
+// ToolStep type is now imported from hooks/chat
 
 type StreamingMessageResponseProps = {
   text: string;
@@ -276,127 +249,78 @@ export function ChatInterface({
   variant = 'default',
   projectName,
 }: ChatInterfaceProps) {
-  const searchParams = useSearchParams();
   const router = useRouter();
   const { isMobile, state } = useSidebar();
   // Show trigger on mobile OR when sidebar is collapsed on desktop
   const showTrigger = isMobile || state === 'collapsed';
 
-  const chatIdFromUrl = searchParams?.get('chatId');
-
   const [input, setInput] = useState('');
   const [model, setModel] = useState<string>('anthropic/claude-opus-4-5-20251101');
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
-  const [toolSteps, setToolSteps] = useState<ToolStep[]>([]);
-  // Continuation state for handling timeouts
-  const [continuationToken, setContinuationToken] = useState<string | null>(null);
-  const [timeoutOccurred, setTimeoutOccurred] = useState(false);
-  const [isContinuing, setIsContinuing] = useState(false);
-  // Initialize chatId from URL directly to avoid Next.js searchParams hydration delay
-  const [chatId, setChatId] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('chatId');
-    }
-    return chatIdFromUrl;
+
+  // Use extracted hooks for state management
+  const {
+    chatId,
+    setChatId,
+    chatIdSynced,
+    chatTitle,
+    setChatTitle,
+    chatProjectId,
+    setChatProjectId,
+    chatProjectName,
+    setChatProjectName,
+    refreshChatMetadata,
+    isAutoGeneratingChatIdRef,
+  } = useChatState({ projectId, projectName });
+
+  // Tool steps hook
+  const { toolSteps, updateToolStep, clearToolSteps, getToolIcon } = useToolSteps(chatId);
+
+  // Create a ref to hold setMessages for the continuation hook
+  const setMessagesRef = useRef<(messages: any[]) => void>(() => {});
+
+  // Continuation hook
+  const {
+    continuationToken,
+    timeoutOccurred,
+    isContinuing,
+    handleContinue: handleContinueBase,
+    clearContinuation,
+    setContinuationToken,
+    setTimeoutOccurred,
+  } = useContinuation({ chatId, model, setMessages: setMessagesRef.current, setMessagesRef });
+
+  // Stream data handler
+  const { handleStreamData } = useStreamData({
+    onToolStep: updateToolStep,
+    onTimeoutWarning: () => setTimeoutOccurred(true),
+    onContinuationToken: setContinuationToken,
   });
-  // Track if we've synced chatId with URL to handle hydration edge cases
-  const [chatIdSynced, setChatIdSynced] = useState(false);
-  // Initialize to true when chatId is present to prevent empty state flash during page load
-  // Check both sources to handle SSR/hydration timing
-  const [isLoadingHistory, setIsLoadingHistory] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return Boolean(params.get('chatId'));
-    }
-    return Boolean(chatIdFromUrl);
+
+  // Chat history hook - placeholder setMessages and status, will be updated after useChat
+  const {
+    isLoadingHistory,
+    loadedHistoryForChatIdRef,
+    justSubmittedRef,
+    persistenceTimeoutRef,
+    markMessageSubmitted,
+    clearLoadedHistory,
+  } = useChatHistory({
+    chatId,
+    chatIdSynced,
+    status: 'ready',
+    setMessages: () => {},
+    onTitleLoaded: setChatTitle,
+    onModelLoaded: setModel,
+    onWebSearchLoaded: setWebSearch,
+    onProjectLoaded: (projectId, projectName) => {
+      setChatProjectId(projectId);
+      setChatProjectName(projectName);
+    },
   });
-  const [chatTitle, setChatTitle] = useState<string | null>(null);
-  const [chatProjectId, setChatProjectId] = useState<string | null>(projectId || null);
-  const [chatProjectName, setChatProjectName] = useState<string | null>(null);
 
-  const handleStreamData = useCallback((data: unknown) => {
-    const dataChunk = data as { type?: string; data?: Record<string, unknown>; token?: string; message?: string };
-
-    // Handle timeout warning event
-    if (dataChunk?.type === 'timeout-warning') {
-      chatLogger.warn('[Timeout] Response truncated due to timeout');
-      setTimeoutOccurred(true);
-      toast.warning('Response timeout', {
-        description: dataChunk.message || 'Response was truncated. Click "Continue" to resume.',
-        duration: 10000,
-      });
-      return;
-    }
-
-    // Handle continuation available event
-    if (dataChunk?.type === 'continuation-available') {
-      const token = dataChunk.token as string;
-      if (token) {
-        chatLogger.info('[Continuation] Token received:', token.substring(0, 8) + '...');
-        setContinuationToken(token);
-      }
-      return;
-    }
-
-    // Handle tool step data (existing logic)
-    if (dataChunk?.type !== 'data-tool-step' || !dataChunk.data) {
-      return;
-    }
-
-    const payload = dataChunk.data as {
-      id?: string;
-      toolName?: string;
-      status?: ToolStep['status'];
-      success?: boolean;
-      input?: Record<string, unknown>;
-      output?: string;
-      duration?: number;
-    };
-
-    if (!payload?.id) return;
-
-    setToolSteps((prev) => {
-      const existingIndex = prev.findIndex((step) => step.id === payload.id);
-      const nextStep: ToolStep = {
-        // payload.id is guaranteed by the guard above
-        id: payload.id as string,
-        toolName: payload.toolName,
-        status: payload.status || 'pending',
-        success: payload.success,
-        input: payload.input,
-        output: payload.output,
-        duration: payload.duration,
-      };
-
-      if (existingIndex === -1) {
-        return [...prev, nextStep];
-      }
-
-      const updated = [...prev];
-      updated[existingIndex] = {
-        ...updated[existingIndex],
-        ...nextStep,
-      };
-      return updated;
-    });
-  }, []);
-
-  // Track which message we've auto-submitted to prevent duplicates
-  const autoSubmittedMessageRef = useRef<string | null>(null);
-
-  // Track if we just submitted a message to prevent history loading before DB persistence
-  const justSubmittedRef = useRef(false);
-
-  // Track which chatId we've successfully loaded history for
-  // This prevents the race condition where stale messages from a previous chat
-  // cause us to skip loading history for the new chat
-  const loadedHistoryForChatIdRef = useRef<string | null>(null);
-  const persistenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // Track when we're auto-generating a chatId to prevent the sync effect from clearing it
-  const isAutoGeneratingChatIdRef = useRef(false);
-
+  // Initialize useChat - now we can properly connect the hooks
   const { messages, sendMessage, status, regenerate, error, setMessages, stop } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
@@ -413,8 +337,7 @@ export function ChatInterface({
 
         if (responseChatId && !urlChatId) {
           // Mark that we're creating a new chat to prevent history loading
-          justSubmittedRef.current = true;
-          chatLogger.info('🆕 New chat created - blocking history loads until persistence completes');
+          markMessageSubmitted();
 
           // Update state
           setChatId(responseChatId);
@@ -434,323 +357,26 @@ export function ChatInterface({
       });
     },
     onData: handleStreamData,
-    onFinish: () => {
-      // Message finished streaming and is now in the messages array
-      // Clear the previous timeout if it exists
-      if (persistenceTimeoutRef.current) {
-        clearTimeout(persistenceTimeoutRef.current);
-      }
-
-      // Wait 3 seconds for database persistence to complete before allowing history loads
-      // Increased from 1.5s to account for slower persistence under load
-      persistenceTimeoutRef.current = setTimeout(() => {
-        chatLogger.info('✅ Database persistence window complete - allowing history loads');
-        justSubmittedRef.current = false;
-      }, 3000);
-    },
+    onFinish: markMessageSubmitted,
   });
 
-  // Auto-generate chatId if missing (enables chat to work without URL parameter)
+  // Update the ref with the actual setMessages function
   useEffect(() => {
-    // Skip if we already have a chatId (from URL or previous generation)
-    if (chatId || chatIdFromUrl) {
-      // Clear the flag once URL is synced
-      if (chatIdFromUrl && isAutoGeneratingChatIdRef.current) {
-        isAutoGeneratingChatIdRef.current = false;
-      }
-      return;
-    }
+    setMessagesRef.current = setMessages;
+  }, [setMessages]);
 
-    // Generate a new chatId and update URL
-    const newChatId = crypto.randomUUID();
-    chatLogger.info('[Chat] Auto-generating chatId:', newChatId);
-
-    // Mark that we're auto-generating to prevent the sync effect from clearing
-    isAutoGeneratingChatIdRef.current = true;
-
-    // Update state
-    setChatId(newChatId);
-
-    // Preserve existing search params (model, projectId, etc.)
-    const params = new URLSearchParams(window.location.search);
-    params.set('chatId', newChatId);
-
-    // Use Next.js router to properly update URL and searchParams
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }, [chatId, chatIdFromUrl, router]);
-
-  // Reset tool steps and continuation state when switching chats
-  useEffect(() => {
-    setToolSteps([]);
-    setContinuationToken(null);
-    setTimeoutOccurred(false);
-  }, [chatId]);
-
-  // Keep local chatId in sync with URL when navigating between chats
-  useEffect(() => {
-    // Mark that we've done initial sync
-    if (!chatIdSynced) {
-      setChatIdSynced(true);
-    }
-
-    // Handle navigation away from a chat (chatId cleared)
-    // BUT skip if we're auto-generating a chatId (URL hasn't synced yet)
-    if (!chatIdFromUrl && chatId) {
-      if (isAutoGeneratingChatIdRef.current) {
-        chatLogger.info('⏭️ Skipping chat close - auto-generating chatId in progress');
-        return;
-      }
-      chatLogger.info('🔁 Chat closed, clearing state');
-      loadedHistoryForChatIdRef.current = null;
-      setChatId(null);
-      setMessages([]);
-      setIsLoadingHistory(false);
-      setChatTitle(null);
-      setChatProjectName(null);
-      return;
-    }
-
-    if (!chatIdFromUrl || chatIdFromUrl === chatId) {
-      return;
-    }
-
-    // Only sync when we're not in the middle of sending/streaming a message
-    // Also check if messages exist - don't clear them during active conversation
-    if (status === 'submitted' || status === 'streaming' || justSubmittedRef.current) {
-      chatLogger.info('⏭️  Skipping chatId sync - message in progress');
-      return;
-    }
-
-    chatLogger.info('🔁 Syncing chatId from URL', { chatIdFromUrl });
-
-    // Reset the loaded history ref to allow loading for the new chat
-    loadedHistoryForChatIdRef.current = null;
-
-    setChatId(chatIdFromUrl);
-    setMessages([]);
-    setChatTitle(null);
-    setChatProjectName(null);
-    // Set loading state to prevent empty state flash
-    setIsLoadingHistory(true);
-  }, [chatIdFromUrl, chatId, status, setMessages, chatIdSynced]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (persistenceTimeoutRef.current) {
-        clearTimeout(persistenceTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!chatId) return;
-
-    // Handle hydration: chatIdFromUrl might be undefined during initial hydration
-    // but chatId was set from window.location.search. In that case, wait for
-    // chatIdFromUrl to sync, OR if chatIdSynced is true but they still don't match,
-    // use chatId directly
-    const urlChatId = typeof window !== 'undefined'
-      ? new URLSearchParams(window.location.search).get('chatId')
-      : chatIdFromUrl;
-
-    if (chatId !== urlChatId && chatId !== chatIdFromUrl) {
-      chatLogger.info('⏭️  Skipping history load - chatId mismatch (hydration)', { chatId, chatIdFromUrl, urlChatId });
-      return;
-    }
-
-    // Don't load history if we've already loaded it for this specific chat
-    // Using a ref instead of messages.length to avoid race condition where
-    // stale messages from a previous chat haven't been cleared yet
-    if (loadedHistoryForChatIdRef.current === chatId) {
-      chatLogger.info('⏭️  Skipping history load - already loaded for this chatId');
-      setIsLoadingHistory(false);
-      return;
-    }
-
-    // Don't load history if a message is currently being sent/streamed
-    if (status === 'submitted' || status === 'streaming') {
-      chatLogger.info('⏭️  Skipping history load - message in progress');
-      return;
-    }
-
-    // Don't load history if we just submitted a message (waiting for DB persistence)
-    if (justSubmittedRef.current) {
-      chatLogger.info('⏭️  Skipping history load - waiting for database persistence');
-      return;
-    }
-
-    // Skip history load if there's a message param - we'll auto-submit instead
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('message')) {
-      chatLogger.info('⏭️  Skipping history load - auto-submit pending');
-      setIsLoadingHistory(false);
-      return;
-    }
-
-    async function loadChatHistory(retryCount = 0) {
-      const MAX_RETRIES = 2;
-      const RETRY_DELAY = 1500; // 1.5 seconds between retries
-      let willRetry = false;
-
-      chatLogger.info('📚 Loading chat history for chatId:', chatId, retryCount > 0 ? `(retry ${retryCount})` : '');
-      try {
-        const res = await fetch(`/api/chats/${chatId}`);
-        if (!res.ok) {
-          // 404 means the chat doesn't exist yet (new chat) - this is OK
-          if (res.status === 404) {
-            chatLogger.info('✨ New chat detected (404) - starting with empty history');
-            loadedHistoryForChatIdRef.current = chatId;
-            setMessages([]);
-            return;
-          }
-
-          // Other errors (500, etc.) are real problems
-          chatLogger.error('❌ Failed to load chat - Response not OK');
-          toast.error('Failed to load chat', {
-            description: 'The chat could not be found or loaded.',
-          });
-          setChatId(null);
-          return;
-        }
-
-        const data = await res.json();
-        chatLogger.debug('Chat data loaded:', data);
-
-        const uiMessages = data.messages.map((msg: DBMessage) => ({
-          id: msg.id,
-          role: msg.role,
-          parts: msg.content.parts,
-        }));
-
-        // If chat exists but has no messages, it might be a timing issue
-        // (messages not yet persisted). Retry a few times before giving up.
-        if (uiMessages.length === 0 && retryCount < MAX_RETRIES) {
-          chatLogger.info(`⏳ Chat exists but no messages yet - retrying in ${RETRY_DELAY}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`);
-          willRetry = true;
-          setTimeout(() => loadChatHistory(retryCount + 1), RETRY_DELAY);
-          return;
-        }
-
-        chatLogger.success(`✅ Loaded ${uiMessages.length} messages`);
-        setMessages(uiMessages);
-
-        // Mark that we've loaded history for this chat to prevent duplicate loads
-        loadedHistoryForChatIdRef.current = chatId;
-
-        // Set chat metadata for header
-        if (data.chat.title) {
-          setChatTitle(data.chat.title);
-        }
-        if (data.chat.project_id !== undefined) {
-          setChatProjectId(data.chat.project_id);
-          // Fetch project name if chat has a project
-          if (data.chat.project_id) {
-            try {
-              const projectRes = await fetch(`/api/projects/${data.chat.project_id}`);
-              if (projectRes.ok) {
-                const projectData = await projectRes.json();
-                setChatProjectName(projectData.project?.name || null);
-              }
-            } catch {
-              // Ignore project fetch errors
-            }
-          } else {
-            setChatProjectName(null);
-          }
-        }
-
-        if (data.chat.model) {
-          chatLogger.debug('Setting model:', data.chat.model);
-          setModel(data.chat.model);
-        }
-        if (typeof data.chat.web_search_enabled === 'boolean') {
-          chatLogger.debug('Setting web search:', data.chat.web_search_enabled);
-          setWebSearch(data.chat.web_search_enabled);
-        }
-      } catch (error) {
-        chatLogger.error('❌ Failed to load chat history:', error);
-        toast.error('Failed to load chat history', {
-          description: 'An error occurred while loading the chat history.',
-        });
-        setChatId(null);
-      } finally {
-        // Only mark loading complete if we're not retrying
-        if (!willRetry) {
-          chatLogger.info('✅ Chat history loading complete - isLoadingHistory = false');
-          setIsLoadingHistory(false);
-        }
-      }
-    }
-
-    loadChatHistory();
-  }, [chatIdFromUrl, setMessages, chatId, status, chatIdSynced]);
-
-  // Auto-submit initial message from URL parameter
-  useEffect(() => {
-    chatLogger.info('🔄 Auto-submit useEffect triggered');
-
-    // Read directly from window.location to avoid Next.js router hydration issues
-    const params = new URLSearchParams(window.location.search);
-    const initialMessage = params.get('message');
-
-    chatLogger.debug('Auto-submit conditions:', {
-      hasInitialMessage: !!initialMessage,
-      initialMessage,
-      chatId,
-      isLoadingHistory,
-      messagesLength: messages.length,
-      status: status,
-      alreadySubmitted: autoSubmittedMessageRef.current === initialMessage,
-    });
-
-    chatLogger.info(`🔍 Status check: status="${status}" (will proceed if status is "ready")`);
-
-    // Check if we've already auto-submitted this exact message
-    if (initialMessage && autoSubmittedMessageRef.current === initialMessage) {
-      chatLogger.info('⏭️  Already auto-submitted this message, skipping');
-      return;
-    }
-
-    if (initialMessage && chatId && !isLoadingHistory && messages.length === 0 && status === 'ready') {
-      chatLogger.success('✅ All conditions met - auto-submitting message');
-
-      // URLSearchParams.get() already returns a decoded string
-      const decodedMessage = initialMessage;
-      chatLogger.debug('Initial message from URL (decoded by URLSearchParams):', decodedMessage);
-
-      // Mark this message as submitted
-      autoSubmittedMessageRef.current = decodedMessage;
-
-      // Mark that we just submitted a message to prevent race conditions with history loading
-      justSubmittedRef.current = true;
-      chatLogger.info('🚀 Auto-submit - blocking history loads until persistence completes');
-
-      // Submit the message (AI SDK expects a single message + request body)
-      chatLogger.info('📤 Calling sendMessage...');
-      sendMessage(
-        { text: decodedMessage },
-        {
-          body: {
-            model,
-            webSearch,
-            chatId,
-            projectId,
-          },
-        },
-      );
-
-      // Clear the message parameter from URL without triggering React re-renders
-      // Using window.history.replaceState instead of router.replace to avoid
-      // re-render race conditions that cause the user message to disappear
-      const urlParams = new URLSearchParams(window.location.search);
-      urlParams.delete('message');
-      window.history.replaceState({}, '', `?${urlParams.toString()}`);
-      chatLogger.info('🧹 Cleared message parameter from URL (via history.replaceState)');
-    } else {
-      chatLogger.warn('⏸️  Auto-submit skipped - conditions not met');
-    }
-  }, [searchParams, chatId, isLoadingHistory, messages.length, status, sendMessage, model, webSearch, router]);
+  // Auto-submit hook for URL message parameter
+  useAutoSubmit({
+    chatId,
+    isLoadingHistory,
+    messagesLength: messages.length,
+    status,
+    sendMessage,
+    model,
+    webSearch,
+    projectId,
+    onMessageSubmitted: markMessageSubmitted,
+  });
 
   const handleSubmit = async (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
@@ -774,13 +400,11 @@ export function ChatInterface({
     }
 
     // Mark that we just submitted a message to prevent race conditions with history loading
-    justSubmittedRef.current = true;
-    chatLogger.info('🚀 Message submitted - blocking history loads until persistence completes');
+    markMessageSubmitted();
 
     // Clear previous tool steps and continuation state for new request
-    setToolSteps([]);
-    setContinuationToken(null);
-    setTimeoutOccurred(false);
+    clearToolSteps();
+    clearContinuation();
 
     // Send the message - AI SDK expects { text: string } as first parameter
     // The body in options contains custom data sent to the backend
@@ -800,9 +424,8 @@ export function ChatInterface({
   };
 
   const handleRegenerate = () => {
-    setToolSteps([]);
-    setContinuationToken(null);
-    setTimeoutOccurred(false);
+    clearToolSteps();
+    clearContinuation();
     regenerate({
       body: {
         model: model,
@@ -813,65 +436,8 @@ export function ChatInterface({
     });
   };
 
-  // Handle continuation - resume a timed-out response
-  const handleContinue = async () => {
-    if (!continuationToken || isContinuing) return;
-
-    setIsContinuing(true);
-    chatLogger.info('[Continuation] Starting continuation...');
-
-    try {
-      const response = await fetch('/api/chat/continue', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          continuationToken,
-          model,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to continue response');
-      }
-
-      // Clear timeout state since we're continuing
-      setTimeoutOccurred(false);
-      setContinuationToken(null);
-
-      // The response is an SSE stream - we need to process it
-      // For now, just reload the chat to get updated content
-      // In a more sophisticated implementation, we'd append the continued text
-      chatLogger.info('[Continuation] Continuation started, refreshing chat...');
-
-      // Wait a bit for the response to be saved, then reload history
-      setTimeout(async () => {
-        if (chatId) {
-          try {
-            const res = await fetch(`/api/chats/${chatId}`);
-            if (res.ok) {
-              const data = await res.json();
-              const uiMessages = data.messages.map((msg: DBMessage) => ({
-                id: msg.id,
-                role: msg.role,
-                parts: msg.content.parts,
-              }));
-              setMessages(uiMessages);
-            }
-          } catch (err) {
-            chatLogger.error('[Continuation] Failed to reload messages:', err);
-          }
-        }
-        setIsContinuing(false);
-      }, 5000);
-    } catch (err) {
-      chatLogger.error('[Continuation] Failed:', err);
-      toast.error('Failed to continue', {
-        description: err instanceof Error ? err.message : 'Unknown error',
-      });
-      setIsContinuing(false);
-    }
-  };
+  // Use the continuation handler from the hook
+  const handleContinue = handleContinueBase;
 
   // Calculate context usage
   const contextUsage = getContextUsage(messages, input, model);
@@ -1059,39 +625,6 @@ export function ChatInterface({
       </div>
     );
   }
-
-  // Refresh chat metadata after rename or move
-  const refreshChatMetadata = async () => {
-    if (!chatId) return;
-    try {
-      const res = await fetch(`/api/chats/${chatId}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.chat?.title) {
-          setChatTitle(data.chat.title);
-        }
-        if (data.chat?.project_id !== undefined) {
-          setChatProjectId(data.chat.project_id);
-          // Fetch project name if chat has a project
-          if (data.chat.project_id) {
-            try {
-              const projectRes = await fetch(`/api/projects/${data.chat.project_id}`);
-              if (projectRes.ok) {
-                const projectData = await projectRes.json();
-                setChatProjectName(projectData.project?.name || null);
-              }
-            } catch {
-              // Ignore project fetch errors
-            }
-          } else {
-            setChatProjectName(null);
-          }
-        }
-      }
-    } catch (error) {
-      chatLogger.error('Error refreshing chat metadata:', error);
-    }
-  };
 
   return (
     <div className={cn("flex flex-col h-full p-3 md:p-6", className)}>

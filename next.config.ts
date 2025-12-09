@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   experimental: {
-    optimizePackageImports: ['streamdown'],
+    optimizePackageImports: ['streamdown', 'shiki', 'lucide-react', 'motion'],
   },
   /**
    * Reduce Vercel Serverless function size by excluding

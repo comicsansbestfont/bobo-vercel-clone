@@ -101,4 +101,4 @@ export {
 } from './queries';
 
 // Re-export continuation types
-export type { MessageContinuation } from './queries';
+export type { MessageContinuation } from './types';

@@ -29,6 +29,7 @@ import type {
   SearchResult,
   MessageContent,
   MessagePart,
+  MessageContinuation,
 } from './types';
 
 // ============================================================================
@@ -1294,26 +1295,6 @@ export async function updateMemoryAccess(memoryIds: string[]): Promise<void> {
 // ============================================================================
 
 /**
- * Continuation state for resuming interrupted AI responses
- */
-export interface MessageContinuation {
-  id: string;
-  chat_id: string;
-  message_id: string | null;
-  accumulated_text: string;
-  accumulated_parts: MessagePart[] | null;
-  continuation_token: string;
-  iteration_state: {
-    iteration: number;
-    tool_results?: Array<{ tool_use_id: string; content: string }>;
-    messages_snapshot?: unknown[];
-  } | null;
-  created_at: string;
-  expires_at: string;
-  used_at: string | null;
-}
-
-/**
  * Create a continuation token for an interrupted response
  * Used when approaching timeout to save state for resume
  */
@@ -1336,8 +1317,7 @@ export async function createContinuation(
   // Set expiry to 24 hours from now
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-  // Use type assertion since message_continuations isn't in generated types yet
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('message_continuations')
     .insert({
       chat_id: chatId,
@@ -1356,7 +1336,7 @@ export async function createContinuation(
     return null;
   }
 
-  return data as MessageContinuation;
+  return data;
 }
 
 /**
@@ -1365,8 +1345,7 @@ export async function createContinuation(
 export async function getContinuation(
   token: string
 ): Promise<MessageContinuation | null> {
-  // Use type assertion since message_continuations isn't in generated types yet
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('message_continuations')
     .select('*')
     .eq('continuation_token', token)
@@ -1379,7 +1358,7 @@ export async function getContinuation(
     return null;
   }
 
-  return data as MessageContinuation;
+  return data;
 }
 
 /**
@@ -1388,8 +1367,7 @@ export async function getContinuation(
 export async function markContinuationUsed(
   token: string
 ): Promise<boolean> {
-  // Use type assertion since message_continuations isn't in generated types yet
-  const { error } = await (supabase as any)
+  const { error } = await supabase
     .from('message_continuations')
     .update({ used_at: new Date().toISOString() })
     .eq('continuation_token', token);
@@ -1419,8 +1397,8 @@ export async function upsertPartialMessage(
     .single();
 
   if (existing) {
-    // Update existing - use type assertion for new columns
-    const { data, error } = await (supabase as any)
+    // Update existing
+    const { data, error } = await supabase
       .from('messages')
       .update({
         content,
@@ -1435,7 +1413,7 @@ export async function upsertPartialMessage(
       dbLogger.error('Error updating partial message:', error);
       return null;
     }
-    return data as Message;
+    return data;
   } else {
     // Get next sequence number
     const { data: lastMsg } = await supabase
@@ -1448,8 +1426,8 @@ export async function upsertPartialMessage(
 
     const nextSequence = (lastMsg?.sequence_number ?? 0) + 1;
 
-    // Insert new - use type assertion for new columns
-    const { data, error } = await (supabase as any)
+    // Insert new
+    const { data, error } = await supabase
       .from('messages')
       .insert({
         id: messageId,
@@ -1468,7 +1446,7 @@ export async function upsertPartialMessage(
       dbLogger.error('Error creating partial message:', error);
       return null;
     }
-    return data as Message;
+    return data;
   }
 }
 
@@ -1480,8 +1458,7 @@ export async function finalizeMessage(
   content: MessageContent,
   tokenCount?: number
 ): Promise<Message | null> {
-  // Use type assertion for new columns
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('messages')
     .update({
       content,
@@ -1498,7 +1475,7 @@ export async function finalizeMessage(
     return null;
   }
 
-  return data as Message;
+  return data;
 }
 
 /**
@@ -1507,8 +1484,7 @@ export async function finalizeMessage(
 export async function getPartialMessages(
   chatId: string
 ): Promise<Message[]> {
-  // Use type assertion for new column
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('messages')
     .select('*')
     .eq('chat_id', chatId)
@@ -1520,15 +1496,14 @@ export async function getPartialMessages(
     return [];
   }
 
-  return (data || []) as Message[];
+  return data || [];
 }
 
 /**
  * Clean up expired continuations (called periodically)
  */
 export async function cleanupExpiredContinuations(): Promise<number> {
-  // Use type assertion since message_continuations isn't in generated types yet
-  const { data, error } = await (supabase as any)
+  const { data, error } = await supabase
     .from('message_continuations')
     .delete()
     .lt('expires_at', new Date().toISOString())

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { IconUser } from "@tabler/icons-react";
+import { User } from "lucide-react";
 
 type UserProfile = {
   bio: string;
@@ -85,7 +85,7 @@ export default function ProfileSettingsPage() {
               <div className="mx-auto max-w-2xl space-y-8">
                 <div className="flex items-center gap-4 border-b border-border pb-6">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <IconUser className="h-6 w-6" />
+                    <User className="h-6 w-6" />
                   </div>
                   <div>
                     <h1 className="text-xl md:text-2xl font-bold tracking-tight">Personal Profile</h1>

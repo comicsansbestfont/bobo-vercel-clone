@@ -76,12 +76,15 @@ export type Chat = {
 export type Message = {
   id: string;
   chat_id: string;
+  user_id: string;
   role: 'user' | 'assistant' | 'system';
   content: MessageContent;
   token_count: number;
   created_at: string;
   sequence_number: number;
   embedding?: string | number[]; // Vector embedding
+  is_partial?: boolean; // Progressive response saving
+  completion_status?: 'streaming' | 'partial' | 'timeout' | 'error' | 'complete';
 };
 
 export type File = {
@@ -187,6 +190,27 @@ export type MemorySuggestion = {
 };
 
 /**
+ * Message continuation state for resuming interrupted AI responses
+ * Used in progressive response saving to handle timeout scenarios
+ */
+export type MessageContinuation = {
+  id: string;
+  chat_id: string;
+  message_id: string | null;
+  accumulated_text: string;
+  accumulated_parts: MessagePart[] | null;
+  continuation_token: string;
+  iteration_state: {
+    iteration: number;
+    tool_results?: Array<{ tool_use_id: string; content: string }>;
+    messages_snapshot?: unknown[];
+  } | null;
+  created_at: string;
+  expires_at: string;
+  used_at: string | null;
+};
+
+/**
  * Insert types (for creating new rows)
  * Omits auto-generated fields like id, timestamps
  */
@@ -207,8 +231,12 @@ export type ChatInsert = Omit<
   id?: string;
 };
 
-export type MessageInsert = Omit<Message, 'id' | 'created_at'> & {
+export type MessageInsert = Omit<Message, 'id' | 'user_id' | 'created_at' | 'token_count' | 'is_partial' | 'completion_status'> & {
   id?: string;
+  user_id?: string;
+  token_count?: number;
+  is_partial?: boolean;
+  completion_status?: 'streaming' | 'partial' | 'timeout' | 'error' | 'complete';
 };
 
 export type FileInsert = Omit<File, 'id' | 'created_at'> & {
@@ -245,6 +273,11 @@ export type MemorySuggestionInsert = Omit<MemorySuggestion, 'id' | 'created_at'>
   id?: string;
 };
 
+export type MessageContinuationInsert = Omit<MessageContinuation, 'id' | 'created_at' | 'used_at'> & {
+  id?: string;
+  used_at?: string | null;
+};
+
 /**
  * Update types (for updating existing rows)
  * All fields optional except what's required for the update
@@ -255,7 +288,7 @@ export type ChatUpdate = Partial<
   Omit<Chat, 'id' | 'user_id' | 'created_at'>
 >;
 export type MessageUpdate = Partial<
-  Omit<Message, 'id' | 'chat_id' | 'created_at'>
+  Omit<Message, 'id' | 'user_id' | 'chat_id' | 'created_at'>
 >;
 
 export type FileUpdate = Partial<
@@ -272,6 +305,10 @@ export type MemoryEntryUpdate = Partial<
 
 export type MemorySuggestionUpdate = Partial<
   Omit<MemorySuggestion, 'id' | 'user_id' | 'created_at'>
+>;
+
+export type MessageContinuationUpdate = Partial<
+  Omit<MessageContinuation, 'id' | 'chat_id' | 'created_at'>
 >;
 
 /**
@@ -468,6 +505,25 @@ export type Database = {
             foreignKeyName: 'memory_suggestions_source_chat_id_fkey';
             columns: ['source_chat_id'];
             referencedRelation: 'chats';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      message_continuations: {
+        Row: MessageContinuation;
+        Insert: MessageContinuationInsert;
+        Update: MessageContinuationUpdate;
+        Relationships: [
+          {
+            foreignKeyName: 'message_continuations_chat_id_fkey';
+            columns: ['chat_id'];
+            referencedRelation: 'chats';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'message_continuations_message_id_fkey';
+            columns: ['message_id'];
+            referencedRelation: 'messages';
             referencedColumns: ['id'];
           }
         ];

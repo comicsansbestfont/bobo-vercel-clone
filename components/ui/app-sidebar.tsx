@@ -5,21 +5,21 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
-  IconMessagePlus,
-  IconFolder,
-  IconUser,
-  IconSearch,
-  IconFolderPlus,
-  IconDots,
-  IconDotsVertical,
-  IconClock,
-  IconCalendar,
-  IconBrain,
-  IconHome,
-  IconEdit,
-  IconTrash,
-  IconArchive,
-} from "@tabler/icons-react";
+  MessageSquarePlus,
+  Folder,
+  User,
+  Search,
+  FolderPlus,
+  MoreHorizontal,
+  MoreVertical,
+  Clock,
+  Calendar,
+  Brain,
+  Home,
+  Pencil,
+  Trash2,
+  Archive,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -119,7 +119,7 @@ function formatRelativeDate(date: Date): string {
 const SearchBar = () => {
   return (
     <div className="relative px-2">
-      <IconSearch className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      <Search className="absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         type="text"
         placeholder="Search"
@@ -200,20 +200,20 @@ const SimpleChatItem = ({
                   }}
                   className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
                 >
-                  <IconDotsVertical className="h-4 w-4" />
+                  <MoreVertical className="h-4 w-4" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem onClick={() => setRenameOpen(true)}>
-                  <IconEdit className="mr-2 h-4 w-4" />
+                  <Pencil className="mr-2 h-4 w-4" />
                   Rename
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setMoveOpen(true)}>
-                  <IconFolder className="mr-2 h-4 w-4" />
+                  <Folder className="mr-2 h-4 w-4" />
                   Move to Project
                 </DropdownMenuItem>
                 <DropdownMenuItem disabled className="opacity-50">
-                  <IconArchive className="mr-2 h-4 w-4" />
+                  <Archive className="mr-2 h-4 w-4" />
                   Archive
                   <span className="ml-auto text-[10px] text-muted-foreground">Soon</span>
                 </DropdownMenuItem>
@@ -222,7 +222,7 @@ const SimpleChatItem = ({
                   onClick={handleDelete}
                   className="text-destructive focus:text-destructive"
                 >
-                  <IconTrash className="mr-2 h-4 w-4" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -261,7 +261,7 @@ const ProjectItem = ({ project }: { project: ProjectWithStats }) => {
           onClick={() => isMobile && setOpenMobile(false)}
           className="flex items-center gap-2"
         >
-          <IconFolder className="h-4 w-4 flex-shrink-0" />
+          <Folder className="h-4 w-4 flex-shrink-0" />
           <span className="truncate flex-1">{project.name}</span>
           {/* M38: Entity type indicator for advisory projects */}
           {project.entity_type && (
@@ -284,7 +284,7 @@ const SeeMoreButton = ({
   return (
     <SidebarMenuItem>
       <SidebarMenuButton onClick={onClick}>
-        <IconDots className="h-4 w-4" />
+        <MoreHorizontal className="h-4 w-4" />
         <span>{isExpanded ? "Show less" : "See more"}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -306,9 +306,9 @@ const DateModeToggle = ({
       title={`Showing ${dateMode === 'updated' ? 'last updated' : 'created'} dates. Click to toggle.`}
     >
       {dateMode === 'updated' ? (
-        <IconClock className="h-3.5 w-3.5" />
+        <Clock className="h-3.5 w-3.5" />
       ) : (
-        <IconCalendar className="h-3.5 w-3.5" />
+        <Calendar className="h-3.5 w-3.5" />
       )}
       <span>{dateMode === 'updated' ? 'Show created dates' : 'Show updated dates'}</span>
     </button>
@@ -364,7 +364,7 @@ function AppSidebarContent({
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               title="New Chat"
             >
-              <IconMessagePlus className="h-4 w-4" />
+              <MessageSquarePlus className="h-4 w-4" />
             </button>
             {/* Close/Collapse sidebar button */}
             <SidebarTrigger className="h-8 w-8" />
@@ -380,7 +380,7 @@ function AppSidebarContent({
         <SidebarMenu className="px-2">
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => setIsCreateProjectModalOpen(true)}>
-              <IconFolderPlus className="h-4 w-4" />
+              <FolderPlus className="h-4 w-4" />
               <span>New project</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -458,7 +458,7 @@ function AppSidebarContent({
             className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
             title="Home"
           >
-            <IconHome className="h-5 w-5" />
+            <Home className="h-5 w-5" />
           </Link>
           <Link
             href="/memory"
@@ -466,7 +466,7 @@ function AppSidebarContent({
             className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
             title="Memory"
           >
-            <IconBrain className="h-5 w-5" />
+            <Brain className="h-5 w-5" />
           </Link>
           <Link
             href="/settings/profile"
@@ -474,7 +474,7 @@ function AppSidebarContent({
             className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
             title="Profile"
           >
-            <IconUser className="h-5 w-5" />
+            <User className="h-5 w-5" />
           </Link>
           <div className="flex h-10 items-center justify-center">
             <ThemeSwitcherConnected />

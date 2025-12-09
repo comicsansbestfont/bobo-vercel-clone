@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import {
-  IconDotsVertical,
-  IconEdit,
-  IconFolder,
-  IconTrash,
-} from "@tabler/icons-react";
+  MoreVertical,
+  Pencil,
+  Folder,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import type { ChatWithProject, ProjectWithStats } from "@/lib/db/types";
 import {
@@ -113,7 +113,7 @@ function ProjectChatCard({
                       }}
                       className="flex h-5 w-5 items-center justify-center rounded text-neutral-400 hover:bg-neutral-200 hover:text-neutral-700 dark:text-neutral-500 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
                     >
-                      <IconDotsVertical className="h-3 w-3" />
+                      <MoreVertical className="h-3 w-3" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
@@ -123,7 +123,7 @@ function ProjectChatCard({
                         setRenameOpen(true);
                       }}
                     >
-                      <IconEdit className="mr-2 h-4 w-4" />
+                      <Pencil className="mr-2 h-4 w-4" />
                       Rename
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -132,7 +132,7 @@ function ProjectChatCard({
                         setMoveOpen(true);
                       }}
                     >
-                      <IconFolder className="mr-2 h-4 w-4" />
+                      <Folder className="mr-2 h-4 w-4" />
                       Move to Project
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -143,7 +143,7 @@ function ProjectChatCard({
                       }}
                       className="text-destructive focus:text-destructive"
                     >
-                      <IconTrash className="mr-2 h-4 w-4" />
+                      <Trash2 className="mr-2 h-4 w-4" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>

@@ -12,11 +12,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import {
-  IconStar,
-  IconEdit,
-  IconFolder,
-  IconTrash,
-} from '@tabler/icons-react';
+  Star,
+  Pencil,
+  Folder,
+  Trash2,
+} from 'lucide-react';
 import { RenameDialog, MoveToProjectDialog, DeleteDialog } from './chat-dialogs';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 
@@ -96,16 +96,16 @@ export function ChatHeader({
             </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">
             <DropdownMenuItem disabled className="opacity-50">
-              <IconStar className="mr-2 h-4 w-4" />
+              <Star className="mr-2 h-4 w-4" />
               Star
               <span className="ml-auto text-[10px] text-muted-foreground">Soon</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setRenameOpen(true)}>
-              <IconEdit className="mr-2 h-4 w-4" />
+              <Pencil className="mr-2 h-4 w-4" />
               Rename
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setMoveOpen(true)}>
-              <IconFolder className="mr-2 h-4 w-4" />
+              <Folder className="mr-2 h-4 w-4" />
               Add to project
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -113,7 +113,7 @@ export function ChatHeader({
               onClick={() => setDeleteOpen(true)}
               className="text-destructive focus:text-destructive"
             >
-              <IconTrash className="mr-2 h-4 w-4" />
+              <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -129,11 +129,11 @@ export function ChatHeader({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => setRenameOpen(true)}>
-              <IconEdit className="mr-2 h-4 w-4" />
+              <Pencil className="mr-2 h-4 w-4" />
               Rename
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setMoveOpen(true)}>
-              <IconFolder className="mr-2 h-4 w-4" />
+              <Folder className="mr-2 h-4 w-4" />
               Move to project
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -141,7 +141,7 @@ export function ChatHeader({
               onClick={() => setDeleteOpen(true)}
               className="text-destructive focus:text-destructive"
             >
-              <IconTrash className="mr-2 h-4 w-4" />
+              <Trash2 className="mr-2 h-4 w-4" />
               Delete chat
             </DropdownMenuItem>
           </DropdownMenuContent>

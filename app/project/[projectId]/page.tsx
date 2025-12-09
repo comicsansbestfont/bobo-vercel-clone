@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import type { Project, ChatWithProject, ProjectWithStats } from "@/lib/db/types";
 import { ProjectChatList } from "@/components/project/project-chat-list";
 import { ProjectContext } from "@/components/project/project-context";
-import { IconFolder } from "@tabler/icons-react";
+import { Folder } from "lucide-react";
 import Link from "next/link";
 
 // Extended chat type with preview
@@ -148,7 +148,7 @@ export default function ProjectPage() {
                       <div className="px-4 py-6 md:px-6 md:py-8">
                         <div className="mx-auto flex max-w-3xl items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <IconFolder className="h-6 w-6 text-muted-foreground" />
+                            <Folder className="h-6 w-6 text-muted-foreground" />
                             <h1 className="text-xl md:text-2xl font-semibold">
                               {project?.name}
                             </h1>

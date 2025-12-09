@@ -5,18 +5,18 @@ import Link, { LinkProps } from "next/link";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
-  IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
-  IconApi,
-  IconMenu2,
-  IconMessagePlus,
-  IconRotate,
-  IconX,
-  IconArrowNarrowLeft,
-  IconChecklist,
-} from "@tabler/icons-react";
+  ArrowLeft,
+  Blocks,
+  Settings,
+  Zap,
+  Code,
+  Menu,
+  MessageSquarePlus,
+  RotateCw,
+  X,
+  ArrowLeft as ArrowNarrowLeft,
+  CheckSquare,
+} from "lucide-react";
 
 export function CollapsibleSidebar() {
   return (
@@ -38,28 +38,28 @@ export function SidebarLayout({
       label: "Dashboard",
       href: "#",
       icon: (
-        <IconBrandTabler className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <Blocks className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Profile",
       href: "#",
       icon: (
-        <IconUserBolt className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <Zap className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Settings",
       href: "#",
       icon: (
-        <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <Settings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Logout",
       href: "#",
       icon: (
-        <IconArrowLeft className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <ArrowLeft className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
   ];
@@ -68,28 +68,28 @@ export function SidebarLayout({
       label: "Documentation",
       href: "#",
       icon: (
-        <IconChecklist className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <CheckSquare className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "API reference",
       href: "#",
       icon: (
-        <IconApi className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <Code className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Support",
       href: "#",
       icon: (
-        <IconMessagePlus className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <MessageSquarePlus className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Sponser",
       href: "#",
       icon: (
-        <IconRotate className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <RotateCw className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
   ];
@@ -292,7 +292,7 @@ export const DesktopSidebar = ({
           open ? "rotate-0" : "rotate-180",
         )}
       >
-        <IconArrowNarrowLeft className="text-black dark:text-white" />
+        <ArrowNarrowLeft className="text-black dark:text-white" />
       </button>
       {children as React.ReactNode}
     </motion.div>
@@ -319,7 +319,7 @@ export const MobileSidebar = ({
           aria-label="Open navigation menu"
           aria-expanded={open}
         >
-          <IconMenu2 className="text-neutral-800 dark:text-neutral-200" />
+          <Menu className="text-neutral-800 dark:text-neutral-200" />
         </button>
       </div>
       <AnimatePresence>
@@ -351,7 +351,7 @@ export const MobileSidebar = ({
                 onClick={() => setOpen(false)}
                 aria-label="Close navigation menu"
               >
-                <IconX className="h-5 w-5" />
+                <X className="h-5 w-5" />
               </button>
               {children as React.ReactNode}
             </motion.div>

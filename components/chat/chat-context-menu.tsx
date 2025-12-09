@@ -38,11 +38,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import {
-  IconEdit,
-  IconTrash,
-  IconFolder,
-  IconArchive,
-} from '@tabler/icons-react';
+  Pencil,
+  Trash2,
+  Folder,
+  Archive,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import type { ChatWithProject, ProjectWithStats } from '@/lib/db/types';
 
@@ -188,7 +188,7 @@ export function ChatContextMenu({
               setRenameDialogOpen(true);
             }}
           >
-            <IconEdit className="mr-2 h-4 w-4" />
+            <Pencil className="mr-2 h-4 w-4" />
             Rename
           </ContextMenuItem>
 
@@ -198,12 +198,12 @@ export function ChatContextMenu({
               setMoveDialogOpen(true);
             }}
           >
-            <IconFolder className="mr-2 h-4 w-4" />
+            <Folder className="mr-2 h-4 w-4" />
             Move to Project
           </ContextMenuItem>
 
           <ContextMenuItem disabled className="opacity-50">
-            <IconArchive className="mr-2 h-4 w-4" />
+            <Archive className="mr-2 h-4 w-4" />
             Archive
             <span className="ml-auto text-[10px] text-muted-foreground">
               Soon
@@ -218,7 +218,7 @@ export function ChatContextMenu({
             }}
             className="text-destructive focus:text-destructive"
           >
-            <IconTrash className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </ContextMenuItem>
         </ContextMenuContent>
