@@ -584,6 +584,427 @@ This performs a soft delete (data preserved for recovery if needed).`,
 };
 
 // ============================================================================
+// M3.13: THINKING PARTNER TOOLS
+// ============================================================================
+
+/**
+ * record_question - Record a question the user is exploring
+ *
+ * Auto-approved (additive operation, easily undone)
+ */
+export const recordQuestionTool = {
+  name: 'record_question',
+
+  description: `Record a question the user is exploring.
+Use when the user asks a significant question worth remembering.
+This helps track the user's thinking process and questions they're working through.
+Examples: "How do I scale this architecture?", "What's the best way to handle this edge case?"`,
+
+  parameters: z.object({
+    question: z
+      .string()
+      .min(10)
+      .max(500)
+      .describe('The question being asked'),
+    context: z
+      .string()
+      .max(500)
+      .optional()
+      .describe('Why this question is being asked'),
+    tags: z
+      .array(z.string())
+      .optional()
+      .describe('Tags to categorize this question'),
+    thread_id: z
+      .string()
+      .uuid()
+      .optional()
+      .describe('Link to existing thought thread'),
+  }),
+
+  execute: async ({
+    question,
+    context,
+    tags,
+    thread_id,
+  }: {
+    question: string;
+    context?: string;
+    tags?: string[];
+    thread_id?: string;
+  }): Promise<string> => {
+    try {
+      memoryLogger.info(`[record_question] Storing question: "${question}"`, {
+        hasContext: !!context,
+        tags,
+        thread_id,
+      });
+
+      // Check for similar questions using semantic similarity
+      const duplicates = await findSimilarMemories(question, 0.80);
+
+      if (duplicates.length > 0) {
+        const existing = duplicates[0];
+        memoryLogger.info('[record_question] Similar question found, reinforcing:', existing);
+
+        // Reinforce existing question instead of creating duplicate
+        const oldConfidence = existing.confidence;
+        const newConfidence = Math.min(1.0, oldConfidence + 0.05);
+
+        const existingMemory = await getMemoryById(existing.id);
+
+        if (existingMemory) {
+          const oldImportance = existingMemory.importance;
+          const newImportance = Math.max(oldImportance, 0.8);
+
+          const { error } = await supabase
+            .from('memory_entries')
+            .update({
+              confidence: newConfidence,
+              importance: newImportance,
+              access_count: (existingMemory.access_count || 0) + 1,
+              last_accessed: new Date().toISOString(),
+              last_mentioned: new Date().toISOString(),
+            })
+            .eq('id', existing.id);
+
+          if (error) {
+            memoryLogger.error('[record_question] Reinforcement update failed:', error);
+            throw new Error(`Failed to reinforce question: ${error.message}`);
+          }
+
+          memoryLogger.info('[record_question] Question reinforced:', {
+            id: existing.id,
+            oldConfidence,
+            newConfidence,
+          });
+
+          return `Reinforced existing question: "${existing.content}" (confidence: ${oldConfidence.toFixed(2)} → ${newConfidence.toFixed(2)})`;
+        }
+      }
+
+      // Generate embedding for the question
+      const embedding = await generateEmbedding(question);
+      const contentHash = generateContentHash(question);
+
+      // Create new memory entry with memory_type='question'
+      const memory = await createMemory({
+        category: 'other_instructions',
+        subcategory: null,
+        content: question,
+        summary: context || null,
+        confidence: 0.8,
+        source_type: 'agent_tool',
+        content_hash: contentHash,
+        embedding,
+        relevance_score: 1.0,
+        source_chat_ids: [],
+        source_project_ids: [],
+        source_message_count: 1,
+        time_period: 'current',
+        memory_type: 'question',
+        tags: tags || [],
+        thread_id: thread_id || undefined,
+      });
+
+      if (!memory) {
+        throw new Error('Failed to create question memory');
+      }
+
+      memoryLogger.info('[record_question] Question recorded:', memory.id);
+      return `Recorded question: "${question}" (id: ${memory.id})`;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      memoryLogger.error('[record_question] Failed:', error);
+      return `Question recording failed: ${errorMessage}. You can try again or suggest the user visit their Memory settings at /memory.`;
+    }
+  },
+};
+
+/**
+ * record_decision - Record a decision made by the user
+ *
+ * Auto-approved (additive operation, easily undone)
+ */
+export const recordDecisionTool = {
+  name: 'record_decision',
+
+  description: `Record a decision made by the user.
+Use when the user decides on an approach, makes a choice, or commits to a direction.
+This helps track important decisions and the reasoning behind them.
+Examples: "I'll use PostgreSQL for this project", "We'll prioritize performance over features"`,
+
+  parameters: z.object({
+    decision: z
+      .string()
+      .min(10)
+      .max(500)
+      .describe('The decision made'),
+    alternatives: z
+      .array(z.string())
+      .optional()
+      .describe('Other options that were considered'),
+    rationale: z
+      .string()
+      .max(500)
+      .optional()
+      .describe('Why this decision was made'),
+    tags: z
+      .array(z.string())
+      .optional()
+      .describe('Tags to categorize this decision'),
+    thread_id: z
+      .string()
+      .uuid()
+      .optional()
+      .describe('Link to existing thought thread'),
+  }),
+
+  execute: async ({
+    decision,
+    alternatives,
+    rationale,
+    tags,
+    thread_id,
+  }: {
+    decision: string;
+    alternatives?: string[];
+    rationale?: string;
+    tags?: string[];
+    thread_id?: string;
+  }): Promise<string> => {
+    try {
+      memoryLogger.info(`[record_decision] Storing decision: "${decision}"`, {
+        hasAlternatives: !!alternatives?.length,
+        hasRationale: !!rationale,
+        tags,
+        thread_id,
+      });
+
+      // Check for similar decisions using semantic similarity
+      const duplicates = await findSimilarMemories(decision, 0.80);
+
+      if (duplicates.length > 0) {
+        const existing = duplicates[0];
+        memoryLogger.info('[record_decision] Similar decision found, reinforcing:', existing);
+
+        const oldConfidence = existing.confidence;
+        const newConfidence = Math.min(1.0, oldConfidence + 0.05);
+
+        const existingMemory = await getMemoryById(existing.id);
+
+        if (existingMemory) {
+          const oldImportance = existingMemory.importance;
+          const newImportance = Math.max(oldImportance, 0.9); // Decisions get high importance
+
+          const { error } = await supabase
+            .from('memory_entries')
+            .update({
+              confidence: newConfidence,
+              importance: newImportance,
+              access_count: (existingMemory.access_count || 0) + 1,
+              last_accessed: new Date().toISOString(),
+              last_mentioned: new Date().toISOString(),
+            })
+            .eq('id', existing.id);
+
+          if (error) {
+            memoryLogger.error('[record_decision] Reinforcement update failed:', error);
+            throw new Error(`Failed to reinforce decision: ${error.message}`);
+          }
+
+          memoryLogger.info('[record_decision] Decision reinforced:', {
+            id: existing.id,
+            oldConfidence,
+            newConfidence,
+          });
+
+          return `Reinforced existing decision: "${existing.content}" (confidence: ${oldConfidence.toFixed(2)} → ${newConfidence.toFixed(2)})`;
+        }
+      }
+
+      // Generate embedding for the decision
+      const embedding = await generateEmbedding(decision);
+      const contentHash = generateContentHash(decision);
+
+      // Create new memory entry with memory_type='decision'
+      const memory = await createMemory({
+        category: 'other_instructions',
+        subcategory: null,
+        content: decision,
+        summary: rationale || null,
+        confidence: 0.9, // Decisions have high confidence
+        source_type: 'agent_tool',
+        content_hash: contentHash,
+        embedding,
+        relevance_score: 1.0,
+        source_chat_ids: [],
+        source_project_ids: [],
+        source_message_count: 1,
+        time_period: 'current',
+        memory_type: 'decision',
+        tags: tags || [],
+        thread_id: thread_id || undefined,
+      });
+
+      if (!memory) {
+        throw new Error('Failed to create decision memory');
+      }
+
+      memoryLogger.info('[record_decision] Decision recorded:', memory.id);
+      let response = `Recorded decision: "${decision}" (id: ${memory.id})`;
+      if (alternatives && alternatives.length > 0) {
+        response += `\nAlternatives considered: ${alternatives.join(', ')}`;
+      }
+      return response;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      memoryLogger.error('[record_decision] Failed:', error);
+      return `Decision recording failed: ${errorMessage}. You can try again or suggest the user visit their Memory settings at /memory.`;
+    }
+  },
+};
+
+/**
+ * record_insight - Record an insight or pattern discovered
+ *
+ * Auto-approved (additive operation, easily undone)
+ */
+export const recordInsightTool = {
+  name: 'record_insight',
+
+  description: `Record an insight or pattern discovered.
+Use when recognizing a recurring theme, learning, or realization.
+This helps track important learnings and patterns the user has discovered.
+Examples: "Authentication issues often come from token expiry", "Users prefer simpler UIs"`,
+
+  parameters: z.object({
+    insight: z
+      .string()
+      .min(10)
+      .max(500)
+      .describe('The insight or pattern discovered'),
+    evidence: z
+      .array(z.string())
+      .optional()
+      .describe('Examples or data supporting this insight'),
+    tags: z
+      .array(z.string())
+      .optional()
+      .describe('Tags to categorize this insight'),
+    thread_id: z
+      .string()
+      .uuid()
+      .optional()
+      .describe('Link to existing thought thread'),
+  }),
+
+  execute: async ({
+    insight,
+    evidence,
+    tags,
+    thread_id,
+  }: {
+    insight: string;
+    evidence?: string[];
+    tags?: string[];
+    thread_id?: string;
+  }): Promise<string> => {
+    try {
+      memoryLogger.info(`[record_insight] Storing insight: "${insight}"`, {
+        hasEvidence: !!evidence?.length,
+        tags,
+        thread_id,
+      });
+
+      // Check for similar insights using semantic similarity
+      const duplicates = await findSimilarMemories(insight, 0.80);
+
+      if (duplicates.length > 0) {
+        const existing = duplicates[0];
+        memoryLogger.info('[record_insight] Similar insight found, reinforcing:', existing);
+
+        const oldConfidence = existing.confidence;
+        const newConfidence = Math.min(1.0, oldConfidence + 0.05);
+
+        const existingMemory = await getMemoryById(existing.id);
+
+        if (existingMemory) {
+          const oldImportance = existingMemory.importance;
+          const newImportance = Math.max(oldImportance, 0.85); // Insights get high importance
+
+          const { error } = await supabase
+            .from('memory_entries')
+            .update({
+              confidence: newConfidence,
+              importance: newImportance,
+              access_count: (existingMemory.access_count || 0) + 1,
+              last_accessed: new Date().toISOString(),
+              last_mentioned: new Date().toISOString(),
+            })
+            .eq('id', existing.id);
+
+          if (error) {
+            memoryLogger.error('[record_insight] Reinforcement update failed:', error);
+            throw new Error(`Failed to reinforce insight: ${error.message}`);
+          }
+
+          memoryLogger.info('[record_insight] Insight reinforced:', {
+            id: existing.id,
+            oldConfidence,
+            newConfidence,
+          });
+
+          return `Reinforced existing insight: "${existing.content}" (confidence: ${oldConfidence.toFixed(2)} → ${newConfidence.toFixed(2)})`;
+        }
+      }
+
+      // Generate embedding for the insight
+      const embedding = await generateEmbedding(insight);
+      const contentHash = generateContentHash(insight);
+
+      // Create new memory entry with memory_type='insight'
+      const memory = await createMemory({
+        category: 'other_instructions',
+        subcategory: null,
+        content: insight,
+        summary: evidence ? `Evidence: ${evidence.join('; ')}` : null,
+        confidence: 0.85, // Insights have high confidence
+        source_type: 'agent_tool',
+        content_hash: contentHash,
+        embedding,
+        relevance_score: 1.0,
+        source_chat_ids: [],
+        source_project_ids: [],
+        source_message_count: 1,
+        time_period: 'current',
+        memory_type: 'insight',
+        tags: tags || [],
+        thread_id: thread_id || undefined,
+      });
+
+      if (!memory) {
+        throw new Error('Failed to create insight memory');
+      }
+
+      memoryLogger.info('[record_insight] Insight recorded:', memory.id);
+      let response = `Recorded insight: "${insight}" (id: ${memory.id})`;
+      if (evidence && evidence.length > 0) {
+        response += `\nSupporting evidence: ${evidence.length} example(s)`;
+      }
+      return response;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      memoryLogger.error('[record_insight] Failed:', error);
+      return `Insight recording failed: ${errorMessage}. You can try again or suggest the user visit their Memory settings at /memory.`;
+    }
+  },
+};
+
+// ============================================================================
 // Tool Collection Export
 // ============================================================================
 
@@ -595,6 +1016,9 @@ export const memoryTools = {
   remember_fact: rememberFactTool,
   update_memory: updateMemoryTool,
   forget_memory: forgetMemoryTool,
+  record_question: recordQuestionTool,
+  record_decision: recordDecisionTool,
+  record_insight: recordInsightTool,
 };
 
 /**

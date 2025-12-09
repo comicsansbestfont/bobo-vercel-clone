@@ -5,15 +5,18 @@
  * Uses Claude's native tool_use format.
  *
  * M3.10: Added fetch_url tool for external weblink access.
+ * M3.13: Added memory tools (record_question, record_decision, record_insight).
  */
 
 import type { Tool } from '@anthropic-ai/sdk/resources/messages';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { existsSync, readdirSync, statSync } from 'fs';
+import crypto from 'crypto';
 import { generateEmbedding } from '@/lib/ai/embedding';
-import { supabase } from '@/lib/db/client';
+import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 import { ADVISORY_PROJECT_ID } from '@/lib/db/types';
+import { createMemory, getMemoryById } from '@/lib/db/queries';
 import { chatLogger } from '@/lib/logger';
 import { parseHTML } from 'linkedom';
 import { Readability } from '@mozilla/readability';
@@ -269,6 +272,147 @@ EXAMPLES:
       required: ['url'],
     },
   },
+  // ==========================================================================
+  // M3.13: Thinking Partner Memory Tools
+  // ==========================================================================
+  {
+    name: 'record_question',
+    description: `Record a question the user is exploring.
+
+USE WHEN:
+- User asks a significant question worth remembering
+- User is working through a problem or decision
+- You want to track the user's thinking process
+- The question might be relevant to future conversations
+
+FEATURES:
+- Checks for similar existing questions (avoids duplicates)
+- Reinforces existing questions if similar (Hebbian learning)
+- Supports tagging for organization
+- Can link to thought threads
+
+EXAMPLES:
+- "How should I structure this authentication system?"
+- "What's the best way to handle database migrations?"
+- "Why is this API endpoint slow?"`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        question: {
+          type: 'string',
+          description: 'The question being asked (10-500 characters)',
+        },
+        context: {
+          type: 'string',
+          description: 'Why this question is being asked (optional)',
+        },
+        tags: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Tags to categorize this question (e.g., ["architecture", "performance"])',
+        },
+        thread_id: {
+          type: 'string',
+          description: 'UUID of an existing thought thread to link to (optional)',
+        },
+      },
+      required: ['question'],
+    },
+  },
+  {
+    name: 'record_decision',
+    description: `Record a decision made by the user.
+
+USE WHEN:
+- User decides on an approach or makes a choice
+- User commits to a direction after considering options
+- An important architectural or design decision is made
+- You want to remember why a choice was made
+
+FEATURES:
+- Stores the decision with high confidence (0.9)
+- Can record alternatives that were considered
+- Stores rationale for future reference
+- Checks for similar decisions to avoid duplicates
+
+EXAMPLES:
+- "I'll use PostgreSQL for this project" (alternatives: MySQL, MongoDB)
+- "We'll prioritize performance over features"
+- "Going with microservices architecture"`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        decision: {
+          type: 'string',
+          description: 'The decision made (10-500 characters)',
+        },
+        alternatives: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Other options that were considered',
+        },
+        rationale: {
+          type: 'string',
+          description: 'Why this decision was made',
+        },
+        tags: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Tags to categorize this decision',
+        },
+        thread_id: {
+          type: 'string',
+          description: 'UUID of an existing thought thread to link to (optional)',
+        },
+      },
+      required: ['decision'],
+    },
+  },
+  {
+    name: 'record_insight',
+    description: `Record an insight or pattern discovered.
+
+USE WHEN:
+- Recognizing a recurring theme or pattern
+- User has a realization or learning
+- Discovering something that could help in future situations
+- Noticing a best practice or anti-pattern
+
+FEATURES:
+- Stores insights with high confidence (0.85)
+- Can record supporting evidence
+- Useful for building up wisdom over time
+- Checks for similar insights to reinforce rather than duplicate
+
+EXAMPLES:
+- "Authentication issues often come from token expiry"
+- "Users prefer simpler UIs with fewer options"
+- "Performance bottlenecks are usually in the database layer"`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        insight: {
+          type: 'string',
+          description: 'The insight or pattern discovered (10-500 characters)',
+        },
+        evidence: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Examples or data supporting this insight',
+        },
+        tags: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Tags to categorize this insight',
+        },
+        thread_id: {
+          type: 'string',
+          description: 'UUID of an existing thought thread to link to (optional)',
+        },
+      },
+      required: ['insight'],
+    },
+  },
 ];
 
 // ============================================================================
@@ -298,6 +442,13 @@ export async function executeAdvisoryTool(
         return await grepAdvisory(input);
       case 'fetch_url':
         return await fetchUrl(input);
+      // M3.13: Thinking Partner Memory Tools
+      case 'record_question':
+        return await recordQuestion(input);
+      case 'record_decision':
+        return await recordDecision(input);
+      case 'record_insight':
+        return await recordInsight(input);
       default:
         return JSON.stringify({ success: false, error: `Unknown tool: ${name}` });
     }
@@ -953,6 +1104,413 @@ async function fetchUrl(input: Record<string, unknown>): Promise<string> {
     });
   }
 }
+// ============================================================================
+// M3.13: Memory Tool Implementations
+// ============================================================================
+
+/**
+ * Generate a content hash for deduplication
+ */
+function generateContentHash(content: string): string {
+  return crypto
+    .createHash('sha256')
+    .update(content.toLowerCase().trim())
+    .digest('hex')
+    .substring(0, 32);
+}
+
+/**
+ * Find semantically similar memories using vector search
+ */
+async function findSimilarMemories(
+  content: string,
+  threshold: number = 0.85
+): Promise<Array<{ id: string; content: string; confidence: number }>> {
+  try {
+    const embedding = await generateEmbedding(content);
+
+    const { data, error } = await supabase.rpc('find_memories_by_embedding', {
+      query_embedding: embedding,
+      similarity_threshold: threshold,
+      p_user_id: DEFAULT_USER_ID,
+      match_count: 5,
+    });
+
+    if (error) {
+      chatLogger.error('[Memory] findSimilarMemories RPC error:', error);
+      return [];
+    }
+
+    return (data || []) as Array<{ id: string; content: string; confidence: number }>;
+  } catch (error) {
+    chatLogger.error('[Memory] findSimilarMemories failed:', error);
+    return [];
+  }
+}
+
+type RecordQuestionInput = {
+  question: string;
+  context?: string;
+  tags?: string[];
+  thread_id?: string;
+};
+
+/**
+ * Record a question the user is exploring
+ * M3.13-04: Thinking Partner tool
+ */
+async function recordQuestion(input: Record<string, unknown>): Promise<string> {
+  const { question, context, tags, thread_id } = input as RecordQuestionInput;
+
+  chatLogger.info(`[record_question] Recording: "${question}"`, { context, tags, thread_id });
+
+  // Validate input
+  if (!question || question.length < 10) {
+    return JSON.stringify({
+      success: false,
+      error: 'Question must be at least 10 characters',
+    });
+  }
+
+  if (question.length > 500) {
+    return JSON.stringify({
+      success: false,
+      error: 'Question must be less than 500 characters',
+    });
+  }
+
+  try {
+    // Check for similar questions (Hebbian reinforcement)
+    const duplicates = await findSimilarMemories(question, 0.80);
+
+    if (duplicates.length > 0) {
+      const existing = duplicates[0];
+      chatLogger.info('[record_question] Similar question found, reinforcing:', existing);
+
+      const existingMemory = await getMemoryById(existing.id);
+
+      if (existingMemory) {
+        const oldConfidence = existingMemory.confidence;
+        const newConfidence = Math.min(1.0, oldConfidence + 0.05);
+        const newImportance = Math.max(existingMemory.importance, 0.8);
+
+        const { error } = await supabase
+          .from('memory_entries')
+          .update({
+            confidence: newConfidence,
+            importance: newImportance,
+            access_count: (existingMemory.access_count || 0) + 1,
+            last_accessed: new Date().toISOString(),
+            last_mentioned: new Date().toISOString(),
+          })
+          .eq('id', existing.id);
+
+        if (error) {
+          throw new Error(`Failed to reinforce question: ${error.message}`);
+        }
+
+        return JSON.stringify({
+          success: true,
+          action: 'reinforced',
+          message: `Reinforced existing question: "${existing.content}"`,
+          memory_id: existing.id,
+          confidence: { old: oldConfidence, new: newConfidence },
+        });
+      }
+    }
+
+    // Create new memory entry
+    const embedding = await generateEmbedding(question);
+    const contentHash = generateContentHash(question);
+
+    const memory = await createMemory({
+      category: 'other_instructions',
+      subcategory: null,
+      content: question,
+      summary: context || null,
+      confidence: 0.8,
+      source_type: 'agent_tool',
+      content_hash: contentHash,
+      embedding,
+      relevance_score: 1.0,
+      source_chat_ids: [],
+      source_project_ids: [],
+      source_message_count: 1,
+      time_period: 'current',
+      memory_type: 'question',
+      tags: tags || [],
+      thread_id: thread_id || undefined,
+    });
+
+    if (!memory) {
+      throw new Error('Failed to create question memory');
+    }
+
+    chatLogger.info('[record_question] Question recorded:', memory.id);
+
+    return JSON.stringify({
+      success: true,
+      action: 'created',
+      message: `Recorded question: "${question}"`,
+      memory_id: memory.id,
+      tags: tags || [],
+    });
+  } catch (error) {
+    chatLogger.error('[record_question] Failed:', error);
+    return JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to record question',
+    });
+  }
+}
+
+type RecordDecisionInput = {
+  decision: string;
+  alternatives?: string[];
+  rationale?: string;
+  tags?: string[];
+  thread_id?: string;
+};
+
+/**
+ * Record a decision made by the user
+ * M3.13-05: Thinking Partner tool
+ */
+async function recordDecision(input: Record<string, unknown>): Promise<string> {
+  const { decision, alternatives, rationale, tags, thread_id } = input as RecordDecisionInput;
+
+  chatLogger.info(`[record_decision] Recording: "${decision}"`, { alternatives, rationale, tags, thread_id });
+
+  // Validate input
+  if (!decision || decision.length < 10) {
+    return JSON.stringify({
+      success: false,
+      error: 'Decision must be at least 10 characters',
+    });
+  }
+
+  if (decision.length > 500) {
+    return JSON.stringify({
+      success: false,
+      error: 'Decision must be less than 500 characters',
+    });
+  }
+
+  try {
+    // Check for similar decisions (Hebbian reinforcement)
+    const duplicates = await findSimilarMemories(decision, 0.80);
+
+    if (duplicates.length > 0) {
+      const existing = duplicates[0];
+      chatLogger.info('[record_decision] Similar decision found, reinforcing:', existing);
+
+      const existingMemory = await getMemoryById(existing.id);
+
+      if (existingMemory) {
+        const oldConfidence = existingMemory.confidence;
+        const newConfidence = Math.min(1.0, oldConfidence + 0.05);
+        const newImportance = Math.max(existingMemory.importance, 0.9);
+
+        const { error } = await supabase
+          .from('memory_entries')
+          .update({
+            confidence: newConfidence,
+            importance: newImportance,
+            access_count: (existingMemory.access_count || 0) + 1,
+            last_accessed: new Date().toISOString(),
+            last_mentioned: new Date().toISOString(),
+          })
+          .eq('id', existing.id);
+
+        if (error) {
+          throw new Error(`Failed to reinforce decision: ${error.message}`);
+        }
+
+        return JSON.stringify({
+          success: true,
+          action: 'reinforced',
+          message: `Reinforced existing decision: "${existing.content}"`,
+          memory_id: existing.id,
+          confidence: { old: oldConfidence, new: newConfidence },
+        });
+      }
+    }
+
+    // Create new memory entry
+    const embedding = await generateEmbedding(decision);
+    const contentHash = generateContentHash(decision);
+
+    // Build summary with rationale
+    let summary = rationale || null;
+    if (alternatives && alternatives.length > 0) {
+      const altText = `Alternatives considered: ${alternatives.join(', ')}`;
+      summary = summary ? `${summary}\n${altText}` : altText;
+    }
+
+    const memory = await createMemory({
+      category: 'other_instructions',
+      subcategory: null,
+      content: decision,
+      summary,
+      confidence: 0.9, // Decisions have high confidence
+      source_type: 'agent_tool',
+      content_hash: contentHash,
+      embedding,
+      relevance_score: 1.0,
+      source_chat_ids: [],
+      source_project_ids: [],
+      source_message_count: 1,
+      time_period: 'current',
+      memory_type: 'decision',
+      tags: tags || [],
+      thread_id: thread_id || undefined,
+    });
+
+    if (!memory) {
+      throw new Error('Failed to create decision memory');
+    }
+
+    chatLogger.info('[record_decision] Decision recorded:', memory.id);
+
+    return JSON.stringify({
+      success: true,
+      action: 'created',
+      message: `Recorded decision: "${decision}"`,
+      memory_id: memory.id,
+      alternatives: alternatives || [],
+      tags: tags || [],
+    });
+  } catch (error) {
+    chatLogger.error('[record_decision] Failed:', error);
+    return JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to record decision',
+    });
+  }
+}
+
+type RecordInsightInput = {
+  insight: string;
+  evidence?: string[];
+  tags?: string[];
+  thread_id?: string;
+};
+
+/**
+ * Record an insight or pattern discovered
+ * M3.13-06: Thinking Partner tool
+ */
+async function recordInsight(input: Record<string, unknown>): Promise<string> {
+  const { insight, evidence, tags, thread_id } = input as RecordInsightInput;
+
+  chatLogger.info(`[record_insight] Recording: "${insight}"`, { evidence, tags, thread_id });
+
+  // Validate input
+  if (!insight || insight.length < 10) {
+    return JSON.stringify({
+      success: false,
+      error: 'Insight must be at least 10 characters',
+    });
+  }
+
+  if (insight.length > 500) {
+    return JSON.stringify({
+      success: false,
+      error: 'Insight must be less than 500 characters',
+    });
+  }
+
+  try {
+    // Check for similar insights (Hebbian reinforcement)
+    const duplicates = await findSimilarMemories(insight, 0.80);
+
+    if (duplicates.length > 0) {
+      const existing = duplicates[0];
+      chatLogger.info('[record_insight] Similar insight found, reinforcing:', existing);
+
+      const existingMemory = await getMemoryById(existing.id);
+
+      if (existingMemory) {
+        const oldConfidence = existingMemory.confidence;
+        const newConfidence = Math.min(1.0, oldConfidence + 0.05);
+        const newImportance = Math.max(existingMemory.importance, 0.85);
+
+        const { error } = await supabase
+          .from('memory_entries')
+          .update({
+            confidence: newConfidence,
+            importance: newImportance,
+            access_count: (existingMemory.access_count || 0) + 1,
+            last_accessed: new Date().toISOString(),
+            last_mentioned: new Date().toISOString(),
+          })
+          .eq('id', existing.id);
+
+        if (error) {
+          throw new Error(`Failed to reinforce insight: ${error.message}`);
+        }
+
+        return JSON.stringify({
+          success: true,
+          action: 'reinforced',
+          message: `Reinforced existing insight: "${existing.content}"`,
+          memory_id: existing.id,
+          confidence: { old: oldConfidence, new: newConfidence },
+        });
+      }
+    }
+
+    // Create new memory entry
+    const embedding = await generateEmbedding(insight);
+    const contentHash = generateContentHash(insight);
+
+    // Build summary with evidence
+    const summary = evidence && evidence.length > 0
+      ? `Evidence: ${evidence.join('; ')}`
+      : null;
+
+    const memory = await createMemory({
+      category: 'other_instructions',
+      subcategory: null,
+      content: insight,
+      summary,
+      confidence: 0.85, // Insights have high confidence
+      source_type: 'agent_tool',
+      content_hash: contentHash,
+      embedding,
+      relevance_score: 1.0,
+      source_chat_ids: [],
+      source_project_ids: [],
+      source_message_count: 1,
+      time_period: 'current',
+      memory_type: 'insight',
+      tags: tags || [],
+      thread_id: thread_id || undefined,
+    });
+
+    if (!memory) {
+      throw new Error('Failed to create insight memory');
+    }
+
+    chatLogger.info('[record_insight] Insight recorded:', memory.id);
+
+    return JSON.stringify({
+      success: true,
+      action: 'created',
+      message: `Recorded insight: "${insight}"`,
+      memory_id: memory.id,
+      evidence_count: evidence?.length || 0,
+      tags: tags || [],
+    });
+  } catch (error) {
+    chatLogger.error('[record_insight] Failed:', error);
+    return JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to record insight',
+    });
+  }
+}
+
 // ============================================================================
 // Helpers
 // ============================================================================

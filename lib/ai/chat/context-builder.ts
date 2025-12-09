@@ -20,6 +20,7 @@ import { getContentCreationContext } from '@/lib/ai/identity-context';
 import { chatLogger } from '@/lib/logger';
 import { performSearches } from './search-coordinator';
 import type { ChatContext } from './types';
+import { isQuestion, getSimilarQuestions, formatSimilarQuestionsContext } from '@/lib/ai/similar-questions';
 
 // ============================================================================
 // CONTEXT BUILDING
@@ -94,6 +95,26 @@ export async function buildChatContext(
     }
   }
 
+  // M3.13-08: Similar Questions - Detect if user is asking a question
+  let similarQuestionsContext: string | null = null;
+  if (userText && isQuestion(userText)) {
+    chatLogger.info('[SimilarQuestions] Question detected, fetching similar questions');
+    try {
+      const similarQuestions = await getSimilarQuestions(userText, 3);
+      if (similarQuestions.length > 0) {
+        similarQuestionsContext = formatSimilarQuestionsContext(similarQuestions);
+        chatLogger.info('[SimilarQuestions] Added similar questions to context', {
+          count: similarQuestions.length,
+        });
+      } else {
+        chatLogger.info('[SimilarQuestions] No similar questions found');
+      }
+    } catch (error) {
+      // Fail gracefully - don't break chat if similar questions fails
+      chatLogger.error('[SimilarQuestions] Error fetching similar questions:', error);
+    }
+  }
+
   // Build base system prompt
   let systemPrompt = buildSystemPrompt({
     customInstructions: customInstructions || undefined,
@@ -106,6 +127,12 @@ export async function buildChatContext(
   if (projectsOverviewContext) {
     systemPrompt += projectsOverviewContext;
     chatLogger.info('[Projects] Added projects overview to system prompt');
+  }
+
+  // M3.13-08: Add similar questions context if available
+  if (similarQuestionsContext) {
+    systemPrompt += similarQuestionsContext;
+    chatLogger.info('[SimilarQuestions] Injected similar questions into system prompt');
   }
 
   // Load project context if available

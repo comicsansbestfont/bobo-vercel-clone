@@ -12,6 +12,19 @@ export const ADVISORY_PROJECT_ID = '11111111-1111-1111-1111-111111111111';
 // M39: Added 'identity' for personal identity documents
 export type EntityType = 'deal' | 'client' | 'personal' | 'identity';
 
+// M3.13: Memory type for distinguishing memory kinds
+export type MemoryType = 'fact' | 'question' | 'decision' | 'insight';
+
+// M3.13: Thought thread for grouping related memories
+export interface ThoughtThread {
+  id: string;
+  user_id?: string;
+  title: string;
+  description?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 /**
  * Message content structure matching Vercel AI SDK UIMessage format
  * Extended with inline citation support for Double-Loop architecture
@@ -148,6 +161,10 @@ export type MemoryEntry = {
   access_count: number;
   // M3.6-02: Salience weighting
   importance: number;
+  // M3.13: Thinking Partner fields
+  memory_type?: MemoryType;
+  tags?: string[];
+  thread_id?: string;
 };
 
 export type MemoryConsolidationLog = {

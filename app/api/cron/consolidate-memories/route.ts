@@ -43,7 +43,8 @@ async function consolidateUserMemories(userId: string) {
   apiLogger.info(`[Consolidation] Starting for user ${userId}`);
 
   // 1. Find duplicates
-  const { data: duplicates } = await supabase.rpc('find_duplicate_pairs', {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: duplicates } = await (supabase.rpc as any)('find_duplicate_pairs', {
     p_user_id: userId,
     p_threshold: 0.9,
   });
@@ -57,7 +58,7 @@ async function consolidateUserMemories(userId: string) {
   if (duplicates && duplicates.length > 0) {
     // Batch fetch all memories involved in duplicate pairs
     const allIds = Array.from(
-      new Set(duplicates.flatMap(pair => [pair.id1, pair.id2]))
+      new Set<string>(duplicates.flatMap((pair: { id1: string; id2: string }) => [pair.id1, pair.id2]))
     );
 
     const { data: memoriesData } = await supabase
