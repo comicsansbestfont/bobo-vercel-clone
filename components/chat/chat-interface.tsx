@@ -803,7 +803,14 @@ export function ChatInterface({
     setToolSteps([]);
     setContinuationToken(null);
     setTimeoutOccurred(false);
-    regenerate();
+    regenerate({
+      body: {
+        model: model,
+        webSearch: webSearch,
+        chatId: chatId,
+        projectId: projectId,
+      },
+    });
   };
 
   // Handle continuation - resume a timed-out response
