@@ -1,4 +1,5 @@
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { waitUntil } from '@vercel/functions';
 
 // M3.9: Claude SDK imports
 import { getClaudeClient, getClaudeModelId } from '@/lib/ai/claude-client';
@@ -872,8 +873,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
         }
       })();
 
-      // Persist after streaming completes (fire and forget)
-      streamingDone.promise
+      // Persist after streaming completes
+      // CRITICAL: Use waitUntil to ensure Vercel keeps the function running until persistence completes
+      const openaiPersistencePromise = streamingDone.promise
         .then(async () => {
           try {
             // Save last user message from this request
@@ -989,6 +991,9 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
           }
         })
         .catch((err) => chatLogger.error('Persist promise error:', err));
+
+      // CRITICAL: Tell Vercel to wait for persistence to complete before killing the function
+      waitUntil(openaiPersistencePromise);
 
       return new Response(transform.readable, {
         headers: {
@@ -1332,8 +1337,10 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
         }
       })();
 
-      // Handle persistence after streaming completes (fire and forget)
-      responsePromise
+      // Handle persistence after streaming completes
+      // CRITICAL: Use waitUntil to ensure Vercel keeps the function running until persistence completes
+      // Without this, the function can be terminated after returning the response, losing the assistant message
+      const persistencePromise = responsePromise
         .then(async ({ text, inputTokens, outputTokens, didTimeout: timedOut, continuationToken: contToken, messageId }) => {
           try {
             // Save user message (always, regardless of timeout)
@@ -1441,6 +1448,10 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
           }
         })
         .catch((err) => chatLogger.error('[Claude SDK] Response promise error:', err));
+
+      // CRITICAL: Tell Vercel to wait for persistence to complete before killing the function
+      // This prevents the "message shown but not saved" bug
+      waitUntil(persistencePromise);
 
       // Return streaming response immediately
       return new Response(transform.readable, {
