@@ -63,8 +63,8 @@ export async function POST() {
         const embedding = await generateEmbedding(memory.content);
 
         // Update memory with embedding
-        const { error: updateError } = await supabase
-          .from('memory_entries')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error: updateError } = await (supabase.from('memory_entries') as any)
           .update({ embedding })
           .eq('id', memory.id);
 

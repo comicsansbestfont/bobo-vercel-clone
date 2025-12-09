@@ -12,6 +12,7 @@ import {
   MessageResponse,
   MessageActions,
   MessageAction,
+  EditableMessageContent,
 } from '@/components/ai-elements/message';
 
 import {
@@ -62,6 +63,9 @@ import {
   useStreamData,
 } from '@/hooks/chat';
 
+// Import message edit hook
+import { useMessageEdit } from '@/hooks/useMessageEdit';
+
 import {
   Source,
   Sources,
@@ -108,7 +112,7 @@ import { toast } from 'sonner';
 import { chatLogger } from '@/lib/logger';
 import { ChatHeader } from './chat-header';
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
-import { isClaudeModel } from '@/lib/agent-sdk/utils';
+import { isClaudeModel } from '@/lib/utils/model-helpers';
 
 /**
  * Parse message content to extract thinking blocks for Reasoning component
@@ -439,6 +443,13 @@ export function ChatInterface({
 
   // Use the continuation handler from the hook
   const handleContinue = handleContinueBase;
+
+  // Message edit hook
+  const { handleEdit } = useMessageEdit({
+    messages,
+    setMessages,
+    reload: regenerate,
+  });
 
   // Calculate context usage
   const contextUsage = getContextUsage(messages, input, model);
@@ -792,23 +803,31 @@ export function ChatInterface({
                           status === 'streaming' && isLastPartOfLastMessage && j === parsedContent.length - 1;
 
                         return (
-                          <Message key={`${message.id}-${i}-text-${j}`} from={message.role}>
-                            <MessageContent>
-                              {isStreamingResponse ? (
-                                <StreamingMessageResponse
-                                  text={parsed.content}
-                                  rehypePlugins={[rehypeRaw as Pluggable]}
-                                  components={citationComponents}
-                                />
-                              ) : (
-                                <MessageResponse
-                                  rehypePlugins={[rehypeRaw as Pluggable]}
-                                  components={citationComponents}
-                                >
-                                  {textWithSupTags}
-                                </MessageResponse>
-                              )}
-                            </MessageContent>
+                          <Message key={`${message.id}-${i}-text-${j}`} from={message.role} messageId={message.id} onEdit={message.role === 'user' ? handleEdit : undefined}>
+                            {message.role === 'user' ? (
+                              <EditableMessageContent
+                                messageId={message.id}
+                                initialContent={parsed.content}
+                                onEdit={handleEdit}
+                              />
+                            ) : (
+                              <MessageContent>
+                                {isStreamingResponse ? (
+                                  <StreamingMessageResponse
+                                    text={parsed.content}
+                                    rehypePlugins={[rehypeRaw as Pluggable]}
+                                    components={citationComponents}
+                                  />
+                                ) : (
+                                  <MessageResponse
+                                    rehypePlugins={[rehypeRaw as Pluggable]}
+                                    components={citationComponents}
+                                  >
+                                    {textWithSupTags}
+                                  </MessageResponse>
+                                )}
+                              </MessageContent>
+                            )}
                             {message.role === 'assistant' && isLastPartOfLastMessage && j === parsedContent.length - 1 && (
                               <MessageActions>
                                 <MessageAction

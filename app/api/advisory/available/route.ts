@@ -26,7 +26,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Database query failed' }, { status: 500 });
     }
 
-    const importedPaths = new Set(projects?.map(p => p.advisory_folder_path) || []);
+    const importedPaths = new Set(
+      (projects as Array<{ advisory_folder_path: string | null }> | null)
+        ?.map(p => p.advisory_folder_path)
+        .filter((path): path is string => path !== null) || []
+    );
 
     // Filter to only available (not yet imported) folders
     const available = {

@@ -19,22 +19,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     // 2. Create memory from suggestion
-    const { data: memory, error: createError } = await supabase
-      .from('memory_entries')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sugg = suggestion as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: memory, error: createError } = await (supabase.from('memory_entries') as any)
       .insert({
         user_id: DEFAULT_USER_ID,
-        category: suggestion.category,
-        subcategory: suggestion.subcategory,
-        content: suggestion.content,
-        summary: suggestion.summary,
-        confidence: suggestion.confidence,
+        category: sugg.category,
+        subcategory: sugg.subcategory,
+        content: sugg.content,
+        summary: sugg.summary,
+        confidence: sugg.confidence,
         source_type: 'suggested',
-        source_chat_ids: suggestion.source_chat_id ? [suggestion.source_chat_id] : [],
+        source_chat_ids: sugg.source_chat_id ? [sugg.source_chat_id] : [],
         source_project_ids: [],
         source_message_count: 1,
-        time_period: suggestion.time_period,
+        time_period: sugg.time_period,
         relevance_score: 1.0,
-        content_hash: generateContentHash(suggestion.content),
+        content_hash: generateContentHash(sugg.content),
       })
       .select()
       .single();

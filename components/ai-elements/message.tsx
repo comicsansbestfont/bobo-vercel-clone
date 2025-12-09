@@ -18,22 +18,28 @@ import {
   ChevronRightIcon,
   PaperclipIcon,
   XIcon,
+  PencilIcon,
+  CheckIcon,
 } from "lucide-react";
 import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, memo, useContext, useEffect, useState, useRef } from "react";
 import { Streamdown } from "streamdown";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage["role"];
+  onEdit?: (messageId: string, newContent: string) => void;
+  messageId?: string;
 };
 
-export const Message = ({ className, from, ...props }: MessageProps) => (
+export const Message = ({ className, from, onEdit, messageId, ...props }: MessageProps) => (
   <div
     className={cn(
       "group flex w-full max-w-[80%] flex-col gap-2",
       from === "user" ? "is-user ml-auto justify-end" : "is-assistant",
       className
     )}
+    data-message-id={messageId}
+    data-on-edit={onEdit ? "true" : undefined}
     {...props}
   />
 );
@@ -446,3 +452,120 @@ export const MessageToolbar = ({
     {children}
   </div>
 );
+
+export type EditableMessageContentProps = HTMLAttributes<HTMLDivElement> & {
+  messageId: string;
+  initialContent: string;
+  onEdit: (messageId: string, newContent: string) => void;
+};
+
+export const EditableMessageContent = ({
+  messageId,
+  initialContent,
+  onEdit,
+  className,
+  ...props
+}: EditableMessageContentProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(initialContent);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+      // Auto-resize textarea to fit content
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [isEditing]);
+
+  const handleSave = () => {
+    if (editContent.trim() !== initialContent.trim()) {
+      onEdit(messageId, editContent.trim());
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditContent(initialContent);
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div
+        className={cn(
+          "is-user:dark flex w-fit flex-col gap-2 overflow-hidden text-sm",
+          "group-[.is-user]:ml-auto group-[.is-user]:rounded-lg group-[.is-user]:bg-secondary group-[.is-user]:px-4 group-[.is-user]:py-3 group-[.is-user]:text-foreground",
+          className
+        )}
+        {...props}
+      >
+        <textarea
+          ref={textareaRef}
+          value={editContent}
+          onChange={(e) => {
+            setEditContent(e.target.value);
+            // Auto-resize on change
+            e.target.style.height = 'auto';
+            e.target.style.height = `${e.target.scrollHeight}px`;
+          }}
+          className="w-full min-w-[300px] resize-none rounded border-none bg-transparent p-0 text-sm outline-none focus:ring-0"
+          rows={1}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault();
+              handleSave();
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              handleCancel();
+            }
+          }}
+        />
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="default"
+            onClick={handleSave}
+            disabled={!editContent.trim()}
+          >
+            <CheckIcon className="size-3 mr-1" />
+            Save & Regenerate
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "is-user:dark flex w-fit flex-col gap-2 overflow-hidden text-sm",
+        "group-[.is-user]:ml-auto group-[.is-user]:rounded-lg group-[.is-user]:bg-secondary group-[.is-user]:px-4 group-[.is-user]:py-3 group-[.is-user]:text-foreground",
+        "group-[.is-assistant]:text-foreground",
+        className
+      )}
+      {...props}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1">{initialContent}</div>
+        <MessageAction
+          onClick={() => setIsEditing(true)}
+          tooltip="Edit message"
+          label="Edit"
+          size="icon-sm"
+          className="opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <PencilIcon className="size-3" />
+        </MessageAction>
+      </div>
+    </div>
+  );
+};

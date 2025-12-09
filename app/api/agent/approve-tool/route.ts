@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { recordApprovalDecision, getApprovalRequest } from '@/lib/agent-sdk/permission-manager';
+import { recordApprovalDecision, getApprovalRequest } from '@/lib/tools/permission-manager';
 import { chatLogger } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {

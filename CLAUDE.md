@@ -34,7 +34,7 @@ This is an AI chatbot application built with Next.js 16, React 19. It provides a
 - `lib/ai/claude-client.ts` - Anthropic client singleton
 - `lib/ai/claude-message-converter.ts` - UIMessage → Claude format
 - `lib/ai/claude-stream-transformer.ts` - Claude SSE → UI SSE format
-- `lib/ai/claude-advisory-tools.ts` - 5 tools: search, read, list, glob, grep
+- `lib/ai/claude-advisory-tools.ts` - ALL chat tools (advisory + memory)
 - `app/api/chat/route.ts` - Chat endpoint using Claude SDK
 
 ### Environment Variables
@@ -46,6 +46,23 @@ ANTHROPIC_API_KEY=sk-ant-...  # Get from console.anthropic.com
 # Used for embeddings/summarization only
 AI_GATEWAY_API_KEY=...
 ```
+
+### ⚠️ CRITICAL: Where to Add New Tools
+
+**ALL new tools MUST be added to `lib/ai/claude-advisory-tools.ts`**
+
+This is the ONLY file that defines tools used during chat. The chat handler imports tools from here:
+```typescript
+// lib/ai/chat/handlers/claude-handler.ts
+import { advisoryTools, executeAdvisoryTool } from '@/lib/ai/claude-advisory-tools';
+```
+
+To add a new tool:
+1. Add tool definition to `advisoryTools` array in `lib/ai/claude-advisory-tools.ts`
+2. Add case to `executeAdvisoryTool()` switch statement
+3. Implement the tool function in the same file
+
+**DO NOT create separate tool files.** All chat tools live in `claude-advisory-tools.ts`.
 
 ---
 
@@ -231,12 +248,7 @@ Context limits stored in `MODEL_CONTEXT_LIMITS` map in `lib/context-tracker.ts`
 
 ### What Was Fixed
 
-1. **Claude Agent SDK Build Error** (Nov 29)
-   - **Problem:** Node.js modules (`child_process`, `fs`) imported in client bundle via barrel exports
-   - **Fix:** Separated `lib/agent-sdk/index.ts` (client-safe) from `lib/agent-sdk/server.ts` (server-only)
-   - **Result:** App builds and loads successfully
-
-2. **REST API Embedding Generation** (Nov 28)
+1. **REST API Embedding Generation** (Nov 28)
    - **File:** `/app/api/memory/entries/route.ts`
    - **Fix:** Added `generateEmbedding()` call in POST handler
    - **Result:** New memory entries get embeddings automatically
@@ -257,21 +269,7 @@ Context limits stored in `MODEL_CONTEXT_LIMITS` map in `lib/context-tracker.ts`
 | Vector Search | ✅ Working | Cosine similarity returns correct scores |
 | search_memory | ✅ Functional | Hybrid search (70% vector + 30% BM25) works |
 
-### Architecture Pattern (Client/Server Separation)
-
-```
-lib/agent-sdk/
-├── index.ts      # Client-safe exports (utils, UI helpers, emojis)
-└── server.ts     # Server-only exports (Agent SDK, safety hooks, tools)
-```
-
-**Import Guidelines:**
-- Client components: `import { ... } from '@/lib/agent-sdk'`
-- Server components/API routes: `import { ... } from '@/lib/agent-sdk/server'`
-
 ### Key Files
-- `lib/agent-sdk/index.ts` - Client-safe exports only
-- `lib/agent-sdk/server.ts` - Server-only exports (created Nov 29)
 - `app/api/memory/backfill/route.ts` - Backfill endpoint (created Nov 29)
 
 **Current Build Status:** ✅ WORKING - All features functional
@@ -289,7 +287,7 @@ lib/agent-sdk/
    - `clients/` - SwiftCheckin
    - 43 markdown files with embeddings in `files` table
 
-2. **search_advisory Agent Tool** (`lib/agent-sdk/advisory-tools.ts`)
+2. **Advisory Tools** (`lib/ai/claude-advisory-tools.ts`)
    - Hybrid search: 70% vector + 30% full-text (BM25)
    - Filters by entity_type (deal/client) and entity_name
    - Auto-approved (read-only)
@@ -312,7 +310,7 @@ npm run verify-advisory
 - `advisory/` - Advisory file repository
 - `scripts/index-advisory.ts` - Indexing script
 - `scripts/verify-advisory-indexing.ts` - Verification script
-- `lib/agent-sdk/advisory-tools.ts` - Agent tool module
+- `lib/ai/claude-advisory-tools.ts` - All chat tools (search, read, memory)
 
 ### Example Queries (Agent Mode)
 - "Brief me on MyTab" → Master-doc content
@@ -402,4 +400,4 @@ Inject into chat context (always current)
 - **Markdown**: streamdown (with rehype-raw for HTML in citations)
 - **Token Counting**: gpt-tokenizer
 - **Validation**: Zod v4
-- **Agent SDK**: Anthropic Claude Agent SDK (M4 - Agent Mode)
+- **Claude SDK**: Anthropic Claude SDK (`@anthropic-ai/sdk`) for ALL chat functionality

@@ -18,8 +18,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const body = await req.json();
     const validated = updateMemorySchema.parse(body);
 
-    const { data, error } = await supabase
-      .from('memory_entries')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from('memory_entries') as any)
       .update(validated)
       .eq('id', id)
       .eq('user_id', DEFAULT_USER_ID)

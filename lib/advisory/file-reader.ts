@@ -5,10 +5,13 @@
  * Server-side only (uses Node.js fs).
  *
  * M38: Advisory Project Integration
+ * M312A: Advisory Folder Browser
  */
 
 import fs from 'fs/promises';
+import { readdirSync, statSync } from 'fs';
 import path from 'path';
+import { join } from 'path';
 import matter from 'gray-matter';
 
 export interface AdvisoryFrontmatter {
@@ -311,4 +314,55 @@ export function buildAdvisoryContext(
   }
 
   return contextParts.join('\n\n---\n\n');
+}
+
+/**
+ * M312A: Advisory Folder Browser Tree View
+ */
+
+export interface FolderNode {
+  name: string;
+  path: string;
+  type: 'folder' | 'file';
+  children?: FolderNode[];
+}
+
+/**
+ * Get advisory folder tree structure (synchronous)
+ * Returns nested tree of folders and .md files
+ */
+export function getAdvisoryFolderTree(basePath: string = 'advisory'): FolderNode {
+  const rootPath = join(process.cwd(), basePath);
+
+  function buildTree(dirPath: string, name: string): FolderNode {
+    const entries = readdirSync(dirPath);
+    const children: FolderNode[] = [];
+
+    for (const entry of entries) {
+      const entryPath = join(dirPath, entry);
+      const stat = statSync(entryPath);
+
+      if (stat.isDirectory()) {
+        children.push(buildTree(entryPath, entry));
+      } else if (entry.endsWith('.md')) {
+        children.push({
+          name: entry,
+          path: entryPath.replace(process.cwd() + '/', ''),
+          type: 'file',
+        });
+      }
+    }
+
+    return {
+      name,
+      path: dirPath.replace(process.cwd() + '/', ''),
+      type: 'folder',
+      children: children.sort((a, b) => {
+        if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      }),
+    };
+  }
+
+  return buildTree(rootPath, basePath);
 }

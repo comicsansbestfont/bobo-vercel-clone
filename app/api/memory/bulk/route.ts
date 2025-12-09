@@ -97,7 +97,8 @@ async function findSimilarMemory(
   embedding: number[],
   threshold: number
 ): Promise<{ id: string; content: string; similarity: number } | null> {
-  const { data, error } = await supabase.rpc('find_memories_by_embedding', {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase.rpc as any)('find_memories_by_embedding', {
     query_embedding: embedding,
     similarity_threshold: threshold,
     p_user_id: DEFAULT_USER_ID,
@@ -109,11 +110,12 @@ async function findSimilarMemory(
     return null;
   }
 
-  if (data && data.length > 0) {
+  const results = data as Array<{ id: string; content: string; similarity: number }> | null;
+  if (results && results.length > 0) {
     return {
-      id: data[0].id,
-      content: data[0].content,
-      similarity: data[0].similarity,
+      id: results[0].id,
+      content: results[0].content,
+      similarity: results[0].similarity,
     };
   }
 

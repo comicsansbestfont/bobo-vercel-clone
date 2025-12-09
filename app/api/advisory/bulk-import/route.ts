@@ -44,7 +44,11 @@ export async function POST(req: NextRequest) {
       .select('advisory_folder_path')
       .not('advisory_folder_path', 'is', null);
 
-    const importedPaths = new Set(existingProjects?.map(p => p.advisory_folder_path) || []);
+    const importedPaths = new Set(
+      (existingProjects as Array<{ advisory_folder_path: string | null }> | null)
+        ?.map(p => p.advisory_folder_path)
+        .filter((path): path is string => path !== null) || []
+    );
 
     // Build list of folders to import
     const toImport: Array<{ path: string; entityType: EntityType }> = [];
