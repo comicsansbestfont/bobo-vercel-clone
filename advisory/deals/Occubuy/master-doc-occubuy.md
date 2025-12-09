@@ -7,14 +7,14 @@ first_contact: "2025-11-13"
 deal_stage: "Deep Dive & Diagnosis"
 engagement_type: ""
 current_stage: "Phase 1b"
-arr_estimate: "Revenue positive (undisclosed)"
+arr_estimate: "~$1.2M ARR (~$100K/month)"
 team_size: "5-10 (lean, bootstrapped)"
 # Valuation Summary
 valuation_range: "$10M - $15M (asking $12M cap)"
 founder_engine_score: ""
 gtm_readiness: ""
 valuation_decision: ""
-last_updated: "2025-12-08"
+last_updated: "2025-12-09"
 contact_number: "+61477666671"
 ---
 
@@ -32,7 +32,7 @@ contact_number: "+61477666671"
 | **Deal Stage** | Deep Dive & Diagnosis |
 | Engagement Type | TBD - Advisory potential + Investment interest |
 | GTM Stage | Phase 1b |
-| ARR Estimate | Revenue positive (undisclosed, likely $100K-$300K based on signals) |
+| ARR Estimate | **~$1.2M ARR** (~$100K/month, confirmed Dec 2025) |
 | Team Size | 5-10 (bootstrapped, lean) |
 
 **Deal Stages:** New Opportunity → Triage & Qualification → Deep Dive & Diagnosis → Relationship Development → Proposal Presented → Contract Sent → Finalising Terms → Closed Won / Closed Lost
@@ -127,28 +127,46 @@ contact_number: "+61477666671"
 
 ### 2.5 Growth Signals
 
-**Traction:**
+**Traction (Updated Dec 2025):**
+- **~$1.2M ARR** (~$100K/month) - confirmed Dec 9, 2025
 - 15,000 app users
 - ~3,000 connected to open banking
 - 50-100 organic signups/week (no marketing spend)
 - 20 million views/month across socials
 - Revenue positive / cash flow positive (bootstrapped)
+- **3x conversion rate improvement** via Amy's hyper-personalization (Dec 2025)
 
-**Recent Developments:**
+**Recent Developments (Dec 2025):**
 - Amy Sheen Ash joined as co-founder (signed contracts Dec 2025)
   - Former CDO NAB, CDO Tabcorp, Global Head Data & Analytics HSBC
   - Building AI/ML products for banks since 2014-2015
   - Access to NAB, HSBC for partnerships
+  - **Tripled conversion rate** with hyper-personalization in first month
+  - Managing 5 interns, building push notification journey strategy
 - Up Bank's first designer onboarded
 - Working with Australia's biggest loyalty consultant (advises Velocity, Qantas)
 - Interest from Indian Overseas Bank, UAE banks
 - Mirvac, Meriton piloting discussions
+- **Melbourne exec network** (NEW Dec 2025):
+  - High-profile executives on large AU company boards
+  - Willing to champion Occubuy from board level
+  - Looking to **syndicate $1M** in funding
+- **US expansion progress** (via Douglas Elliman advisor):
+  - Open banking access in every state
+  - Real estate license obtained
+  - Former Chief Investment Officer at Douglas Elliman (Built's first investor)
+- **Camber Creek** (Built Rewards investor) - interest in acquisition discussions if Occubuy expands to UAE/India
+
+**Investor Conversations:**
+- Dom Pym meeting (Nov 2025) - potential money next year
+- Camber Creek - strategic interest for exit optionality
+- Melbourne exec network - syndicating $1M
 
 **Funding Status:**
 - Bootstrapped to date
 - Seeking: $1-2M at $12M valuation cap (SAFE note)
 - Planning: Series A mid-late 2025 targeting $20-25M valuation
-- Interest from: Dom Pym/Frank's Triple Bubble, family/friends, design studio (sweat equity)
+- Interest from: Dom Pym/Frank's Triple Bubble, family/friends, design studio (sweat equity), Melbourne exec network
 
 ### 2.6 Key Stakeholders
 
@@ -257,6 +275,40 @@ contact_number: "+61477666671"
 
 *Extracted from /Meetings folder. Add new meetings at top.*
 
+### 2025-12-09 - Strategy Sync (Phone Call)
+**Attendees:** Nathan Aranha, Sachee Perera
+**Duration:** 23:49
+**Context:** Sachee at West Tech Fest Perth; Nathan had rapid momentum
+
+**Key Updates:**
+- **ARR confirmed: ~$1.2M** (~$100K/month)
+- **Melbourne exec network:** High-profile board members wanting to champion, syndicating $1M
+- **US expansion:** Douglas Elliman advisor (Built's first investor), open banking in all states, RE license
+- **Amy's impact:** Tripled conversion rate in first month, 5 interns, push notification strategy
+- **Camber Creek interest:** Acquisition discussions if Occubuy expands to UAE/India
+- **Dom Pym:** Met 2 weeks ago, potential money next year
+- **Press release Thursday:** Amy joining announcement
+
+**Capital Raise Discussion:**
+- Nathan wants feedback on 12-24 month capital raise strategy
+- Key questions: valuation triggers, milestone achievability, which markets to prioritize
+- Sachee offered: VC intros, external feedback collection, strategy review
+
+**User Feedback (Sachee collected):**
+- Trust concerns about connecting bank accounts and data safety continues to surface
+
+**Next Steps:**
+- Follow-up call Dec 15-16
+- Nathan to prepare: capital raise strategy overview, strategic levers doc, VC list
+- Sachee to: reflect on strategy, get VC feedback, share Amy press release
+
+**My Observation:**
+> The acceleration is real. Melbourne exec network + US progress + Amy's conversion wins = growing leverage. Nathan's energy is focused. The Camber Creek acquisition interest adds exit optionality. Key insight: Sachee's "strategic levers" prompt from earlier led Nathan to create a mapping document - proof of advisory value landing.
+
+*Full notes: `Meetings/2025-12-09-sachee-nathan-sync.md`*
+
+---
+
 ### 2025-11-19 - Discovery Call (First Meeting)
 **Attendees:** Nathan Aranha, Sachee Perera
 **Duration:** 42:51
@@ -319,6 +371,8 @@ contact_number: "+61477666671"
 
 | Date | Channel | Direction | Summary |
 |------|---------|-----------|---------|
+| 2025-12-09 | Phone | Both | **Strategy sync (24 min)** - Major updates: ~$1.2M ARR confirmed, Melbourne exec network syndicating $1M, US expansion progress, Amy tripled conversions, Camber Creek acquisition interest. Scheduled follow-up Dec 15-16. |
+| 2025-12-09 | WhatsApp | Both | Sachee reached out re: deck + investor feedback opportunity (West Tech Fest). Nathan responded with momentum update, scheduled 6:30pm call. |
 | 2025-12-08 | WhatsApp | Both | Deeper discussion - Sachee tested app, users asking "which banks support points?", Nathan explained Qantas-style points model, refined 3 selling points to banks |
 | 2025-11-19 | WhatsApp | Outbound | Phone exchange, Sachee suggested reframe: pitch verification (risk reduction) not volume (leads) to banks |
 | 2025-11-19 | LinkedIn | Both | Post-call follow-up - Nathan shared WhatsApp, Sachee praised Amy hire as "coup", suggested leverage = proving lower-risk borrowers |
@@ -404,14 +458,18 @@ Key question to validate: Can they prove open-banking users are statistically lo
 | Beers in Sydney | Feb 2025 | Scheduled loosely |
 
 ### Next Steps
-- [ ] Nathan sends investment deck
-- [ ] Sachee reviews and provides feedback
+- [ ] **Dec 15-16:** Strategy call - capital raise planning, valuation milestones
+- [ ] Nathan to send: capital raise strategy (12-24 month), strategic levers doc, VC list pitched to
+- [ ] Sachee to: get VC feedback from network, prepare capital raise perspective
+- [ ] Share Amy press release (Thursday Dec 12)
+- [ ] Nathan sends investment deck (outstanding)
 - [ ] Determine advisory engagement scope
 - [ ] Determine investment participation
 
 ### Next Meeting
-> Date: TBD (Feb 2025 in-person likely)
-> Agenda: Review deck feedback, discuss advisory/investment
+> **Date:** December 15th or 16th, 2025 (Sachee in Thailand)
+> **Agenda:** Capital raise strategy review, valuation milestones/triggers, strategic partner mapping
+> **Prep:** Nathan brings 12-24 month capital plan + strategic levers doc
 
 ---
 
@@ -419,33 +477,38 @@ Key question to validate: Can they prove open-banking users are statistically lo
 
 *Updated from formal valuation analysis. Full analysis: `Valuation/YYYY-MM-DD-valuation-analysis.md`*
 
-**Last Updated:** 2025-12-08
+**Last Updated:** 2025-12-09
 **Assessment Tier:** Tier 1 (Quick Screen)
 
 ### Classification
 | Field | Value |
 |-------|-------|
-| **Actual Phase** | 1b (revenue positive, partnerships, scaling) |
+| **Actual Phase** | 1b → transitioning to Phase 2 (revenue scaling, building leverage) |
 | **Founder Engine Score** | TBD |
 | **GTM Readiness** | TBD |
 
 ### Valuation Summary
 | Method | Value |
 |--------|-------|
+| ARR | ~$1.2M (~$100K/month) |
+| ARR Multiple (10x) | $12M |
 | Asking Cap | $12M |
 | Planned Series A | $20-25M |
-| **Commentary** | $12M cap reasonable given: revenue positive, 15K users, Amy Sheen Ash hire, Built Rewards comp ($10.7B), bank partnership pipeline |
+| **Commentary** | $12M cap now well-supported: ~$1.2M ARR = 10x multiple, Amy's 3x conversion lift, Melbourne exec network syndicating $1M, US expansion progress, Camber Creek acquisition interest |
 
 ### Key Factors
-- [+] Revenue positive / cash flow positive (bootstrapped discipline)
+- [+] **~$1.2M ARR** confirmed (~$100K/month) - enables ARR multiple valuation
+- [+] **3x conversion rate improvement** via Amy's hyper-personalization
+- [+] **Melbourne exec network** syndicating $1M, board-level access
+- [+] **US expansion** progress (Douglas Elliman advisor, open banking in all states)
+- [+] **Camber Creek** (Built investor) interested in acquisition if UAE/India expansion
 - [+] Amy Sheen Ash co-founder hire (enterprise access, credibility)
 - [+] Built Rewards comparable validation ($10.7B)
 - [+] 25 partner ecosystem with 50/50 splits
 - [+] 15K users, organic growth (product-market fit signal)
 - [-] Long tail revenue model (18-36 month cycles)
 - [-] No bank partnerships closed yet (pilot stage)
-- [-] Trust/transparency concerns in market
-- [-] Fundraising reluctance from founder
+- [-] Trust/transparency concerns in market (users hesitant on open banking)
 
 ### Decision
 | Decision Type | Status |
@@ -460,6 +523,7 @@ Key question to validate: Can they prove open-banking users are statistically lo
 
 | Date | Phase | ARR | FE Score | GTM | Range | Δ% | Trigger |
 |------|-------|-----|----------|-----|-------|-----|---------|
+| 2025-12-09 | 1b→2 | ~$1.2M | TBD | TBD | $12M | — | ARR confirmed, Melbourne exec network, US progress, 3x conversion lift |
 | 2025-12-08 | 1b | Revenue+ | TBD | TBD | $10-15M | — | Initial assessment post-discovery |
 
 ---
