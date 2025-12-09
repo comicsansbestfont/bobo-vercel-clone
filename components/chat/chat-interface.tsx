@@ -311,6 +311,7 @@ export function ChatInterface({
     chatIdSynced,
     status: 'ready',
     setMessages: () => {},
+    setMessagesRef, // Pass ref for access to actual setMessages after useChat initializes
     onTitleLoaded: setChatTitle,
     onModelLoaded: setModel,
     onWebSearchLoaded: setWebSearch,

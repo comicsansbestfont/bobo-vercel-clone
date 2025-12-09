@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type MutableRefObject } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { Message as DBMessage } from '@/lib/db/types';
 import { chatLogger } from '@/lib/logger';
@@ -14,8 +14,10 @@ export interface UseChatHistoryOptions {
   chatIdSynced: boolean;
   /** Chat status from useChat */
   status: string;
-  /** Setter for messages array */
+  /** Setter for messages array (initial value, may be no-op) */
   setMessages: (messages: any[]) => void;
+  /** Ref to the actual setMessages function (updated after useChat initializes) */
+  setMessagesRef?: MutableRefObject<(messages: any[]) => void>;
   /** Callback when chat title is loaded */
   onTitleLoaded?: (title: string) => void;
   /** Callback when chat model is loaded */
@@ -53,11 +55,21 @@ export function useChatHistory(options: UseChatHistoryOptions): UseChatHistoryRe
     chatIdSynced,
     status,
     setMessages,
+    setMessagesRef,
     onTitleLoaded,
     onModelLoaded,
     onWebSearchLoaded,
     onProjectLoaded,
   } = options;
+
+  // Helper to call the most up-to-date setMessages (via ref if available)
+  const callSetMessages = (messages: any[]) => {
+    if (setMessagesRef?.current) {
+      setMessagesRef.current(messages);
+    } else {
+      setMessages(messages);
+    }
+  };
 
   const searchParams = useSearchParams();
   const chatIdFromUrl = searchParams?.get('chatId');
@@ -114,6 +126,17 @@ export function useChatHistory(options: UseChatHistoryOptions): UseChatHistoryRe
       }
     };
   }, []);
+
+  // Reset loaded history ref when chatId changes to allow loading new chat
+  useEffect(() => {
+    if (chatId && loadedHistoryForChatIdRef.current && loadedHistoryForChatIdRef.current !== chatId) {
+      chatLogger.info('🔄 Chat changed, clearing loaded history ref', {
+        from: loadedHistoryForChatIdRef.current,
+        to: chatId
+      });
+      loadedHistoryForChatIdRef.current = null;
+    }
+  }, [chatId]);
 
   // Load chat history when chatId changes
   useEffect(() => {
@@ -174,7 +197,7 @@ export function useChatHistory(options: UseChatHistoryOptions): UseChatHistoryRe
           if (res.status === 404) {
             chatLogger.info('✨ New chat detected (404) - starting with empty history');
             loadedHistoryForChatIdRef.current = chatId;
-            setMessages([]);
+            callSetMessages([]);
             return;
           }
 
@@ -205,7 +228,7 @@ export function useChatHistory(options: UseChatHistoryOptions): UseChatHistoryRe
         }
 
         chatLogger.success(`✅ Loaded ${uiMessages.length} messages`);
-        setMessages(uiMessages);
+        callSetMessages(uiMessages);
 
         // Mark that we've loaded history for this chat to prevent duplicate loads
         loadedHistoryForChatIdRef.current = chatId;
