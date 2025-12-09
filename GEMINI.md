@@ -55,4 +55,4 @@ Bobo AI Chatbot is an advanced, production-ready AI chat application built with 
 ## Status
 -   **Current Phase:** Milestone 2 (Project Intelligence/RAG) - In Progress.
 -   **Completed:** Core Chat, Persistence, Basic Project Management.
--   **Backlog:** See `docs/PRODUCT_BACKLOG.md` and `docs/PROGRESS_TRACKER.md`.
+-   **Backlog:** See `docs/product/PRODUCT_BACKLOG.md` and `CLAUDE.md` for current status.

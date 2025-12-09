@@ -145,8 +145,9 @@ Before marking V1 as ready:
 
 For comprehensive testing plan with all test cases:
 - **Full Plan:** `docs/V1_TESTING_PLAN.md`
-- **Progress Tracker:** `docs/PROGRESS_TRACKER.md`
-- **Product Backlog:** `docs/PRODUCT_BACKLOG.md`
+- **Progress Tracker:** `docs/archive/PROGRESS_TRACKER.md` (historical)
+- **Product Backlog:** `docs/product/PRODUCT_BACKLOG.md`
+- **Current Status:** `CLAUDE.md`
 
 ---
 

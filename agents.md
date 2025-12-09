@@ -143,10 +143,10 @@ message.content // ✗ Wrong
 
 ### 1. Progress Tracker Updates
 
-**After completing significant work, update `docs/PROGRESS_TRACKER.md`.**
+**After completing significant work, update `CLAUDE.md` with milestone status.**
 
 #### After a Session:
-1. Open `docs/PROGRESS_TRACKER.md`
+1. Open `CLAUDE.md`
 2. Add session highlights to the current milestone section
 3. Update completion percentages and task statuses
 4. Document major features added or bugs fixed
@@ -165,7 +165,7 @@ message.content // ✗ Wrong
 
 When adding features:
 - Update `docs/README.md` if it affects setup/usage or adds user-facing functionality
-- Add to `docs/product-backlog.md` if deferring enhancements or planning future work
+- Add to `docs/product/PRODUCT_BACKLOG.md` if deferring enhancements or planning future work
 - Update inline code comments for complex logic
 
 ### 3. Type Safety
@@ -232,7 +232,7 @@ Before marking tasks complete:
 2. Run `npm run build` and `npm run lint`
 3. Fix any errors
 4. Commit with descriptive message
-5. After session: Update `docs/PROGRESS_TRACKER.md` with accomplishments
+5. After session: Update `CLAUDE.md` with accomplishments
 
 ### Example Commit Message
 ```
@@ -426,8 +426,8 @@ try {
 - Chat API: `app/api/chat/route.ts`
 - Context logic: `lib/context-tracker.ts`
 - Compression logic: `lib/memory-manager.ts`
-- Progress: `docs/PROGRESS_TRACKER.md`
-- Backlog: `docs/PRODUCT_BACKLOG.md`
+- Progress: `CLAUDE.md` (primary), `docs/archive/PROGRESS_TRACKER.md` (historical)
+- Backlog: `docs/product/PRODUCT_BACKLOG.md`
 
 ### Common Commands
 ```bash
@@ -452,7 +452,7 @@ This project tracks progress at the **session level** rather than commit level.
 
 #### After Completing Work:
 1. Make code changes and commit as needed
-2. **After your session**, open `docs/PROGRESS_TRACKER.md`
+2. **After your session**, open `CLAUDE.md`
 3. Add session entry with:
    - Date
    - Features added
@@ -503,7 +503,7 @@ This project uses milestone-based versioning tracked in PROGRESS_TRACKER:
 
 ### Release Process
 1. Complete all milestone tasks
-2. Update `docs/PROGRESS_TRACKER.md` with completion status
+2. Update `CLAUDE.md` with completion status
 3. Update version in `package.json` if shipping
 4. Tag release: `git tag v1.0.0`
 5. Push with tags: `git push --tags`
@@ -541,7 +541,7 @@ useEffect(() => {
 4. ✅ Make your code changes
 5. ✅ Test with multiple models (GPT-4o, Claude, Gemini minimum)
 6. ✅ Commit code changes
-7. ✅ **After session: Update `docs/PROGRESS_TRACKER.md`** with accomplishments
+7. ✅ **After session: Update `CLAUDE.md`** with accomplishments
 8. ✅ **Update `docs/agents.md`** if architecture/patterns changed
 9. ✅ Update `docs/README.md` if user-facing changes
 
@@ -589,8 +589,8 @@ useEffect(() => {
 ### For AI Agents
 - Primary reference: This file (`agents.md`)
 - Technical details: `docs/README.md`
-- Feature roadmap: `docs/PRODUCT_BACKLOG.md`
-- History: `docs/PROGRESS_TRACKER.md`
+- Feature roadmap: `docs/product/PRODUCT_BACKLOG.md`
+- History: `CLAUDE.md` (current), `docs/archive/PROGRESS_TRACKER.md` (historical)
 
 ### For Developers
 - Issues: Track in project management tool

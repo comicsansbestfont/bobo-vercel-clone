@@ -72,7 +72,7 @@ Get your Vercel AI Gateway key: https://vercel.com/ai/api-keys
 
 - **[docs/INDEX.md](docs/INDEX.md)** - Documentation hub (start here!)
 - **[docs/README.md](docs/README.md)** - Full technical documentation
-- **[docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md)** - Development progress & version history
+- **[docs/archive/PROGRESS_TRACKER.md](docs/archive/PROGRESS_TRACKER.md)** - Development progress & version history (archived)
 - **[docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md)** - Testing guide
 
 ### Quick Links
@@ -82,7 +82,7 @@ Get your Vercel AI Gateway key: https://vercel.com/ai/api-keys
 | 🏗️ Architecture | [docs/README.md](docs/README.md#architecture) |
 | 🗄️ Database Schema | [docs/audits/SCHEMA_AUDIT.md](docs/audits/SCHEMA_AUDIT.md) |
 | 🧪 Testing | [docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md) |
-| 📝 Backlog | [docs/PRODUCT_BACKLOG.md](docs/PRODUCT_BACKLOG.md) |
+| 📝 Backlog | [docs/product/PRODUCT_BACKLOG.md](docs/product/PRODUCT_BACKLOG.md) |
 | 🐛 Bug Reports | [docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md](docs/bugs/BUG_REPORT_MESSAGE_RENDERING.md) |
 | 🤖 Claude Code | [CLAUDE.md](CLAUDE.md) |
 
@@ -112,7 +112,7 @@ Get your Vercel AI Gateway key: https://vercel.com/ai/api-keys
 - 📝 **M3**: User Profile & Bio (Planned)
 - 📝 **M4**: Production & Scale (Planned)
 
-See [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) for detailed status.
+See [CLAUDE.md](CLAUDE.md) for current milestone status.
 
 ---
 
@@ -156,9 +156,9 @@ See [docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md) for
 
 ## 🤝 Contributing
 
-1. Review [docs/PRODUCT_BACKLOG.md](docs/PRODUCT_BACKLOG.md) for available tasks
-2. Check [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) for current work
-3. Update [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md) with your changes
+1. Review [docs/product/PRODUCT_BACKLOG.md](docs/product/PRODUCT_BACKLOG.md) for available tasks
+2. Check [CLAUDE.md](CLAUDE.md) for current milestone status
+3. Update relevant docs with your changes
 4. Follow the code style and testing guidelines
 
 ---
@@ -173,7 +173,7 @@ See [docs/testing/TESTING_QUICKSTART.md](docs/testing/TESTING_QUICKSTART.md) for
 
 - **Documentation**: [docs/INDEX.md](docs/INDEX.md)
 - **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Version History**: [docs/PROGRESS_TRACKER.md](docs/PROGRESS_TRACKER.md)
+- **Version History**: [docs/archive/PROGRESS_TRACKER.md](docs/archive/PROGRESS_TRACKER.md)
 
 ---
 
