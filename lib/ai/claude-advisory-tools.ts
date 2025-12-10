@@ -16,7 +16,7 @@ import crypto from 'crypto';
 import { generateEmbedding } from '@/lib/ai/embedding';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
 import { ADVISORY_PROJECT_ID } from '@/lib/db/types';
-import { createMemory, getMemoryById } from '@/lib/db/queries';
+import { createMemory, getMemoryById, updateMemoryAccess } from '@/lib/db/queries';
 import { chatLogger } from '@/lib/logger';
 import { parseHTML } from 'linkedom';
 import { Readability } from '@mozilla/readability';
@@ -413,6 +413,66 @@ EXAMPLES:
       required: ['insight'],
     },
   },
+  // ==========================================================================
+  // M3.14: Memory Search Tool for Extended Thinking
+  // ==========================================================================
+  {
+    name: 'search_memory',
+    description: `Search your memory for relevant information about the user.
+
+USE WHEN:
+- User references past discussions ("remember when...", "what did we decide...")
+- Need context from previous conversations
+- Looking for recorded decisions, insights, or questions
+- User asks about preferences or background
+- Preparing for a complex task where prior context would help
+
+FEATURES:
+- Semantic search (conceptual similarity)
+- Temporal weighting (recent memories rank higher)
+- Frequency weighting (frequently accessed memories rank higher)
+- Confidence weighting (high-confidence facts rank higher)
+- Category and memory type filtering
+
+RETURNS: Relevant memories ranked by combined relevance score.
+
+EXAMPLES:
+- "What decisions have we made about authentication?"
+- "What questions was I exploring last week?"
+- "What are my preferences for code style?"
+- "What insights have we discovered about performance?"`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        query: {
+          type: 'string',
+          description: 'What to search for in memory (natural language query)',
+        },
+        category: {
+          type: 'string',
+          enum: [
+            'user_preferences',
+            'communication_style',
+            'project_context',
+            'feedback',
+            'personal_facts',
+            'other_instructions',
+          ],
+          description: 'Optional category filter',
+        },
+        memory_type: {
+          type: 'string',
+          enum: ['fact', 'question', 'decision', 'insight'],
+          description: 'Optional memory type filter',
+        },
+        limit: {
+          type: 'number',
+          description: 'Max results to return (1-10, default: 5)',
+        },
+      },
+      required: ['query'],
+    },
+  },
 ];
 
 // ============================================================================
@@ -449,6 +509,9 @@ export async function executeAdvisoryTool(
         return await recordDecision(input);
       case 'record_insight':
         return await recordInsight(input);
+      // M3.14: Memory Search Tool
+      case 'search_memory':
+        return await searchMemory(input);
       default:
         return JSON.stringify({ success: false, error: `Unknown tool: ${name}` });
     }
@@ -1507,6 +1570,136 @@ async function recordInsight(input: Record<string, unknown>): Promise<string> {
     return JSON.stringify({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to record insight',
+    });
+  }
+}
+
+// ============================================================================
+// M3.14: Memory Search Implementation
+// ============================================================================
+
+type SearchMemoryInput = {
+  query: string;
+  category?: string;
+  memory_type?: 'fact' | 'question' | 'decision' | 'insight';
+  limit?: number;
+};
+
+/**
+ * Search user's memory for relevant information
+ * M3.14: Active memory retrieval for extended thinking
+ */
+async function searchMemory(input: Record<string, unknown>): Promise<string> {
+  const { query, category, memory_type, limit = 5 } = input as SearchMemoryInput;
+
+  chatLogger.info(`[search_memory] Query: "${query}"`, { category, memory_type, limit });
+
+  // Validate input
+  if (!query || query.length < 3) {
+    return JSON.stringify({
+      success: false,
+      error: 'Query must be at least 3 characters',
+    });
+  }
+
+  const clampedLimit = Math.max(1, Math.min(10, limit));
+
+  try {
+    // Generate embedding for semantic search
+    const embedding = await generateEmbedding(query);
+
+    // Call enhanced_memory_search RPC with full capabilities
+    const { data: results, error } = await supabase.rpc('enhanced_memory_search', {
+      query_embedding: embedding,
+      query_text: query,
+      match_count: clampedLimit,
+      // Weights tuned for balanced relevance
+      vector_weight: 0.4, // Semantic similarity
+      text_weight: 0.2, // Keyword matching
+      recency_weight: 0.2, // Temporal decay
+      frequency_weight: 0.1, // Access frequency
+      confidence_weight: 0.1, // Source confidence
+      recency_half_life_days: 30, // 30-day half-life
+      min_vector_similarity: 0.3,
+      p_user_id: DEFAULT_USER_ID,
+      p_category: category || undefined,
+    });
+
+    if (error) {
+      chatLogger.error('[search_memory] RPC error:', error);
+      return JSON.stringify({
+        success: false,
+        error: `Memory search failed: ${error.message}`,
+      });
+    }
+
+    if (!results || results.length === 0) {
+      return JSON.stringify({
+        success: true,
+        message: `No memories found matching "${query}". Try different keywords or a broader search.`,
+        results: [],
+      });
+    }
+
+    // Filter by memory_type if specified (post-filter since RPC doesn't support it directly)
+    let filteredResults = results;
+    if (memory_type) {
+      // We need to fetch memory_type from the database for filtering
+      const memoryIds = results.map((r: { id: string }) => r.id);
+      const { data: memoryDetails } = await supabase
+        .from('memory_entries')
+        .select('id, memory_type')
+        .in('id', memoryIds);
+
+      if (memoryDetails) {
+        const typeMap = new Map(memoryDetails.map((m) => [m.id, m.memory_type]));
+        filteredResults = results.filter((r: { id: string }) => typeMap.get(r.id) === memory_type);
+      }
+    }
+
+    // Update memory access metrics (Hebbian reinforcement)
+    const memoryIds = filteredResults.map((r: { id: string }) => r.id);
+    if (memoryIds.length > 0) {
+      // Fire and forget - don't block on this
+      updateMemoryAccess(memoryIds).catch((err) => {
+        chatLogger.warn('[search_memory] Failed to update access metrics:', err);
+      });
+    }
+
+    // Format results for LLM consumption
+    type MemorySearchResult = {
+      id: string;
+      category: string;
+      content: string;
+      confidence: number;
+      source_type: string;
+      combined_score: number;
+      recency_score: number;
+    };
+
+    const formatted = (filteredResults as MemorySearchResult[]).map((r, i) => ({
+      index: i + 1,
+      content: r.content,
+      category: r.category,
+      confidence: Math.round(r.confidence * 100) / 100,
+      relevance: Math.round(r.combined_score * 100) / 100,
+      recency: Math.round(r.recency_score * 100) / 100,
+      source: r.source_type,
+    }));
+
+    chatLogger.info(`[search_memory] Found ${filteredResults.length} memories`);
+
+    return JSON.stringify({
+      success: true,
+      message: `Found ${filteredResults.length} relevant memory/memories for "${query}"`,
+      results: formatted,
+      total: filteredResults.length,
+    });
+  } catch (error) {
+    chatLogger.error('[search_memory] Failed:', error);
+    return JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to search memory',
     });
   }
 }

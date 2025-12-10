@@ -26,6 +26,24 @@ export interface ChatRequest {
   chatId?: string;
   projectId?: string;
   agentMode?: boolean;
+  /** M3.14: Extended thinking settings */
+  thinkingEnabled?: boolean;
+  thinkingBudget?: number; // 1024-100000 tokens
+}
+
+// ============================================================================
+// M3.14: EXTENDED THINKING TYPES
+// ============================================================================
+
+/**
+ * Thinking block from Claude's extended thinking feature.
+ * Must be preserved and passed back during tool use iterations.
+ */
+export interface ThinkingBlock {
+  type: 'thinking' | 'redacted_thinking';
+  thinking?: string;
+  signature?: string;
+  data?: string; // For redacted_thinking blocks (encrypted)
 }
 
 export interface ValidationResult {
@@ -56,10 +74,22 @@ export interface ContextBuildResult {
   customInstructions: string;
 }
 
+/** M3.14: Memory search result from hybrid memory search */
+export interface MemorySearchResult {
+  id: string;
+  category: string;
+  content: string;
+  confidence: number;
+  last_updated: string;
+  similarity: number;
+}
+
 export interface SearchCoordinatorResult {
   projectChatResults: ProjectMessageSearchResult[];
   searchResults: SearchResult[];
   queryEmbedding: number[] | null;
+  /** M3.14: Semantic memory results for context enrichment */
+  memoryResults: MemorySearchResult[];
 }
 
 // ============================================================================
@@ -103,6 +133,8 @@ export interface HandlerStreamResult {
   didTimeout: boolean;
   continuationToken: string | null;
   messageId: string;
+  /** M3.14: Extended thinking content */
+  thinkingText?: string;
 }
 
 // ============================================================================

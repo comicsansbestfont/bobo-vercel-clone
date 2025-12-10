@@ -4,19 +4,26 @@
  * Handles chat requests for Claude models with native tool use support.
  * Includes timeout tracking, progressive saving, and agentic tool loop.
  * M40-02: Extracted from route.ts lines 1008-1465
+ * M3.14: Added extended thinking support with thinking_delta handling
  */
 
 import { waitUntil } from '@vercel/functions';
 import type { UIMessage } from 'ai';
 import type { MessageParam, ContentBlock, ToolUseBlock, TextBlock } from '@anthropic-ai/sdk/resources/messages';
 import type { MessagePart } from '@/lib/db';
-import { getClaudeClient, getClaudeModelId } from '@/lib/ai/claude-client';
+import {
+  getClaudeClient,
+  getClaudeModelId,
+  supportsExtendedThinking,
+  getDefaultThinkingBudget,
+  validateThinkingBudget,
+} from '@/lib/ai/claude-client';
 import { convertToClaudeMessages } from '@/lib/ai/claude-message-converter';
 import { advisoryTools, executeAdvisoryTool } from '@/lib/ai/claude-advisory-tools';
 import { createContinuation, upsertPartialMessage } from '@/lib/db';
 import { chatLogger } from '@/lib/logger';
 import { persistChatMessages } from '../persistence/persistence-service';
-import type { ChatHandler, ChatRequest, ChatContext, HandlerStreamResult } from '../types';
+import type { ChatHandler, ChatRequest, ChatContext, HandlerStreamResult, ThinkingBlock } from '../types';
 import {
   FUNCTION_TIMEOUT_MS,
   SHUTDOWN_BUFFER_MS,
@@ -63,10 +70,20 @@ export class ClaudeHandler implements ChatHandler {
     context: ChatContext,
     normalizedMessages: UIMessage[]
   ): Promise<Response> {
-    const { model } = request;
+    const { model, thinkingEnabled: requestThinkingEnabled, thinkingBudget: requestThinkingBudget } = request;
     const { activeChatId, systemPrompt, projectContext, projectName, searchResults, projectChatResults, activeProjectId } = context;
 
-    chatLogger.info('[Claude SDK] Using native Claude SDK for model:', model);
+    // M3.14: Determine thinking settings
+    const modelSupportsThinking = supportsExtendedThinking(model);
+    const thinkingEnabled = modelSupportsThinking && (requestThinkingEnabled !== false); // Default to enabled for supported models
+    const thinkingBudget = thinkingEnabled
+      ? validateThinkingBudget(model, requestThinkingBudget || getDefaultThinkingBudget(model))
+      : 0;
+
+    chatLogger.info('[Claude SDK] Using native Claude SDK for model:', model, {
+      thinkingEnabled,
+      thinkingBudget: thinkingEnabled ? thinkingBudget : 'N/A',
+    });
 
     const client = getClaudeClient();
     const { messages: claudeMessages } = convertToClaudeMessages(normalizedMessages);
@@ -85,6 +102,11 @@ export class ClaudeHandler implements ChatHandler {
     let totalOutputTokens = 0;
     let didTimeout = false;
     let continuationToken: string | null = null;
+
+    // M3.14: Extended thinking state
+    let allThinkingContent = '';
+    let thinkingBlocks: ThinkingBlock[] = []; // For tool use preservation
+    let reasoningStarted = false;
 
     // Create transform stream for SSE
     const transform = new TransformStream<Uint8Array, Uint8Array>();
@@ -157,20 +179,32 @@ export class ClaudeHandler implements ChatHandler {
           chatLogger.debug(`[Claude SDK] Iteration ${iteration + 1}/${MAX_TOOL_ITERATIONS} (elapsed: ${timeoutTracker.getElapsedMs()}ms)`);
 
           // Call Claude API
+          // M3.14: Include thinking parameter when enabled
+          const maxTokens = thinkingEnabled ? 16000 : 8192; // Higher max_tokens for thinking
           const stream = client.messages.stream({
             model: getClaudeModelId(model),
-            max_tokens: 8192,
+            max_tokens: maxTokens,
             system: systemPrompt,
             messages: currentMessages,
             tools: advisoryTools,
+            // M3.14: Extended thinking configuration
+            ...(thinkingEnabled && {
+              thinking: {
+                type: 'enabled' as const,
+                budget_tokens: thinkingBudget,
+              },
+            }),
           });
 
           // Process stream
           let iterationText = '';
+          let iterationThinking = ''; // M3.14: Per-iteration thinking content
+          let currentThinkingSignature = ''; // M3.14: Signature for tool use continuation
           const toolUseBlocks: Array<{ id: string; name: string; input: Record<string, unknown> }> = [];
           let currentToolUse: { id: string; name: string; inputJson: string } | null = null;
           let stopReason: string | null = null;
           let shouldBreakStreaming = false;
+          let thinkingBlockActive = false; // M3.14: Track if we're in a thinking block
 
           for await (const event of stream) {
             // Check timeout during streaming
@@ -198,6 +232,14 @@ export class ClaudeHandler implements ChatHandler {
                   const tb = event.content_block as ToolUseBlock;
                   currentToolUse = { id: tb.id, name: tb.name, inputJson: '' };
                   chatLogger.debug(`[Claude SDK] Tool call started: ${tb.name}`);
+                } else if (event.content_block.type === 'thinking') {
+                  // M3.14: Start thinking block
+                  thinkingBlockActive = true;
+                  if (!reasoningStarted) {
+                    writeSSE({ type: 'reasoning-start', id: 't0' });
+                    reasoningStarted = true;
+                  }
+                  chatLogger.debug('[Claude SDK] Thinking block started');
                 }
                 break;
 
@@ -207,6 +249,14 @@ export class ClaudeHandler implements ChatHandler {
                   writeSSE({ type: 'text-delta', id: '0', delta: event.delta.text });
                 } else if (event.delta.type === 'input_json_delta' && currentToolUse) {
                   currentToolUse.inputJson += event.delta.partial_json;
+                } else if (event.delta.type === 'thinking_delta') {
+                  // M3.14: Stream thinking content
+                  const thinkingText = (event.delta as { thinking?: string }).thinking || '';
+                  iterationThinking += thinkingText;
+                  writeSSE({ type: 'reasoning-delta', id: 't0', delta: thinkingText });
+                } else if (event.delta.type === 'signature_delta') {
+                  // M3.14: Capture signature for tool use continuation
+                  currentThinkingSignature = (event.delta as { signature?: string }).signature || '';
                 }
                 break;
 
@@ -220,6 +270,18 @@ export class ClaudeHandler implements ChatHandler {
                     chatLogger.error('Failed to parse tool input:', e);
                   }
                   currentToolUse = null;
+                } else if (thinkingBlockActive) {
+                  // M3.14: Thinking block complete - store for tool use preservation
+                  thinkingBlockActive = false;
+                  if (iterationThinking) {
+                    thinkingBlocks.push({
+                      type: 'thinking',
+                      thinking: iterationThinking,
+                      signature: currentThinkingSignature,
+                    });
+                    allThinkingContent += iterationThinking;
+                    chatLogger.debug(`[Claude SDK] Thinking block complete: ${iterationThinking.length} chars`);
+                  }
                 }
                 break;
 
@@ -264,8 +326,20 @@ export class ClaudeHandler implements ChatHandler {
           // Execute tools and continue
           chatLogger.info(`[Claude SDK] Executing ${toolUseBlocks.length} tool(s)`);
 
-          // Build assistant message with tool_use blocks
-          const assistantContent: ContentBlock[] = [];
+          // Build assistant message with thinking + tool_use blocks
+          // M3.14: CRITICAL - thinking blocks MUST be preserved for tool use continuation
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const assistantContent: any[] = [];
+
+          // Include thinking blocks first (required by Anthropic API)
+          if (thinkingEnabled && iterationThinking) {
+            assistantContent.push({
+              type: 'thinking',
+              thinking: iterationThinking,
+              signature: currentThinkingSignature,
+            });
+          }
+
           if (iterationText) {
             assistantContent.push({ type: 'text', text: iterationText } as TextBlock);
           }
@@ -316,6 +390,10 @@ export class ClaudeHandler implements ChatHandler {
         }
 
         // End streaming
+        // M3.14: End reasoning block if we started one
+        if (reasoningStarted) {
+          writeSSE({ type: 'reasoning-end', id: 't0' });
+        }
         if (allTextContent) {
           writeSSE({ type: 'text-end', id: '0' });
         }
@@ -330,6 +408,7 @@ export class ClaudeHandler implements ChatHandler {
           didTimeout,
           continuationToken,
           messageId: assistantMessageId,
+          thinkingText: allThinkingContent || undefined, // M3.14: Include thinking content
         };
       } catch (error) {
         if (progressiveSaveInterval) {
@@ -348,7 +427,7 @@ export class ClaudeHandler implements ChatHandler {
 
     // Handle persistence after streaming
     const persistencePromise = responsePromise
-      .then(async ({ text, inputTokens, outputTokens, didTimeout: timedOut, messageId }) => {
+      .then(async ({ text, inputTokens, outputTokens, didTimeout: timedOut, messageId, thinkingText }) => {
         const lastUserMessage = normalizedMessages[normalizedMessages.length - 1];
         if (!lastUserMessage || lastUserMessage.role !== 'user') return;
 
@@ -360,11 +439,19 @@ export class ClaudeHandler implements ChatHandler {
           return;
         }
 
+        // M3.14: Build message parts including thinking blocks
+        const assistantParts: MessagePart[] = [
+          // Include thinking as reasoning part (viewable in conversation history)
+          ...(thinkingText ? [{ type: 'reasoning' as const, text: thinkingText }] : []),
+          // Main text content
+          { type: 'text' as const, text },
+        ];
+
         await persistChatMessages({
           chatId: activeChatId,
           userMessage: lastUserMessage,
           assistantText: text,
-          assistantParts: [{ type: 'text', text }],
+          assistantParts,
           projectContext,
           projectName,
           searchResults,

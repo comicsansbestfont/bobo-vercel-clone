@@ -90,6 +90,7 @@ export {
   ensureMemorySettings,
   getLastExtractionTime,
   updateMemoryAccess,
+  hybridMemorySearch,
   // Continuation (M3.9)
   createContinuation,
   getContinuation,

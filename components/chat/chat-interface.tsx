@@ -48,10 +48,17 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import type { MessagePart } from '@/lib/db/types';
 
-import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, RotateCcwIcon } from 'lucide-react';
+import { CopyIcon, GlobeIcon, RefreshCcwIcon, ChevronDownIcon, ArrowUpIcon, RotateCcwIcon, BrainIcon } from 'lucide-react';
 import {
   AlertTriangleIcon,
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { supportsExtendedThinking, THINKING_PRESETS, type ThinkingPreset } from '@/lib/ai/claude-client';
 
 // Import extracted hooks
 import {
@@ -263,6 +270,15 @@ export function ChatInterface({
   const [webSearch, setWebSearch] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
 
+  // M3.14: Extended thinking state
+  const [thinkingEnabled, setThinkingEnabled] = useState(true);
+  const [thinkingPreset, setThinkingPreset] = useState<ThinkingPreset>('standard');
+
+  // Check if current model supports thinking
+  const modelSupportsThinking = supportsExtendedThinking(model);
+  const effectiveThinkingEnabled = thinkingEnabled && modelSupportsThinking;
+  const thinkingBudget = THINKING_PRESETS[thinkingPreset];
+
   // Use extracted hooks for state management
   const {
     chatId,
@@ -421,6 +437,9 @@ export function ChatInterface({
           webSearch: webSearch,
           chatId: chatId,
           projectId: projectId,
+          // M3.14: Extended thinking parameters
+          thinkingEnabled: effectiveThinkingEnabled,
+          thinkingBudget: effectiveThinkingEnabled ? thinkingBudget : undefined,
         },
       },
     );
@@ -437,6 +456,9 @@ export function ChatInterface({
         webSearch: webSearch,
         chatId: chatId,
         projectId: projectId,
+        // M3.14: Extended thinking parameters
+        thinkingEnabled: effectiveThinkingEnabled,
+        thinkingBudget: effectiveThinkingEnabled ? thinkingBudget : undefined,
       },
     });
   };
@@ -487,6 +509,69 @@ export function ChatInterface({
           >
             <GlobeIcon size={16} />
           </PromptInputButton>
+          {/* M3.14: Extended Thinking Toggle + Preset */}
+          {modelSupportsThinking && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <PromptInputButton
+                  variant={effectiveThinkingEnabled ? 'default' : 'ghost'}
+                  title={effectiveThinkingEnabled ? `Thinking: ${thinkingPreset}` : "Enable extended thinking"}
+                  className={cn(
+                    "gap-1.5",
+                    effectiveThinkingEnabled && "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-900/50"
+                  )}
+                >
+                  <BrainIcon size={16} />
+                  {effectiveThinkingEnabled && (
+                    <span className="text-xs font-medium">
+                      {thinkingPreset === 'quick' ? 'Quick' : thinkingPreset === 'deep' ? 'Deep' : 'Std'}
+                    </span>
+                  )}
+                </PromptInputButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (effectiveThinkingEnabled) {
+                      setThinkingEnabled(false);
+                    } else {
+                      setThinkingEnabled(true);
+                    }
+                  }}
+                >
+                  {effectiveThinkingEnabled ? '⏸ Disable Thinking' : '▶ Enable Thinking'}
+                </DropdownMenuItem>
+                {effectiveThinkingEnabled && (
+                  <>
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground font-medium">
+                      Thinking Budget
+                    </div>
+                    <DropdownMenuItem
+                      onClick={() => setThinkingPreset('quick')}
+                      className={cn(thinkingPreset === 'quick' && 'bg-accent')}
+                    >
+                      <span className="flex-1">⚡ Quick</span>
+                      <span className="text-xs text-muted-foreground">4k tokens</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setThinkingPreset('standard')}
+                      className={cn(thinkingPreset === 'standard' && 'bg-accent')}
+                    >
+                      <span className="flex-1">⚖ Standard</span>
+                      <span className="text-xs text-muted-foreground">10k tokens</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setThinkingPreset('deep')}
+                      className={cn(thinkingPreset === 'deep' && 'bg-accent')}
+                    >
+                      <span className="flex-1">🔬 Deep</span>
+                      <span className="text-xs text-muted-foreground">16k tokens</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           {/* Context Monitor - AI Elements Context Component */}
           <Context
             usedTokens={contextUsage.tokensUsed}

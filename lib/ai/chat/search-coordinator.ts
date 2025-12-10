@@ -11,12 +11,13 @@ import {
   supabase,
   hybridSearch,
   searchProjectMessages,
+  hybridMemorySearch,
   type SearchResult,
   type ProjectMessageSearchResult,
 } from '@/lib/db';
 import { generateEmbedding } from '@/lib/ai/embedding';
 import { chatLogger } from '@/lib/logger';
-import type { SearchCoordinatorResult } from './types';
+import type { SearchCoordinatorResult, MemorySearchResult } from './types';
 
 // ============================================================================
 // TYPES
@@ -66,11 +67,12 @@ export async function performSearches(
       projectChatResults: [],
       searchResults: [],
       queryEmbedding: null,
+      memoryResults: [],
     };
   }
 
-  // Run both searches in parallel
-  const [projectSearchResult, globalSearchResult] = await Promise.all([
+  // Run all searches in parallel (including M3.14 memory search)
+  const [projectSearchResult, globalSearchResult, memorySearchResult] = await Promise.all([
     // Intra-project search
     activeProjectId
       ? searchProjectMessages(
@@ -95,12 +97,29 @@ export async function performSearches(
       chatLogger.error('Hybrid search failed:', err);
       return [];
     }),
+
+    // M3.14: Semantic memory search for personalization
+    hybridMemorySearch(
+      queryEmbedding,
+      userText,
+      5 // Limit to 5 most relevant memories
+    ).catch((err) => {
+      chatLogger.error('Memory search failed (non-fatal):', err);
+      return [] as MemorySearchResult[];
+    }),
   ]);
+
+  chatLogger.debug('Search coordinator results:', {
+    projectMessages: projectSearchResult.length,
+    globalResults: globalSearchResult.length,
+    memoryResults: memorySearchResult.length,
+  });
 
   return {
     projectChatResults: projectSearchResult,
     searchResults: globalSearchResult,
     queryEmbedding,
+    memoryResults: memorySearchResult,
   };
 }
 
@@ -213,5 +232,33 @@ INSTRUCTION: These are for INSPIRATION and PATTERN MATCHING only.
 - If the user asks for a strategy, look here for what worked before.
 - If the user is writing content, look here for connecting ideas.
 - WARNING: Do NOT use names, specific IDs, or confidential data points from this section unless explicitly asked to cross-reference.
+`;
+}
+
+/**
+ * M3.14: Build the semantic memory context string for system prompt
+ * Adds personalization from user memories (decisions, insights, preferences)
+ */
+export function buildSemanticMemoryContext(memoryResults: MemorySearchResult[]): string {
+  if (memoryResults.length === 0) return '';
+
+  // Format memories with confidence scores for transparency
+  const memorySnippets = memoryResults
+    .map((m, i) => {
+      const confidenceLabel = m.confidence >= 0.9 ? '★' : m.confidence >= 0.7 ? '●' : '○';
+      return `${i + 1}. [${confidenceLabel}] ${m.content}`;
+    })
+    .join('\n');
+
+  return `
+### PERSONALIZED CONTEXT (From Your Memory)
+The following are relevant facts, decisions, and insights I remember about you and our past conversations.
+<user_memory>
+${memorySnippets}
+</user_memory>
+INSTRUCTION: Use this context to personalize my responses.
+- These represent what I know about your preferences, past decisions, and insights.
+- Higher confidence (★) items are well-established; lower (○) items are less certain.
+- If any seem outdated or incorrect, feel free to correct me and I'll update my memory.
 `;
 }

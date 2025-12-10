@@ -24,6 +24,9 @@ export function parseRequest(body: Record<string, unknown>): ChatRequest {
     chatId: body.chatId as string | undefined,
     projectId: body.projectId as string | undefined,
     agentMode: body.agentMode as boolean | undefined,
+    // M3.14: Extended thinking parameters
+    thinkingEnabled: body.thinkingEnabled as boolean | undefined,
+    thinkingBudget: body.thinkingBudget as number | undefined,
   };
 }
 

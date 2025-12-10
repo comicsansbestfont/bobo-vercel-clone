@@ -18,7 +18,7 @@ import { buildSystemPrompt } from '@/lib/ai/system-prompt';
 import { detectContentCreationIntent } from '@/lib/ai/content-detection';
 import { getContentCreationContext } from '@/lib/ai/identity-context';
 import { chatLogger } from '@/lib/logger';
-import { performSearches } from './search-coordinator';
+import { performSearches, buildSemanticMemoryContext } from './search-coordinator';
 import type { ChatContext } from './types';
 import { isQuestion, getSimilarQuestions, formatSimilarQuestionsContext } from '@/lib/ai/similar-questions';
 
@@ -160,7 +160,16 @@ export async function buildChatContext(
     userText,
   });
 
-  const { projectChatResults, searchResults, queryEmbedding } = searchResult;
+  const { projectChatResults, searchResults, queryEmbedding, memoryResults } = searchResult;
+
+  // M3.14: Inject semantic memory context (personalization)
+  if (memoryResults.length > 0) {
+    const semanticMemoryContext = buildSemanticMemoryContext(memoryResults);
+    systemPrompt += semanticMemoryContext;
+    chatLogger.info('[Memory] Added semantic memory context to system prompt', {
+      count: memoryResults.length,
+    });
+  }
 
   // Process intra-project chat context
   if (projectChatResults.length > 0) {
