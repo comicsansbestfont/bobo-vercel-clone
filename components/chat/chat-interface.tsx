@@ -381,10 +381,10 @@ export function ChatInterface({
     onFinish: markMessageSubmitted,
   });
 
-  // Update the ref with the actual setMessages function
-  useEffect(() => {
-    setMessagesRef.current = setMessages;
-  }, [setMessages]);
+  // Update the ref with the actual setMessages function SYNCHRONOUSLY
+  // This must happen before useChatHistory's effects run to avoid race condition
+  // where history loads but setMessagesRef.current is still the no-op initial value
+  setMessagesRef.current = setMessages;
 
   // Auto-submit hook for URL message parameter
   useAutoSubmit({

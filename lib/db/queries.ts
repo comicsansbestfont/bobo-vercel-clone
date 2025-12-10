@@ -1432,7 +1432,6 @@ export async function upsertPartialMessage(
       .insert({
         id: messageId,
         chat_id: chatId,
-        user_id: DEFAULT_USER_ID,
         role: 'assistant',
         content,
         is_partial: true,

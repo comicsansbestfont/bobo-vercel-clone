@@ -337,7 +337,7 @@ export async function POST(req: NextRequest) {
 
         writeSSE({
           type: 'finish',
-          finishReason: didTimeout ? 'timeout' : 'stop',
+          finishReason: didTimeout ? 'length' : 'stop',
           continuationToken: newContinuationToken || undefined
         });
         writer.write(encoder.encode('data: [DONE]\n\n'));

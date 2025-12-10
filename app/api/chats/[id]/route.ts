@@ -16,6 +16,10 @@ import {
   type ChatUpdate,
 } from '@/lib/db';
 
+// Disable caching for this route - messages must always be fresh
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 type RouteParams = {
   params: Promise<{ id: string }>;
 };
@@ -50,10 +54,19 @@ export async function GET(
     // Fetch all messages for this chat
     const messages = await getMessages(id);
 
-    return Response.json({
-      chat,
-      messages,
-    });
+    return new Response(
+      JSON.stringify({
+        chat,
+        messages,
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    );
   } catch (error) {
     apiLogger.error('Error fetching chat:', error);
     return new Response(
