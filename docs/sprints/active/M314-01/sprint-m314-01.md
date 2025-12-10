@@ -22,11 +22,12 @@
 | 3.1 | Add Thinking Toggle + Preset Controls | 1h | ✅ | 0.5h | UI: toggle + Quick/Standard/Deep dropdown |
 | 3.2 | Verify Reasoning Display | 0.5h | ✅ | 0.1h | Existing component verified |
 | 4.1 | Persist Thinking Blocks to database | 0.5h | ✅ | 0.25h | Include in message parts as 'reasoning' |
-| T.1 | End-to-End Testing | 1h | ⏳ | - | Functional + regression tests (pending) |
+| T.1 | End-to-End Testing | 1h | ✅ | 0.5h | All 8 tests passed (see below) |
+| BUG | max_tokens must be > budget_tokens | - | ✅ | 0.25h | Fixed calculation in claude-handler.ts |
 
 **Legend:** ⏳ Pending | 🚧 In Progress | ✅ Done | 🚫 Blocked
 
-**Estimated:** 8.5h | **Actual:** ~4h | **Variance:** 2x faster
+**Estimated:** 8.5h | **Actual:** ~4.5h | **Variance:** 2x faster
 
 ---
 
@@ -53,7 +54,7 @@
 - Thinking parameter added to Claude API call with configurable budget
 - Thinking delta events streamed as `reasoning-start/delta/end` SSE events
 - Thinking blocks preserved across tool use iterations
-- Max tokens increased to 16000 when thinking enabled
+- Max tokens dynamically calculated: `Math.max(thinkingBudget + 8192, 24000)` to ensure `max_tokens > budget_tokens`
 
 ### Phase 2: Memory Integration ✅
 
@@ -130,7 +131,24 @@
 4. ✅ Relevant memories auto-injected into context
 5. ✅ Thinking persisted and viewable in conversation history
 6. ✅ All existing functionality continues to work (build passes)
-7. ⏳ End-to-end testing (manual verification pending)
+7. ✅ End-to-end testing complete (see test results below)
+
+---
+
+## E2E Test Results (Dec 10, 2025)
+
+| Test | Description | Result | Notes |
+|------|-------------|--------|-------|
+| T1 | UI - Thinking toggle appears for Claude models | ✅ PASS | Brain icon visible in chat interface |
+| T2 | UI - Thinking preset dropdown works | ✅ PASS | Quick (4k), Standard (10k), Deep (16k) options |
+| T3 | Backend - Thinking parameters sent in request | ✅ PASS | `thinkingEnabled: true, thinkingBudget: 10000` |
+| T4 | Backend - Memory search runs on chat | ✅ PASS | Logs show `memoryResults: 5` |
+| T5 | Backend - `search_memory` tool available | ✅ PASS | Claude actively called the tool |
+| T6 | E2E - Thinking enabled, reasoning appears | ✅ PASS | "Thought for 13 seconds" displayed |
+| T7 | E2E - Thinking persists in history | ✅ PASS | Reasoning visible after page reload |
+| T8 | Regression - Chat works without thinking | ✅ PASS | Simple response without reasoning block |
+
+**Bug Found & Fixed:** `max_tokens must be > budget_tokens` error when Deep (16k) preset selected. Fixed by calculating `maxTokens = Math.max(thinkingBudget + 8192, 24000)`
 
 ---
 
@@ -143,4 +161,4 @@
 ---
 
 **Created:** Dec 10, 2025
-**Status:** Complete (Pending E2E Testing)
+**Status:** ✅ COMPLETE - All tests passed, ready for production deployment

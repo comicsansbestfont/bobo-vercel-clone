@@ -1,10 +1,20 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 9, 2025 (M40-02 Monolithic Chat Route Refactor COMPLETE)
+**Last Updated:** December 10, 2025 (M3.14 Extended Thinking with Memory Integration COMPLETE)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
 > **Note:** Bobo is a **personal internal tool**. This backlog reflects a strategic pivot on November 25, 2025 to prioritize Agent SDK over production/scale features.
+
+> **December 10, 2025 Update:** 🧠 **M3.14 EXTENDED THINKING WITH MEMORY INTEGRATION COMPLETE**
+> - Extended thinking parameter added to Claude handler with configurable budgets
+> - UI: Brain icon toggle + Quick (4k) / Standard (10k) / Deep (16k) presets
+> - `search_memory` tool implemented - Claude actively searches memories
+> - Automatic memory retrieval: 5 most relevant memories injected per message (hybrid search: 70% vector + 30% text)
+> - Thinking blocks persist to conversation history
+> - Bug fix: `max_tokens` calculation to ensure `> budget_tokens`
+> - All 8 E2E tests passed ✅
+> - **Future Investigation:** Recency weighting for memory search (deferred - current ranking works well)
 
 > **December 9, 2025 Update (Evening):** 🏗️ **M40-02 MONOLITHIC CHAT ROUTE REFACTOR COMPLETE**
 > - `app/api/chat/route.ts` reduced from **1608 lines to 150 lines** (91% reduction!)
@@ -2555,6 +2565,80 @@ After completing M3.13, use it for 3 months. Then answer:
 3. **Are multi-hop queries common?** → Consider M3.10
 
 If all answers are "no", M3.10 can be indefinitely deferred.
+
+---
+
+## 🧠 MILESTONE 3.14: Extended Thinking with Memory Integration ✅ COMPLETE
+
+**Status:** ✅ Complete (Dec 10, 2025)
+**Sprint:** M3.14-01
+**Duration:** ~4.5h (estimated 8.5h) - 2x faster than estimate
+**Focus:** Enable Claude's extended thinking with memory-aware context retrieval
+
+### What Was Delivered
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Extended Thinking for Claude | ✅ | Thinking parameter, budget control, event streaming |
+| Thinking Toggle UI | ✅ | Brain icon + Quick/Standard/Deep presets |
+| `search_memory` Tool | ✅ | Claude can actively search memories |
+| Automatic Memory Retrieval | ✅ | 5 most relevant memories injected per message |
+| Thinking Persistence | ✅ | Reasoning blocks saved to conversation history |
+
+### Key Files
+
+- `lib/ai/chat/handlers/claude-handler.ts` - Extended thinking implementation
+- `lib/ai/claude-advisory-tools.ts` - `search_memory` tool
+- `lib/ai/chat/search-coordinator.ts` - Parallel memory search
+- `lib/ai/chat/context-builder.ts` - Memory context injection
+- `components/chat/chat-interface.tsx` - Thinking toggle UI
+
+### Bug Fix
+
+**Issue:** `max_tokens must be greater than thinking.budget_tokens` error when Deep (16k) preset selected.
+**Fix:** Changed calculation to `Math.max(thinkingBudget + 8192, 24000)` ensuring max_tokens always exceeds budget_tokens.
+
+### Future Investigation: Memory Search Ranking Improvements
+
+**Status:** 📋 Investigation Item (Low Priority)
+**Trigger:** If memory retrieval feels stale or misses recent context
+
+**Current State:**
+The hybrid memory search uses a flat ranking with:
+- 70% vector similarity (semantic match)
+- 30% text match (BM25)
+
+**Potential Improvement: Recency Weighting**
+
+Add time decay to surface recent memories higher:
+```sql
+-- Add recency factor: memories from today score 1.0, older decay exponentially
+recency_factor * EXP(-0.1 * EXTRACT(days FROM NOW() - m.last_updated))
+```
+
+**Why Defer:**
+1. Current flat ranking works well - relevance trumps recency for most queries
+2. Token efficiency is already optimized (5 results max)
+3. Category grouping adds overhead without improving LLM comprehension
+4. Need more dogfooding data to prove recency matters
+
+**When to Revisit:**
+- If "what did I tell you yesterday" queries fail to surface recent memories
+- If memories from 6 months ago consistently outrank recent relevant ones
+- After 3 months of production use with extended thinking
+
+### E2E Test Results (Dec 10, 2025)
+
+| Test | Result |
+|------|--------|
+| UI thinking toggle | ✅ PASS |
+| Preset dropdown | ✅ PASS |
+| Backend params | ✅ PASS |
+| Memory search runs | ✅ PASS |
+| search_memory tool | ✅ PASS |
+| Reasoning appears | ✅ PASS |
+| Thinking persists | ✅ PASS |
+| Regression (no thinking) | ✅ PASS |
 
 ---
 

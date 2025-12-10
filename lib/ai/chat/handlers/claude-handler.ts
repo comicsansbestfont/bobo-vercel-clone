@@ -180,7 +180,8 @@ export class ClaudeHandler implements ChatHandler {
 
           // Call Claude API
           // M3.14: Include thinking parameter when enabled
-          const maxTokens = thinkingEnabled ? 16000 : 8192; // Higher max_tokens for thinking
+          // max_tokens must be > budget_tokens per Anthropic API requirements
+          const maxTokens = thinkingEnabled ? Math.max(thinkingBudget + 8192, 24000) : 8192;
           const stream = client.messages.stream({
             model: getClaudeModelId(model),
             max_tokens: maxTokens,

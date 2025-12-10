@@ -19,8 +19,10 @@ import {
   Pencil,
   Trash2,
   Archive,
-  FileSearch,
 } from "lucide-react";
+import { useSidebarNavigation } from "@/hooks/use-sidebar-navigation";
+import { SidebarMainView } from "@/components/sidebar/sidebar-main-view";
+import { SidebarDetailView } from "@/components/sidebar/sidebar-detail-view";
 import {
   Sidebar,
   SidebarContent,
@@ -333,17 +335,21 @@ function AppSidebarContent({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setOpenMobile, isMobile } = useSidebar();
-  const [showAllProjects, setShowAllProjects] = useState(false);
-  const [dateMode, setDateMode] = useState<'updated' | 'created'>('updated');
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
   // M38: Advisory import modals
   const [isImportWizardOpen, setIsImportWizardOpen] = useState(false);
   const [isBulkImportOpen, setIsBulkImportOpen] = useState(false);
 
-  const visibleProjects = showAllProjects ? projects : projects.slice(0, 3);
+  // M312B: Drill-down navigation
+  const { selectedEntity, drillInto, goBack, isDetailView } = useSidebarNavigation();
 
-  const handleNewChat = () => {
-    router.push('/');
+  const handleNewChat = (projectId?: string) => {
+    if (projectId) {
+      // Create new chat in specific project context
+      router.push(`/?projectId=${projectId}`);
+    } else {
+      router.push('/');
+    }
     if (isMobile) {
       setOpenMobile(false);
     }
@@ -353,6 +359,14 @@ function AppSidebarContent({
     router.push(`/project/${projectId}`);
   };
 
+  const handleChatSelect = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
+
+  const currentChatId = searchParams?.get('chatId') || undefined;
+
   return (
     <>
       <SidebarHeader className="gap-3">
@@ -361,7 +375,7 @@ function AppSidebarContent({
           <BoboLogo />
           <div className="flex items-center gap-1">
             <button
-              onClick={handleNewChat}
+              onClick={() => handleNewChat()}
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               title="New Chat"
             >
@@ -376,17 +390,7 @@ function AppSidebarContent({
         <SearchBar />
       </SidebarHeader>
 
-      <SidebarContent>
-        {/* New Project Button */}
-        <SidebarMenu className="px-2">
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => setIsCreateProjectModalOpen(true)}>
-              <FolderPlus className="h-4 w-4" />
-              <span>New project</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-
+      <SidebarContent className="flex-1 overflow-hidden">
         {/* Loading State */}
         {loading && <SidebarLoadingState />}
 
@@ -397,57 +401,28 @@ function AppSidebarContent({
           </div>
         )}
 
-        {/* Projects */}
+        {/* M312B: Conditional rendering based on navigation state */}
         {!loading && !error && (
-          <SidebarMenu className="px-2">
-            {visibleProjects.map((project) => (
-              <ProjectItem key={project.id} project={project} />
-            ))}
-            {projects.length > 3 && (
-              <SeeMoreButton
-                onClick={() => setShowAllProjects(!showAllProjects)}
-                isExpanded={showAllProjects}
-              />
-            )}
-            {projects.length === 0 && (
-              <div className="py-4 text-center text-sm text-muted-foreground">
-                No projects yet
-              </div>
-            )}
-          </SidebarMenu>
-        )}
-
-        <SidebarSeparator className="my-2" />
-
-        {/* Date Mode Toggle */}
-        {!loading && !error && chats.length > 0 && (
-          <DateModeToggle
-            dateMode={dateMode}
-            onToggle={() => setDateMode(prev => prev === 'updated' ? 'created' : 'updated')}
-          />
-        )}
-
-        {/* Chats */}
-        {!loading && !error && (
-          <SidebarMenu className="px-2">
-            {chats.map((chat) => {
-              const currentChatId = searchParams?.get('chatId');
-              return (
-                <SimpleChatItem
-                  key={chat.id}
-                  chat={chat}
-                  isActive={chat.id === currentChatId}
-                  projects={projects}
-                  onUpdate={fetchData}
-                />
-              );
-            })}
-            {chats.length === 0 && (
-              <div className="py-4 text-center text-sm text-muted-foreground">
-                No chats yet
-              </div>
-            )}
-          </SidebarMenu>
+          isDetailView && selectedEntity ? (
+            <SidebarDetailView
+              entity={selectedEntity}
+              chats={chats}
+              activeChatId={currentChatId}
+              onBack={goBack}
+              onNewChat={handleNewChat}
+              onChatSelect={handleChatSelect}
+            />
+          ) : (
+            <SidebarMainView
+              projects={projects}
+              chats={chats}
+              activeChatId={currentChatId}
+              onDrillInto={drillInto}
+              onNewProject={() => setIsCreateProjectModalOpen(true)}
+              onImportDeal={() => setIsBulkImportOpen(true)}
+              fetchData={fetchData}
+            />
+          )
         )}
       </SidebarContent>
 
@@ -460,14 +435,6 @@ function AppSidebarContent({
             title="Home"
           >
             <Home className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/advisory"
-            onClick={() => isMobile && setOpenMobile(false)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
-            title="Advisory Files"
-          >
-            <FileSearch className="h-5 w-5" />
           </Link>
           <Link
             href="/memory"
