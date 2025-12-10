@@ -34,7 +34,7 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> & {
 export const Message = ({ className, from, onEdit, messageId, ...props }: MessageProps) => (
   <div
     className={cn(
-      "group flex w-full max-w-[80%] flex-col gap-2",
+      "group flex w-full max-w-[95%] sm:max-w-[85%] md:max-w-[80%] flex-col gap-2",
       from === "user" ? "is-user ml-auto justify-end" : "is-assistant",
       className
     )}
@@ -90,7 +90,7 @@ export const MessageAction = ({
   ...props
 }: MessageActionProps) => {
   const button = (
-    <Button size={size} type="button" variant={variant} {...props}>
+    <Button size={size} type="button" variant={variant} className={cn("relative after:absolute after:-inset-2 after:content-[''] md:after:hidden", props.className)} {...props}>
       {children}
       <span className="sr-only">{label || tooltip}</span>
     </Button>
@@ -510,7 +510,7 @@ export const EditableMessageContent = ({
             e.target.style.height = 'auto';
             e.target.style.height = `${e.target.scrollHeight}px`;
           }}
-          className="w-full min-w-[300px] resize-none rounded border-none bg-transparent p-0 text-sm outline-none focus:ring-0"
+          className="w-full min-w-0 resize-none rounded border-none bg-transparent p-0 text-sm outline-none focus:ring-0"
           rows={1}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {

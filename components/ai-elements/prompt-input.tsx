@@ -310,7 +310,7 @@ export function PromptInputAttachment({
             </div>
             <Button
               aria-label="Remove attachment"
-              className="absolute inset-0 size-5 cursor-pointer rounded p-0 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 [&>svg]:size-2.5"
+              className="absolute inset-0 flex size-11 cursor-pointer items-center justify-center rounded-full p-0 opacity-0 transition-opacity hover:bg-muted/50 group-hover:pointer-events-auto group-hover:opacity-100 [&>svg]:size-4"
               onClick={(e) => {
                 e.stopPropagation();
                 attachments.remove(data.id);
@@ -329,7 +329,7 @@ export function PromptInputAttachment({
       <PromptInputHoverCardContent className="w-auto p-2">
         <div className="w-auto space-y-3">
           {isImage && (
-            <div className="flex max-h-96 w-96 items-center justify-center overflow-hidden rounded-md border">
+            <div className="flex max-h-96 w-full max-w-96 items-center justify-center overflow-hidden rounded-md border">
               <img
                 alt={filename || "attachment preview"}
                 className="max-h-full max-w-full object-contain"

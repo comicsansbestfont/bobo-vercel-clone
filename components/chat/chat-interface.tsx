@@ -718,7 +718,7 @@ export function ChatInterface({
               <img
                 src="/bobo-character.svg"
                 alt="Bobo"
-                className="w-96 h-96 md:w-[32rem] md:h-[32rem] mb-0 md:mb-2 animate-bobo-breathe dark:drop-shadow-none drop-shadow-[0_0_30px_rgba(0,0,0,0.15)]"
+                className="w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] mb-0 md:mb-2 animate-bobo-breathe dark:drop-shadow-none drop-shadow-[0_0_30px_rgba(0,0,0,0.15)]"
               />
               <h1 className="text-2xl md:text-3xl font-light text-foreground/80">
                 Tell Bobo Anything

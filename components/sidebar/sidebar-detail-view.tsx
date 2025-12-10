@@ -62,7 +62,7 @@ export function SidebarDetailView({
           variant="ghost"
           size="icon"
           onClick={onBack}
-          className="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground"
+          className="h-10 w-10 sm:h-8 sm:w-8 shrink-0 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
         </Button>

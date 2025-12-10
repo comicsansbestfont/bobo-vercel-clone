@@ -9,7 +9,7 @@ const ChatBotDemo = () => {
     <AppSidebar>
       <div className="flex min-h-svh flex-1 flex-col">
         {/* Main Content */}
-        <div className="m-1 md:m-2 flex flex-1 flex-col rounded-lg md:rounded-2xl border border-border bg-background">
+        <div className="m-2 md:m-3 flex flex-1 flex-col rounded-lg md:rounded-2xl border border-border bg-background">
           <ChatInterface />
         </div>
       </div>

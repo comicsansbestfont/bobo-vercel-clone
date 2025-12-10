@@ -20,6 +20,7 @@ import {
   Trash2,
   Archive,
   Kanban,
+  X,
 } from "lucide-react";
 import { useSidebarNavigation } from "@/hooks/use-sidebar-navigation";
 import { SidebarMainView } from "@/components/sidebar/sidebar-main-view";
@@ -207,7 +208,7 @@ const SimpleChatItem = ({
                   <MoreVertical className="h-4 w-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-36 sm:w-48">
                 <DropdownMenuItem onClick={() => setRenameOpen(true)}>
                   <Pencil className="mr-2 h-4 w-4" />
                   Rename
@@ -382,6 +383,17 @@ function AppSidebarContent({
             >
               <MessageSquarePlus className="h-4 w-4" />
             </button>
+            {/* Mobile close button */}
+            {isMobile && (
+              <button
+                onClick={() => setOpenMobile(false)}
+                aria-label="Close sidebar"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-foreground hover:bg-sidebar-accent transition-colors"
+                title="Close sidebar"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
             {/* Close/Collapse sidebar button */}
             <SidebarTrigger className="h-8 w-8" />
           </div>
