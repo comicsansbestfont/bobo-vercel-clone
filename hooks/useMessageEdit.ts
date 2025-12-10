@@ -4,10 +4,11 @@ import { UIMessage } from '@ai-sdk/react';
 interface UseMessageEditOptions {
   messages: UIMessage[];
   setMessages: (messages: UIMessage[]) => void;
-  reload: () => void;
+  reload: (options?: { body?: Record<string, unknown> }) => void;
+  reloadOptions?: Record<string, unknown>;
 }
 
-export function useMessageEdit({ messages, setMessages, reload }: UseMessageEditOptions) {
+export function useMessageEdit({ messages, setMessages, reload, reloadOptions }: UseMessageEditOptions) {
   const handleEdit = useCallback((messageId: string, newContent: string) => {
     // Find the message index
     const messageIndex = messages.findIndex(m => m.id === messageId);
@@ -25,9 +26,9 @@ export function useMessageEdit({ messages, setMessages, reload }: UseMessageEdit
     // Set messages (removes all messages after edited one)
     setMessages([...messagesUpToEdit, editedMessage]);
 
-    // Trigger regeneration (uses last user message)
-    setTimeout(() => reload(), 100);
-  }, [messages, setMessages, reload]);
+    // Trigger regeneration with required body params (uses last user message)
+    setTimeout(() => reload(reloadOptions ? { body: reloadOptions } : undefined), 100);
+  }, [messages, setMessages, reload, reloadOptions]);
 
   return { handleEdit };
 }

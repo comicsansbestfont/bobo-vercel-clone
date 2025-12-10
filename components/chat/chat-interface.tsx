@@ -466,11 +466,19 @@ export function ChatInterface({
   // Use the continuation handler from the hook
   const handleContinue = handleContinueBase;
 
-  // Message edit hook
+  // Message edit hook - pass same body params as handleRegenerate
   const { handleEdit } = useMessageEdit({
     messages,
     setMessages,
     reload: regenerate,
+    reloadOptions: {
+      model: model,
+      webSearch: webSearch,
+      chatId: chatId,
+      projectId: projectId,
+      thinkingEnabled: effectiveThinkingEnabled,
+      thinkingBudget: effectiveThinkingEnabled ? thinkingBudget : undefined,
+    },
   });
 
   // Calculate context usage
