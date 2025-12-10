@@ -33,7 +33,7 @@ export function SidebarChatList({
   return (
     <div className="space-y-0.5">
       {projectChats.length === 0 ? (
-        <p className="text-sm text-muted-foreground px-2 py-2">No chats yet</p>
+        <p className="text-xs text-muted-foreground px-2 py-1">No chats yet</p>
       ) : (
         projectChats.map(chat => (
           <Link
@@ -41,21 +41,21 @@ export function SidebarChatList({
             href={`/?chatId=${chat.id}`}
             onClick={onChatSelect}
             className={cn(
-              'flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-colors',
+              'flex items-center gap-1.5 px-2 py-1 text-xs rounded-md transition-colors',
               'hover:bg-sidebar-accent',
               activeChatId === chat.id && 'bg-sidebar-accent text-sidebar-accent-foreground'
             )}
           >
-            <MessageSquare className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <MessageSquare className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
             <span className="truncate">{chat.title || 'Untitled'}</span>
           </Link>
         ))
       )}
       <button
         onClick={onNewChat}
-        className="flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground w-full rounded-md hover:bg-sidebar-accent transition-colors"
+        className="flex items-center gap-1.5 px-2 py-1 text-xs text-muted-foreground hover:text-foreground w-full rounded-md hover:bg-sidebar-accent transition-colors"
       >
-        <Plus className="h-4 w-4 flex-shrink-0" />
+        <Plus className="h-3.5 w-3.5 flex-shrink-0" />
         <span>New Chat</span>
       </button>
     </div>

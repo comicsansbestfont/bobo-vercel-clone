@@ -9,7 +9,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, MessageSquare, FolderOpen } from 'lucide-react';
+import { ArrowLeft, MessageSquare, FolderOpen, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { EntityInfoCard } from './entity-info-card';
 import { SidebarChatList } from './sidebar-chat-list';
@@ -18,10 +18,10 @@ import { FilePreviewModal } from './file-preview-modal';
 import type { SelectedEntity } from '@/hooks/use-sidebar-navigation';
 import type { ChatWithProject } from '@/lib/db/types';
 import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-} from '@/components/ui/sidebar';
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 interface SidebarDetailViewProps {
   entity: SelectedEntity;
@@ -42,6 +42,8 @@ export function SidebarDetailView({
 }: SidebarDetailViewProps) {
   const [previewPath, setPreviewPath] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [chatsOpen, setChatsOpen] = useState(true);
+  const [filesOpen, setFilesOpen] = useState(false);
 
   const handleFileSelect = (path: string) => {
     setPreviewPath(path);
@@ -54,60 +56,64 @@ export function SidebarDetailView({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Back button header */}
-      <div className="px-3 py-2 border-b">
+      {/* Compact header with back + entity info */}
+      <div className="px-2 py-1.5 border-b flex items-center gap-1">
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={onBack}
-          className="gap-2 -ml-2 text-muted-foreground hover:text-foreground"
+          className="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back</span>
+          <ArrowLeft className="h-3.5 w-3.5" />
         </Button>
-      </div>
-
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto">
-        {/* Entity Info Card */}
-        <div className="p-3">
+        <div className="flex-1 min-w-0">
           <EntityInfoCard
             type={entity.type}
             name={entity.name}
             folderPath={entity.folderPath}
           />
         </div>
+      </div>
 
-        {/* Chats Section */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4" />
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Chats Section - Collapsible */}
+        <Collapsible open={chatsOpen} onOpenChange={setChatsOpen}>
+          <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-2 py-1 text-xs font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
+            <ChevronDown className={`h-3 w-3 transition-transform shrink-0 ${chatsOpen ? '' : '-rotate-90'}`} />
+            <MessageSquare className="h-3 w-3 shrink-0" />
             <span>Chats</span>
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarChatList
-              chats={chats}
-              projectId={entity.id}
-              activeChatId={activeChatId}
-              onNewChat={handleNewChat}
-              onChatSelect={onChatSelect}
-            />
-          </SidebarGroupContent>
-        </SidebarGroup>
+            <span className="ml-auto text-[10px] text-muted-foreground tabular-nums">{chats.filter(c => c.project_id === entity.id).length}</span>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="pl-5 pr-1 pb-1">
+              <SidebarChatList
+                chats={chats}
+                projectId={entity.id}
+                activeChatId={activeChatId}
+                onNewChat={handleNewChat}
+                onChatSelect={onChatSelect}
+              />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
-        {/* Files Section */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center gap-2">
-            <FolderOpen className="h-4 w-4" />
+        {/* Files Section - Collapsible */}
+        <Collapsible open={filesOpen} onOpenChange={setFilesOpen}>
+          <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-2 py-1 text-xs font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/50">
+            <ChevronDown className={`h-3 w-3 transition-transform shrink-0 ${filesOpen ? '' : '-rotate-90'}`} />
+            <FolderOpen className="h-3 w-3 shrink-0" />
             <span>Files</span>
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <DealFileTree
-              folderPath={entity.folderPath}
-              onFileSelect={handleFileSelect}
-            />
-          </SidebarGroupContent>
-        </SidebarGroup>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="pl-5 pr-1 pb-1">
+              <DealFileTree
+                folderPath={entity.folderPath}
+                onFileSelect={handleFileSelect}
+              />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
 
       {/* File Preview Modal */}

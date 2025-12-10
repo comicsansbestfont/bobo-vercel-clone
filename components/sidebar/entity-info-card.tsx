@@ -9,7 +9,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
 import { StageIndicator } from './stage-indicator';
 import { Briefcase, Users, Loader2 } from 'lucide-react';
 
@@ -46,48 +45,24 @@ export function EntityInfoCard({ type, name, folderPath }: EntityInfoCardProps) 
   const Icon = type === 'deal' ? Briefcase : Users;
 
   return (
-    <Card className="p-3 mb-4 bg-sidebar-accent/50">
-      <div className="flex items-center gap-2 mb-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary/10">
-          <Icon className="h-4 w-4 text-sidebar-primary" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-medium truncate">{name}</h3>
-          {meta?.company && meta.company !== name && (
-            <p className="text-xs text-muted-foreground truncate">{meta.company}</p>
-          )}
-        </div>
+    <div className="flex items-center gap-2 py-1">
+      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-sidebar-primary/10 shrink-0">
+        <Icon className="h-3.5 w-3.5 text-sidebar-primary" />
       </div>
-
-      {loading ? (
-        <div className="flex items-center justify-center py-2">
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        </div>
-      ) : meta && (
-        <div className="space-y-1.5">
-          {meta.stage && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-xs text-muted-foreground">Stage</span>
-              <StageIndicator stage={meta.stage} showLabel />
-            </div>
-          )}
-          {meta.engagementType && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-xs text-muted-foreground">Type</span>
-              <span className="text-xs">{meta.engagementType}</span>
-            </div>
-          )}
-          {meta.lastUpdated && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-xs text-muted-foreground">Updated</span>
-              <span className="text-xs">
-                {formatDate(meta.lastUpdated)}
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-    </Card>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-medium text-sm truncate leading-tight">{name}</h3>
+        {loading ? (
+          <Loader2 className="h-3 w-3 animate-spin text-muted-foreground mt-0.5" />
+        ) : meta && (
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+            {meta.stage && <StageIndicator stage={meta.stage} showLabel />}
+            {meta.lastUpdated && (
+              <span className="truncate">{formatDate(meta.lastUpdated)}</span>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

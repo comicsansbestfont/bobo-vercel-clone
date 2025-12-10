@@ -16,6 +16,7 @@ import {
   Folder,
   FolderPlus,
   ChevronRight,
+  ChevronDown,
   MoreVertical,
   Pencil,
   Trash2,
@@ -44,6 +45,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChatContextMenu } from '@/components/chat/chat-context-menu';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 
@@ -66,6 +72,13 @@ export function SidebarMainView({
   onImportDeal,
   fetchData,
 }: SidebarMainViewProps) {
+  // Collapsible state for each section
+  const [dealsOpen, setDealsOpen] = useState(true);
+  const [clientsOpen, setClientsOpen] = useState(true);
+  const [projectsOpen, setProjectsOpen] = useState(true);
+  const [recentOpen, setRecentOpen] = useState(true);
+  const [showAllChats, setShowAllChats] = useState(false);
+
   // Separate projects by entity type
   const deals = projects.filter(p => p.entity_type === 'deal');
   const clients = projects.filter(p => p.entity_type === 'client');
@@ -73,132 +86,184 @@ export function SidebarMainView({
     p.entity_type === 'personal' || !p.entity_type
   );
 
-  // Recent chats (not tied to a specific project in the detail view)
-  const recentChats = chats.slice(0, 5);
+  // Recent chats - show 15 by default, all when expanded
+  const INITIAL_CHAT_LIMIT = 15;
+  const recentChats = showAllChats ? chats : chats.slice(0, INITIAL_CHAT_LIMIT);
+  const hasMoreChats = chats.length > INITIAL_CHAT_LIMIT;
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
       {/* Deals Section */}
-      <SidebarGroup>
-        <SidebarGroupLabel className="flex items-center gap-2">
-          <Briefcase className="h-4 w-4" />
-          <span>Deals</span>
-        </SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {deals.length === 0 ? (
-              <div className="px-2 py-2 text-sm text-muted-foreground">
-                No deals yet
-              </div>
-            ) : (
-              deals.map(deal => (
-                <EntityRow
-                  key={deal.id}
-                  project={deal}
-                  type="deal"
-                  onDrillInto={onDrillInto}
-                />
-              ))
-            )}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={onImportDeal}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Import Deal</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+      <Collapsible open={dealsOpen} onOpenChange={setDealsOpen} className="group/collapsible">
+        <SidebarGroup>
+          <SidebarGroupLabel asChild>
+            <CollapsibleTrigger className="flex w-full items-center gap-2 [&[data-state=open]>svg.chevron]:rotate-0">
+              <ChevronDown className="chevron h-4 w-4 shrink-0 transition-transform -rotate-90" />
+              <Briefcase className="h-4 w-4" />
+              <span className="flex-1 text-left">Deals</span>
+              {deals.length > 0 && (
+                <span className="text-[10px] text-muted-foreground tabular-nums">{deals.length}</span>
+              )}
+            </CollapsibleTrigger>
+          </SidebarGroupLabel>
+          <CollapsibleContent>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {deals.length === 0 ? (
+                  <div className="px-2 py-2 text-sm text-muted-foreground">
+                    No deals yet
+                  </div>
+                ) : (
+                  deals.map(deal => (
+                    <EntityRow
+                      key={deal.id}
+                      project={deal}
+                      type="deal"
+                      onDrillInto={onDrillInto}
+                    />
+                  ))
+                )}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={onImportDeal}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Import Deal</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </CollapsibleContent>
+        </SidebarGroup>
+      </Collapsible>
 
       {/* Clients Section */}
       {(clients.length > 0 || deals.length > 0) && (
-        <SidebarGroup>
-          <SidebarGroupLabel className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            <span>Clients</span>
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {clients.length === 0 ? (
-                <div className="px-2 py-2 text-sm text-muted-foreground">
-                  No clients yet
-                </div>
-              ) : (
-                clients.map(client => (
-                  <EntityRow
-                    key={client.id}
-                    project={client}
-                    type="client"
-                    onDrillInto={onDrillInto}
-                  />
-                ))
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <Collapsible open={clientsOpen} onOpenChange={setClientsOpen} className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger className="flex w-full items-center gap-2 [&[data-state=open]>svg.chevron]:rotate-0">
+                <ChevronDown className="chevron h-4 w-4 shrink-0 transition-transform -rotate-90" />
+                <Users className="h-4 w-4" />
+                <span className="flex-1 text-left">Clients</span>
+                {clients.length > 0 && (
+                  <span className="text-[10px] text-muted-foreground tabular-nums">{clients.length}</span>
+                )}
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {clients.length === 0 ? (
+                    <div className="px-2 py-2 text-sm text-muted-foreground">
+                      No clients yet
+                    </div>
+                  ) : (
+                    clients.map(client => (
+                      <EntityRow
+                        key={client.id}
+                        project={client}
+                        type="client"
+                        onDrillInto={onDrillInto}
+                      />
+                    ))
+                  )}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
       )}
 
       <SidebarSeparator className="my-2" />
 
       {/* Projects Section */}
-      <SidebarGroup>
-        <SidebarGroupLabel className="flex items-center gap-2">
-          <Folder className="h-4 w-4" />
-          <span>Projects</span>
-        </SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {personalProjects.length === 0 ? (
-              <div className="px-2 py-2 text-sm text-muted-foreground">
-                No projects yet
-              </div>
-            ) : (
-              personalProjects.map(project => (
-                <ProjectRow key={project.id} project={project} />
-              ))
-            )}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={onNewProject}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <FolderPlus className="h-4 w-4" />
-                <span>New Project</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+      <Collapsible open={projectsOpen} onOpenChange={setProjectsOpen} className="group/collapsible">
+        <SidebarGroup>
+          <SidebarGroupLabel asChild>
+            <CollapsibleTrigger className="flex w-full items-center gap-2 [&[data-state=open]>svg.chevron]:rotate-0">
+              <ChevronDown className="chevron h-4 w-4 shrink-0 transition-transform -rotate-90" />
+              <Folder className="h-4 w-4" />
+              <span className="flex-1 text-left">Projects</span>
+              {personalProjects.length > 0 && (
+                <span className="text-[10px] text-muted-foreground tabular-nums">{personalProjects.length}</span>
+              )}
+            </CollapsibleTrigger>
+          </SidebarGroupLabel>
+          <CollapsibleContent>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {personalProjects.length === 0 ? (
+                  <div className="px-2 py-2 text-sm text-muted-foreground">
+                    No projects yet
+                  </div>
+                ) : (
+                  personalProjects.map(project => (
+                    <ProjectRow key={project.id} project={project} />
+                  ))
+                )}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    onClick={onNewProject}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <FolderPlus className="h-4 w-4" />
+                    <span>New Project</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </CollapsibleContent>
+        </SidebarGroup>
+      </Collapsible>
 
       {/* Recent Chats Section */}
-      <SidebarGroup>
-        <SidebarGroupLabel className="flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
-          <span>Recent</span>
-        </SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {recentChats.length === 0 ? (
-              <div className="px-2 py-2 text-sm text-muted-foreground">
-                No recent chats
-              </div>
-            ) : (
-              recentChats.map(chat => (
-                <ChatRow
-                  key={chat.id}
-                  chat={chat}
-                  isActive={chat.id === activeChatId}
-                  projects={projects}
-                  onUpdate={fetchData}
-                />
-              ))
-            )}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
+      <Collapsible open={recentOpen} onOpenChange={setRecentOpen} className="group/collapsible">
+        <SidebarGroup>
+          <SidebarGroupLabel asChild>
+            <CollapsibleTrigger className="flex w-full items-center gap-2 [&[data-state=open]>svg.chevron]:rotate-0">
+              <ChevronDown className="chevron h-4 w-4 shrink-0 transition-transform -rotate-90" />
+              <MessageSquare className="h-4 w-4" />
+              <span className="flex-1 text-left">Recent</span>
+              {chats.length > 0 && (
+                <span className="text-[10px] text-muted-foreground tabular-nums">{chats.length}</span>
+              )}
+            </CollapsibleTrigger>
+          </SidebarGroupLabel>
+          <CollapsibleContent>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {recentChats.length === 0 ? (
+                  <div className="px-2 py-2 text-sm text-muted-foreground">
+                    No recent chats
+                  </div>
+                ) : (
+                  <>
+                    {recentChats.map(chat => (
+                      <ChatRow
+                        key={chat.id}
+                        chat={chat}
+                        isActive={chat.id === activeChatId}
+                        projects={projects}
+                        onUpdate={fetchData}
+                      />
+                    ))}
+                    {hasMoreChats && (
+                      <button
+                        onClick={() => setShowAllChats(!showAllChats)}
+                        className="w-full px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-md transition-colors text-center"
+                      >
+                        {showAllChats ? `Show less` : `See all ${chats.length} chats`}
+                      </button>
+                    )}
+                  </>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </CollapsibleContent>
+        </SidebarGroup>
+      </Collapsible>
     </div>
   );
 }
@@ -238,11 +303,11 @@ function EntityRow({ project, type, onDrillInto }: EntityRowProps) {
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton onClick={handleClick} className="group pr-2">
+      <SidebarMenuButton onClick={handleClick} className="pr-2">
         <span className="truncate flex-1">{project.name}</span>
         <div className="flex items-center gap-2">
           {stage && <StageIndicator stage={stage} />}
-          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover/menu-item:opacity-100 transition-opacity" />
         </div>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -311,19 +376,19 @@ function ChatRow({ chat, isActive, projects, onUpdate }: ChatRowProps) {
         <SidebarMenuButton
           asChild
           isActive={isActive}
-          className="group pr-8"
+          className="pr-8"
         >
           <Link
             href={`/?chatId=${chat.id}`}
             onClick={handleClick}
             title={chat.title}
           >
-            <span className="truncate">{chat.title}</span>
+            <span className={`truncate ${!isActive ? 'text-muted-foreground' : ''}`}>{chat.title}</span>
           </Link>
         </SidebarMenuButton>
 
         {/* Three-dot menu */}
-        <div className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+        <div className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100 transition-opacity">
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
