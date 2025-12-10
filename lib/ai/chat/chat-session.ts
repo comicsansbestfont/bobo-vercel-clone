@@ -80,11 +80,19 @@ export async function ensureChatSession(
 /**
  * Auto-generate chat title from first message.
  * Takes first 50 chars or first sentence.
+ * Only updates if current title is still "New Chat".
  */
 export async function updateChatTitleFromMessage(
   chatId: string,
   messageText: string
 ): Promise<void> {
+  // Check if chat already has a real title
+  const chat = await getChat(chatId);
+  if (!chat || chat.title !== 'New Chat') {
+    // Chat already has a custom title, don't overwrite
+    return;
+  }
+
   // Generate title: First 50 chars or first sentence
   const title = messageText
     .split(/[.!?]/)[0]
