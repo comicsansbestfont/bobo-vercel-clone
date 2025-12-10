@@ -19,7 +19,7 @@ import {
   validateThinkingBudget,
 } from '@/lib/ai/claude-client';
 import { convertToClaudeMessages } from '@/lib/ai/claude-message-converter';
-import { advisoryTools, executeAdvisoryTool } from '@/lib/ai/claude-advisory-tools';
+import { advisoryTools, executeAdvisoryTool, type ToolExecutionContext } from '@/lib/ai/claude-advisory-tools';
 import { createContinuation, upsertPartialMessage } from '@/lib/db';
 import { chatLogger } from '@/lib/logger';
 import { persistChatMessages } from '../persistence/persistence-service';
@@ -366,7 +366,30 @@ export class ClaudeHandler implements ChatHandler {
           const toolResults = await Promise.all(
             toolUseBlocks.map(async (tu) => {
               chatLogger.debug(`[Claude SDK] Executing tool: ${tu.name}`);
-              const result = await executeAdvisoryTool(tu.name, tu.input);
+
+              // Build context for tools that need it (e.g., ask_gemini)
+              let toolContext: ToolExecutionContext | undefined;
+              if (tu.name === 'ask_gemini') {
+                toolContext = {
+                  messages: normalizedMessages.map((m) => ({
+                    role: m.role as 'user' | 'assistant' | 'system',
+                    content:
+                      m.parts
+                        ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
+                        .map((p) => p.text)
+                        .join('\n') || '',
+                  })),
+                  projectContext: projectContext
+                    ? {
+                        projectId: activeProjectId || '',
+                        projectName: projectName || undefined,
+                        files: projectContext.files,
+                      }
+                    : undefined,
+                };
+              }
+
+              const result = await executeAdvisoryTool(tu.name, tu.input, toolContext);
               const parsed = JSON.parse(result);
               chatLogger.debug(`[Claude SDK] Tool ${tu.name} result: ${parsed.success ? 'success' : 'error'}`);
               return { tool_use_id: tu.id, content: result };
@@ -399,7 +422,7 @@ export class ClaudeHandler implements ChatHandler {
           writeSSE({ type: 'text-end', id: '0' });
         }
         writeSSE({ type: 'finish-step' });
-        writeSSE({ type: 'finish', finishReason: didTimeout ? 'timeout' : 'stop', continuationToken: continuationToken || undefined });
+        writeSSE({ type: 'finish', finishReason: didTimeout ? 'length' : 'stop', continuationToken: continuationToken || undefined });
         writer.write(encoder.encode('data: [DONE]\n\n'));
 
         return {
