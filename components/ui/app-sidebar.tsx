@@ -19,6 +19,7 @@ import {
   Pencil,
   Trash2,
   Archive,
+  Kanban,
 } from "lucide-react";
 import { useSidebarNavigation } from "@/hooks/use-sidebar-navigation";
 import { SidebarMainView } from "@/components/sidebar/sidebar-main-view";
@@ -435,6 +436,14 @@ function AppSidebarContent({
             title="Home"
           >
             <Home className="h-5 w-5" />
+          </Link>
+          <Link
+            href="/deals"
+            onClick={() => isMobile && setOpenMobile(false)}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
+            title="Deals Pipeline"
+          >
+            <Kanban className="h-5 w-5" />
           </Link>
           <Link
             href="/memory"
