@@ -38,7 +38,7 @@ export function SidebarChatList({
         projectChats.map(chat => (
           <Link
             key={chat.id}
-            href={`/chat/${chat.id}`}
+            href={`/?chatId=${chat.id}`}
             onClick={onChatSelect}
             className={cn(
               'flex items-center gap-2 px-2 py-1.5 text-sm rounded-md transition-colors',
