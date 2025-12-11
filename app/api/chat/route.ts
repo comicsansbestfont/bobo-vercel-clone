@@ -30,8 +30,9 @@ import {
 // Chat API requires Node.js runtime for Claude SDK
 export const runtime = 'nodejs';
 
-// Allow streaming responses up to 60 seconds (Vercel Hobby limit)
-export const maxDuration = 60;
+// Allow streaming responses up to 300 seconds (Vercel Pro limit)
+// Extended thinking models like Claude can take 60+ seconds just for reasoning
+export const maxDuration = 300;
 
 // Disable the SDK warning about non-OpenAI reasoning
 if (typeof globalThis !== 'undefined') {

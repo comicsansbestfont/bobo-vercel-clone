@@ -161,8 +161,10 @@ export interface ClaudeStreamState {
 // TIMEOUT & PROGRESSIVE SAVE CONSTANTS
 // ============================================================================
 
-export const FUNCTION_TIMEOUT_MS = 60000;
-export const SHUTDOWN_BUFFER_MS = 8000;
+// Vercel Pro plan supports up to 300 seconds for serverless functions
+// Extended thinking models like Claude can take 60+ seconds just for reasoning
+export const FUNCTION_TIMEOUT_MS = 300000; // 5 minutes (matches Vercel maxDuration)
+export const SHUTDOWN_BUFFER_MS = 15000;   // 15 seconds buffer for graceful shutdown
 export const PROGRESSIVE_SAVE_INTERVAL_MS = 5000;
 export const PROGRESSIVE_SAVE_THRESHOLD = 200;
-export const MAX_TOOL_ITERATIONS = 3;
+export const MAX_TOOL_ITERATIONS = 5; // Increased for complex agentic workflows
