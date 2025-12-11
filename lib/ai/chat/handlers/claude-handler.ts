@@ -22,7 +22,7 @@ import { convertToClaudeMessages } from '@/lib/ai/claude-message-converter';
 import { advisoryTools, executeAdvisoryTool, type ToolExecutionContext } from '@/lib/ai/claude-advisory-tools';
 import { createContinuation, upsertPartialMessage } from '@/lib/db';
 import { chatLogger } from '@/lib/logger';
-import { persistChatMessages } from '../persistence/persistence-service';
+import { persistChatMessages, persistUserMessageEarly } from '../persistence/persistence-service';
 import type { ChatHandler, ChatRequest, ChatContext, HandlerStreamResult, ThinkingBlock } from '../types';
 import {
   FUNCTION_TIMEOUT_MS,
@@ -138,6 +138,20 @@ export class ClaudeHandler implements ChatHandler {
         chatLogger.error('[Progressive Save] Failed:', err);
       }
     };
+
+    // ==========================================================================
+    // EARLY USER MESSAGE PERSISTENCE
+    // Save user message IMMEDIATELY before streaming to prevent data loss on timeout
+    // ==========================================================================
+    const lastUserMessage = normalizedMessages[normalizedMessages.length - 1];
+    let userMessageSaved = false;
+    if (lastUserMessage && lastUserMessage.role === 'user' && activeChatId) {
+      const savedId = await persistUserMessageEarly(activeChatId, lastUserMessage);
+      userMessageSaved = savedId !== null;
+      if (userMessageSaved) {
+        chatLogger.debug(`[Claude SDK] User message saved early: ${savedId}`);
+      }
+    }
 
     // Start streaming response
     const responsePromise = (async (): Promise<HandlerStreamResult> => {
@@ -484,6 +498,7 @@ export class ClaudeHandler implements ChatHandler {
           tokenCount: inputTokens + outputTokens,
           messageId,
           useFinalizeMessage: true,
+          userMessageAlreadySaved: userMessageSaved, // Skip user message if saved early
         });
       })
       .catch((err) => chatLogger.error('[Claude SDK] Response promise error:', err));

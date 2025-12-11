@@ -111,6 +111,8 @@ export interface PersistenceContext {
   messageId?: string;
   /** Whether to use finalizeMessage (for progressive saves) vs createMessage */
   useFinalizeMessage?: boolean;
+  /** Skip user message persistence (already saved via persistUserMessageEarly) */
+  userMessageAlreadySaved?: boolean;
 }
 
 // ============================================================================

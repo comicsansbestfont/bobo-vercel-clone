@@ -134,6 +134,69 @@ function triggerMemoryExtraction(chatId: string): void {
 }
 
 // ============================================================================
+// EARLY USER MESSAGE PERSISTENCE
+// ============================================================================
+
+/**
+ * Save user message immediately at request start.
+ * This ensures user messages are never lost due to timeout.
+ *
+ * Call this BEFORE starting streaming to guarantee persistence.
+ * Accepts UIMessage type and extracts compatible parts.
+ */
+export async function persistUserMessageEarly(
+  chatId: string,
+  userMessage: { role: string; parts?: unknown[] }
+): Promise<string | null> {
+  if (!userMessage || userMessage.role !== 'user' || !chatId) {
+    return null;
+  }
+
+  try {
+    // Filter and cast to only include compatible message parts
+    const userMessageParts = ((userMessage.parts || []) as MessagePart[]).filter(
+      (p) => p.type === 'text' || p.type === 'reasoning' || p.type === 'source-url' || p.type === 'tool-result'
+    );
+
+    const userMsg = await createMessage({
+      chat_id: chatId,
+      role: 'user',
+      content: { parts: userMessageParts },
+      token_count: getTokenCount(userMessageParts),
+    });
+
+    if (!userMsg) {
+      chatLogger.error('[Early Persistence] Failed to save user message');
+      return null;
+    }
+
+    chatLogger.debug(`[Early Persistence] User message saved: ${userMsg.id}`);
+
+    // Generate embedding for user message (background, fire-and-forget)
+    const userText = userMessageParts
+      .filter((p): p is MessagePart & { text: string } => p.type === 'text' && 'text' in p)
+      .map((p) => p.text)
+      .join(' ');
+
+    if (userText) {
+      embedAndSaveMessage(userMsg.id, userText).catch((err) =>
+        chatLogger.error('Failed to embed user message:', err)
+      );
+
+      // Update chat title from first user message
+      updateChatTitleFromMessage(chatId, userText).catch((err) =>
+        chatLogger.error('Failed to update chat title:', err)
+      );
+    }
+
+    return userMsg.id;
+  } catch (error) {
+    chatLogger.error('[Early Persistence] Error saving user message:', error);
+    return null;
+  }
+}
+
+// ============================================================================
 // MAIN PERSISTENCE FUNCTION
 // ============================================================================
 
@@ -142,6 +205,9 @@ function triggerMemoryExtraction(chatId: string): void {
  *
  * This unified function replaces the duplicated persistence logic from
  * all three model handlers.
+ *
+ * NOTE: If userMessageAlreadySaved=true, skip user message persistence
+ * (already handled by persistUserMessageEarly).
  */
 export async function persistChatMessages(
   context: PersistenceContext
@@ -159,13 +225,14 @@ export async function persistChatMessages(
     tokenCount,
     messageId,
     useFinalizeMessage,
+    userMessageAlreadySaved,
   } = context;
 
   try {
     // =========================================================================
-    // 1. Save user message
+    // 1. Save user message (skip if already saved via persistUserMessageEarly)
     // =========================================================================
-    if (userMessage && userMessage.role === 'user') {
+    if (userMessage && userMessage.role === 'user' && !userMessageAlreadySaved) {
       const userMessageParts = (userMessage.parts || []) as MessagePart[];
 
       const userMsg = await createMessage({

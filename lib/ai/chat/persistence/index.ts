@@ -4,5 +4,5 @@
  * M40-02: Unified persistence logic extracted from chat route
  */
 
-export { persistChatMessages } from './persistence-service';
+export { persistChatMessages, persistUserMessageEarly } from './persistence-service';
 export { buildCitations, applyCitations } from './source-citation';
