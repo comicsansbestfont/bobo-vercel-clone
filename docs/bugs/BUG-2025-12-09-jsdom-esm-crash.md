@@ -29,6 +29,11 @@ The production chat API experienced intermittent failures due to an ESM/CommonJS
 - No assistant response generated
 - Chat appeared "stuck" with no error feedback to user
 
+### Why Chat `27fbf84f-ad20-47b4-a16f-accfad31267c` Failed
+- The user's last message triggered the `fetch_url` advisory tool, which still depended on `jsdom`.
+- In the Vercel serverless bundle, `jsdom` attempted to `require()` the ESM-only `parse5` dependency and crashed with `ERR_REQUIRE_ESM` before any tokens were streamed.
+- Because the crash happened inside the `/api/chat` handler, the request ended without emitting an assistant message and the UI never displayed an error, leaving the conversation stalled even though the user message was saved.
+
 ---
 
 ## Root Cause Analysis
