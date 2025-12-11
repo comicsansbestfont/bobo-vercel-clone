@@ -51,6 +51,8 @@ export async function ensureChatSession(
   // Create new chat if no chatId provided OR if provided chatId doesn't exist
   if (!activeChatId || !chatExists) {
     const newChat = await createChat({
+      // Use client-provided chatId if available to prevent mismatch
+      ...(providedChatId && { id: providedChatId }),
       title: 'New Chat',
       model: model,
       web_search_enabled: webSearch,
