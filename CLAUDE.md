@@ -432,6 +432,7 @@ Inject into chat context (always current)
 ## Session (Dec 12, 2025): Notion-Style Markdown Editing
 
 - ✅ Added BlockNote-powered Notion-style editor for `.md` files in advisory file browser preview modal.
+- 🐛 Fixed: BlockNote runtime crash (`ComponentsContext` undefined → `SideMenu`) by disabling default BlockNote UI controllers in the markdown editor wrapper.
 - ✅ Implemented `PATCH /api/advisory/file` to persist edits back to the `advisory/` filesystem with traversal safeguards.
 - ✅ Hardened `PATCH /api/advisory/file` root validation to block sibling-directory escapes (match GET `advisoryRoot + sep` guard).
 - ✅ Fixed advisory file tree loading: return 404 for missing folders (not 500), added traversal-safe path validation, and improved client error handling.

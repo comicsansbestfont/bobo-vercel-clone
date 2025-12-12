@@ -63,6 +63,14 @@ export function BlockNoteMarkdownEditor({
         editor={editor}
         theme={theme}
         editable={editable}
+        formattingToolbar={false}
+        linkToolbar={false}
+        slashMenu={false}
+        emojiPicker={false}
+        sideMenu={false}
+        filePanel={false}
+        tableHandles={false}
+        comments={false}
         className="min-h-[50vh] max-w-none"
       />
     </div>
