@@ -454,6 +454,15 @@ export class ClaudeHandler implements ChatHandler {
         }
         chatLogger.error('[Claude SDK] Stream error:', error);
         writeSSE({ type: 'error', error: error instanceof Error ? error.message : 'Unknown error' });
+        if (reasoningStarted) {
+          writeSSE({ type: 'reasoning-end', id: 't0' });
+        }
+        if (allTextContent) {
+          writeSSE({ type: 'text-end', id: '0' });
+        }
+        writeSSE({ type: 'finish-step' });
+        writeSSE({ type: 'finish', finishReason: 'error' });
+        writer.write(encoder.encode('data: [DONE]\n\n'));
         if (allTextContent.length > 0 && activeChatId) {
           await progressiveSave('error');
         }
