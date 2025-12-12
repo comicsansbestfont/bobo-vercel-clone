@@ -9,7 +9,8 @@
  */
 
 import fs from 'fs/promises';
-import { readdirSync, statSync } from 'fs';
+import { readdirSync } from 'fs';
+import type { Dirent } from 'fs';
 import path from 'path';
 import { join } from 'path';
 import matter from 'gray-matter';
@@ -328,6 +329,10 @@ export interface FolderNode {
   children?: FolderNode[];
 }
 
+function toPosixRelativePath(absolutePath: string): string {
+  return path.relative(process.cwd(), absolutePath).split(path.sep).join('/');
+}
+
 /**
  * Get advisory folder tree structure (synchronous)
  * Returns nested tree of folders and .md files
@@ -336,19 +341,30 @@ export function getAdvisoryFolderTree(basePath: string = 'advisory'): FolderNode
   const rootPath = join(process.cwd(), basePath);
 
   function buildTree(dirPath: string, name: string): FolderNode {
-    const entries = readdirSync(dirPath);
     const children: FolderNode[] = [];
 
-    for (const entry of entries) {
-      const entryPath = join(dirPath, entry);
-      const stat = statSync(entryPath);
+    let entries: Dirent[] = [];
+    try {
+      entries = readdirSync(dirPath, { withFileTypes: true });
+    } catch (error) {
+      chatLogger.warn(`Unable to read directory: ${dirPath}`, error);
+      return {
+        name,
+        path: toPosixRelativePath(dirPath),
+        type: 'folder',
+        children: [],
+      };
+    }
 
-      if (stat.isDirectory()) {
-        children.push(buildTree(entryPath, entry));
-      } else if (entry.endsWith('.md')) {
+    for (const entry of entries) {
+      const entryPath = join(dirPath, entry.name);
+
+      if (entry.isDirectory()) {
+        children.push(buildTree(entryPath, entry.name));
+      } else if (entry.isFile() && entry.name.endsWith('.md')) {
         children.push({
-          name: entry,
-          path: entryPath.replace(process.cwd() + '/', ''),
+          name: entry.name,
+          path: toPosixRelativePath(entryPath),
           type: 'file',
         });
       }
@@ -356,7 +372,7 @@ export function getAdvisoryFolderTree(basePath: string = 'advisory'): FolderNode
 
     return {
       name,
-      path: dirPath.replace(process.cwd() + '/', ''),
+      path: toPosixRelativePath(dirPath),
       type: 'folder',
       children: children.sort((a, b) => {
         if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;

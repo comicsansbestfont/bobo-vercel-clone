@@ -8,24 +8,32 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { resolve, sep, posix as pathPosix } from 'path';
 import { readMasterDoc } from '@/lib/advisory/file-reader';
 import { apiLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   try {
-    const folderPath = request.nextUrl.searchParams.get('folderPath');
+    const folderPathParam = request.nextUrl.searchParams.get('folderPath');
 
-    if (!folderPath) {
+    if (!folderPathParam) {
       return NextResponse.json(
         { error: 'Missing folderPath parameter' },
         { status: 400 }
       );
     }
 
-    // Security: ensure path starts with 'advisory'
-    if (!folderPath.startsWith('advisory')) {
+    const folderPath = pathPosix.normalize(folderPathParam.replaceAll('\\', '/'));
+    const advisoryRoot = resolve(process.cwd(), 'advisory');
+    const absolutePath = resolve(process.cwd(), folderPath);
+
+    // Security: ensure resolved path stays within advisory root
+    if (
+      absolutePath !== advisoryRoot &&
+      !absolutePath.startsWith(advisoryRoot + sep)
+    ) {
       return NextResponse.json(
-        { error: 'Invalid path: must start with advisory' },
+        { error: 'Invalid path: must be under advisory' },
         { status: 400 }
       );
     }

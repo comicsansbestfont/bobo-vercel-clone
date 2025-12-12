@@ -9,22 +9,45 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync, writeFileSync } from 'fs';
-import { join, normalize, resolve } from 'path';
+import { normalize, resolve, sep, posix as pathPosix } from 'path';
 import { apiLogger } from '@/lib/logger';
 
-export async function GET(request: NextRequest) {
-  const path = request.nextUrl.searchParams.get('path');
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  return error instanceof Error && 'code' in error;
+}
 
-  if (!path || !path.startsWith('advisory/')) {
+export async function GET(request: NextRequest) {
+  const pathParam = request.nextUrl.searchParams.get('path');
+
+  if (!pathParam) {
+    return NextResponse.json({ error: 'Missing path' }, { status: 400 });
+  }
+
+  const requestedPath = pathPosix.normalize(pathParam.replaceAll('\\', '/'));
+
+  if (!requestedPath.startsWith('advisory/')) {
+    return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+  }
+
+  const advisoryRoot = resolve(process.cwd(), 'advisory');
+  const absolutePath = resolve(process.cwd(), normalize(requestedPath));
+
+  if (
+    absolutePath !== advisoryRoot &&
+    !absolutePath.startsWith(advisoryRoot + sep)
+  ) {
     return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
   }
 
   try {
-    const content = readFileSync(join(process.cwd(), path), 'utf-8');
+    const content = readFileSync(absolutePath, 'utf-8');
     return NextResponse.json({ content });
   } catch (error) {
     apiLogger.error('Error reading file', error);
-    return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    if (isErrnoException(error) && error.code === 'ENOENT') {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+    return NextResponse.json({ error: 'Failed to read file' }, { status: 500 });
   }
 }
 
@@ -47,11 +70,20 @@ export async function PATCH(request: NextRequest) {
 
   const { path, content } = body as { path: string; content: string };
 
-  if (!path || typeof path !== 'string' || !path.startsWith('advisory/')) {
+  if (!path || typeof path !== 'string') {
     return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
   }
 
-  if (!path.toLowerCase().endsWith('.md') && !path.toLowerCase().endsWith('.markdown')) {
+  const requestedPath = pathPosix.normalize(path.replaceAll('\\', '/'));
+
+  if (!requestedPath.startsWith('advisory/')) {
+    return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+  }
+
+  if (
+    !requestedPath.toLowerCase().endsWith('.md') &&
+    !requestedPath.toLowerCase().endsWith('.markdown')
+  ) {
     return NextResponse.json({ error: 'Only markdown files can be edited' }, { status: 400 });
   }
 
@@ -61,14 +93,17 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const advisoryRoot = resolve(process.cwd(), 'advisory');
-    const normalizedPath = normalize(path);
+    const normalizedPath = normalize(requestedPath);
     const absolutePath = resolve(process.cwd(), normalizedPath);
 
-    if (!absolutePath.startsWith(advisoryRoot)) {
+    if (
+      absolutePath !== advisoryRoot &&
+      !absolutePath.startsWith(advisoryRoot + sep)
+    ) {
       return NextResponse.json({ error: 'Path traversal detected' }, { status: 400 });
     }
 
-    writeFileSync(join(process.cwd(), normalizedPath), content, 'utf-8');
+    writeFileSync(absolutePath, content, 'utf-8');
     return NextResponse.json({ success: true });
   } catch (error) {
     apiLogger.error('Error writing file', error);

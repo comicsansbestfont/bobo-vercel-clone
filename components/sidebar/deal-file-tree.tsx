@@ -37,12 +37,25 @@ export function DealFileTree({ folderPath, onFileSelect }: DealFileTreeProps) {
     setError(null);
 
     fetch(`/api/advisory/tree?basePath=${encodeURIComponent(folderPath)}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to load files');
-        return res.json();
+      .then(async res => {
+        if (res.ok) return res.json();
+
+        let errorMessage = 'Failed to load files';
+        try {
+          const data = (await res.json()) as { error?: string };
+          if (data?.error) errorMessage = data.error;
+        } catch {
+          // ignore
+        }
+
+        if (res.status === 404) {
+          return { tree: null };
+        }
+
+        throw new Error(errorMessage);
       })
       .then(data => setTree(data.tree))
-      .catch(err => setError(err.message))
+      .catch(err => setError(err instanceof Error ? err.message : 'Failed to load files'))
       .finally(() => setLoading(false));
   }, [folderPath]);
 

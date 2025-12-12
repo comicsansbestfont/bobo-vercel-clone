@@ -55,9 +55,18 @@ export function FilePreviewModal({ open, onOpenChange, filePath }: FilePreviewMo
     setError(null);
 
     fetch(`/api/advisory/file?path=${encodeURIComponent(filePath)}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to load file');
-        return res.json();
+      .then(async res => {
+        if (res.ok) return res.json();
+
+        let errorMessage = 'Failed to load file';
+        try {
+          const data = (await res.json()) as { error?: string };
+          if (data?.error) errorMessage = data.error;
+        } catch {
+          // ignore
+        }
+
+        throw new Error(errorMessage);
       })
       .then(data => {
         setContent(data.content);

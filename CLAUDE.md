@@ -433,4 +433,6 @@ Inject into chat context (always current)
 
 - ✅ Added BlockNote-powered Notion-style editor for `.md` files in advisory file browser preview modal.
 - ✅ Implemented `PATCH /api/advisory/file` to persist edits back to the `advisory/` filesystem with traversal safeguards.
-- Files touched: `components/editor/blocknote-markdown-editor.tsx`, `components/sidebar/file-preview-modal.tsx`, `app/api/advisory/file/route.ts`.
+- ✅ Hardened `PATCH /api/advisory/file` root validation to block sibling-directory escapes (match GET `advisoryRoot + sep` guard).
+- ✅ Fixed advisory file tree loading: return 404 for missing folders (not 500), added traversal-safe path validation, and improved client error handling.
+- Files touched: `app/api/advisory/file/route.ts`, `app/api/advisory/master-doc/route.ts`, `app/api/advisory/tree/route.ts`, `components/editor/blocknote-markdown-editor.tsx`, `components/sidebar/deal-file-tree.tsx`, `components/sidebar/file-preview-modal.tsx`, `lib/advisory/file-reader.ts`.
