@@ -388,6 +388,31 @@ Inject into chat context (always current)
 
 ---
 
+## M3.16: Ask ChatGPT Second Opinion Tool (Dec 2025)
+
+**STATUS:** ✅ **COMPLETE** - ChatGPT second-opinion tool available during Claude chats
+
+### What Was Implemented
+
+1. **Ask ChatGPT Tool** (`lib/ai/claude-advisory-tools.ts`)
+   - New `ask_chatgpt` advisory tool mirroring `ask_gemini`
+   - Uses `openai/gpt-5.2` via Vercel AI Gateway for second opinions
+   - Auto-includes last 10 conversation messages and up to 5 active project files (as extracted text)
+
+2. **Claude Tool Context Wiring** (`lib/ai/chat/handlers/claude-handler.ts`)
+   - Passes conversation + project context to both `ask_gemini` and `ask_chatgpt`
+
+### Usage
+
+- In a Claude chat, ask for a second opinion from ChatGPT (e.g., "Can you get ChatGPT's take on this?").
+- Claude will invoke the tool, show ChatGPT's response as a blockquote, then synthesize.
+
+### Key Files
+- `lib/ai/claude-advisory-tools.ts` - Tool definition, executor case, and implementation
+- `lib/ai/chat/handlers/claude-handler.ts` - Second-opinion context injection
+
+---
+
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router)
 - **React**: v19.2.0

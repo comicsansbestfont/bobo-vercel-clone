@@ -381,9 +381,9 @@ export class ClaudeHandler implements ChatHandler {
             toolUseBlocks.map(async (tu) => {
               chatLogger.debug(`[Claude SDK] Executing tool: ${tu.name}`);
 
-              // Build context for tools that need it (e.g., ask_gemini)
+              // Build context for tools that need it (e.g., ask_gemini, ask_chatgpt)
               let toolContext: ToolExecutionContext | undefined;
-              if (tu.name === 'ask_gemini') {
+              if (tu.name === 'ask_gemini' || tu.name === 'ask_chatgpt') {
                 toolContext = {
                   messages: normalizedMessages.map((m) => ({
                     role: m.role as 'user' | 'assistant' | 'system',

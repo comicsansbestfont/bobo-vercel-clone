@@ -29,7 +29,7 @@ import { getModel } from '@/lib/ai/models';
 
 /**
  * Context passed to tools that need conversation/project awareness
- * Used by ask_gemini to include chat history and project files
+ * Used by second-opinion tools (ask_gemini, ask_chatgpt) to include chat history and project files
  */
 export interface ToolExecutionContext {
   /** Recent messages from current conversation */
@@ -544,6 +544,56 @@ EXAMPLES:
       required: ['question'],
     },
   },
+  // ==========================================================================
+  // M3.16: Ask ChatGPT - Second Opinion Tool
+  // ==========================================================================
+  {
+    name: 'ask_chatgpt',
+    description: `Get a second opinion from ChatGPT (GPT-5.2) on the current conversation.
+
+USE WHEN:
+- User explicitly asks for a second opinion or alternative perspective
+- Facing a complex technical decision where another AI's view would help
+- Debugging a tricky problem and need fresh eyes
+- Validating an approach before committing to it
+- User says things like "what do you think?", "am I missing something?", "sanity check this"
+
+AUTOMATICALLY INCLUDES:
+- Recent conversation history (last 10 messages)
+- Active project context (if any)
+- Your current analysis or proposed solution
+
+RETURNS: ChatGPT's perspective as a collapsible quote block that you should synthesize.
+
+FORMAT YOUR RESPONSE AS:
+1. Show ChatGPT's response in a blockquote
+2. Provide your synthesis comparing/integrating perspectives
+
+EXAMPLES:
+- "Can you get ChatGPT's take on this?"
+- "What would GPT-5.2 think about this approach?"
+- "I'm stuck - let's see what ChatGPT thinks"
+- "Sanity check: am I overcomplicating this?"`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        question: {
+          type: 'string',
+          description: 'Specific question or aspect to get ChatGPT\'s opinion on. Be specific about what perspective you want.',
+        },
+        include_project_files: {
+          type: 'boolean',
+          description: 'Whether to include active project files in context (default: true, set false for general questions)',
+        },
+        focus_area: {
+          type: 'string',
+          enum: ['architecture', 'code-review', 'debugging', 'best-practices', 'general'],
+          description: 'What type of feedback to focus on (optional, helps ChatGPT tailor response)',
+        },
+      },
+      required: ['question'],
+    },
+  },
 ];
 
 // ============================================================================
@@ -554,7 +604,7 @@ EXAMPLES:
  * Execute an advisory tool and return JSON result
  * @param name - Tool name to execute
  * @param input - Tool input parameters
- * @param context - Optional context for tools that need chat/project awareness (e.g., ask_gemini)
+ * @param context - Optional context for tools that need chat/project awareness (e.g., ask_gemini, ask_chatgpt)
  */
 export async function executeAdvisoryTool(
   name: string,
@@ -590,6 +640,9 @@ export async function executeAdvisoryTool(
       // M3.15: Ask Gemini - Second Opinion Tool
       case 'ask_gemini':
         return await askGemini(input, context);
+      // M3.16: Ask ChatGPT - Second Opinion Tool
+      case 'ask_chatgpt':
+        return await askChatGPT(input, context);
       default:
         return JSON.stringify({ success: false, error: `Unknown tool: ${name}` });
     }
@@ -1941,6 +1994,166 @@ ${focusHints[focus_area]}`;
         : isTimeout
           ? 'Gemini request timed out. The service may be busy.'
           : `Failed to get Gemini response: ${errorMessage}`,
+    });
+  }
+}
+
+// ============================================================================
+// M3.16: Ask ChatGPT Implementation
+// ============================================================================
+
+type AskChatGPTInput = {
+  question: string;
+  include_project_files?: boolean;
+  focus_area?: 'architecture' | 'code-review' | 'debugging' | 'best-practices' | 'general';
+};
+
+const CHATGPT_SYSTEM_PROMPT = `You are a strategic advisor providing a critical second opinion on a conversation between a user and Claude.
+
+Your role:
+1. Think critically and pragmatically - challenge assumptions, question the approach
+2. Offer your honest perspective - agree, disagree, or provide alternatives
+3. Be concise but thorough (aim for 200-500 words)
+4. Highlight blind spots, risks, and considerations that might have been missed
+5. If you agree with the approach, say so briefly and focus on what could go wrong
+
+Mindset:
+- Act as a skeptical but constructive strategic advisor
+- Prioritize practical outcomes over theoretical elegance
+- Consider real-world constraints: time, complexity, maintenance burden
+- Ask "what could go wrong?" and "is this the simplest solution?"
+- Challenge over-engineering and unnecessary complexity
+
+Guidelines:
+- Be direct and substantive - no filler phrases or false validation
+- If you see issues, point them out clearly and constructively
+- Provide specific, actionable suggestions when possible
+- Consider edge cases, failure modes, and long-term implications
+- Format your response as a direct answer to the question`;
+
+/**
+ * Ask ChatGPT (GPT-5.2) for a second opinion
+ * M3.16: Cross-model consultation during chat
+ */
+async function askChatGPT(
+  input: Record<string, unknown>,
+  context?: ToolExecutionContext
+): Promise<string> {
+  const {
+    question,
+    include_project_files = true,
+    focus_area = 'general',
+  } = input as AskChatGPTInput;
+
+  chatLogger.info(`[ask_chatgpt] Question: "${question}"`, { include_project_files, focus_area });
+
+  // Validate input
+  if (!question || question.length < 10) {
+    return JSON.stringify({
+      success: false,
+      error: 'Question must be at least 10 characters',
+    });
+  }
+
+  if (question.length > 2000) {
+    return JSON.stringify({
+      success: false,
+      error: 'Question must be less than 2000 characters',
+    });
+  }
+
+  try {
+    // Build context for ChatGPT
+    const contextParts: string[] = [];
+
+    // 1. Add recent conversation history (last 10 messages, capped at ~8000 chars)
+    if (context?.messages && context.messages.length > 0) {
+      const recentMessages = context.messages.slice(-10);
+      const conversationContext = recentMessages
+        .map((m) => `[${m.role.toUpperCase()}]: ${m.content.slice(0, 1500)}`)
+        .join('\n\n');
+
+      contextParts.push(`## Recent Conversation\n${conversationContext}`);
+    }
+
+    // 2. Add project context (if enabled and available)
+    if (include_project_files && context?.projectContext?.files) {
+      const projectName = context.projectContext.projectName || 'Current Project';
+      const filesSummary = context.projectContext.files
+        .slice(0, 5) // Limit to 5 most relevant files
+        .map((f) => `### ${f.filename}\n\`\`\`\n${f.content_text.slice(0, 3000)}\n\`\`\``)
+        .join('\n\n');
+
+      if (filesSummary) {
+        contextParts.push(`## Project Context: ${projectName}\n${filesSummary}`);
+      }
+    }
+
+    // 3. Add focus area hint
+    const focusHints: Record<string, string> = {
+      architecture: 'Focus on system design, patterns, scalability, and maintainability.',
+      'code-review': 'Focus on code quality, bugs, edge cases, and best practices.',
+      debugging: 'Focus on identifying the root cause and potential solutions.',
+      'best-practices': 'Focus on industry standards, conventions, and recommendations.',
+      general: 'Provide a general perspective on the question.',
+    };
+
+    // Build the prompt
+    const prompt = `${contextParts.length > 0 ? contextParts.join('\n\n---\n\n') + '\n\n---\n\n' : ''}
+## Question for Second Opinion
+${question}
+
+## Focus Area
+${focusHints[focus_area]}`;
+
+    // Token limit for context (leave room for response)
+    const maxContextChars = 30000; // ~7500 tokens
+    const truncatedPrompt =
+      prompt.length > maxContextChars
+        ? prompt.slice(0, maxContextChars) + '\n\n[Context truncated...]'
+        : prompt;
+
+    chatLogger.debug(`[ask_chatgpt] Prompt length: ${truncatedPrompt.length} chars`);
+
+    // Call ChatGPT via AI Gateway
+    // Note: AI SDK v5 doesn't expose maxTokens in generateText - relying on system prompt guidance
+    const { text, usage } = await generateText({
+      model: getModel('openai/gpt-5.2'),
+      system: CHATGPT_SYSTEM_PROMPT,
+      prompt: truncatedPrompt,
+      temperature: 0.7,
+    });
+
+    chatLogger.info(`[ask_chatgpt] Response received (${text.length} chars)`, {
+      inputTokens: usage?.inputTokens,
+      outputTokens: usage?.outputTokens,
+    });
+
+    return JSON.stringify({
+      success: true,
+      chatgpt_response: text,
+      focus_area,
+      context_included: {
+        messages: context?.messages?.length || 0,
+        project_files: include_project_files ? context?.projectContext?.files?.length || 0 : 0,
+      },
+      display_format: 'collapsible_quote',
+      display_title: 'ChatGPT (GPT-5.2) Second Opinion',
+    });
+  } catch (error) {
+    chatLogger.error('[ask_chatgpt] Failed:', error);
+
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const isRateLimit = errorMessage.includes('rate') || errorMessage.includes('429');
+    const isTimeout = errorMessage.includes('timeout') || errorMessage.includes('ETIMEDOUT');
+
+    return JSON.stringify({
+      success: false,
+      error: isRateLimit
+        ? 'ChatGPT rate limit reached. Please try again in a moment.'
+        : isTimeout
+          ? 'ChatGPT request timed out. The service may be busy.'
+          : `Failed to get ChatGPT response: ${errorMessage}`,
     });
   }
 }
