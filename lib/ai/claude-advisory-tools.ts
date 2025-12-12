@@ -545,6 +545,48 @@ EXAMPLES:
     },
   },
   // ==========================================================================
+  // M3.17: Review Chat - Cross-Chat Context Tool
+  // ==========================================================================
+  {
+    name: 'review_chat',
+    description: `Fetch and review the contents of a previous chat conversation.
+
+USE WHEN:
+- User provides a chat URL or chat ID and wants you to reference that conversation
+- User says "look at chat X" or "review the conversation from..."
+- Need context from a specific past conversation
+- User wants to continue or reference a discussion from another chat
+
+INPUT FORMATS:
+- Full URL: "http://localhost:3000/chat/abc-123-def"
+- Chat ID: "abc-123-def" (UUID format)
+
+RETURNS: Chat metadata and full message history formatted for context.
+
+EXAMPLES:
+- review_chat(chat_id: "abc-123-def")
+- review_chat(chat_id: "http://localhost:3000/chat/abc-123-def")
+- "Review the chat at this URL: ..." → extract chat ID and use this tool`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        chat_id: {
+          type: 'string',
+          description: 'The chat ID (UUID) or full URL containing the chat ID to review',
+        },
+        include_system_messages: {
+          type: 'boolean',
+          description: 'Whether to include system messages (default: false)',
+        },
+        max_messages: {
+          type: 'number',
+          description: 'Maximum number of messages to return (default: 50, max: 100)',
+        },
+      },
+      required: ['chat_id'],
+    },
+  },
+  // ==========================================================================
   // M3.16: Ask ChatGPT - Second Opinion Tool
   // ==========================================================================
   {
@@ -643,6 +685,9 @@ export async function executeAdvisoryTool(
       // M3.16: Ask ChatGPT - Second Opinion Tool
       case 'ask_chatgpt':
         return await askChatGPT(input, context);
+      // M3.17: Review Chat - Cross-Chat Context Tool
+      case 'review_chat':
+        return await reviewChat(input);
       default:
         return JSON.stringify({ success: false, error: `Unknown tool: ${name}` });
     }
@@ -2154,6 +2199,182 @@ ${focusHints[focus_area]}`;
         : isTimeout
           ? 'ChatGPT request timed out. The service may be busy.'
           : `Failed to get ChatGPT response: ${errorMessage}`,
+    });
+  }
+}
+
+// ============================================================================
+// M3.17: Review Chat Implementation
+// ============================================================================
+
+type ReviewChatInput = {
+  chat_id: string;
+  include_system_messages?: boolean;
+  max_messages?: number;
+};
+
+/**
+ * Extract chat ID from URL or return as-is if already a UUID
+ */
+function extractChatId(input: string): string | null {
+  // UUID pattern
+  const uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+
+  // Check if it's a URL containing a chat ID
+  if (input.includes('/chat/')) {
+    const match = input.match(/\/chat\/([0-9a-f-]+)/i);
+    if (match && match[1]) {
+      // Validate it looks like a UUID
+      if (uuidPattern.test(match[1])) {
+        return match[1];
+      }
+    }
+  }
+
+  // Check if it's already a UUID
+  if (uuidPattern.test(input)) {
+    return input.match(uuidPattern)![0];
+  }
+
+  return null;
+}
+
+/**
+ * Extract text content from message parts (UIMessage format)
+ */
+function extractMessageText(content: { parts?: Array<{ type: string; text?: string }> }): string {
+  if (!content?.parts || !Array.isArray(content.parts)) {
+    return '';
+  }
+
+  return content.parts
+    .filter((part) => part.type === 'text' && part.text)
+    .map((part) => part.text)
+    .join('\n');
+}
+
+/**
+ * Review a previous chat conversation
+ * M3.17: Cross-chat context retrieval
+ */
+async function reviewChat(input: Record<string, unknown>): Promise<string> {
+  const {
+    chat_id: rawChatId,
+    include_system_messages = false,
+    max_messages = 50,
+  } = input as ReviewChatInput;
+
+  chatLogger.info(`[review_chat] Reviewing chat: "${rawChatId}"`, { include_system_messages, max_messages });
+
+  // Validate and extract chat ID
+  if (!rawChatId || typeof rawChatId !== 'string') {
+    return JSON.stringify({
+      success: false,
+      error: 'chat_id is required',
+    });
+  }
+
+  const chatId = extractChatId(rawChatId);
+  if (!chatId) {
+    return JSON.stringify({
+      success: false,
+      error: `Could not extract valid chat ID from: "${rawChatId}". Expected UUID format (e.g., abc12345-1234-5678-9abc-def012345678) or URL containing /chat/<id>`,
+    });
+  }
+
+  const clampedLimit = Math.max(1, Math.min(100, max_messages));
+
+  try {
+    // Fetch chat metadata
+    const { data: chat, error: chatError } = await supabase
+      .from('chats')
+      .select('id, title, model, created_at, updated_at, project_id')
+      .eq('id', chatId)
+      .single();
+
+    if (chatError || !chat) {
+      chatLogger.warn(`[review_chat] Chat not found: ${chatId}`, chatError);
+      return JSON.stringify({
+        success: false,
+        error: `Chat not found: ${chatId}. Make sure the chat ID is correct and exists.`,
+      });
+    }
+
+    // Fetch messages
+    const messageQuery = supabase
+      .from('messages')
+      .select('id, role, content, created_at, sequence_number')
+      .eq('chat_id', chatId)
+      .order('sequence_number', { ascending: true })
+      .limit(clampedLimit);
+
+    // Filter out system messages if not requested
+    if (!include_system_messages) {
+      messageQuery.neq('role', 'system');
+    }
+
+    const { data: messages, error: messagesError } = await messageQuery;
+
+    if (messagesError) {
+      chatLogger.error(`[review_chat] Failed to fetch messages:`, messagesError);
+      return JSON.stringify({
+        success: false,
+        error: `Failed to fetch messages: ${messagesError.message}`,
+      });
+    }
+
+    if (!messages || messages.length === 0) {
+      return JSON.stringify({
+        success: true,
+        chat_id: chatId,
+        title: chat.title,
+        message: 'This chat has no messages yet.',
+        messages: [],
+      });
+    }
+
+    // Format messages for LLM consumption
+    type MessageRow = {
+      id: string;
+      role: string;
+      content: { parts?: Array<{ type: string; text?: string }> };
+      created_at: string;
+      sequence_number: number;
+    };
+
+    const formattedMessages = (messages as MessageRow[]).map((m) => ({
+      sequence: m.sequence_number,
+      role: m.role,
+      content: extractMessageText(m.content),
+      timestamp: m.created_at,
+    }));
+
+    // Build conversation transcript for easy reading
+    const transcript = formattedMessages
+      .map((m) => `[${m.role.toUpperCase()}]: ${m.content}`)
+      .join('\n\n---\n\n');
+
+    chatLogger.info(`[review_chat] Retrieved ${messages.length} messages from chat "${chat.title}"`);
+
+    return JSON.stringify({
+      success: true,
+      chat_id: chatId,
+      title: chat.title,
+      model: chat.model,
+      project_id: chat.project_id,
+      created_at: chat.created_at,
+      message_count: messages.length,
+      // Include both structured and transcript formats
+      messages: formattedMessages,
+      transcript: transcript.length > 30000
+        ? transcript.slice(0, 30000) + '\n\n... [Transcript truncated]'
+        : transcript,
+    });
+  } catch (error) {
+    chatLogger.error('[review_chat] Failed:', error);
+    return JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to review chat',
     });
   }
 }
