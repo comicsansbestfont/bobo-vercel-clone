@@ -426,3 +426,11 @@ Inject into chat context (always current)
 - **Token Counting**: gpt-tokenizer
 - **Validation**: Zod v4
 - **Claude SDK**: Anthropic Claude SDK (`@anthropic-ai/sdk`) for ALL chat functionality
+
+---
+
+## Session (Dec 12, 2025): Notion-Style Markdown Editing
+
+- ✅ Added BlockNote-powered Notion-style editor for `.md` files in advisory file browser preview modal.
+- ✅ Implemented `PATCH /api/advisory/file` to persist edits back to the `advisory/` filesystem with traversal safeguards.
+- Files touched: `components/editor/blocknote-markdown-editor.tsx`, `components/sidebar/file-preview-modal.tsx`, `app/api/advisory/file/route.ts`.
