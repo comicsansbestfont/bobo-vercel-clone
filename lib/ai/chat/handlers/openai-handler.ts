@@ -111,6 +111,7 @@ export class OpenAIHandler implements ChatHandler {
 
     // Process stream
     (async () => {
+      let streamError: unknown;
       try {
         let buffer = '';
         while (reader) {
@@ -174,9 +175,17 @@ export class OpenAIHandler implements ChatHandler {
             }
           }
         }
+      } catch (err) {
+        streamError = err;
+        chatLogger.error('[OpenAI Gateway] Stream error:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Unknown streaming error';
+        writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'error', error: errorMessage })}\n\n`));
       } finally {
         if (reasoningStarted) {
           writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'reasoning-end', id: 'r0' })}\n\n`));
+        }
+        if (streamError) {
+          writer.write(encoder.encode(`data: ${JSON.stringify({ type: 'finish', finishReason: 'error' })}\n\n`));
         }
         writer.write(encoder.encode(`data: [DONE]\n\n`));
         writer.close();
