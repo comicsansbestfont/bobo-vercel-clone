@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { readMasterDoc } from '@/lib/advisory/file-reader';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ frontmatter });
   } catch (error) {
-    console.error('[advisory/master-doc] Error reading master doc:', error);
+    apiLogger.error('Error reading master doc', error);
     return NextResponse.json(
       { error: 'Failed to read master doc' },
       { status: 500 }

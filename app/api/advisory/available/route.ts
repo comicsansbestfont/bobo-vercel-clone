@@ -9,6 +9,7 @@
 import { NextResponse } from 'next/server';
 import { listAdvisoryFolders } from '@/lib/advisory/file-reader';
 import { supabase } from '@/lib/db/client';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -22,7 +23,7 @@ export async function GET() {
       .not('advisory_folder_path', 'is', null);
 
     if (error) {
-      console.error('[api/advisory/available] Database error:', error);
+      apiLogger.error('Database query failed', error);
       return NextResponse.json({ error: 'Database query failed' }, { status: 500 });
     }
 
@@ -53,7 +54,7 @@ export async function GET() {
       stats,
     });
   } catch (error) {
-    console.error('[api/advisory/available] Error:', error);
+    apiLogger.error('Failed to list folders', error);
     return NextResponse.json({ error: 'Failed to list folders' }, { status: 500 });
   }
 }

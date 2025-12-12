@@ -15,6 +15,7 @@ import { readMasterDoc } from '@/lib/advisory/file-reader';
 import { generateSummary } from '@/lib/advisory/summarizer';
 import { getProject, updateProject } from '@/lib/db/queries';
 import type { EntityType } from '@/lib/db/types';
+import { apiLogger } from '@/lib/logger';
 
 interface RouteParams {
   params: Promise<{ projectId: string }>;
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
           custom_instructions: newSummary,
         });
       } catch (error) {
-        console.error('[api/advisory/refresh] Summary regeneration failed:', error);
+        apiLogger.error('Summary regeneration failed', error);
         return NextResponse.json(
           { error: 'Summary regeneration failed', details: error instanceof Error ? error.message : 'Unknown' },
           { status: 500 }
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
       newSummary: newSummary || undefined,
     });
   } catch (error) {
-    console.error('[api/advisory/refresh] Error:', error);
+    apiLogger.error('Refresh failed', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Refresh failed' },
       { status: 500 }

@@ -10,6 +10,7 @@ import { getProject } from '@/lib/db/queries';
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
+import { apiLogger } from '@/lib/logger';
 
 export async function PATCH(
   request: NextRequest,
@@ -63,7 +64,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true, stage });
   } catch (error) {
-    console.error('[deal-stage-api] Error updating stage:', error);
+    apiLogger.error('Error updating stage', error);
     return NextResponse.json(
       { error: 'Failed to update deal stage' },
       { status: 500 }

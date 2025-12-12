@@ -17,6 +17,7 @@ import { generateSummary } from '@/lib/advisory/summarizer';
 import { createProject } from '@/lib/db/queries';
 import { supabase } from '@/lib/db/client';
 import type { EntityType } from '@/lib/db/types';
+import { apiLogger } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {
   try {
@@ -56,8 +57,7 @@ export async function POST(req: NextRequest) {
       try {
         customInstructions = await generateSummary(masterDoc, entityType);
       } catch (error) {
-        console.error('[api/advisory/import] Summary generation failed:', error);
-        // Continue without summary
+        apiLogger.warn('Summary generation failed, continuing without summary', error);
       }
     }
 
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
       sectionsCount: masterDoc.sections.length,
     });
   } catch (error) {
-    console.error('[api/advisory/import] Error:', error);
+    apiLogger.error('Import failed', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Import failed' },
       { status: 500 }

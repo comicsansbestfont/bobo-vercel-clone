@@ -10,6 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   const path = request.nextUrl.searchParams.get('path');
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     const content = readFileSync(join(process.cwd(), path), 'utf-8');
     return NextResponse.json({ content });
   } catch (error) {
-    console.error('[advisory/file] Error reading file:', error);
+    apiLogger.error('Error reading file', error);
     return NextResponse.json({ error: 'File not found' }, { status: 404 });
   }
 }

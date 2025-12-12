@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProject } from '@/lib/db/queries';
 import { readMasterDoc, type AdvisoryFile } from '@/lib/advisory/file-reader';
+import { apiLogger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 
@@ -283,7 +284,7 @@ export async function GET(
 
     return NextResponse.json({ deal });
   } catch (error) {
-    console.error('[deal-api] Error fetching deal:', error);
+    apiLogger.error('Error fetching deal', error);
     return NextResponse.json(
       { error: 'Failed to fetch deal' },
       { status: 500 }

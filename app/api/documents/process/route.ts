@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PDFParse } from 'pdf-parse';
 import matter from 'gray-matter';
+import { apiLogger } from '@/lib/logger';
 
 export interface ProcessedDocument {
   filename: string;
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Document processing error:', error);
+    apiLogger.error('Document processing error', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to process document' },
       { status: 500 }

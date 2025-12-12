@@ -1,5 +1,6 @@
 import { getFilesByProject, getAdvisoryFilesByPath, getProject } from '@/lib/db/queries';
 import { CoreMessage, CoreSystemMessage } from 'ai';
+import { chatLogger } from '@/lib/logger';
 
 /**
  * Context Manager
@@ -40,7 +41,7 @@ export async function getProjectContext(projectId: string): Promise<ProjectConte
         const advisoryFiles = await getAdvisoryFilesByPath(project.advisory_folder_path);
 
         if (advisoryFiles.length > 0) {
-            console.log(`[context-manager] Found ${advisoryFiles.length} advisory files for ${project.advisory_folder_path}`);
+            chatLogger.debug(`Found ${advisoryFiles.length} advisory files for ${project.advisory_folder_path}`);
 
             // Sort by priority: Meetings first, then Comms, then others
             const priorityOrder = ['Meetings', 'Comms', 'Engagements', 'Strategy', 'Valuation', 'Docs'];
@@ -67,7 +68,7 @@ export async function getProjectContext(projectId: string): Promise<ProjectConte
                 isAdvisory: true,
             };
         } else {
-            console.warn(`[context-manager] No indexed files found for ${project.advisory_folder_path}`);
+            chatLogger.warn(`No indexed files found for ${project.advisory_folder_path}`);
         }
     }
 

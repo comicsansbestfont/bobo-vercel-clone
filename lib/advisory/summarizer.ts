@@ -10,6 +10,7 @@
 import { generateText } from 'ai';
 import { getModel } from '@/lib/ai/models';
 import type { AdvisoryFile } from './file-reader';
+import { chatLogger } from '@/lib/logger';
 
 const SUMMARY_PROMPT = `You are analyzing an advisory master document. Generate a concise project briefing that captures:
 
@@ -45,7 +46,7 @@ ${masterDoc.content.slice(0, 8000)}`,
 
     return text;
   } catch (error) {
-    console.error('[summarizer] Error generating summary:', error);
+    chatLogger.error('Error generating summary', error);
     // Return a basic summary from frontmatter if AI fails
     return generateFallbackSummary(masterDoc, entityType);
   }
@@ -90,7 +91,7 @@ export async function generateSummariesBatch(
       // Small delay between API calls
       await new Promise(resolve => setTimeout(resolve, 200));
     } catch (error) {
-      console.error(`[summarizer] Failed to generate summary for ${key}:`, error);
+      chatLogger.error(`Failed to generate summary for ${key}`, error);
       results.set(key, generateFallbackSummary(masterDoc, entityType));
     }
   }

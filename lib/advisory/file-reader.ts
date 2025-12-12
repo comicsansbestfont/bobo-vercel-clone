@@ -13,6 +13,7 @@ import { readdirSync, statSync } from 'fs';
 import path from 'path';
 import { join } from 'path';
 import matter from 'gray-matter';
+import { chatLogger } from '@/lib/logger';
 
 export interface AdvisoryFrontmatter {
   company: string;
@@ -61,7 +62,7 @@ export async function readMasterDoc(folderPath: string): Promise<AdvisoryFile | 
       || files.find(f => f === 'profile.md');
 
     if (!masterDocFile) {
-      console.warn(`[file-reader] No master doc found in ${folderPath}. Expected: master-doc-*.md, client-profile.md, or profile.md`);
+      chatLogger.warn(`No master doc found in ${folderPath}. Expected: master-doc-*.md, client-profile.md, or profile.md`);
       return null;
     }
 
@@ -78,7 +79,7 @@ export async function readMasterDoc(folderPath: string): Promise<AdvisoryFile | 
       sections,
     };
   } catch (error) {
-    console.error(`[file-reader] Error reading master doc from ${folderPath}:`, error);
+    chatLogger.error(`Error reading master doc from ${folderPath}`, error);
     return null;
   }
 }
@@ -124,7 +125,7 @@ export async function listAdvisoryFolders(): Promise<{
       clients: await filterDirs(clientsDir, path.join(advisoryPath, 'clients')),
     };
   } catch (error) {
-    console.error('[file-reader] Error listing advisory folders:', error);
+    chatLogger.error('Error listing advisory folders', error);
     return { deals: [], clients: [] };
   }
 }
@@ -254,12 +255,12 @@ export async function readAllAdvisoryFiles(folderPath: string): Promise<Array<{
               content,
             });
           } catch (err) {
-            console.warn(`[file-reader] Failed to read ${entryPath}:`, err);
+            chatLogger.warn(`Failed to read ${entryPath}`, err);
           }
         }
       }
     } catch (err) {
-      console.error(`[file-reader] Error walking directory ${dir}:`, err);
+      chatLogger.error(`Error walking directory ${dir}`, err);
     }
   }
 

@@ -10,6 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdvisoryFolderTree } from '@/lib/advisory/file-reader';
+import { apiLogger } from '@/lib/logger';
 
 export async function GET(request: NextRequest) {
   try {
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
     const tree = getAdvisoryFolderTree(basePath);
     return NextResponse.json({ tree });
   } catch (error) {
-    console.error('[advisory/tree] Error getting folder tree:', error);
+    apiLogger.error('Error getting folder tree', error);
     return NextResponse.json(
       { error: 'Failed to get folder tree' },
       { status: 500 }

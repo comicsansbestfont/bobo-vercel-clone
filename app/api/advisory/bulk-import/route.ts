@@ -17,6 +17,7 @@ import { generateSummary } from '@/lib/advisory/summarizer';
 import { createProject } from '@/lib/db/queries';
 import { supabase } from '@/lib/db/client';
 import type { EntityType } from '@/lib/db/types';
+import { apiLogger } from '@/lib/logger';
 
 interface ImportResult {
   name: string;
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
             const summaryType = entityType === 'client' ? 'client' : 'deal';
             customInstructions = await generateSummary(masterDoc, summaryType);
           } catch {
-            console.warn(`[bulk-import] Summary generation failed for ${folderPath}`);
+            apiLogger.warn(`Summary generation failed for ${folderPath}`);
           }
         }
 
@@ -155,7 +156,7 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('[api/advisory/bulk-import] Error:', error);
+    apiLogger.error('Bulk import failed', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Bulk import failed' },
       { status: 500 }
