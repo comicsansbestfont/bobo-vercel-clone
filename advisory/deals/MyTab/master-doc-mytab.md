@@ -5,8 +5,8 @@ founder: "Mikaela Greene (CEO) & Eliza Greene (Co-founder)"
 lead_source: "LinkedIn Inbound"
 first_contact: "2025-11-06"
 deal_stage: "Closed Lost"
-closed_date: "2025-12-13"
-closed_reason: "Did not proceed - Sachee decision"
+closed_date: "2025-12-11"
+closed_reason: "Declined to support raise - heavy reliance on paid media GTM strategy"
 engagement_type: "Advisory"
 current_stage: "Phase 1a"
 arr_estimate: "$24K"
@@ -290,10 +290,13 @@ All-in-one SaaS platform combining:
 
 | Date | Channel | Direction | Summary |
 |------|---------|-----------|---------|
-| 2025-12-13 | Internal | Decision | **Deal Closed Lost.** Sachee decided not to proceed with advisory engagement. No formal engagement was ever initiated - relationship remained at informal mentorship/pro-bono support stage. |
-| 2025-12-02 | Zoom | Call | Pitch practice session (~63 min). Full deck review with app demo. Identified valuation mismatch and recommended WA-first strategy. Offered to forward deck to VC contacts. |
-| 2025-11-29 | Email | Outbound | Sent deck review email: highlighted strengths, requested user/venue behaviour + revenue metrics to tighten unit economics story (see `Communications/2025-11-email-thread.md`) |
-| 2025-11-26 | Email | Inbound | Sent pitch deck + detailed context on Crooked Carrot vs me&u benchmark ($57 vs $43 spend) (see `Communications/2025-11-email-thread.md`) |
+| 2025-12-11 | Email | Outbound | **⚠️ REJECTION EMAIL.** Declined to support raise or make VC intros. Reason: heavy reliance on paid media GTM conflicts with B2B hospitality unit economics experience. Left door open for future advisory if GTM strategy changes. (see `Communications/2025-11-12-email-thread.md`) |
+| 2025-12-11 | Email | Inbound | Mikaela's detailed data response: corrected GMV ($2.6M→$1.77M dashboard error), 41% install-to-purchase conversion, 32% repeat rate, 5:1 LTV:CAC. New raise: $750K at $4M post for 200 WA venues via Bonfire Marketing (paid media focus). (see `Communications/2025-11-12-email-thread.md`) |
+| 2025-12-02 | Email | Outbound | TAM clarification follow-up (see `Communications/2025-11-12-email-thread.md`) |
+| 2025-12-02 | Email | Outbound | Post-call feedback: bottom-up TAM, "own the $2K MRR" framing, "why now" question, offered to float deck to VCs (see `Communications/2025-11-12-email-thread.md`) |
+| 2025-12-02 | Zoom | Call | Pitch practice session (~63 min). Full deck review with app demo. Identified valuation mismatch and recommended WA-first strategy. |
+| 2025-11-29 | Email | Outbound | Deck review + data requests: MAUs, order frequency, revenue snapshot, CAC (see `Communications/2025-11-12-email-thread.md`) |
+| 2025-11-26 | Email | Inbound | Pitch deck + Crooked Carrot vs me&u benchmark ($57 vs $43 = 33% uplift) (see `Communications/2025-11-12-email-thread.md`) |
 | 2025-11-26 | LinkedIn | Inbound | Mikaela confirmed Dec 2 works. Has pitch deck, will send to howdy@sachee.com.au |
 | 2025-11-26 | LinkedIn | Outbound | Offered Dec 2 or 3 over Zoom for pitch prep. Asked for pitch deck to review |
 | 2025-11-26 | LinkedIn | Inbound | Pitch went well. Investors impressed with data. Now working on CAC. Wants to meet Dec 4 before Dec 5 pitch |
@@ -351,20 +354,29 @@ All-in-one SaaS platform combining:
 - Mikaela explicitly said "I don't care how harsh it is" - highly coachable
 - I'm genuinely interested in helping them - good values alignment
 
-### Deal Closure Notes (2025-12-13)
+### Deal Closure Notes (2025-12-11)
 
-**Decision:** Chose not to proceed with formal advisory engagement.
+**Decision:** Declined to support the $750K raise or make VC introductions.
 
-**Context:** Relationship remained at informal mentorship stage throughout. Delivered pro-bono value (discovery call, positioning framework, pitch coaching) but decided not to convert to paid engagement.
+**Trigger:** Mikaela's Dec 11 email revealed new capital allocation strategy:
+- $400K (53%) allocated to paid media (Meta/Google via Bonfire Marketing)
+- Heavy reliance on performance marketing as primary GTM channel
+- This conflicts with Sachee's experience of successful B2B hospitality unit economics
 
 **What Was Delivered (Pro-Bono):**
 - 71-minute discovery call (Nov 10)
 - Positioning framework template
 - 63-minute pitch practice session (Dec 2)
 - Strategic coaching on TAM calculation, unit economics, and WA-first strategy
-- Draft email with detailed feedback on pitch deck
+- Multiple follow-up emails with detailed feedback
 
-**No Follow-Up Required:** Deal closed on Sachee's decision. No obligation to communicate closure to Mikaela unless desired - relationship can remain friendly/casual.
+**Key Data Uncovered:**
+- GMV reporting error discovered ($2.6M → $1.77M actual)
+- Strong retention: 32% repeat customers, 75.8% of orders from repeats
+- 5:1 LTV:CAC ratio (above 3:1 benchmark)
+- But: GTM strategy pivoted to paid media, not founder-led sales
+
+**Door Left Open:** Offered to discuss advisory engagement if GTM strategy is restructured to a different acquisition model.
 
 ---
 
@@ -377,7 +389,7 @@ All-in-one SaaS platform combining:
 | 2025-11-06 | Triage & Qualification | Cal.com booked |
 | 2025-11-06 | Deep Dive & Diagnosis | Research began, folder created |
 | 2025-11-10 | Relationship Development | Post-discovery, delivering pro-bono value (positioning framework, pitch reviews) |
-| 2025-12-13 | **Closed Lost** | Sachee decided not to proceed. No formal engagement initiated. |
+| 2025-12-11 | **Closed Lost** | Sachee declined to support raise due to paid media GTM strategy. Rejection email sent. |
 
 ### Deliverables Promised
 - [x] Positioning framework (sent via LinkedIn Nov 10)
@@ -396,7 +408,7 @@ All-in-one SaaS platform combining:
 | Purpose Ventures pitch #2 | Dec 5 | Unknown (deal closed) |
 | West Tech Fest | Dec 9 | N/A (deal closed) |
 | In-person working session (Perth) | Dec 6-12 window | N/A (deal closed) |
-| **Deal Closed** | Dec 13 | **Closed Lost** |
+| **Deal Closed** | Dec 11 | **Closed Lost** - Rejection email sent |
 
 ### Next Steps
 - [x] Receive pitch deck via email
@@ -411,10 +423,11 @@ All-in-one SaaS platform combining:
 > **DEAL CLOSED** - No further meetings scheduled.
 
 ### Closure Summary
-> **Closed:** 2025-12-13
-> **Reason:** Sachee decided not to proceed with formal advisory engagement
+> **Closed:** 2025-12-11
+> **Reason:** Declined to support raise or make VC introductions. Capital allocation strategy ($400K of $750K to paid media via Bonfire Marketing) conflicts with Sachee's experience of successful B2B hospitality unit economics.
 > **Stage at Closure:** Relationship Development (pro-bono support only)
-> **Value Delivered:** Discovery call, positioning framework, pitch deck review, strategic coaching on TAM, unit economics, and WA-first strategy
+> **Value Delivered:** Discovery call, positioning framework, pitch practice session, strategic coaching on TAM/unit economics/WA-first strategy
+> **Door Left Open:** Offered to discuss advisory engagement if GTM strategy is restructured away from paid media reliance
 > **No formal engagement or paid work was initiated**
 
 ---
