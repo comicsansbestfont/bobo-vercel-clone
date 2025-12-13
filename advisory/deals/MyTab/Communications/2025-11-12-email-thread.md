@@ -1,7 +1,7 @@
 # Email Thread: Mikaela Greene (MyTab)
 
-**Thread Period:** November 2025  
-**Channel:** Email  
+**Thread Period:** November - December 2025
+**Channel:** Email
 
 ---
 
@@ -51,8 +51,57 @@ Ahead of our session, it would be really helpful if you could pull a rough cut o
 
 With those numbers, we can tighten the “hidden lifetime value in takeaway customers” story and build a clean unit economics / CAC narrative for Purpose Ventures and other investors, without changing who you are or what you’re already doing well.  
 
-Looking forward to going through it together and helping you sharpen this for the next round of conversations.  
+Looking forward to going through it together and helping you sharpen this for the next round of conversations.
 
-Many thanks,  
+Many thanks,
 Sachee
+
+---
+
+## 2025-12-02 – Outbound (Sachee → Mikaela)
+
+Subject: RE: Deck Review + TAM Clarification
+
+*Sent after Dec 2 Zoom pitch practice session*
+
+Hi Mikaela,
+
+Apologies - clarification on the TAM. The headline on TAM is investors will want to know the total number of customers × the annual amount you think you can charge them. They will then want to do their own homework and see if their view aligns.
+
+**1. TAM: Lead with bottom-up, not top-down**
+
+The $89.7B hospitality market figure is big, but investors often dismiss top-down TAM as "totally made-up" and would prefer you build it from the ground up instead:
+
+> "There are X QSR/fast-casual takeaway venues in WA. At $Y average annual revenue per venue for MyTab, that's $Z addressable in our beachhead. Nationally, that scales to [this bigger number]."
+
+This shows you actually know the playing field. If you can pull the venue count numbers (back of the envelope numbers work).
+
+**2. Current state: Own the $2K MRR – frame it as deliberate R&D**
+
+Make it apparent where you currently are and that it is intentional:
+
+> "We ran a controlled pilot phase over 3+ years to deeply understand our ICP, validate retention patterns, and confirm fit before spending a cent on scale. That phase is complete. We now know exactly who our customer is, how they behave, and why they stay. This raise is to confirm the problem exists at scale and to unblock outreach."
+
+This reframes it as your "de-risked investment."
+
+**3. The "why now?" question**
+
+This is your pivot from pilot. This is a question you will need to answer – why does it make sense for us to take action now and move faster; what's happening in the world for it to make sense to invest.
+
+Before our catchup (though don't go out of your way to do this) it would be really helpful if you could pull a rough cut of:
+
+- Out of the 40,000 downloads, how many are active customers (e.g. MAUs over the last 3/6/12 months)?
+- For an active customer, roughly how many orders they place and how often (per week or per month).
+- Where orders are concentrated – e.g. top 5 venues as a % of GMV, and any clear locality clusters.
+- A simple revenue snapshot for MyTab: current MRR/ARR from transaction fees and any paid add-ons, and an average $ per active venue over the last year.
+- The CAC and payback is important but also at the same time irrelevant... because it's just you 2. However, if you have it, even a rough sense of what it costs you to acquire and support a typical venue.
+
+If you could send the info we discussed in the call, I'll then reach out to a couple of VCs I know and float the deck (I'll wait for you to update if you think you'd like to do so) to get their read. If there's appetite, I'll make intros.
+
+Many thanks,
+Sachee
+
+---
+
+*Thread ended – Deal closed 2025-12-13 (Sachee decision not to proceed)*
 

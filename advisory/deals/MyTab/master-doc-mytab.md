@@ -4,12 +4,14 @@ website: "https://mytabinfo.com"
 founder: "Mikaela Greene (CEO) & Eliza Greene (Co-founder)"
 lead_source: "LinkedIn Inbound"
 first_contact: "2025-11-06"
-deal_stage: "Relationship Development"
+deal_stage: "Closed Lost"
+closed_date: "2025-12-13"
+closed_reason: "Did not proceed - Sachee decision"
 engagement_type: "Advisory"
 current_stage: "Phase 1a"
 arr_estimate: "$24K"
 team_size: "6 (2 founders + 4 devs)"
-last_updated: "2025-12-02"
+last_updated: "2025-12-13"
 ---
 
 # MyTab - Client Master Doc
@@ -23,7 +25,7 @@ last_updated: "2025-12-02"
 | Founder/Key Contact | Mikaela Greene (CEO, Co-Founder) |
 | Lead Source | LinkedIn Inbound (Nov 6, 2025) |
 | First Contact Date | 2025-11-06 |
-| **Deal Stage** | Relationship Development |
+| **Deal Stage** | ~~Relationship Development~~ **Closed Lost** (2025-12-13) |
 | Engagement Type | Advisory (informal mentorship evolving) |
 | GTM Stage | Phase 1a (0-50K ARR) |
 | ARR Estimate | ~$24K ($2K MRR) |
@@ -288,6 +290,7 @@ All-in-one SaaS platform combining:
 
 | Date | Channel | Direction | Summary |
 |------|---------|-----------|---------|
+| 2025-12-13 | Internal | Decision | **Deal Closed Lost.** Sachee decided not to proceed with advisory engagement. No formal engagement was ever initiated - relationship remained at informal mentorship/pro-bono support stage. |
 | 2025-12-02 | Zoom | Call | Pitch practice session (~63 min). Full deck review with app demo. Identified valuation mismatch and recommended WA-first strategy. Offered to forward deck to VC contacts. |
 | 2025-11-29 | Email | Outbound | Sent deck review email: highlighted strengths, requested user/venue behaviour + revenue metrics to tighten unit economics story (see `Communications/2025-11-email-thread.md`) |
 | 2025-11-26 | Email | Inbound | Sent pitch deck + detailed context on Crooked Carrot vs me&u benchmark ($57 vs $43 spend) (see `Communications/2025-11-email-thread.md`) |
@@ -348,6 +351,21 @@ All-in-one SaaS platform combining:
 - Mikaela explicitly said "I don't care how harsh it is" - highly coachable
 - I'm genuinely interested in helping them - good values alignment
 
+### Deal Closure Notes (2025-12-13)
+
+**Decision:** Chose not to proceed with formal advisory engagement.
+
+**Context:** Relationship remained at informal mentorship stage throughout. Delivered pro-bono value (discovery call, positioning framework, pitch coaching) but decided not to convert to paid engagement.
+
+**What Was Delivered (Pro-Bono):**
+- 71-minute discovery call (Nov 10)
+- Positioning framework template
+- 63-minute pitch practice session (Dec 2)
+- Strategic coaching on TAM calculation, unit economics, and WA-first strategy
+- Draft email with detailed feedback on pitch deck
+
+**No Follow-Up Required:** Deal closed on Sachee's decision. No obligation to communicate closure to Mikaela unless desired - relationship can remain friendly/casual.
+
 ---
 
 ## 7. Engagement Tracker
@@ -359,12 +377,13 @@ All-in-one SaaS platform combining:
 | 2025-11-06 | Triage & Qualification | Cal.com booked |
 | 2025-11-06 | Deep Dive & Diagnosis | Research began, folder created |
 | 2025-11-10 | Relationship Development | Post-discovery, delivering pro-bono value (positioning framework, pitch reviews) |
+| 2025-12-13 | **Closed Lost** | Sachee decided not to proceed. No formal engagement initiated. |
 
 ### Deliverables Promised
 - [x] Positioning framework (sent via LinkedIn Nov 10)
 - [x] Valuation/capital guidance (sent via LinkedIn)
-- [ ] Review pitch deck (requested, she's sending to howdy@sachee.com.au)
-- [ ] 60-90 min working session on raise story + data (proposed for Perth trip Dec 4-12)
+- [x] Review pitch deck - Completed Dec 2 via Zoom
+- [x] ~~60-90 min working session on raise story + data~~ (Deal closed - not delivered)
 
 ### Timeline
 | Milestone | Target Date | Status |
@@ -373,23 +392,30 @@ All-in-one SaaS platform combining:
 | Discovery call | Nov 10 | Complete |
 | Positioning framework sent | Nov 10 | Complete |
 | Purpose Ventures pitch #1 | Nov 19 | Complete (went well) |
-| Pitch deck review call | Dec 2 | **Complete** |
-| Purpose Ventures pitch #2 | Dec 5 | Upcoming |
-| West Tech Fest | Dec 9 | Mikaela may attend |
-| In-person working session (Perth) | Dec 6-12 window | TBC |
+| Pitch deck review call | Dec 2 | Complete |
+| Purpose Ventures pitch #2 | Dec 5 | Unknown (deal closed) |
+| West Tech Fest | Dec 9 | N/A (deal closed) |
+| In-person working session (Perth) | Dec 6-12 window | N/A (deal closed) |
+| **Deal Closed** | Dec 13 | **Closed Lost** |
 
 ### Next Steps
 - [x] Receive pitch deck via email
 - [x] Prepare for Dec 2 Zoom call (pitch prep, numbers sense check)
 - [x] Review pitch deck and identify gaps before Dec 5 pitch
-- [ ] Mikaela: Answer unit economics questions from Nov 29 email
-- [ ] Mikaela: Recalibrate raise amount for WA-only strategy
-- [ ] Sachee: Talk to VC contacts about deck, potentially facilitate intros
-- [ ] Connect at West Tech Fest or Perth working session
+- [x] ~~Mikaela: Answer unit economics questions from Nov 29 email~~ (Deal closed)
+- [x] ~~Mikaela: Recalibrate raise amount for WA-only strategy~~ (Deal closed)
+- [x] ~~Sachee: Talk to VC contacts about deck, potentially facilitate intros~~ (Deal closed)
+- [x] ~~Connect at West Tech Fest or Perth working session~~ (Deal closed)
 
 ### Next Meeting
-> Date: TBC (West Tech Fest Dec 9 or Perth working session Dec 6-12)
-> Agenda: Finalized numbers review, VC intro prep, advisory relationship discussion
+> **DEAL CLOSED** - No further meetings scheduled.
+
+### Closure Summary
+> **Closed:** 2025-12-13
+> **Reason:** Sachee decided not to proceed with formal advisory engagement
+> **Stage at Closure:** Relationship Development (pro-bono support only)
+> **Value Delivered:** Discovery call, positioning framework, pitch deck review, strategic coaching on TAM, unit economics, and WA-first strategy
+> **No formal engagement or paid work was initiated**
 
 ---
 
