@@ -1,3 +1,11 @@
+# USE-001: Advisory Workflow
+
+**Module ID**: USE-001
+**Status**: Live
+**Dependencies**: INF-001, INF-004, KNO-001
+
+---
+
 # Advisory Workflow: Deals & Clients Brain
 
 **Version:** 2.0
@@ -6,8 +14,8 @@
 **Type:** Use Case Documentation
 **Status:** Active - Primary Dogfooding Use Case
 
-**Parent Document:** [PLATFORM_BRIEF.md](../PLATFORM_BRIEF.md)
-**Implementation:** [REPOSITORY_CONSOLIDATION.md](../roadmaps/REPOSITORY_CONSOLIDATION.md)
+**Parent Document:** [PLATFORM_BRIEF.md](../../product/PLATFORM_BRIEF.md)
+**Implementation:** [REPOSITORY_CONSOLIDATION.md](../../product/roadmaps/REPOSITORY_CONSOLIDATION.md)
 
 ---
 

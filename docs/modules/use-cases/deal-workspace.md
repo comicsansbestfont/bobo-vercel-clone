@@ -1,3 +1,11 @@
+# USE-002: Deal Workspace
+
+**Module ID**: USE-002
+**Status**: Designed
+**Dependencies**: INF-001, INF-002, INF-004, KNO-001
+
+---
+
 # BOBO DEALS WORKSPACE: COMPREHENSIVE DESIGN STRATEGY
 
 **Document Version:** 1.0
