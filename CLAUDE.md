@@ -388,6 +388,41 @@ Inject into chat context (always current)
 
 ---
 
+## M41: Inspiration Library (Dec 2025)
+
+**STATUS:** ✅ **COMPLETE** - 741 files indexed, inspiration tools operational
+
+### What Was Implemented
+
+1. **Inspiration Library in Repo** (`01_Inspiration/`)
+   - Blog posts: T2D3, MRR Unlocked, BasicArts, Fluint, The Venture Crew
+   - LinkedIn archive + Videos (markdown)
+
+2. **Indexing + Verification Scripts**
+   - `scripts/index-inspiration.ts` - Indexes `01_Inspiration/**` into `files` with embeddings + source metadata
+   - `scripts/verify-inspiration-indexing.ts` - Verifies disk vs DB coverage and embedding completeness
+
+3. **Inspiration Project ID**
+   - Fixed UUID: `22222222-2222-2222-2222-222222222222` (`INSPIRATION_LIBRARY_PROJECT_ID`)
+
+4. **Claude Tools**
+   - `search_inspiration` - Semantic search scoped to the Inspiration Library
+   - `read_inspiration_file` - Full file read from DB (no filesystem dependency)
+
+### Usage
+
+```bash
+# Index inspiration files (after adding/modifying)
+npm run index-inspiration
+
+# Verify indexing coverage
+npm run verify-inspiration
+```
+
+### Example Queries
+- "Can you enrich this draft with T2D3 guidance?"
+- "What does MRR Unlocked say about pricing strategy?"
+
 ## M3.16: Ask ChatGPT + Gemini Cross-Model Query Tools (Dec 2025)
 
 **STATUS:** ✅ **COMPLETE** - Cross-model query tools available during Claude chats

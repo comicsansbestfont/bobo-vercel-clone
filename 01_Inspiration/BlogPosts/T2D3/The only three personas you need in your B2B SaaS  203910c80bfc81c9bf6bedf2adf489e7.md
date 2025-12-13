@@ -1,0 +1,45 @@
+# The only three personas you need in your B2B SaaS go-to-market plan
+
+URL: https://www.t2d3.pro/learn/defining-personas-in-b2b-saas-go-to-market-strategies
+Tags: 2nd Base - Reach Product Market Fit
+
+Before you can generate compelling content, you’ve got to know for whom you’re writing that content. True, you’re a B2B marketer. But you’re still marketing to individuals. Key to great B2B marketing messaging is to understand that you’re convincing a person to spend someone else’s money (and usually more than one person).
+We’ve already covered five different types of audiences that typically exist for SaaS B2B products and services: innovators, early adopters, early majority, late majority, and laggards. Each of those five types of individuals are on the same buyer’s journey for your offering. Some just take longer to complete the trip. But no matter which of the audiences you’re targeting, they all have the same three key stakeholders. In this article we’ll dive deeper into the common archetypes—or personas—of these stakeholders.
+Meet the Personas
+A persona is a fictitious representation of your customer. You’ll have a different persona for all your different audiences. For instance, advocates would be one persona, gatekeepers another, decision makers a third. The qualities of these personas come from those of actual customers or market research. There’s no single customer who exactly matches his or her persona. But every member of your target audience is represented by a persona.
+Personas represent an amalgamation of sorts of your customer types. Personas reflect everything from job descriptions to fears and dreams, education levels and resistance to change.
+Many companies develop multiple personas for the purposes of marketing. In our work with B2B SaaS companies, we’ve found that for any campaign, be it Account-Based Marketing (ABM), Inbound Marketing. Content Marketing, or even a Product Launch, you only need three personas to have success.
+More personas just lead to confusion, complexity, and unnecessary extra work. All you need to do is define three fundamental, foundational personas·
+Persona 1: The User (or Beneficiary) - P1
+Persona 2: The Decision Maker (or Supervisor) - P2
+Persona 3: The Executive (or Sponsor) - P3
+Persona 1 (P1) - The user
+Persona 1 (P1) is the user of your solution. She’s the primary beneficiary of using your software. As the day-in and day-out functional user who operates and interacts with your service, she’s the person who needs to be convinced this is addressing a real need. P1s typically have the most practical experience with how your solution adds value. In addition to targeting this persona to drive awareness, consideration, and conversion, you can also use P1s as a great source for message testing and getting reactions and insights about your value proposition.
+Since P1 is usually an influencer and not the buyer/decision-maker, they provide a relatively low- risk test subject for message testing and marketing research. For your ABM campaigns and content marketing, you can target P1 so that you have optimized messaging and content before going after the higher-value P2 prospects. As you learn what P1 cares about, you can use that to inform the messaging for your marketing to P2.
+Persona 1 is the gateway to Persona 2. Your P1 messaging allows you to ask for referrals or introductions to the right P2 decision-makers and help complete your high-quality ABM lists. Your marketing goal is to make Persona 1 an advocate for buying your solution (or remove them as a potential blocker). This is what we need P1 to “believe”:
+Your solution can make their job easier (make them more productive, make it more fun).
+They can derive personal growth from using your solution (learn something new, get challenged, level up).
+Becoming an advocate for your product can help them be seen as an expert (become the “hero” in their role, a positive change agent, a leader).
+They don’t need to feel threatened by the solution you offer and become a potential blocker (i.e. afraid your solution might “replace” them or make them less relevant).
+Becoming an advocate of your solution, or solving the problem you address, can help them become part of a group they like to belong to (users of the newest technology, innovators in their field, employees who drive savings or innovation for the company).
+You may notice that a lot of this messaging is grounded in using the “Maslow Pyramid” to speak to what they care about.
+Why do we start with Persona 1? We consider Persona 1 the most critical of these three for Content Marketing since we find that these people are usually looking for solutions to alleviate “pain”, address challenges in their job, or try to find ways to innovate how they add value for their employers.
+Persona 2 (P2)– The decision maker
+The modern B2B buyer’s journey usually involves multiple decision-makers. The main thing that differentiates B2B Marketing from B2C Marketing is that you’re convincing someone to spend someone else’s money. Thus, in B2B Sales and Marketing, Persona 2 (P2) is the person who you need to convince to become your sponsor. P2 will have to “sell” your solution up and down their organization. Down to their own team who will become users, as well up to management who will influence the budget and other stakeholders such as Legal or IT.
+P2s will need to make P1s “happy” with the chosen solution. They like to understand what P1s need, and how they can balance satisfying those needs and organizational priorities. Sometimes P2 used to be a P1, and you can use the same messages. Often though, you can help educate P2 with what you learn from P1, and equip them with your insights to help them lead their P1s.
+As the supervisor, P2 is the responsible filter to make sure the organization doesn’t buy things that aren’t needed or are too expensive. ROI is key for P2. ROI calculators, RFP templates, and buyers’ guides are great examples of content to engage P2.
+For account-based marketing, P2 is the most important audience. We start our ABM with P1, so we learn as much as possible about the validity of our messaging before we go after P2. In addition, P1 will help us find the right P2 person or their contact details like their email address. P2 messaging allows you to ask for referrals or introductions to the right P3 influencers and help complete your high-quality ABM lists.
+Like P1, P2 is a relatively low-risk test subject for message testing and marketing research to use with P3 executives in the next stage of your ABM. In addition to all the “fears and dreams” that apply to Persona 1, Persona 2 has additional specific needs, wants and desires. Many of these will be based on what they think they need to convince the Persona 3 Influencers and prevent them from becoming blockers.
+Persona 3 (P3)– The executive sponsor (or blocker)
+While P2 is usually the buyer/decision-maker, they still must convince other stakeholders. These Persona 3 (P3) executives care about ROI, risk mitigation, alignment with company strategy, policies, and standards, and ensuring the decision fits the most critical use of company time and resources.
+P3s usually focus on specific functional areas and can become “blockers” for procuring your solution. Examples are the legal department, IT, or finance, with procurement guidelines, compliance requirements or privacy concerns, as examples of potential blockers. By equipping the P2 with the right arguments and content to engage P3 and turn them into a sponsor, you can become a partner to P2, vs. a vendor.
+So while Persona 3 does not need to play an early role in the buyer’s journey of P2, they often are brought in at some point, and ideally, you have equipped P2 with the right material to "sell" P3. This persona typically has the least amount of technical knowledge and they’re interested in learning more, but don’t know what to think yet. They’re looking for a practical foundation of knowledge to understand the context and intent of the solution, so they can fulfill their fiduciary, executive or sponsor responsibilities for the organization.
+P1-P2-P3 Brainstorm Exercise
+To recap, what makes the P1-P2-P3 model unique is that you ‘simplify’ your marketing approach to focus on a single decision maker (P2) who is the most critical role to determine funnel speed and marketing outcomes, while also using the other two personas, the user (P1) and potential sponsors and blockers (P3) as key influencers who you need to account for in your marketing approach.
+To better define your personas, for each of the three tiers, start by writing down the following attributes:
+Possible job titles
+Responsibilities (Job-to-be-Done)
+Pains (Fears and Challenges)
+Needs (Dreams and Goals)
+Demographic filters
+Psychographic signals

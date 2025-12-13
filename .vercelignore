@@ -14,6 +14,9 @@ out/
 # Note: Use explicit path to avoid excluding lib/advisory/ and components/advisory/
 /advisory/
 
+# Inspiration library folder - files are indexed in database, not needed at runtime
+/01_Inspiration/
+
 # Test screenshots - not needed in production
 tests/screenshots/
 

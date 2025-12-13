@@ -25,6 +25,8 @@
     "test:validation": "playwright test --grep 'Validation Query'",
     "index-advisory": "npx tsx scripts/index-advisory.ts",
     "verify-advisory": "npx tsx scripts/verify-advisory-indexing.ts",
+    "index-inspiration": "npx tsx scripts/index-inspiration.ts",
+    "verify-inspiration": "npx tsx scripts/verify-inspiration-indexing.ts",
     "postbuild": "node scripts/ensure-next-lock.mjs"
   },
   "dependencies": {
