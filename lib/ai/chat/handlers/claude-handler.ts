@@ -9,7 +9,7 @@
 
 import { waitUntil } from '@vercel/functions';
 import type { UIMessage } from 'ai';
-import type { MessageParam, ContentBlock, ToolUseBlock, TextBlock } from '@anthropic-ai/sdk/resources/messages';
+import type { MessageParam, ToolUseBlock, TextBlock } from '@anthropic-ai/sdk/resources/messages';
 import type { MessagePart } from '@/lib/db';
 import {
   getClaudeClient,
@@ -71,7 +71,16 @@ export class ClaudeHandler implements ChatHandler {
     normalizedMessages: UIMessage[]
   ): Promise<Response> {
     const { model, thinkingEnabled: requestThinkingEnabled, thinkingBudget: requestThinkingBudget } = request;
-    const { activeChatId, systemPrompt, projectContext, projectName, searchResults, projectChatResults, activeProjectId } = context;
+    const {
+      activeChatId,
+      systemPrompt,
+      projectContext,
+      projectName,
+      searchResults,
+      projectChatResults,
+      activeProjectId,
+      customInstructions,
+    } = context;
 
     // M3.14: Determine thinking settings
     const modelSupportsThinking = supportsExtendedThinking(model);
@@ -96,7 +105,7 @@ export class ClaudeHandler implements ChatHandler {
     let progressiveSaveInterval: ReturnType<typeof setInterval> | null = null;
 
     // Agentic loop state
-    let currentMessages: MessageParam[] = claudeMessages;
+    const currentMessages: MessageParam[] = claudeMessages;
     let allTextContent = '';
     let totalInputTokens = 0;
     let totalOutputTokens = 0;
@@ -105,7 +114,7 @@ export class ClaudeHandler implements ChatHandler {
 
     // M3.14: Extended thinking state
     let allThinkingContent = '';
-    let thinkingBlocks: ThinkingBlock[] = []; // For tool use preservation
+    const thinkingBlocks: ThinkingBlock[] = []; // For tool use preservation
     let reasoningStarted = false;
 
     // Create transform stream for SSE
@@ -384,22 +393,101 @@ export class ClaudeHandler implements ChatHandler {
               // Build context for tools that need it (e.g., ask_gemini, ask_chatgpt)
               let toolContext: ToolExecutionContext | undefined;
               if (tu.name === 'ask_gemini' || tu.name === 'ask_chatgpt') {
+                type ToolContextPart = {
+                  type?: unknown;
+                  text?: unknown;
+                  result?: unknown;
+                  url?: unknown;
+                  filename?: unknown;
+                  mediaType?: unknown;
+                };
+
+                const decodeTextDataUrl = (dataUrl: string, mediaTypeHint?: string): string | null => {
+                  if (!dataUrl.startsWith('data:')) return null;
+                  const commaIndex = dataUrl.indexOf(',');
+                  if (commaIndex < 0) return null;
+
+                  const header = dataUrl.slice(5, commaIndex);
+                  const rawData = dataUrl.slice(commaIndex + 1);
+                  const headerParts = header.split(';');
+                  const mimeType = headerParts[0] || mediaTypeHint || '';
+                  const isBase64 = headerParts.includes('base64');
+                  const looksText =
+                    mimeType.startsWith('text/') ||
+                    mimeType.includes('json') ||
+                    mimeType.includes('xml') ||
+                    mimeType.includes('markdown') ||
+                    mimeType.includes('javascript');
+
+                  if (!looksText) return null;
+
+                  try {
+                    const buffer = isBase64 ? Buffer.from(rawData, 'base64') : Buffer.from(decodeURIComponent(rawData), 'utf8');
+                    const decoded = buffer.toString('utf8');
+                    const maxChars = 100_000;
+                    return decoded.length > maxChars
+                      ? decoded.slice(0, maxChars) + '\n\n[Attachment content truncated...]'
+                      : decoded;
+                  } catch (err) {
+                    chatLogger.debug('[Claude SDK] Failed to decode data URL attachment for tool context', err);
+                    return null;
+                  }
+                };
+
+                const serializePartsForToolContext = (parts: UIMessage['parts']): string => {
+                  if (!Array.isArray(parts)) return '';
+
+                  const chunks: string[] = [];
+                  for (const part of parts) {
+                    if (!part || typeof part !== 'object') continue;
+                    const typed = part as ToolContextPart;
+                    const partType = typeof typed.type === 'string' ? typed.type : '';
+
+                    if (partType === 'file') {
+                      const filename = typeof typed.filename === 'string' ? typed.filename : 'attachment';
+                      const mediaType = typeof typed.mediaType === 'string' ? typed.mediaType : undefined;
+                      const url = typeof typed.url === 'string' ? typed.url : undefined;
+
+                      chunks.push(`[ATTACHMENT: ${filename}${mediaType ? ` (${mediaType})` : ''}]`);
+
+                      if (url) {
+                        const decodedText = decodeTextDataUrl(url, mediaType);
+                        if (decodedText) {
+                          chunks.push(decodedText);
+                        } else if (url.startsWith('data:')) {
+                          chunks.push(
+                            `[Attachment content omitted: non-text data URL${mediaType ? ` (${mediaType})` : ''}]`
+                          );
+                        } else {
+                          chunks.push(url);
+                        }
+                      }
+
+                      continue;
+                    }
+
+                    if (typeof typed.text === 'string') chunks.push(typed.text);
+                    if (typeof typed.result === 'string') chunks.push(typed.result);
+                    if (typeof typed.url === 'string') chunks.push(typed.url);
+                  }
+
+                  return chunks.filter(Boolean).join('\n');
+                };
+
                 toolContext = {
                   messages: normalizedMessages.map((m) => ({
                     role: m.role as 'user' | 'assistant' | 'system',
-                    content:
-                      m.parts
-                        ?.filter((p): p is { type: 'text'; text: string } => p.type === 'text')
-                        .map((p) => p.text)
-                        .join('\n') || '',
+                    content: serializePartsForToolContext(m.parts),
                   })),
                   projectContext: projectContext
                     ? {
                         projectId: activeProjectId || '',
                         projectName: projectName || undefined,
+                        customInstructions: customInstructions || undefined,
                         files: projectContext.files,
                       }
                     : undefined,
+                  claudeLatestReply: iterationText || undefined,
                 };
               }
 

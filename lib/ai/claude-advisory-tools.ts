@@ -38,8 +38,15 @@ export interface ToolExecutionContext {
   projectContext?: {
     projectId: string;
     projectName?: string;
+    /** Custom project-level instructions (if any) */
+    customInstructions?: string;
     files?: Array<{ filename: string; content_text: string }>;
   };
+  /**
+   * Claude's latest reply in the CURRENT turn (draft text from the tool-using iteration).
+   * Useful when requesting a second opinion on Claude's just-generated answer.
+   */
+  claudeLatestReply?: string;
 }
 
 // ============================================================================
@@ -495,13 +502,22 @@ EXAMPLES:
     },
   },
   // ==========================================================================
-  // M3.15: Ask Gemini - Second Opinion Tool
+  // M3.15: Ask Gemini - Cross-Model Query Tool
   // ==========================================================================
   {
     name: 'ask_gemini',
-    description: `Get a second opinion from Gemini 3.0 Pro on the current conversation.
+    description: `Ask Gemini 3.0 Pro about the current conversation (2 query modes).
+
+MODES:
+- parallel_answer: Gemini answers the user's latest message as a normal assistant
+  - Sends full chat history + active project context/files
+  - EXCLUDES Claude's latest reply (not a second opinion)
+- second_opinion: Gemini provides a critical second opinion
+  - Sends full chat history + active project context/files
+  - INCLUDES Claude's latest reply (when available)
 
 USE WHEN:
+- User wants an independent Gemini answer to the same prompt ("Ask Gemini this too")
 - User explicitly asks for a second opinion or alternative perspective
 - Facing a complex technical decision where another AI's view would help
 - Debugging a tricky problem and need fresh eyes
@@ -509,11 +525,11 @@ USE WHEN:
 - User says things like "what do you think?", "am I missing something?", "sanity check this"
 
 AUTOMATICALLY INCLUDES:
-- Recent conversation history (last 10 messages)
-- Active project context (if any)
-- Your current analysis or proposed solution
+- Full conversation history so far
+- Active project summary + files (if any, and if enabled)
+- Claude's latest reply ONLY when query_type=second_opinion
 
-RETURNS: Gemini's perspective as a collapsible quote block that you should synthesize.
+RETURNS: Gemini's response as a collapsible quote block that you should synthesize or present.
 
 FORMAT YOUR RESPONSE AS:
 1. Show Gemini's response in a blockquote
@@ -521,12 +537,19 @@ FORMAT YOUR RESPONSE AS:
 
 EXAMPLES:
 - "Can you get a second opinion on this architecture decision?"
+- "Ask Gemini the same question I just asked you"
 - "What would another AI think about this approach?"
 - "I'm stuck - let's see what Gemini thinks"
 - "Sanity check: am I overcomplicating this?"`,
     input_schema: {
       type: 'object' as const,
       properties: {
+        query_type: {
+          type: 'string',
+          enum: ['parallel_answer', 'second_opinion'],
+          description:
+            'parallel_answer: Gemini answers the latest user message (excludes Claude reply). second_opinion: critique Claude reply (includes Claude reply when available). Default: second_opinion.',
+        },
         question: {
           type: 'string',
           description: 'Specific question or aspect to get Gemini\'s opinion on. Be specific about what perspective you want.',
@@ -587,13 +610,22 @@ EXAMPLES:
     },
   },
   // ==========================================================================
-  // M3.16: Ask ChatGPT - Second Opinion Tool
+  // M3.16: Ask ChatGPT - Cross-Model Query Tool
   // ==========================================================================
   {
     name: 'ask_chatgpt',
-    description: `Get a second opinion from ChatGPT (GPT-5.2) on the current conversation.
+    description: `Ask ChatGPT (GPT-5.2) about the current conversation (2 query modes).
+
+MODES:
+- parallel_answer: ChatGPT answers the user's latest message as a normal assistant
+  - Sends full chat history + active project context/files
+  - EXCLUDES Claude's latest reply (not a second opinion)
+- second_opinion: ChatGPT provides a critical second opinion
+  - Sends full chat history + active project context/files
+  - INCLUDES Claude's latest reply (when available)
 
 USE WHEN:
+- User wants an independent ChatGPT answer to the same prompt ("Ask ChatGPT this too")
 - User explicitly asks for a second opinion or alternative perspective
 - Facing a complex technical decision where another AI's view would help
 - Debugging a tricky problem and need fresh eyes
@@ -601,9 +633,9 @@ USE WHEN:
 - User says things like "what do you think?", "am I missing something?", "sanity check this"
 
 AUTOMATICALLY INCLUDES:
-- Recent conversation history (last 10 messages)
-- Active project context (if any)
-- Your current analysis or proposed solution
+- Full conversation history so far
+- Active project summary + files (if any, and if enabled)
+- Claude's latest reply ONLY when query_type=second_opinion
 
 RETURNS: ChatGPT's perspective as a collapsible quote block that you should synthesize.
 
@@ -613,12 +645,19 @@ FORMAT YOUR RESPONSE AS:
 
 EXAMPLES:
 - "Can you get ChatGPT's take on this?"
+- "Ask ChatGPT the same question I just asked you"
 - "What would GPT-5.2 think about this approach?"
 - "I'm stuck - let's see what ChatGPT thinks"
 - "Sanity check: am I overcomplicating this?"`,
     input_schema: {
       type: 'object' as const,
       properties: {
+        query_type: {
+          type: 'string',
+          enum: ['parallel_answer', 'second_opinion'],
+          description:
+            'parallel_answer: ChatGPT answers the latest user message (excludes Claude reply). second_opinion: critique Claude reply (includes Claude reply when available). Default: second_opinion.',
+        },
         question: {
           type: 'string',
           description: 'Specific question or aspect to get ChatGPT\'s opinion on. Be specific about what perspective you want.',
@@ -1884,11 +1923,37 @@ async function searchMemory(input: Record<string, unknown>): Promise<string> {
 // M3.15: Ask Gemini Implementation
 // ============================================================================
 
+type CrossModelQueryType = 'parallel_answer' | 'second_opinion';
+
 type AskGeminiInput = {
+  query_type?: CrossModelQueryType;
   question: string;
   include_project_files?: boolean;
   focus_area?: 'architecture' | 'code-review' | 'debugging' | 'best-practices' | 'general';
 };
+
+const CROSS_MODEL_ASSISTANT_SYSTEM_PROMPT = `You are a helpful AI assistant.
+
+You are being asked to respond to the user's latest message in an ongoing conversation.
+
+Instructions:
+- Answer as a normal assistant (not as a critic of Claude)
+- Use the provided conversation history and project context/files
+- Do not mention that you were given a transcript/files unless the user asks`;
+
+function truncatePromptForCrossModel(prompt: string, maxChars: number): string {
+  if (prompt.length <= maxChars) return prompt;
+
+  const marker = '\n\n[... context truncated due to size limits ...]\n\n';
+  const headChars = Math.max(0, Math.floor(maxChars * 0.35));
+  const tailChars = Math.max(0, maxChars - headChars - marker.length);
+
+  if (tailChars === 0) {
+    return prompt.slice(prompt.length - maxChars);
+  }
+
+  return `${prompt.slice(0, headChars)}${marker}${prompt.slice(prompt.length - tailChars)}`;
+}
 
 const GEMINI_SYSTEM_PROMPT = `You are a strategic advisor providing a critical second opinion on a conversation between a user and Claude.
 
@@ -1922,12 +1987,19 @@ async function askGemini(
   context?: ToolExecutionContext
 ): Promise<string> {
   const {
+    query_type,
     question,
     include_project_files = true,
     focus_area = 'general',
   } = input as AskGeminiInput;
 
-  chatLogger.info(`[ask_gemini] Question: "${question}"`, { include_project_files, focus_area });
+  const queryType: CrossModelQueryType = query_type ?? 'second_opinion';
+
+  chatLogger.info(`[ask_gemini] Question: "${question}"`, {
+    queryType,
+    include_project_files,
+    focus_area,
+  });
 
   // Validate input
   if (!question || question.length < 10) {
@@ -1948,30 +2020,64 @@ async function askGemini(
     // Build context for Gemini
     const contextParts: string[] = [];
 
-    // 1. Add recent conversation history (last 10 messages, capped at ~8000 chars)
-    if (context?.messages && context.messages.length > 0) {
-      const recentMessages = context.messages.slice(-10);
-      const conversationContext = recentMessages
-        .map((m) => `[${m.role.toUpperCase()}]: ${m.content.slice(0, 1500)}`)
-        .join('\n\n');
-
-      contextParts.push(`## Recent Conversation\n${conversationContext}`);
-    }
-
-    // 2. Add project context (if enabled and available)
-    if (include_project_files && context?.projectContext?.files) {
+    // 1. Add project summary (if available)
+    if (context?.projectContext) {
       const projectName = context.projectContext.projectName || 'Current Project';
-      const filesSummary = context.projectContext.files
-        .slice(0, 5) // Limit to 5 most relevant files
-        .map((f) => `### ${f.filename}\n\`\`\`\n${f.content_text.slice(0, 3000)}\n\`\`\``)
-        .join('\n\n');
+      const summaryParts: string[] = [`Project: ${projectName}`];
 
-      if (filesSummary) {
-        contextParts.push(`## Project Context: ${projectName}\n${filesSummary}`);
+      if (context.projectContext.projectId) {
+        summaryParts.push(`Project ID: ${context.projectContext.projectId}`);
       }
+
+      if (context.projectContext.customInstructions?.trim()) {
+        summaryParts.push(`Custom Instructions:\n${context.projectContext.customInstructions.trim()}`);
+      }
+
+      contextParts.push(`## Project Summary\n${summaryParts.join('\n')}`);
     }
 
-    // 3. Add focus area hint
+    // 2. Add full project files context (if enabled and available)
+    if (include_project_files && context?.projectContext?.files?.length) {
+      const filesBlock = context.projectContext.files
+        .map(
+          (file) =>
+            `<file name="${file.filename}">
+${file.content_text}
+</file>`
+        )
+        .join('\n\n');
+
+      contextParts.push(`## Project Files (${context.projectContext.files.length})
+<project_files>
+${filesBlock}
+</project_files>`);
+    }
+
+    // 3. Add full conversation transcript (optionally excluding trailing assistant message)
+    if (context?.messages?.length) {
+      let transcriptMessages = context.messages;
+      if (queryType === 'parallel_answer') {
+        while (
+          transcriptMessages.length > 0 &&
+          transcriptMessages[transcriptMessages.length - 1]?.role === 'assistant'
+        ) {
+          transcriptMessages = transcriptMessages.slice(0, -1);
+        }
+      }
+
+      const conversationContext = transcriptMessages
+        .map((m) => `[${m.role.toUpperCase()}]: ${m.content}`)
+        .join('\n\n');
+
+      contextParts.push(`## Conversation Transcript\n${conversationContext}`);
+    }
+
+    // 4. Include Claude's latest reply (second_opinion only)
+    if (queryType === 'second_opinion' && context?.claudeLatestReply?.trim()) {
+      contextParts.push(`## Claude Latest Reply (to evaluate)\n${context.claudeLatestReply.trim()}`);
+    }
+
+    // 5. Add focus area hint (second_opinion only)
     const focusHints: Record<string, string> = {
       architecture: 'Focus on system design, patterns, scalability, and maintainability.',
       'code-review': 'Focus on code quality, bugs, edge cases, and best practices.',
@@ -1980,20 +2086,19 @@ async function askGemini(
       general: 'Provide a general perspective on the question.',
     };
 
-    // Build the prompt
-    const prompt = `${contextParts.length > 0 ? contextParts.join('\n\n---\n\n') + '\n\n---\n\n' : ''}
-## Question for Second Opinion
-${question}
+    const taskSection =
+      queryType === 'parallel_answer'
+        ? `## User Message To Answer\n${question}\n\n## Output Instructions\nAnswer as a normal assistant.`
+        : `## Question for Second Opinion\n${question}\n\n## Focus Area\n${focusHints[focus_area]}`;
 
-## Focus Area
-${focusHints[focus_area]}`;
+    const prompt = `${contextParts.length > 0 ? contextParts.join('\n\n---\n\n') + '\n\n---\n\n' : ''}${taskSection}\n`;
+
+    const systemPrompt =
+      queryType === 'parallel_answer' ? CROSS_MODEL_ASSISTANT_SYSTEM_PROMPT : GEMINI_SYSTEM_PROMPT;
 
     // Token limit for context (leave room for response)
-    const maxContextChars = 30000; // ~7500 tokens
-    const truncatedPrompt =
-      prompt.length > maxContextChars
-        ? prompt.slice(0, maxContextChars) + '\n\n[Context truncated...]'
-        : prompt;
+    const maxContextChars = 800000; // Gemini supports very large contexts, but keep a hard cap for safety
+    const truncatedPrompt = truncatePromptForCrossModel(prompt, maxContextChars);
 
     chatLogger.debug(`[ask_gemini] Prompt length: ${truncatedPrompt.length} chars`);
 
@@ -2001,7 +2106,7 @@ ${focusHints[focus_area]}`;
     // Note: AI SDK v5 doesn't expose maxTokens in generateText - relying on system prompt guidance
     const { text, usage } = await generateText({
       model: getModel('google/gemini-3-pro-preview'),
-      system: GEMINI_SYSTEM_PROMPT,
+      system: systemPrompt,
       prompt: truncatedPrompt,
       temperature: 0.7, // Allow some creativity
     });
@@ -2015,14 +2120,17 @@ ${focusHints[focus_area]}`;
     return JSON.stringify({
       success: true,
       gemini_response: text,
+      query_type: queryType,
       focus_area,
       context_included: {
         messages: context?.messages?.length || 0,
         project_files: include_project_files ? context?.projectContext?.files?.length || 0 : 0,
+        claude_latest_reply: queryType === 'second_opinion' ? Boolean(context?.claudeLatestReply?.trim()) : false,
       },
       // UI hints for rendering
       display_format: 'collapsible_quote',
-      display_title: 'Gemini 3 Pro Second Opinion',
+      display_title:
+        queryType === 'parallel_answer' ? 'Gemini 3 Pro (Independent Answer)' : 'Gemini 3 Pro Second Opinion',
     });
   } catch (error) {
     chatLogger.error('[ask_gemini] Failed:', error);
@@ -2048,6 +2156,7 @@ ${focusHints[focus_area]}`;
 // ============================================================================
 
 type AskChatGPTInput = {
+  query_type?: CrossModelQueryType;
   question: string;
   include_project_files?: boolean;
   focus_area?: 'architecture' | 'code-review' | 'debugging' | 'best-practices' | 'general';
@@ -2085,12 +2194,19 @@ async function askChatGPT(
   context?: ToolExecutionContext
 ): Promise<string> {
   const {
+    query_type,
     question,
     include_project_files = true,
     focus_area = 'general',
   } = input as AskChatGPTInput;
 
-  chatLogger.info(`[ask_chatgpt] Question: "${question}"`, { include_project_files, focus_area });
+  const queryType: CrossModelQueryType = query_type ?? 'second_opinion';
+
+  chatLogger.info(`[ask_chatgpt] Question: "${question}"`, {
+    queryType,
+    include_project_files,
+    focus_area,
+  });
 
   // Validate input
   if (!question || question.length < 10) {
@@ -2111,30 +2227,64 @@ async function askChatGPT(
     // Build context for ChatGPT
     const contextParts: string[] = [];
 
-    // 1. Add recent conversation history (last 10 messages, capped at ~8000 chars)
-    if (context?.messages && context.messages.length > 0) {
-      const recentMessages = context.messages.slice(-10);
-      const conversationContext = recentMessages
-        .map((m) => `[${m.role.toUpperCase()}]: ${m.content.slice(0, 1500)}`)
-        .join('\n\n');
-
-      contextParts.push(`## Recent Conversation\n${conversationContext}`);
-    }
-
-    // 2. Add project context (if enabled and available)
-    if (include_project_files && context?.projectContext?.files) {
+    // 1. Add project summary (if available)
+    if (context?.projectContext) {
       const projectName = context.projectContext.projectName || 'Current Project';
-      const filesSummary = context.projectContext.files
-        .slice(0, 5) // Limit to 5 most relevant files
-        .map((f) => `### ${f.filename}\n\`\`\`\n${f.content_text.slice(0, 3000)}\n\`\`\``)
-        .join('\n\n');
+      const summaryParts: string[] = [`Project: ${projectName}`];
 
-      if (filesSummary) {
-        contextParts.push(`## Project Context: ${projectName}\n${filesSummary}`);
+      if (context.projectContext.projectId) {
+        summaryParts.push(`Project ID: ${context.projectContext.projectId}`);
       }
+
+      if (context.projectContext.customInstructions?.trim()) {
+        summaryParts.push(`Custom Instructions:\n${context.projectContext.customInstructions.trim()}`);
+      }
+
+      contextParts.push(`## Project Summary\n${summaryParts.join('\n')}`);
     }
 
-    // 3. Add focus area hint
+    // 2. Add full project files context (if enabled and available)
+    if (include_project_files && context?.projectContext?.files?.length) {
+      const filesBlock = context.projectContext.files
+        .map(
+          (file) =>
+            `<file name="${file.filename}">
+${file.content_text}
+</file>`
+        )
+        .join('\n\n');
+
+      contextParts.push(`## Project Files (${context.projectContext.files.length})
+<project_files>
+${filesBlock}
+</project_files>`);
+    }
+
+    // 3. Add full conversation transcript (optionally excluding trailing assistant message)
+    if (context?.messages?.length) {
+      let transcriptMessages = context.messages;
+      if (queryType === 'parallel_answer') {
+        while (
+          transcriptMessages.length > 0 &&
+          transcriptMessages[transcriptMessages.length - 1]?.role === 'assistant'
+        ) {
+          transcriptMessages = transcriptMessages.slice(0, -1);
+        }
+      }
+
+      const conversationContext = transcriptMessages
+        .map((m) => `[${m.role.toUpperCase()}]: ${m.content}`)
+        .join('\n\n');
+
+      contextParts.push(`## Conversation Transcript\n${conversationContext}`);
+    }
+
+    // 4. Include Claude's latest reply (second_opinion only)
+    if (queryType === 'second_opinion' && context?.claudeLatestReply?.trim()) {
+      contextParts.push(`## Claude Latest Reply (to evaluate)\n${context.claudeLatestReply.trim()}`);
+    }
+
+    // 5. Add focus area hint (second_opinion only)
     const focusHints: Record<string, string> = {
       architecture: 'Focus on system design, patterns, scalability, and maintainability.',
       'code-review': 'Focus on code quality, bugs, edge cases, and best practices.',
@@ -2143,20 +2293,19 @@ async function askChatGPT(
       general: 'Provide a general perspective on the question.',
     };
 
-    // Build the prompt
-    const prompt = `${contextParts.length > 0 ? contextParts.join('\n\n---\n\n') + '\n\n---\n\n' : ''}
-## Question for Second Opinion
-${question}
+    const taskSection =
+      queryType === 'parallel_answer'
+        ? `## User Message To Answer\n${question}\n\n## Output Instructions\nAnswer as a normal assistant.`
+        : `## Question for Second Opinion\n${question}\n\n## Focus Area\n${focusHints[focus_area]}`;
 
-## Focus Area
-${focusHints[focus_area]}`;
+    const prompt = `${contextParts.length > 0 ? contextParts.join('\n\n---\n\n') + '\n\n---\n\n' : ''}${taskSection}\n`;
+
+    const systemPrompt =
+      queryType === 'parallel_answer' ? CROSS_MODEL_ASSISTANT_SYSTEM_PROMPT : CHATGPT_SYSTEM_PROMPT;
 
     // Token limit for context (leave room for response)
-    const maxContextChars = 30000; // ~7500 tokens
-    const truncatedPrompt =
-      prompt.length > maxContextChars
-        ? prompt.slice(0, maxContextChars) + '\n\n[Context truncated...]'
-        : prompt;
+    const maxContextChars = 400000; // Keep a hard cap for safety (OpenAI context is large, but requests can get huge with files)
+    const truncatedPrompt = truncatePromptForCrossModel(prompt, maxContextChars);
 
     chatLogger.debug(`[ask_chatgpt] Prompt length: ${truncatedPrompt.length} chars`);
 
@@ -2164,7 +2313,7 @@ ${focusHints[focus_area]}`;
     // Note: AI SDK v5 doesn't expose maxTokens in generateText - relying on system prompt guidance
     const { text, usage } = await generateText({
       model: getModel('openai/gpt-5.2'),
-      system: CHATGPT_SYSTEM_PROMPT,
+      system: systemPrompt,
       prompt: truncatedPrompt,
       temperature: 0.7,
     });
@@ -2177,13 +2326,18 @@ ${focusHints[focus_area]}`;
     return JSON.stringify({
       success: true,
       chatgpt_response: text,
+      query_type: queryType,
       focus_area,
       context_included: {
         messages: context?.messages?.length || 0,
         project_files: include_project_files ? context?.projectContext?.files?.length || 0 : 0,
+        claude_latest_reply: queryType === 'second_opinion' ? Boolean(context?.claudeLatestReply?.trim()) : false,
       },
       display_format: 'collapsible_quote',
-      display_title: 'ChatGPT (GPT-5.2) Second Opinion',
+      display_title:
+        queryType === 'parallel_answer'
+          ? 'ChatGPT (GPT-5.2) (Independent Answer)'
+          : 'ChatGPT (GPT-5.2) Second Opinion',
     });
   } catch (error) {
     chatLogger.error('[ask_chatgpt] Failed:', error);

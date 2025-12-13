@@ -388,24 +388,31 @@ Inject into chat context (always current)
 
 ---
 
-## M3.16: Ask ChatGPT Second Opinion Tool (Dec 2025)
+## M3.16: Ask ChatGPT + Gemini Cross-Model Query Tools (Dec 2025)
 
-**STATUS:** ✅ **COMPLETE** - ChatGPT second-opinion tool available during Claude chats
+**STATUS:** ✅ **COMPLETE** - Cross-model query tools available during Claude chats
 
 ### What Was Implemented
 
-1. **Ask ChatGPT Tool** (`lib/ai/claude-advisory-tools.ts`)
-   - New `ask_chatgpt` advisory tool mirroring `ask_gemini`
-   - Uses `openai/gpt-5.2` via Vercel AI Gateway for second opinions
-   - Auto-includes last 10 conversation messages and up to 5 active project files (as extracted text)
+1. **Ask ChatGPT + Ask Gemini Tools** (`lib/ai/claude-advisory-tools.ts`)
+   - `ask_chatgpt` → `openai/gpt-5.2` via Vercel AI Gateway
+   - `ask_gemini` → `google/gemini-3-pro-preview` via Vercel AI Gateway
+   - Supports 2 query modes via `query_type`:
+     - `parallel_answer`: normal assistant answer to the user's latest message (excludes Claude's latest reply)
+     - `second_opinion` (default): critical second opinion (includes Claude's latest reply when available)
+   - Includes full chat transcript + active project summary + full project files (when enabled)
 
 2. **Claude Tool Context Wiring** (`lib/ai/chat/handlers/claude-handler.ts`)
-   - Passes conversation + project context to both `ask_gemini` and `ask_chatgpt`
+   - Passes full conversation + active project context to both `ask_gemini` and `ask_chatgpt`
+   - Provides `claudeLatestReply` (draft text from the tool-using iteration) for second-opinion evaluation
+   - Includes attachment metadata; decodes text-based data-URL attachments for tool context
 
 ### Usage
 
-- In a Claude chat, ask for a second opinion from ChatGPT (e.g., "Can you get ChatGPT's take on this?").
-- Claude will invoke the tool, show ChatGPT's response as a blockquote, then synthesize.
+- In a Claude chat, ask for:
+  - An independent answer: “Ask Gemini/ChatGPT the same question I just asked you.”
+  - A second opinion: “Can you get a second opinion from Gemini/ChatGPT on your answer?”
+- Claude will invoke the tool, show the response as a blockquote, then synthesize.
 
 ### Key Files
 - `lib/ai/claude-advisory-tools.ts` - Tool definition, executor case, and implementation
