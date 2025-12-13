@@ -16,6 +16,12 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@mermaid-js/parser'],
+  // Transpile @dnd-kit packages to fix Turbopack HMR issues
+  transpilePackages: [
+    '@dnd-kit/core',
+    '@dnd-kit/sortable',
+    '@dnd-kit/utilities',
+  ],
   // Force Turbopack to treat this workspace as the root to avoid parent lockfile warnings
   turbopack: {
     root: __dirname,

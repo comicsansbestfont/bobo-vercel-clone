@@ -48,6 +48,9 @@ import { EntityIndicator } from "@/components/advisory/entity-badge";
 import { toast } from "sonner";
 import { Skeleton } from "./skeleton";
 import { ThemeSwitcherConnected } from "@/components/theme-switcher-connected";
+import { ModeSwitcher } from "@/components/sidebar/mode-switcher";
+import { CRMSidebarContent } from "@/components/sidebar/crm-sidebar-content";
+import { useCurrentMode } from "@/hooks/use-current-mode";
 import { ChatContextMenu } from "@/components/chat/chat-context-menu";
 import { RenameDialog, MoveToProjectDialog } from "@/components/chat/chat-dialogs";
 import {
@@ -345,6 +348,9 @@ function AppSidebarContent({
   // M312B: Drill-down navigation
   const { selectedEntity, drillInto, goBack, isDetailView } = useSidebarNavigation();
 
+  // Current app mode (workspace, crm, studio)
+  const currentMode = useCurrentMode();
+
   const handleNewChat = (projectId?: string) => {
     if (projectId) {
       // Create new chat in specific project context
@@ -372,10 +378,12 @@ function AppSidebarContent({
   return (
     <>
       <SidebarHeader className="gap-3">
-        {/* Logo and Action Buttons */}
+        {/* Mode Switcher with Action Buttons */}
         <div className="flex items-center justify-between">
-          <BoboLogo />
-          <div className="flex items-center gap-1">
+          <div className="flex-1 min-w-0">
+            <ModeSwitcher />
+          </div>
+          <div className="flex items-center gap-1 flex-shrink-0">
             <button
               onClick={() => handleNewChat()}
               className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
@@ -404,79 +412,96 @@ function AppSidebarContent({
       </SidebarHeader>
 
       <SidebarContent className="flex-1 overflow-hidden">
-        {/* Loading State */}
-        {loading && <SidebarLoadingState />}
+        {/* Loading State - only show for workspace mode */}
+        {loading && currentMode === 'workspace' && <SidebarLoadingState />}
 
-        {/* Error State */}
-        {error && (
+        {/* Error State - only show for workspace mode */}
+        {error && currentMode === 'workspace' && (
           <div className="mx-2 p-3 bg-destructive/10 text-destructive rounded text-sm">
             {error}
           </div>
         )}
 
-        {/* M312B: Conditional rendering based on navigation state */}
-        {!loading && !error && (
-          isDetailView && selectedEntity ? (
-            <SidebarDetailView
-              entity={selectedEntity}
-              chats={chats}
-              activeChatId={currentChatId}
-              onBack={goBack}
-              onNewChat={handleNewChat}
-              onChatSelect={handleChatSelect}
-            />
-          ) : (
-            <SidebarMainView
-              projects={projects}
-              chats={chats}
-              activeChatId={currentChatId}
-              onDrillInto={drillInto}
-              onNewProject={() => setIsCreateProjectModalOpen(true)}
-              onImportDeal={() => setIsBulkImportOpen(true)}
-              fetchData={fetchData}
-            />
+        {/* Mode-specific content */}
+        {currentMode === 'crm' ? (
+          <CRMSidebarContent />
+        ) : (
+          /* Workspace mode: conditional rendering based on navigation state */
+          !loading && !error && (
+            isDetailView && selectedEntity ? (
+              <SidebarDetailView
+                entity={selectedEntity}
+                chats={chats}
+                activeChatId={currentChatId}
+                onBack={goBack}
+                onNewChat={handleNewChat}
+                onChatSelect={handleChatSelect}
+              />
+            ) : (
+              <SidebarMainView
+                projects={projects}
+                chats={chats}
+                activeChatId={currentChatId}
+                onDrillInto={drillInto}
+                onNewProject={() => setIsCreateProjectModalOpen(true)}
+                onImportDeal={() => setIsBulkImportOpen(true)}
+                fetchData={fetchData}
+              />
+            )
           )
         )}
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="flex items-center justify-around py-2">
-          <Link
-            href="/"
-            onClick={() => isMobile && setOpenMobile(false)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
-            title="Home"
-          >
-            <Home className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/deals"
-            onClick={() => isMobile && setOpenMobile(false)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
-            title="Deals Pipeline"
-          >
-            <Kanban className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/memory"
-            onClick={() => isMobile && setOpenMobile(false)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
-            title="Memory"
-          >
-            <Brain className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/settings/profile"
-            onClick={() => isMobile && setOpenMobile(false)}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
-            title="Profile"
-          >
-            <User className="h-5 w-5" />
-          </Link>
-          <div className="flex h-10 items-center justify-center">
-            <ThemeSwitcherConnected />
+        <SidebarMenu>
+          <div className="flex items-center justify-around py-2">
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Home">
+                <Link
+                  href="/"
+                  onClick={() => isMobile && setOpenMobile(false)}
+                >
+                  <Home className="h-5 w-5" />
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Deals Pipeline">
+                <Link
+                  href="/deals"
+                  onClick={() => isMobile && setOpenMobile(false)}
+                >
+                  <Kanban className="h-5 w-5" />
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Memory">
+                <Link
+                  href="/memory"
+                  onClick={() => isMobile && setOpenMobile(false)}
+                >
+                  <Brain className="h-5 w-5" />
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Profile">
+                <Link
+                  href="/settings/profile"
+                  onClick={() => isMobile && setOpenMobile(false)}
+                >
+                  <User className="h-5 w-5" />
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <div className="flex h-10 items-center justify-center">
+                <ThemeSwitcherConnected />
+              </div>
+            </SidebarMenuItem>
           </div>
-        </div>
+        </SidebarMenu>
       </SidebarFooter>
 
       <CreateProjectModal
@@ -527,9 +552,27 @@ export function MobileHeader({ title }: { title?: string }) {
   );
 }
 
+// Cookie helper to read sidebar state
+function getSidebarStateFromCookie(): boolean {
+  if (typeof document === 'undefined') return true;
+  const cookies = document.cookie.split(';');
+  const sidebarCookie = cookies.find(c => c.trim().startsWith('sidebar_state='));
+  if (sidebarCookie) {
+    const value = sidebarCookie.split('=')[1];
+    return value === 'true';
+  }
+  return true; // Default to open
+}
+
 // Main App Sidebar Component
 export function AppSidebar({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams();
+  const [defaultOpen, setDefaultOpen] = useState(true);
+
+  // Read cookie on mount for sidebar state persistence
+  useEffect(() => {
+    setDefaultOpen(getSidebarStateFromCookie());
+  }, []);
 
   // Data states
   const [projects, setProjects] = useState<ProjectWithStats[]>([]);
@@ -578,8 +621,8 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
   }, [searchParams]);
 
   return (
-    <SidebarProvider>
-      <Sidebar variant="inset" collapsible="offcanvas">
+    <SidebarProvider defaultOpen={defaultOpen}>
+      <Sidebar variant="inset" collapsible="icon">
         <AppSidebarContent
           projects={projects}
           chats={chats}
@@ -587,6 +630,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
           error={error}
           fetchData={fetchData}
         />
+        <SidebarRail />
       </Sidebar>
       <SidebarInset>
         {children}

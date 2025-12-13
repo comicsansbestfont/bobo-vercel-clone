@@ -1,15 +1,33 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { LayoutGrid, Table2 } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import { DealsKanban } from './deals-kanban';
 import { DealsTable } from './deals-table';
 import type { DealData, ViewMode } from './types';
 import type { DealStage } from '@/lib/sidebar/stage-config';
 import { normalizeStageKey, getStageLabel } from '@/lib/sidebar/stage-config';
 import { toast } from 'sonner';
+
+// Dynamic import to avoid @dnd-kit HMR issues with Turbopack
+const DealsKanban = dynamic(
+  () => import('./deals-kanban').then(mod => mod.DealsKanban),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid grid-cols-6 gap-4 flex-1">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        ))}
+      </div>
+    ),
+  }
+);
 
 export function DealsViewContainer() {
   const [deals, setDeals] = useState<DealData[]>([]);
