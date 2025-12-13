@@ -8,6 +8,13 @@ This is an AI chatbot application built with Next.js 16, React 19. It provides a
 
 ---
 
+## Session Updates
+
+**Session (Dec 13, 2025):**
+- ✅ Fixed Vercel build failure by adding `components/ui/tabs.tsx` and installing `@radix-ui/react-tabs`
+
+---
+
 ## ⚠️ CRITICAL: SDK Architecture Decision (M3.9)
 
 **ALL CHAT FUNCTIONALITY MUST USE THE ANTHROPIC CLAUDE SDK** (`@anthropic-ai/sdk`)
