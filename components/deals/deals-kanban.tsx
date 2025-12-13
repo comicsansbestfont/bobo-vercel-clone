@@ -156,10 +156,10 @@ export function DealsKanban() {
           columns={KANBAN_COLUMNS}
           data={deals}
           onDataChange={handleDataChange}
-          className="min-w-max h-full"
+          className="!grid-cols-[repeat(6,300px)] min-w-max h-full"
         >
           {(column) => (
-            <KanbanBoard key={column.id} id={column.id} className="min-w-[280px]">
+            <KanbanBoard key={column.id} id={column.id} className="min-w-[127px]">
               <KanbanHeader className="flex items-center gap-2">
                 <div className={cn('h-2.5 w-2.5 rounded-full', column.color)} />
                 <span className="font-medium">{column.name}</span>
