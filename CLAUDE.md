@@ -396,7 +396,10 @@ Inject into chat context (always current)
 
 1. **Inspiration Library in Repo** (`01_Inspiration/`)
    - Blog posts: T2D3, MRR Unlocked, BasicArts, Fluint, The Venture Crew
-   - LinkedIn archive + Videos (markdown)
+   - Videos (markdown)
+   - LinkedIn archive (CSV) ingested as per-post documents:
+     - Brett Jansen: 391 posts
+     - Alex Estner: 626 posts
 
 2. **Indexing + Verification Scripts**
    - `scripts/index-inspiration.ts` - Indexes `01_Inspiration/**` into `files` with embeddings + source metadata

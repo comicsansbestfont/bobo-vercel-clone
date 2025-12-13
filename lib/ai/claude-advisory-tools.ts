@@ -896,12 +896,17 @@ function normalizeInspirationSourceFilter(source?: string): string | undefined {
 
   const lower = trimmed.toLowerCase();
 
+  // LinkedIn is represented via `content_kind=linkedin_post` rather than a single source value.
+  if (lower.includes('linkedin')) return undefined;
+
   if (lower.includes('mrr')) return 'MRR Unlocked';
   if (lower.includes('unlocked')) return 'MRR Unlocked';
   if (lower.includes('venture')) return 'The Venture Crew';
   if (lower.includes('t2d3')) return 'T2D3';
   if (lower.includes('basic')) return 'BasicArts';
   if (lower.includes('fluint')) return 'Fluint';
+  if (lower.includes('brett') || lower.includes('jansen')) return 'Brett Jansen';
+  if (lower.includes('alex') || lower.includes('estner')) return 'Alex Estner';
 
   return trimmed;
 }
@@ -922,13 +927,17 @@ async function searchInspiration(input: Record<string, unknown>): Promise<string
     limit = 5,
   } = input as SearchInspirationInput;
 
+  const sourceText = typeof source === 'string' ? source : '';
+  const wantsLinkedIn = sourceText.toLowerCase().includes('linkedin');
+  const effectiveContentKind = content_kind === 'all' && wantsLinkedIn ? 'linkedin_post' : content_kind;
+
   const clampedLimit = Math.max(1, Math.min(20, Number.isFinite(limit) ? limit : 5));
-  const normalizedSource = normalizeInspirationSourceFilter(source);
-  const entityTypeFilter = mapInspirationKindToEntityType(content_kind);
+  const normalizedSource = normalizeInspirationSourceFilter(sourceText);
+  const entityTypeFilter = mapInspirationKindToEntityType(effectiveContentKind);
 
   chatLogger.info(`[search_inspiration] Query: "${query}"`, {
     source: normalizedSource || 'all',
-    content_kind,
+    content_kind: effectiveContentKind,
     limit: clampedLimit,
   });
 
