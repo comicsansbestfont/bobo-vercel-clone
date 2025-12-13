@@ -37,6 +37,7 @@
     - [CLI Tool Package Structure](#cli-tool-package-structure)
     - [Bobo UI: Upload & Process Workflow](#bobo-ui-upload--process-workflow)
     - [Summary: The Complete Picture](#summary-the-complete-picture)
+16. [Minimum Viable Hybrid: Recommended Implementation Sequence](#minimum-viable-hybrid-recommended-implementation-sequence)
 
 ---
 
@@ -937,9 +938,9 @@ last_updated: date       # Last update date
   │            │                                                                     │
   │            ▼                                                                     │
   │   ┌─────────────────┐                                                           │
-  │   │  2. FILE        │  Append to master doc section:                           │
-  │   │     SYNC        │  • Add row to Communications Log table                   │
-  │   │                 │  • OR create new file in Meetings/ folder                │
+  │   │  2. MARK FOR    │  Flag for local sync (browser cannot write files):       │
+  │   │     LOCAL SYNC  │  • SET synced_to_file = FALSE                            │
+  │   │                 │  • User runs `bobo sync pull` to write to master-doc     │
   │   └────────┬────────┘                                                           │
   │            │                                                                     │
   │            ▼                                                                     │
@@ -1276,7 +1277,8 @@ Risk:        ████░░░░░░ 40%  (Moderate)
 - [ ] Component: ActionItemsList (with checkboxes)
 - [ ] Component: QuickActionsBar
 - [ ] Integration: Add quick actions to existing DealProfile
-- [ ] Integration: File sync - append to master doc on activity save
+- [ ] Integration: Mark activities with `synced_to_file: false` for pending local sync
+- [ ] UI: Show "⚡ X activities pending sync" indicator when unsynced activities exist
 
 ### Phase 3: Deal Workspace Layout (Week 3-4)
 
@@ -1296,7 +1298,7 @@ Risk:        ████░░░░░░ 40%  (Moderate)
 - [ ] Component: SuggestedActions card
 - [ ] Component: DealHealthScore visualization
 - [ ] Component: Artifact editor with save/export
-- [ ] Integration: Artifacts persist to deal files
+- [ ] Integration: Artifacts saved to Supabase, marked for local sync via CLI
 
 ### Phase 5: Polish & Advanced (Week 5-6)
 
@@ -1556,12 +1558,23 @@ Risk:        ████░░░░░░ 40%  (Moderate)
 │   │ master-doc ✓    │          │ activities ✓    │          │                 │    │
 │   └─────────────────┘          └─────────────────┘          └─────────────────┘    │
 │                                                                                      │
-│  CONFLICT RESOLUTION:                                                                │
+│  CONFLICT RESOLUTION (Risk-Based Defaults):                                          │
+│                                                                                      │
+│  ┌─────────────────┬────────────────────────────────────────────────────────────┐   │
+│  │ File Type       │ Conflict Strategy                                          │   │
+│  ├─────────────────┼────────────────────────────────────────────────────────────┤   │
+│  │ master-doc.md   │ 🛑 ALWAYS PROMPT - Show diff, user chooses or merges       │   │
+│  │ Meeting notes   │ 🛑 ALWAYS PROMPT - Content is irreplaceable                │   │
+│  │ Comms logs      │ 🛑 ALWAYS PROMPT - Historical record                       │   │
+│  │ Artifacts       │ ⚠️ PROMPT if content differs by >10%                       │   │
+│  │ Metadata only   │ ✅ Last-write-wins (low risk)                              │   │
+│  └─────────────────┴────────────────────────────────────────────────────────────┘   │
 │                                                                                      │
 │  • Content hashes track file versions                                               │
-│  • Last-write-wins with optional merge prompts                                      │
 │  • Activities table tracks source: 'local_file' | 'bobo_ui' | 'sync'               │
 │  • Audit log preserves all changes for recovery                                     │
+│  • ALL conflicts create automatic backup: filename.conflict.YYYYMMDD               │
+│  • Backups retained for 30 days                                                     │
 │                                                                                      │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1584,9 +1597,18 @@ CREATE TABLE deal_files (
     'master_doc', 'meeting', 'comms', 'artifact', 'document'
   )),
 
-  -- Content storage
-  content TEXT,                       -- Full file content (text files)
+  -- Content storage (text files)
+  content TEXT,                       -- Full file content (text files only)
   content_hash TEXT,                  -- SHA-256 for change detection
+
+  -- Binary file handling (PDFs, images, etc.)
+  is_binary BOOLEAN DEFAULT false,    -- True for non-text files
+  storage_path TEXT,                  -- Path in Supabase Storage: "deals/mytab/docs/deck.pdf"
+  mime_type TEXT,                     -- "application/pdf", "image/png", etc.
+  file_size_bytes BIGINT,             -- File size for binaries
+
+  -- Text file types: .md, .txt, .json, .yaml, .csv (store in content)
+  -- Binary file types: .pdf, .png, .jpg, .docx, .xlsx (store in Storage bucket)
 
   -- Sync status
   sync_status TEXT CHECK (sync_status IN (
@@ -1809,15 +1831,42 @@ CREATE INDEX sync_log_user_idx ON sync_log(user_id, started_at DESC);
 │                                                                                      │
 │  ─────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                      │
-│  CONFIGURATION (~/.boborc or .boborc in project):                                   │
+│  CONFIGURATION:                                                                      │
 │                                                                                      │
+│  ⚠️  SECURITY WARNING: Never store raw API keys in config files!                    │
+│                                                                                      │
+│  OPTION A: Environment Variables (Recommended)                                       │
+│  ─────────────────────────────────────────────────                                   │
+│  # In ~/.zshrc or ~/.bashrc                                                         │
+│  export BOBO_SUPABASE_URL="https://xxx.supabase.co"                                 │
+│  export BOBO_SUPABASE_KEY="eyJ..."                                                  │
+│                                                                                      │
+│  # CLI reads from environment, NOT from file                                        │
+│                                                                                      │
+│  OPTION B: OAuth Login Flow (Most Secure)                                            │
+│  ─────────────────────────────────────────────                                       │
+│  $ bobo login                                                                       │
+│  → Opens browser for Supabase OAuth                                                 │
+│  → Stores short-lived token in system keychain                                      │
+│  → Token auto-refreshes                                                             │
+│                                                                                      │
+│  OPTION C: Scoped Service Key (If Config File Required)                              │
+│  ─────────────────────────────────────────────────────────                           │
+│  • Create a dedicated "sync-cli" service role in Supabase                           │
+│  • Grant ONLY: SELECT, INSERT, UPDATE on deal_files, activities, inbox_items        │
+│  • NO access to: auth.users, admin functions, other tables                          │
+│                                                                                      │
+│  ~/.boborc (if using config file):                                                  │
 │    {                                                                                 │
-│      "supabaseUrl": "https://xxx.supabase.co",                                      │
-│      "supabaseKey": "eyJ...",                                                       │
 │      "dealsPath": "~/Deals",                                                        │
 │      "syncedFolders": ["Meetings", "Comms", "Docs"],                                │
 │      "ignoredPatterns": ["*.tmp", ".DS_Store", "_Inbox/*"]                          │
 │    }                                                                                 │
+│    # Note: supabaseUrl and supabaseKey should come from environment variables!     │
+│                                                                                      │
+│  ⚠️  NEVER use admin/service_role key in local config                               │
+│  ⚠️  NEVER commit .boborc to git (add to .gitignore)                                │
+│  ⚠️  Consider using 1Password CLI or similar for key injection                      │
 │                                                                                      │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -2019,19 +2068,137 @@ packages/sync-cli/
 │                                                                                      │
 │  KEY PRINCIPLES:                                                                     │
 │                                                                                      │
-│  1. FILES REMAIN SOURCE OF TRUTH (for audit, portability, Claude Code access)       │
+│  1. PHASE-BASED CANONICAL SOURCE (see below)                                        │
 │  2. SUPABASE ENABLES CLOUD ACCESS (for Bobo UI, mobile, anywhere)                   │
 │  3. SYNC CLI BRIDGES THE GAP (runs locally, has filesystem access)                  │
 │  4. BIDIRECTIONAL SYNC (push local→cloud, pull cloud→local)                         │
-│  5. CONFLICT DETECTION (hash-based, last-write-wins with optional merge)            │
+│  5. CONFLICT RESOLUTION: PROMPT BY DEFAULT for content files (not last-write-wins) │
 │  6. AUDIT LOG (all sync operations recorded for debugging/recovery)                 │
+│                                                                                      │
+│  ════════════════════════════════════════════════════════════════════════════════   │
+│                                                                                      │
+│  CANONICAL SOURCE OF TRUTH (Phase-Based):                                            │
+│                                                                                      │
+│  Phase 1-2: LOCAL FILES ARE CANONICAL                                                │
+│    • Local master-doc.md is the authoritative version                               │
+│    • Supabase is a REPLICA for remote access                                        │
+│    • On conflict: LOCAL WINS (with cloud backup preserved)                          │
+│    • Sync direction: primarily push (local → cloud)                                 │
+│                                                                                      │
+│  Phase 3-4: SUPABASE BECOMES CANONICAL                                               │
+│    • Supabase activities/files tables are authoritative                             │
+│    • Local files are OPTIONAL EXPORT for backup/portability                         │
+│    • On conflict: CLOUD WINS (with local backup preserved)                          │
+│    • Sync direction: primarily pull (cloud → local)                                 │
+│                                                                                      │
+│  Transition trigger: When you stop using Claude Code for deal workflows             │
+│  and work primarily in Bobo UI                                                      │
+│                                                                                      │
+│  ════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                      │
 │  TRANSITION PATH:                                                                    │
 │                                                                                      │
 │  Phase 1 (Now):        Claude Code + Files → Occasional sync → Bobo for viewing    │
+│                        CANONICAL: Local files                                       │
 │  Phase 2 (3 months):   Mixed mode - some work in files, some in Bobo UI            │
+│                        CANONICAL: Local files                                       │
 │  Phase 3 (6 months):   Primary work in Bobo UI, files as backup/archive            │
+│                        CANONICAL: Supabase                                          │
 │  Phase 4 (Future):     Full Bobo UI, sync deprecated, files optional export        │
+│                        CANONICAL: Supabase                                          │
+│                                                                                      │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Minimum Viable Hybrid: Recommended Implementation Sequence
+
+Based on feedback and complexity analysis, here is the recommended sequence for getting value fast while deferring complexity:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                    MINIMUM VIABLE HYBRID: BUILD SEQUENCE                             │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                      │
+│  PRINCIPLE: Get value fast, defer complexity                                        │
+│                                                                                      │
+│  ═══════════════════════════════════════════════════════════════════════════════    │
+│                                                                                      │
+│  MVP PHASE 1: PUSH-ONLY + CLOUD VIEWING                          Effort: ~2-3 days  │
+│  ───────────────────────────────────────                                             │
+│                                                                                      │
+│  What you build:                                                                     │
+│  • CLI: `bobo sync push` only (local → cloud)                                       │
+│  • Supabase: deal_files table populated from local                                  │
+│  • Bobo UI: Read-only view of activities (parsed from synced files)                 │
+│                                                                                      │
+│  What you get:                                                                       │
+│  ✅ Continue working in Claude Code as normal                                        │
+│  ✅ See your deals in Bobo UI from anywhere                                          │
+│  ✅ No conflict resolution needed (one-way sync)                                     │
+│  ✅ No pull complexity yet                                                           │
+│                                                                                      │
+│  ═══════════════════════════════════════════════════════════════════════════════    │
+│                                                                                      │
+│  MVP PHASE 2: CLOUD INBOX PROCESSING                             Effort: ~3-4 days  │
+│  ───────────────────────────────────────                                             │
+│                                                                                      │
+│  What you build:                                                                     │
+│  • Bobo UI: Upload files to inbox (screenshots, transcripts)                        │
+│  • AI processing: Extract activities from uploads                                   │
+│  • Supabase: inbox_items + activities tables                                        │
+│                                                                                      │
+│  What you get:                                                                       │
+│  ✅ Process inbox from browser (no Claude Code needed for this)                     │
+│  ✅ Structured activities created automatically                                      │
+│  ✅ Still no pull/writeback complexity                                              │
+│                                                                                      │
+│  ═══════════════════════════════════════════════════════════════════════════════    │
+│                                                                                      │
+│  MVP PHASE 3: ACTIVITY LOGGING UI                                Effort: ~4-5 days  │
+│  ───────────────────────────────────                                                 │
+│                                                                                      │
+│  What you build:                                                                     │
+│  • Bobo UI: Log Call / Log Email / Log Meeting forms                                │
+│  • Activity timeline display                                                        │
+│  • Quick actions bar                                                                │
+│                                                                                      │
+│  What you get:                                                                       │
+│  ✅ Full activity logging without Claude Code                                        │
+│  ✅ Real CRM-like experience                                                         │
+│  ✅ Activities exist in cloud, viewable anywhere                                     │
+│                                                                                      │
+│  ═══════════════════════════════════════════════════════════════════════════════    │
+│                                                                                      │
+│  MVP PHASE 4: PULL + CONFLICT RESOLUTION (Deferred)             Effort: ~5-7 days  │
+│  ─────────────────────────────────────────────────────                               │
+│                                                                                      │
+│  What you build:                                                                     │
+│  • CLI: `bobo sync pull` (cloud → local)                                            │
+│  • Conflict detection and resolution UI                                             │
+│  • Master doc parsing and append logic                                              │
+│                                                                                      │
+│  Why defer:                                                                          │
+│  • Most complex part (parsing, deduplication, conflict handling)                    │
+│  • Lower immediate value (you can always check Bobo UI for cloud data)              │
+│  • Can be built once Phases 1-3 are proven                                          │
+│                                                                                      │
+│  ═══════════════════════════════════════════════════════════════════════════════    │
+│                                                                                      │
+│  TOTAL MVP (Phases 1-3): ~9-12 days                                                 │
+│  FULL SYSTEM (+ Phase 4): ~14-19 days                                               │
+│                                                                                      │
+│  ═══════════════════════════════════════════════════════════════════════════════    │
+│                                                                                      │
+│  WHY THIS SEQUENCE WORKS:                                                            │
+│                                                                                      │
+│  1. Phase 1 gives you visibility into your deals from anywhere                      │
+│  2. Phase 2 replicates your Claude Code inbox workflow in browser                   │
+│  3. Phase 3 lets you log activities without opening Claude Code                     │
+│  4. Phase 4 (deferred) handles the complex bidirectional sync                       │
+│                                                                                      │
+│  Each phase delivers standalone value. You don't need Phase 4 to use 1-3.           │
 │                                                                                      │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
