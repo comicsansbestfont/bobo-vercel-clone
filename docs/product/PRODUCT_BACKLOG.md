@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 10, 2025 (M3.14 Extended Thinking with Memory Integration COMPLETE)
+**Last Updated:** December 13, 2025 (Added Context Summary Tag backlog item + Retrieval Hierarchy prompt)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
@@ -2639,6 +2639,53 @@ recency_factor * EXP(-0.1 * EXTRACT(days FROM NOW() - m.last_updated))
 | Reasoning appears | ✅ PASS |
 | Thinking persists | ✅ PASS |
 | Regression (no thinking) | ✅ PASS |
+
+### Future Enhancement: Context Summary Tag (Option B)
+
+**Status:** 📋 Backlog Item (Low Priority)
+**Trigger:** If Option A (prompt-based retrieval hierarchy) proves insufficient
+**Estimate:** 30-45 minutes (~100-150 lines)
+**Prerequisite:** Evaluate Option A for 2-4 weeks of dogfooding first
+
+**Background:**
+On Dec 13, 2025, a retrieval hierarchy was added to the system prompt (`<retrieval_hierarchy>` section in `lib/ai/system-prompt.ts`) to guide Claude to check loaded context before using search tools. This is "Option A" - a zero-code prompt engineering approach.
+
+Option B adds a `<context_summary>` tag that provides Claude with a quick inventory of what's already loaded in context, enabling faster retrieval decisions without scanning large XML blocks.
+
+**What It Does:**
+Instead of Claude parsing through `<user_memory>`, `<global_context>`, and `<project_conversations>` to understand what's loaded, we inject a summary header:
+
+```xml
+<context_summary>
+Loaded context includes:
+- User memory: 5 entries (topics: CorePlan pricing, SwiftCheckin auth, MyTab strategy)
+- Global context: 3 snippets (from: Talvin, ArcheloLab)
+- Project conversations: 2 excerpts (this project: Bobo development)
+- Active project: Bobo AI Chatbot (47 files cached)
+</context_summary>
+```
+
+**Implementation:**
+1. **File:** `lib/ai/chat/context-builder.ts`
+2. **Function:** Add `buildContextSummary()` helper
+3. **Injection:** Insert `<context_summary>` tag at the top of dynamically-built context
+4. **Data extraction:** Count items and extract topic keywords from each context section
+
+**Why Defer:**
+1. Option A (prompt hierarchy) may be sufficient - need dogfooding data
+2. Adds complexity to context builder
+3. Token overhead (~50-100 tokens per message)
+4. Should prove value of hierarchy approach first
+
+**When to Implement:**
+- If Claude still makes unnecessary library searches despite hierarchy instructions
+- If users report slow responses due to tool calls that should have been skippable
+- If dogfooding reveals Claude struggles to "know what it knows"
+
+**Success Criteria:**
+- Reduced unnecessary tool calls (measurable via logs)
+- Faster average response time for memory-related queries
+- Claude correctly identifies when context already contains the answer
 
 ---
 
