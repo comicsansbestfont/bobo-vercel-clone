@@ -1,6 +1,6 @@
 # Bobo AI Chatbot - Product Backlog
 
-**Last Updated:** December 13, 2025 (Added Context Summary Tag backlog item + Retrieval Hierarchy prompt)
+**Last Updated:** December 14, 2025 (Major backlog audit - documented M3.13, M3.14, M3.15/16, M41, M42, M312B as complete)
 **Maintained By:** Solo Developer (Personal Tool)
 **Purpose:** Track all planned features, improvements, and technical debt
 
@@ -117,14 +117,14 @@
 
 | Metric | Value |
 |--------|-------|
-| **Milestones Complete** | 9 of 11 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8, M40) |
-| **Tasks Complete** | 126 of 171 (74%) |
-| **Hours Invested** | ~114.5 hours actual |
-| **Hours Remaining** | ~146.5 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h, M3.12: 15h, M3.13: 15h) |
+| **Milestones Complete** | 15 core (M1, M2, M3 P1-3, M3.5, M4, M3.6-S1, M3.7, M3.8, M3.13, M3.14, M3.15/16, M40, M41, M42, M312B) |
+| **Tasks Complete** | ~168 of 205 (82%) |
+| **Hours Invested** | ~148 hours actual |
+| **Hours Remaining** | ~95 hours (M3.6: 64h, M3.9: 15h, M3.10: 28.5h, M3.11: 8h, M3.12: 12h) |
 | **Build Status** | ✅ Passing |
 | **Current Phase** | **DOGFOODING 🐕** |
 
-*Dec 7, 2025: M3.8 complete (19 tasks). Full advisory project system operational. Database cleaned. Serious dogfooding begins.*
+*Dec 14, 2025: Major backlog audit - 6 additional milestones documented as complete (M3.13, M3.14, M3.15/16, M41, M42, M312B CRM). M3.12 partially complete.*
 
 ### Gantt Chart - Timeline View
 
@@ -190,9 +190,14 @@ Legend: ████ Complete  ░░░░ Planned/Deferred
 | **M3.9: Advisory-Memory Integration** | 📝 Planned | 0/8 | 15h | - | - | Bidirectional advisory↔memory linking |
 | **M3.10: Knowledge Graph** | 📝 Planned | 0/20 | 28.5h | - | - | Entity extraction, spreading activation, agent self-learning |
 | **M3.11: GTM Health Check Bot** | 📝 Planned | 0/6 | 8h | - | - | Lead gen chatbot, collects info + runs assessment, Jan 2026 launch |
-| **M3.12: Chat UX Enhancements** | 📝 Planned | 0/8 | 15h | - | - | Message editing, document attachments, GitHub integration, folder browser |
-| **M3.13: Thinking Partner Foundation** | 📝 Planned | 0/7 | 15h | - | - | Memory types (question/decision/insight), tags, thought threads, similar questions prompt |
+| **M3.12: Chat UX Enhancements** | 🟡 **PARTIAL** | 2/8 | 15h | ~3h | - | ✅ Message editing, ✅ File attachments. Pending: GitHub, folder browser |
+| **M3.13: Thinking Partner Foundation** | ✅ Complete | 8/8 | 15h | ~6h | 250% | record_question/decision/insight tools, similar questions, thought threads |
+| **M3.14: Extended Thinking** | ✅ Complete | 8/8 | 8.5h | 4.5h | 189% | Thinking toggle UI, search_memory tool, automatic memory retrieval |
+| **M3.15/M3.16: Cross-Model Tools** | ✅ Complete | 4/4 | 6h | ~4h | 150% | ask_gemini, ask_chatgpt with parallel_answer and second_opinion modes |
 | **M40: Refactor & Optimization** | ✅ Complete | 11/11 | 15h | ~4h | 375% | M40-01: Dead code, icons, N+1, Shiki, types, hooks. M40-02: Chat route 1608→150 lines, modular handlers |
+| **M41: Inspiration Library** | ✅ Complete | 5/5 | 8h | ~4h | 200% | 741 files indexed (T2D3, MRR Unlocked, BasicArts, LinkedIn archives) |
+| **M42: Reference Library** | ✅ Complete | 5/5 | 6h | ~3h | 200% | 213 docs indexed (identity, playbooks, past writing) |
+| **M312B: CRM System** | ✅ Complete | 12/12 | 20h | ~12h | 167% | Deals kanban/table, contacts module, 9-stage pipeline, activity tracking |
 | **M3: Phase 4** | 📝 Deferred | 0/7 | 17h | - | - | Provenance, debugger, export |
 | **M5: Cognitive** | 📝 Deferred | 0/8 | 36h | - | - | Living docs, knowledge graph |
 
@@ -217,11 +222,17 @@ M3.7-01       │  11   │  13     │  3.9   │  -70%    │ ✅ Complete
 M3.8-01       │  19   │  16     │   ~8   │  -50%    │ ✅ Complete
 M40-01        │  10   │  11     │  2.4   │  -78%    │ ✅ Complete
 M40-02        │   1   │   4     │  1.5   │  -63%    │ ✅ Complete
+M3.13-01      │   8   │  15     │   ~6   │  -60%    │ ✅ Complete
+M3.14-01      │   8   │  8.5    │  4.5   │  -47%    │ ✅ Complete
+M3.15/16      │   4   │   6     │   ~4   │  -33%    │ ✅ Complete
+M41-01        │   5   │   8     │   ~4   │  -50%    │ ✅ Complete
+M42-01        │   5   │   6     │   ~3   │  -50%    │ ✅ Complete
+M312B-01      │  12   │  20     │  ~12   │  -40%    │ ✅ Complete
 ──────────────┼───────┼─────────┼────────┼──────────┼────────
-TOTALS        │ 137   │ 188h    │ 114.5h │  -39%    │ 76% ✅
+TOTALS        │ 180   │ 256.5h  │ ~148h  │  -42%    │ 82% ✅
 ```
 
-**Average Velocity:** 39% faster than estimated
+**Average Velocity:** 42% faster than estimated
 
 ### Feature Capability Matrix
 
@@ -2332,12 +2343,12 @@ For projects linked to advisory folders:
 
 ---
 
-## 🧠 M3.13: Thinking Partner Foundation (Critical Path)
+## 🧠 M3.13: Thinking Partner Foundation ✅ COMPLETE
 
-**Status:** 📝 Planned
-**Estimate:** 15 hours (1 sprint)
-**Priority:** 🔴 HIGH - **Should be completed BEFORE M3.10 (Knowledge Graph)**
-**Target:** Q1 2025
+**Status:** ✅ Complete (Dec 10, 2025)
+**Sprint:** M3.13-01
+**Duration:** ~6h (estimated 15h) - 2.5x faster than estimate
+**Priority:** 🔴 HIGH - Completed BEFORE M3.10 as recommended
 
 ### Strategic Context
 
@@ -2393,14 +2404,14 @@ Instead of 4 loops + knowledge graph:
 
 | ID | Task | Priority | Estimate | Status | Notes |
 |----|------|----------|----------|--------|-------|
-| **M3.13-01** | Add `memory_type` column to memory_entries | 🔴 HIGH | 2h | ⏳ | 'fact' \| 'question' \| 'decision' \| 'insight' |
-| **M3.13-02** | Add `tags` array column to memory_entries | 🔴 HIGH | 2h | ⏳ | TEXT[], enables emergent domains without clustering |
-| **M3.13-03** | Create `record_question` agent tool | 🔴 HIGH | 1.5h | ⏳ | Captures open questions with status: 'open' \| 'answered' |
-| **M3.13-04** | Create `record_decision` agent tool | 🔴 HIGH | 1.5h | ⏳ | Captures decisions with rationale, alternatives_considered |
-| **M3.13-05** | Create `record_insight` agent tool | 🔴 HIGH | 1h | ⏳ | Captures insights with optional source_question_id |
-| **M3.13-06** | Add `thread_id` column for thought threads | 🟡 MED | 2h | ⏳ | Groups related thinking over time |
-| **M3.13-07** | Implement "similar questions" prompt | 🔴 HIGH | 3h | ⏳ | On new question, search memory_type='question', surface similar |
-| **M3.13-08** | Testing buffer | 🔴 HIGH | 2h | ⏳ | Sprint rule |
+| **M3.13-01** | Add `memory_type` column to memory_entries | 🔴 HIGH | 2h | ✅ | Migration `20251209220840` applied |
+| **M3.13-02** | Add `tags` array column to memory_entries | 🔴 HIGH | 2h | ✅ | GIN index created for fast lookups |
+| **M3.13-03** | Create `record_question` agent tool | 🔴 HIGH | 1.5h | ✅ | Hebbian reinforcement + context |
+| **M3.13-04** | Create `record_decision` agent tool | 🔴 HIGH | 1.5h | ✅ | With rationale, alternatives_considered |
+| **M3.13-05** | Create `record_insight` agent tool | 🔴 HIGH | 1h | ✅ | With optional source linking |
+| **M3.13-06** | Add `thread_id` column for thought threads | 🟡 MED | 2h | ✅ | thought_threads table + FK |
+| **M3.13-07** | Implement "similar questions" prompt | 🔴 HIGH | 3h | ✅ | `lib/ai/similar-questions.ts` |
+| **M3.13-08** | Testing buffer | 🔴 HIGH | 2h | ✅ | E2E tested |
 
 **Total:** 15h
 
@@ -2686,6 +2697,158 @@ Loaded context includes:
 - Reduced unnecessary tool calls (measurable via logs)
 - Faster average response time for memory-related queries
 - Claude correctly identifies when context already contains the answer
+
+---
+
+## 🔍 M3.15/M3.16: Cross-Model Query Tools ✅ COMPLETE
+
+**Status:** ✅ Complete (Dec 8-10, 2025)
+**Duration:** ~4h (estimated 6h) - 33% faster
+**Focus:** Enable Claude to consult other AI models during advisory conversations
+
+### What Was Delivered
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| `ask_gemini` tool | ✅ | Queries Gemini 3 Pro via AI Gateway |
+| `ask_chatgpt` tool | ✅ | Queries GPT-5.2 via AI Gateway |
+| `parallel_answer` mode | ✅ | Get independent answer (excludes Claude's reply) |
+| `second_opinion` mode | ✅ | Critical review of Claude's response |
+
+### Key Files
+
+- `lib/ai/claude-advisory-tools.ts` - Tool definitions and executors
+- `lib/ai/chat/handlers/claude-handler.ts` - Context injection for cross-model calls
+
+### Usage
+
+- "Ask Gemini the same question" → `query_type: parallel_answer`
+- "Get a second opinion from ChatGPT" → `query_type: second_opinion`
+
+---
+
+## 📚 M41: Inspiration Library ✅ COMPLETE
+
+**Status:** ✅ Complete (Dec 8, 2025)
+**Duration:** ~4h (estimated 8h) - 50% faster
+**Focus:** Index external thought leadership for advisory enrichment
+
+### What Was Delivered
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Blog indexing | ✅ | T2D3, MRR Unlocked, BasicArts, Fluint, The Venture Crew |
+| LinkedIn archive ingestion | ✅ | Brett Jansen (391 posts), Alex Estner (626 posts) |
+| `search_inspiration` tool | ✅ | Semantic search scoped to inspiration library |
+| `read_inspiration_file` tool | ✅ | Full file read from database |
+
+### Stats
+
+- **741 files indexed** with embeddings
+- **Fixed project ID:** `22222222-2222-2222-2222-222222222222`
+
+### Key Files
+
+- `scripts/index-inspiration.ts` - Indexing script
+- `scripts/verify-inspiration-indexing.ts` - Verification script
+
+### Usage
+
+```bash
+npm run index-inspiration    # Index/re-index files
+npm run verify-inspiration   # Verify coverage
+```
+
+---
+
+## 📖 M42: Reference Library ✅ COMPLETE
+
+**Status:** ✅ Complete (Dec 9, 2025)
+**Duration:** ~3h (estimated 6h) - 50% faster
+**Focus:** Index user's own content for voice/tone matching and self-reference
+
+### What Was Delivered
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Identity docs | ✅ | Core identity/positioning documents |
+| Playbooks/training | ✅ | CorePlan, SwiftCheckin playbooks (pattern library) |
+| Past writing | ✅ | Medium posts, LinkedIn archive |
+| `search_reference` tool | ✅ | Semantic search scoped to reference library |
+| `read_reference_file` tool | ✅ | Full file read from database |
+
+### Stats
+
+- **213 docs indexed** with embeddings
+- **Fixed project ID:** `33333333-3333-3333-3333-333333333333`
+
+### Guardrail
+
+> IMPORTANT: Treat playbooks as a **pattern/structure library** by default. Extract principles, frameworks, and question structures — not specific internal examples, customer details, or numbers — unless explicitly asked.
+
+### Key Files
+
+- `scripts/index-reference.ts` - Indexing script
+- `scripts/verify-reference-indexing.ts` - Verification script
+
+### Usage
+
+```bash
+npm run index-reference    # Index/re-index files
+npm run verify-reference   # Verify coverage
+```
+
+---
+
+## 🏢 M312B: CRM System Foundation ✅ COMPLETE
+
+**Status:** ✅ Complete (Dec 12-13, 2025)
+**Duration:** ~12h (estimated 20h) - 40% faster
+**Focus:** Full CRM with deals pipeline, contacts, and activity tracking
+
+### What Was Delivered
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Deals Kanban | ✅ | 9-stage pipeline with drag-and-drop |
+| Deals Table | ✅ | Alternative table view with sorting |
+| Contacts Module | ✅ | List + workspace with activity feed |
+| Stage Management | ✅ | snake_case normalization, history tracking |
+| Activity Tracking | ✅ | Meetings, messages, notes, calls |
+| Database Schema | ✅ | 14 migrations, RPC functions |
+
+### Database Tables
+
+- `companies` - Organization entities
+- `contacts` - People with company links
+- `engagements` - Unified lead/deal/client entity
+- `activities` - Lightweight timeline feed
+- `activity_threads`, `activity_messages` - Full message content
+- `activity_meetings`, `activity_attendees` - Meeting records
+- `activity_notes`, `activity_note_targets` - Internal notes
+- `stage_history` - Complete audit trail
+
+### UI Components
+
+- `DealsKanban`, `DealsTable`, `DealsViewContainer`
+- `DealProfile`, `DealCard`, `DealAIPanel`
+- `ContactsTable`, `ContactWorkspace`, `ContactInfoPanel`
+- `StageBadge`, `EngagementBadge`, `ActivityTimeline`
+
+### API Routes
+
+- `GET/POST /api/deals` - Deals list
+- `GET /api/deals/[id]` - Deal detail
+- `PATCH /api/deals/[id]/stage` - Stage update
+- `GET/POST /api/contacts` - Contacts list
+- `GET/DELETE /api/contacts/[id]` - Contact detail
+
+### Key Files
+
+- `app/deals/page.tsx`, `app/contacts/page.tsx` - Pages
+- `components/deals/*`, `components/contacts/*` - UI components
+- `lib/sidebar/stage-config.ts` - Stage configuration
+- `docs/crm/` - Documentation (README, schema-reference, migration-sop)
 
 ---
 
