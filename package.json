@@ -27,6 +27,8 @@
     "verify-advisory": "npx tsx scripts/verify-advisory-indexing.ts",
     "index-inspiration": "npx tsx scripts/index-inspiration.ts",
     "verify-inspiration": "npx tsx scripts/verify-inspiration-indexing.ts",
+    "index-reference": "npx tsx scripts/index-reference.ts",
+    "verify-reference": "npx tsx scripts/verify-reference-indexing.ts",
     "postbuild": "node scripts/ensure-next-lock.mjs"
   },
   "dependencies": {

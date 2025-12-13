@@ -17,6 +17,9 @@ out/
 # Inspiration library folder - files are indexed in database, not needed at runtime
 /01_Inspiration/
 
+# Reference library folder - files are indexed in database, not needed at runtime
+/04_Reference/
+
 # Test screenshots - not needed in production
 tests/screenshots/
 

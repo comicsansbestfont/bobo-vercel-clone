@@ -15,7 +15,7 @@ import { existsSync, readdirSync, statSync } from 'fs';
 import crypto from 'crypto';
 import { generateEmbedding } from '@/lib/ai/embedding';
 import { supabase, DEFAULT_USER_ID } from '@/lib/db/client';
-import { ADVISORY_PROJECT_ID, INSPIRATION_LIBRARY_PROJECT_ID } from '@/lib/db/types';
+import { ADVISORY_PROJECT_ID, INSPIRATION_LIBRARY_PROJECT_ID, REFERENCE_LIBRARY_PROJECT_ID } from '@/lib/db/types';
 import { createMemory, getMemoryById, updateMemoryAccess } from '@/lib/db/queries';
 import { chatLogger } from '@/lib/logger';
 import { parseHTML } from 'linkedom';
@@ -139,6 +139,49 @@ TIP:
     },
   },
   {
+    name: 'search_reference',
+    description: `SEMANTIC search of the Reference Library (Identity, your past writing, and internal playbooks).
+
+BEST FOR:
+- "What have I said about X on LinkedIn?"
+- "Enrich this draft using my past writing and voice"
+- "Find the relevant section in my SPICED / sales / CS playbooks"
+
+GUARDRAILS (IMPORTANT):
+- Default to extracting PATTERNS, PRINCIPLES, and STRUCTURES.
+- Do NOT quote or surface specific internal examples, numbers, customer names, or proprietary details from playbooks unless the user explicitly asks for verbatim/specifics.
+- If unsure, summarize at a high level and ask whether they want the exact wording.
+
+RETURNS: Relevant excerpts ranked by semantic similarity, with source attribution.
+
+TIP:
+- Use \`source\` to target a collection (e.g., "Identity", "Sachee Perera", "CorePlan Sales Playbook")
+- Use \`content_kind\` to narrow to identity / linkedin / medium / playbook / guidelines / isms`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        query: {
+          type: 'string',
+          description: 'Search query in natural language (e.g., "discovery questions", "pricing", "founder narrative")',
+        },
+        source: {
+          type: 'string',
+          description: 'Optional source filter (examples: "Identity", "Sachee Perera", "CorePlan Sales Playbook", "CorePlan Customer Success", "SwiftCheckin Training", "Angel Investing")',
+        },
+        content_kind: {
+          type: 'string',
+          enum: ['identity', 'linkedin_post', 'medium_post', 'playbook', 'guidelines', 'isms', 'all'],
+          description: 'Optional content kind filter (default: all)',
+        },
+        limit: {
+          type: 'number',
+          description: 'Max results to return (1-20, default: 5)',
+        },
+      },
+      required: ['query'],
+    },
+  },
+  {
     name: 'read_advisory_file',
     description: `Read FULL contents of a specific advisory file.
 
@@ -184,6 +227,29 @@ RETURNS: Full file contents (max 8000 chars).`,
         filename: {
           type: 'string',
           description: 'The filename path from search results (e.g., "01_Inspiration/BlogPosts/T2D3/....md")',
+        },
+      },
+      required: ['filename'],
+    },
+  },
+  {
+    name: 'read_reference_file',
+    description: `Read FULL contents of a specific Reference Library file (from the indexed database).
+
+USE WHEN:
+- You found a file via search_reference and need the full content
+- You want to extract a specific framework/structure from your playbooks
+
+GUARDRAILS:
+- If this is a playbook/internal reference, default to extracting patterns/structure unless the user explicitly asks for verbatim/specifics.
+
+RETURNS: Full file contents (max 8000 chars).`,
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        filename: {
+          type: 'string',
+          description: 'The filename path from search results (e.g., "04_Reference/Identity/SACHEE_IDENTITY_CORE_PROFILE.md")',
         },
       },
       required: ['filename'],
@@ -758,10 +824,14 @@ export async function executeAdvisoryTool(
         return await searchAdvisory(input);
       case 'search_inspiration':
         return await searchInspiration(input);
+      case 'search_reference':
+        return await searchReference(input);
       case 'read_advisory_file':
         return await readAdvisoryFile(input);
       case 'read_inspiration_file':
         return await readInspirationFile(input);
+      case 'read_reference_file':
+        return await readReferenceFile(input);
       case 'list_advisory_folder':
         return await listAdvisoryFolder(input);
       case 'glob_advisory':
@@ -997,6 +1067,128 @@ async function searchInspiration(input: Record<string, unknown>): Promise<string
   });
 }
 
+type SearchReferenceInput = {
+  query: string;
+  source?: string;
+  content_kind?: 'identity' | 'linkedin_post' | 'medium_post' | 'playbook' | 'guidelines' | 'isms' | 'all';
+  limit?: number;
+};
+
+function normalizeReferenceSourceFilter(source?: string): string | undefined {
+  if (!source) return undefined;
+  const trimmed = source.trim();
+  if (!trimmed || trimmed.toLowerCase() === 'all') return undefined;
+
+  const lower = trimmed.toLowerCase();
+
+  // LinkedIn is represented via `content_kind=linkedin_post` rather than a single source value.
+  if (lower.includes('linkedin')) return undefined;
+
+  if (lower.includes('identity')) return 'Identity';
+  if (lower.includes('medium')) return 'Medium';
+  if (lower.includes('isms') || lower.includes('sachee-isms') || lower.includes('sacheeisms')) return 'Sachee-isms';
+  if (lower.includes('guideline')) return 'Content Guidelines';
+
+  if (lower.includes('swift') || lower.includes('checkin')) return 'SwiftCheckin Training';
+  if (lower.includes('customer success') || lower === 'cs') return 'CorePlan Customer Success';
+  if (lower.includes('sales playbook') || lower.includes('spiced') || lower.includes('coreplan sales')) return 'CorePlan Sales Playbook';
+  if (lower.includes('angel')) return 'Angel Investing';
+  if (lower.includes('slide') || lower.includes('deck')) return 'CorePlan Slide Decks (Markdown)';
+
+  if (lower.includes('sachee') || lower.includes('me') || lower.includes('my posts')) return 'Sachee Perera';
+
+  return trimmed;
+}
+
+function mapReferenceKindToEntityType(kind?: SearchReferenceInput['content_kind']): string | undefined {
+  if (!kind || kind === 'all') return undefined;
+  if (kind === 'identity') return 'reference_identity';
+  if (kind === 'linkedin_post') return 'reference_linkedin_post';
+  if (kind === 'medium_post') return 'reference_medium_post';
+  if (kind === 'playbook') return 'reference_playbook';
+  if (kind === 'guidelines') return 'reference_guidelines';
+  if (kind === 'isms') return 'reference_isms';
+  return undefined;
+}
+
+async function searchReference(input: Record<string, unknown>): Promise<string> {
+  const {
+    query,
+    source,
+    content_kind = 'all',
+    limit = 5,
+  } = input as SearchReferenceInput;
+
+  const sourceText = typeof source === 'string' ? source : '';
+  const wantsLinkedIn = sourceText.toLowerCase().includes('linkedin');
+  const effectiveContentKind = content_kind === 'all' && wantsLinkedIn ? 'linkedin_post' : content_kind;
+
+  const clampedLimit = Math.max(1, Math.min(20, Number.isFinite(limit) ? limit : 5));
+  const normalizedSource = normalizeReferenceSourceFilter(sourceText);
+  const entityTypeFilter = mapReferenceKindToEntityType(effectiveContentKind);
+
+  chatLogger.info(`[search_reference] Query: "${query}"`, {
+    source: normalizedSource || 'all',
+    content_kind: effectiveContentKind,
+    limit: clampedLimit,
+  });
+
+  const embedding = await generateEmbedding(query);
+
+  const { data: results, error } = await supabase.rpc('search_advisory_files', {
+    query_embedding: embedding,
+    query_text: query,
+    p_project_id: REFERENCE_LIBRARY_PROJECT_ID,
+    entity_type_filter: entityTypeFilter,
+    entity_name_filter: normalizedSource || undefined,
+    match_count: clampedLimit,
+    vector_weight: 0.7,
+    text_weight: 0.3,
+    min_similarity: 0.25,
+  });
+
+  if (error) {
+    chatLogger.error('[search_reference] RPC error:', error);
+    return JSON.stringify({ success: false, error: error.message });
+  }
+
+  if (!results || results.length === 0) {
+    return JSON.stringify({
+      success: true,
+      message: 'No matching reference files found. Try different keywords or remove filters.',
+      results: [],
+    });
+  }
+
+  type SearchResult = {
+    id: string;
+    filename: string;
+    content_text: string;
+    entity_type: string | null;
+    entity_name: string | null;
+    combined_score: number;
+  };
+
+  const formatted = (results as SearchResult[]).map((r, i) => ({
+    index: i + 1,
+    source: r.entity_name,
+    content_kind: r.entity_type,
+    filename: r.filename,
+    relevance_score: Math.round(r.combined_score * 100) / 100,
+    content_excerpt: r.content_text.length > 1500
+      ? r.content_text.substring(0, 1500) + '...'
+      : r.content_text,
+  }));
+
+  chatLogger.info(`[search_reference] Found ${results.length} files`);
+
+  return JSON.stringify({
+    success: true,
+    message: `Found ${results.length} reference file(s) matching "${query}"`,
+    results: formatted,
+  });
+}
+
 type ReadAdvisoryFileInput = {
   filename: string;
 };
@@ -1085,6 +1277,69 @@ async function readInspirationFile(input: Record<string, unknown>): Promise<stri
 
   if (!data) {
     return JSON.stringify({ success: false, error: `File not found in Inspiration Library: ${normalizedFilename}` });
+  }
+
+  const content = data.content_text || '';
+  const maxLength = 8000;
+  const truncated = content.length > maxLength;
+  const finalContent = truncated
+    ? content.substring(0, maxLength) + `\n\n... [Content truncated - file is ${content.length} characters]`
+    : content;
+
+  return JSON.stringify({
+    success: true,
+    filename: data.filename,
+    source: data.entity_name,
+    content_kind: data.entity_type,
+    content: finalContent,
+    truncated,
+    total_length: content.length,
+  });
+}
+
+type ReadReferenceFileInput = {
+  filename: string;
+};
+
+function normalizeReferenceFilename(filename: string): string {
+  const normalized = filename.trim().replace(/\\/g, '/');
+  if (!normalized) return normalized;
+  if (normalized.startsWith('04_Reference/')) return normalized;
+  if (normalized.startsWith('Identity/') || normalized.startsWith('Medium-Blog-Posts/') || normalized.startsWith('CorePlan-SalesPlaybook/')
+    || normalized.startsWith('Coreplan-customer-success/') || normalized.startsWith('SwiftCheckin-Training/') || normalized.startsWith('Angel-Investing/')
+    || normalized.startsWith('Sachee-CorePlan-slidedecks/') || normalized.startsWith('LinkedInPosts/')) {
+    return `04_Reference/${normalized}`;
+  }
+  if (normalized === 'content-guidelines.md' || normalized === 'SACHEE_ISMS_OPERATING_PRINCIPLES.md' || normalized === 'linkedin_posts.csv') {
+    return `04_Reference/${normalized}`;
+  }
+  return normalized;
+}
+
+async function readReferenceFile(input: Record<string, unknown>): Promise<string> {
+  const { filename } = input as ReadReferenceFileInput;
+  const normalizedFilename = normalizeReferenceFilename(filename);
+
+  chatLogger.info(`[read_reference_file] Reading: ${normalizedFilename}`);
+
+  if (!normalizedFilename || normalizedFilename.includes('..')) {
+    return JSON.stringify({ success: false, error: 'Invalid file path' });
+  }
+
+  const { data, error } = await supabase
+    .from('files')
+    .select('filename, content_text, entity_type, entity_name')
+    .eq('project_id', REFERENCE_LIBRARY_PROJECT_ID)
+    .eq('filename', normalizedFilename)
+    .maybeSingle();
+
+  if (error) {
+    chatLogger.error('[read_reference_file] Query error:', error);
+    return JSON.stringify({ success: false, error: error.message });
+  }
+
+  if (!data) {
+    return JSON.stringify({ success: false, error: `File not found in Reference Library: ${normalizedFilename}` });
   }
 
   const content = data.content_text || '';

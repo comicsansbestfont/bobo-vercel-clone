@@ -426,6 +426,41 @@ npm run verify-inspiration
 - "Can you enrich this draft with T2D3 guidance?"
 - "What does MRR Unlocked say about pricing strategy?"
 
+---
+
+## M42: Reference Library (Dec 2025)
+
+**STATUS:** ✅ **COMPLETE** - 213 docs indexed, reference tools operational
+
+### What Was Implemented
+
+1. **Reference Library in Repo** (`04_Reference/`)
+   - Identity docs, Medium posts, and personal LinkedIn export (CSV)
+   - Internal playbooks/training material (CorePlan + SwiftCheckin) as a *pattern library*
+   - **Skipped:** PPTX/PDF/images (kept out of indexing)
+
+2. **Indexing + Verification Scripts**
+   - `scripts/index-reference.ts` - Indexes `04_Reference/**` markdown + ingests `04_Reference/linkedin_posts.csv` as per-post documents
+   - `scripts/verify-reference-indexing.ts` - Verifies disk vs DB coverage and embedding completeness
+
+3. **Reference Project ID**
+   - Fixed UUID: `33333333-3333-3333-3333-333333333333` (`REFERENCE_LIBRARY_PROJECT_ID`)
+
+4. **Claude Tools**
+   - `search_reference` - Semantic search scoped to the Reference Library
+   - `read_reference_file` - Full file read from DB
+   - Guardrail: playbooks are for patterns/structure by default (no verbatim/internal specifics unless explicitly requested)
+
+### Usage
+
+```bash
+# Index reference files (after adding/modifying)
+npm run index-reference
+
+# Verify indexing coverage
+npm run verify-reference
+```
+
 ## M3.16: Ask ChatGPT + Gemini Cross-Model Query Tools (Dec 2025)
 
 **STATUS:** ✅ **COMPLETE** - Cross-model query tools available during Claude chats

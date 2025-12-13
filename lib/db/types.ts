@@ -8,6 +8,7 @@
 // Advisory project constant UUID (M3.7)
 export const ADVISORY_PROJECT_ID = '11111111-1111-1111-1111-111111111111';
 export const INSPIRATION_LIBRARY_PROJECT_ID = '22222222-2222-2222-2222-222222222222';
+export const REFERENCE_LIBRARY_PROJECT_ID = '33333333-3333-3333-3333-333333333333';
 
 // M38: Entity types for project categorization
 // M39: Added 'identity' for personal identity documents
