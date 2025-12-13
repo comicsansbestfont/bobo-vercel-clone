@@ -19,6 +19,19 @@ import type { ProjectContext } from '@/lib/ai/context-manager';
 // REQUEST TYPES
 // ============================================================================
 
+/**
+ * File attachment from frontend upload
+ * Contains data URL (base64 encoded) and metadata
+ */
+export interface ChatAttachment {
+  /** Data URL (e.g., data:image/png;base64,...) */
+  url: string;
+  /** MIME type (e.g., image/png, application/pdf) */
+  mediaType: string;
+  /** Original filename */
+  filename?: string;
+}
+
 export interface ChatRequest {
   messages: UIMessage[];
   model: string;
@@ -29,6 +42,8 @@ export interface ChatRequest {
   /** M3.14: Extended thinking settings */
   thinkingEnabled?: boolean;
   thinkingBudget?: number; // 1024-100000 tokens
+  /** File attachments (images, PDFs) for Claude vision/document support */
+  attachments?: ChatAttachment[];
 }
 
 // ============================================================================

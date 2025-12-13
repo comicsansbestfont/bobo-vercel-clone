@@ -429,6 +429,7 @@ export function ChatInterface({
 
     // Send the message - AI SDK expects { text: string } as first parameter
     // The body in options contains custom data sent to the backend
+    // Files are passed as attachments in the body for backend processing
     sendMessage(
       { text: message.text || 'Sent with attachments' },
       {
@@ -440,6 +441,12 @@ export function ChatInterface({
           // M3.14: Extended thinking parameters
           thinkingEnabled: effectiveThinkingEnabled,
           thinkingBudget: effectiveThinkingEnabled ? thinkingBudget : undefined,
+          // Pass file attachments to backend for Claude vision/document support
+          attachments: message.files?.map(file => ({
+            url: file.url,
+            mediaType: file.mediaType,
+            filename: file.filename,
+          })),
         },
       },
     );

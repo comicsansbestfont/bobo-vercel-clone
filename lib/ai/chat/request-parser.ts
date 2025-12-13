@@ -27,6 +27,8 @@ export function parseRequest(body: Record<string, unknown>): ChatRequest {
     // M3.14: Extended thinking parameters
     thinkingEnabled: body.thinkingEnabled as boolean | undefined,
     thinkingBudget: body.thinkingBudget as number | undefined,
+    // File attachments for Claude vision/document support
+    attachments: (body.attachments as ChatRequest['attachments']) || undefined,
   };
 }
 

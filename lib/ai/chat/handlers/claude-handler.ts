@@ -70,7 +70,7 @@ export class ClaudeHandler implements ChatHandler {
     context: ChatContext,
     normalizedMessages: UIMessage[]
   ): Promise<Response> {
-    const { model, thinkingEnabled: requestThinkingEnabled, thinkingBudget: requestThinkingBudget } = request;
+    const { model, thinkingEnabled: requestThinkingEnabled, thinkingBudget: requestThinkingBudget, attachments } = request;
     const {
       activeChatId,
       systemPrompt,
@@ -92,10 +92,12 @@ export class ClaudeHandler implements ChatHandler {
     chatLogger.info('[Claude SDK] Using native Claude SDK for model:', model, {
       thinkingEnabled,
       thinkingBudget: thinkingEnabled ? thinkingBudget : 'N/A',
+      attachmentCount: attachments?.length ?? 0,
     });
 
     const client = getClaudeClient();
-    const { messages: claudeMessages } = convertToClaudeMessages(normalizedMessages);
+    // M3.17: Pass attachments to converter for image/document support
+    const { messages: claudeMessages } = convertToClaudeMessages(normalizedMessages, attachments);
 
     // Setup timeout tracking and progressive saving
     const timeoutTracker = new TimeoutTracker();
